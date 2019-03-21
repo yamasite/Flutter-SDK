@@ -12,6 +12,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   bool _isInChannel = false;
+  int _textureId = -1;
   final _infoStrings = <String>[];
 
   static final _sessions = List<VideoSession>();
@@ -22,8 +23,16 @@ class _MyAppState extends State<MyApp> {
 
     _initAgoraRtcEngine();
     _addAgoraEventHandlers();
-    _addRenderView(0, (viewId) {
-      AgoraRtcEngine.setupLocalVideo(viewId, 1);
+    initialize();
+    // _addRenderView(0, (viewId) {
+
+    // });
+  }
+
+  void initialize() async {
+    int textureID = await AgoraRtcEngine.setupLocalVideo(0, 1);
+    this.setState(() {
+      _textureId = textureID;
     });
   }
 
@@ -37,7 +46,11 @@ class _MyAppState extends State<MyApp> {
         body: Container(
           child: Column(
             children: [
-              Container(height: 320, child: _viewRows()),
+              Container(
+                  width: 480,
+                  height: 320,
+                  child:
+                      _textureId == -1 ? null : Texture(textureId: _textureId)),
               OutlineButton(
                 child: Text(_isInChannel ? 'Leave Channel' : 'Join Channel',
                     style: textStyle),
@@ -52,7 +65,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> _initAgoraRtcEngine() async {
-    AgoraRtcEngine.create('YOUR APP ID');
+    AgoraRtcEngine.create('aab8b8f5a8cd4469a63042fcfafe7063');
     AgoraRtcEngine.enableVideo();
   }
 

@@ -444,8 +444,8 @@ class AgoraRtcEngine {
   /// Sets the local video view and configures the video display settings on the local device.
   ///
   /// You can call this method to bind local video streams to Widget created by [createNativeView] of the  and configure the video display settings.
-  static Future<void> setupLocalVideo(int viewId, int renderMode) async {
-    await _channel.invokeMethod(
+  static Future<int> setupLocalVideo(int viewId, int renderMode) async {
+    return await _channel.invokeMethod(
         'setupLocalVideo', {'viewId': viewId, 'renderMode': renderMode});
   }
 

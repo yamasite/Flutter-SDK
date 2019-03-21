@@ -1,6 +1,62 @@
 #import "AgoraRtcEnginePlugin.h"
 #import <AgoraRtcEngineKit/AgoraRtcEngineKit.h>
 
+@interface AgoraTextureView()
+@property(nonatomic, strong)NSObject<FlutterTextureRegistry>* registry;
+@property(nonatomic, assign)int64_t textureId;
+@property(nonatomic)CVPixelBufferRef ref;
+@end
+
+@implementation AgoraTextureView
+
+
+#pragma AgoraVideoSink
+- (AgoraVideoBufferType)bufferType {
+    return AgoraVideoBufferTypePixelBuffer;
+}
+
+- (AgoraVideoPixelFormat)pixelFormat {
+    return AgoraVideoPixelFormatBGRA;
+}
+
+- (void)shouldDispose {
+    
+}
+
+- (BOOL)shouldInitialize {
+    
+    return true;
+}
+
+- (void)shouldStart {
+    
+}
+
+- (void)shouldStop {
+    
+}
+
+- (void)renderPixelBuffer:(CVPixelBufferRef)pixelBuffer rotation:(AgoraVideoRotation)rotation
+{
+    if(_ref != nil) {
+        CVBufferRelease(_ref);
+    }
+    _ref = pixelBuffer;
+    CVBufferRetain(_ref);
+    [self.registry textureFrameAvailable:_textureId];
+}
+
+#pragma FlutterTexture
+- (CVPixelBufferRef _Nullable)copyPixelBuffer {
+    CVBufferRetain(_ref);
+    return _ref;
+}
+
+
+
+@end
+
+
 @interface AgoraRendererView()
 @property (nonatomic, strong) UIView *renderView;
 @property (nonatomic, assign) int64_t viewId;
@@ -27,7 +83,9 @@
 @interface AgoraRtcEnginePlugin()<AgoraRtcEngineDelegate>
 @property (strong, nonatomic) AgoraRtcEngineKit *agoraRtcEngine;
 @property (strong, nonatomic) FlutterMethodChannel *methodChannel;
+@property (nonatomic, strong)NSObject<FlutterTextureRegistry>* textures;
 @property (strong, nonatomic) NSMutableDictionary *rendererViews;
+@property (strong, nonatomic) NSMutableArray<AgoraTextureView*> *views;
 @end
 
 @implementation AgoraRtcEnginePlugin
@@ -46,6 +104,13 @@
     _rendererViews = [[NSMutableDictionary alloc] init];
   }
   return _rendererViews;
+}
+
+- (NSMutableArray<AgoraTextureView*> *)views {
+    if(!_views) {
+        _views = [NSMutableArray new];
+    }
+    return _views;
 }
 
 + (void)addView:(UIView *)view id:(NSNumber *)viewId {
@@ -84,6 +149,8 @@
   
   AgoraRenderViewFactory *fac = [[AgoraRenderViewFactory alloc] init];
   [registrar registerViewFactory:fac withId:@"AgoraRendererView"];
+    
+    instance.textures = registrar.textures;
 }
 
 - (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
@@ -197,14 +264,22 @@
       [self.rendererViews removeObjectForKey:viewId];
     }
   } else if ([@"setupLocalVideo" isEqualToString:method]) {
-    NSInteger viewId = [self intFromArguments:arguments key:@"viewId"];
-    UIView *view = [AgoraRtcEnginePlugin viewForId:@(viewId)];
-    NSInteger renderType = [self intFromArguments:arguments key:@"renderMode"];
-    
-    AgoraRtcVideoCanvas *canvas = [[AgoraRtcVideoCanvas alloc] init];
-    canvas.view = view;
-    canvas.renderMode = renderType;
-    [self.agoraRtcEngine setupLocalVideo:canvas];
+//    NSInteger viewId = [self intFromArguments:arguments key:@"viewId"];
+//    UIView *view = [AgoraRtcEnginePlugin viewForId:@(viewId)];
+//    NSInteger renderType = [self intFromArguments:arguments key:@"renderMode"];
+//
+//    AgoraRtcVideoCanvas *canvas = [[AgoraRtcVideoCanvas alloc] init];
+//    canvas.view = view;
+//    canvas.renderMode = renderType;
+//    [self.agoraRtcEngine setupLocalVideo:canvas];
+      AgoraTextureView* view = [AgoraTextureView new];
+      [self.views addObject:view];
+      view.textureId = [self.textures registerTexture:view];
+      view.registry = self.textures;
+      [self.agoraRtcEngine setLocalVideoRenderer:view];
+      if (result) {
+          result(@(view.textureId));
+      }
   } else if ([@"setupRemoteVideo" isEqualToString:method]) {
     NSInteger viewId = [self intFromArguments:arguments key:@"viewId"];
     UIView *view = [AgoraRtcEnginePlugin viewForId:@(viewId)];
