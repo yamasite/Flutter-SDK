@@ -90,58 +90,8 @@ class AgoraRtcEngine {
   /// Occurs when the first remote audio frame is received.
   static void Function(int uid, int elapsed) onFirstRemoteAudioFrame;
 
-  /// Occurs when the video stops playing.
-  ///
-  /// The application can use this callback to change the configuration of the view (for example, displaying other pictures in the view) after the video stops playing.
-  static VoidCallback onVideoStopped;
-
-  /// Occurs when the first local video frame is sent.
-  ///
-  /// This callback is triggered after the first local video frame is rendered on the video window.
-  static void Function(int width, int height, int elapsed)
-      onFirstLocalVideoFrame;
-
-  /// Occurs when the first remote video frame is decoded.
-  ///
-  /// This callback is triggered after the first frame of the remote video is received and decoded. The app can configure the user view settings with this callback.
-  static void Function(int uid, int width, int height, int elapsed)
-      onFirstRemoteVideoDecoded;
-
-  /// Occurs when the first remote video frame is rendered.
-  ///
-  /// This callback is triggered after the first frame of the remote video is rendered on the video window. The application can retrieve the data of the time elapsed from the user joining the channel until the first video frame is displayed.
-  static void Function(int uid, int width, int height, int elapsed)
-      onFirstRemoteVideoFrame;
-
   /// Occurs when a remote user's audio stream is muted/unmuted.
   static void Function(int uid, bool muted) onUserMuteAudio;
-
-  /// Occurs when a remote user's video stream playback pauses/resumes.
-  static void Function(int uid, bool muted) onUserMuteVideo;
-
-  /// Occurs when a remote user enables/disables the video module.
-  ///
-  /// Once the video module is disabled, the remote user can only use a voice call. The remote user cannot send or receive any video from other users.
-  static void Function(int uid, bool enabled) onUserEnableVideo;
-
-  /// Occurs when a remote user enables/disables the local video capture function.
-  ///
-  /// This callback is only applicable to the scenario when the remote user only wants to watch the remote video without sending any video stream to the other user.
-  static void Function(int uid, bool enabled) onUserEnableLocalVideo;
-
-  /// Occurs when the video size or rotation information of a specified remote user changes.
-  static void Function(int uid, double width, double height, int rotation)
-      onVideoSizeChanged;
-
-  /// Occurs when the remote video stream state changes.
-  static void Function(int uid, int state) onRemoteVideoStateChanged;
-
-  // Fallback Events
-  /// Occurs when the published media stream falls back to an audio-only stream due to poor network conditions or switches back to video stream after the network conditions improve.
-  ///
-  /// If you call [setLocalPublishFallbackOption] and set option as STREAM_FALLBACK_OPTION_AUDIO_ONLY(2), this callback is triggered when the locally published stream falls back to audio-only mode due to poor uplink conditions, or when the audio stream switches back to the video after the uplink network condition improves.
-  static void Function(bool isFallbackOrRecover)
-      onLocalPublishFallbackToAudioOnly;
 
   /// Occurs when the subscribed media stream falls back to audio-only stream due to poor network conditions or switches back to video stream after the network conditions improve.
   ///
@@ -154,11 +104,6 @@ class AgoraRtcEngine {
   ///
   /// This callback returns that the audio route switched to an earpiece, speakerphone, headset, or Bluetooth device.
   static void Function(int routing) onAudioRouteChanged;
-
-  /// Occurs when the camera is turned on and ready to capture video.
-  ///
-  /// If the camera fails to turn on, fix the error reported in the onError callback.
-  static VoidCallback onCameraReady;
 
   // Statistics Events
   /// Reports the statistics of the audio stream from each remote user/host.
@@ -174,27 +119,11 @@ class AgoraRtcEngine {
   /// Last mile refers to the connection between the local device and Agora's edge server. This callback reports once every two seconds the uplink last mile network conditions of each user in the channel. If a channel includes multiple users, then this callback will be triggered as many times.
   static void Function(int uid, int txQuality, int rxQuality) onNetworkQuality;
 
-  /// Reports the statistics of the uploading local video streams.
-  ///
-  /// This callback is triggered once every two seconds for each individual user/host. If there are multiple users/hosts in the channel, this callback is triggered multiple times every 2 seconds.
-  static void Function(LocalVideoStats stats) onLocalVideoStats;
-
-  /// Reports the statistics of the video stream from each remote user/host.
-  ///
-  /// The SDK triggers this callback once every two seconds for each remote user/host. If a channel includes multiple remote users, the SDK triggers this callback as many times.
-  static void Function(RemoteVideoStats stats) onRemoteVideoStats;
-
   /// Reports the transport-layer statistics of each remote audio stream.
   ///
   /// This callback reports the transport-layer statistics, such as the packet loss rate and time delay, once every two seconds after the local user receives an audio packet from a remote user.
   static void Function(int uid, int delay, int lost, int rxKBitRate)
       onRemoteAudioTransportStats;
-
-  /// Reports the transport-layer statistics of each remote video stream.
-  ///
-  /// This callback reports the transport-layer statistics, such as the packet loss rate and time delay, once every two seconds after the local user receives the video packet from a remote user.
-  static void Function(int uid, int delay, int lost, int rxKBitRate)
-      onRemoteVideoTransportStats;
 
   // Miscellaneous Events
   /// Occurs when the media engine is loaded.
@@ -372,165 +301,6 @@ class AgoraRtcEngine {
         .invokeMethod('setDefaultMuteAllRemoteAudioStreams', {'muted': muted});
   }
 
-  // Video Pre-process and Post-process
-  /// Enables/Disables image enhancement and sets the options.
-  static Future<void> setBeautyEffectOptions(bool enabled, BeautyOptions options) async {
-    await _channel.invokeListMethod('setBeautyEffectOptions', {'enabled': enabled, 'options': options._jsonMap()});
-  }
-
-  // Core Video
-  /// Enables the video module.
-  ///
-  /// You can call this method either before or after [joinChannel]. If you call this method before joining a channel, the service starts in the video mode. If you call this method during an audio call, the audio mode switches to the video mode.
-  /// To disable the video, call the [disableVideo] method.
-  /// This method affects the internal engine and can be called after calling the [leaveChannel] method.
-  /// This method resets the internal engine and takes some time to take effect. Agora recommends using the following API methods to control the video engine modules separately:
-  /// [enableLocalVideo], [muteLocalVideoStream], [muteRemoteVideoStream], [muteAllRemoteVideoStreams].
-  static Future<void> enableVideo() async {
-    await _channel.invokeMethod('enableVideo');
-  }
-
-  /// Disables the video module.
-  ///
-  /// You can call this method either before or after [joinChannel]. If you call this method before joining a channel, the service starts in audio mode. If you call this method during a video call, the video mode switches to the audio mode.
-  /// To enable the video mode, call the [enableVideo] method.
-  /// This method affects the internal engine and can be called after calling the [leaveChannel] method.
-  /// This method resets the internal engine and takes some time to take effect. Agora recommends using the following API methods to control the video engine modules separately:
-  /// [enableLocalVideo], [muteLocalVideoStream], [muteRemoteVideoStream], [muteAllRemoteVideoStreams].
-  static Future<void> disableVideo() async {
-    await _channel.invokeMethod('disableVideo');
-  }
-
-  /// Sets the video encoder configuration.
-  ///
-  /// Each video encoder configuration corresponds to a set of video parameters, including the resolution, frame rate, bitrate, and video orientation.
-  /// If you do not set the video encoder configuration after joining the channel, you can call this method before calling the [enableVideo] method to reduce the render time of the first video frame.
-  /// The parameters specified in this method are the maximum values under ideal network conditions. If the video engine cannot render the video using the specified parameters due to poor network conditions, the parameters further down the list are considered until a successful configuration is found.
-  static Future<void> setVideoEncoderConfiguration(VideoEncoderConfiguration config) async {
-    await _channel.invokeMethod('setVideoEncoderConfiguration', {'config': config._jsonMap()});
-  }
-
-  /// Creates the video renderer Widget.
-  ///
-  /// The Widget is identified by viewId, the operation and layout of the Widget are managed by the app.
-  static Widget createNativeView(int uid, Function(int viewId) created) {
-    if (Platform.isIOS) {
-      return UiKitView(
-        key: new ObjectKey(uid.toString()),
-        viewType: 'AgoraRendererView',
-        onPlatformViewCreated: (viewId) {
-          if (created != null) {
-            created(viewId);
-          }
-        },
-      );
-    } else {
-      return AndroidView(
-        key: new ObjectKey(uid.toString()),
-        viewType: 'AgoraRendererView',
-        onPlatformViewCreated: (viewId) {
-          if (created != null) {
-            created(viewId);
-          }
-        },
-      );
-    }
-  }
-
-  /// Remove the video renderer Widget.
-  static Future<void> removeNativeView(int viewId) async {
-    await _channel.invokeMethod('removeNativeView', {'viewId': viewId});
-  }
-
-  /// Sets the local video view and configures the video display settings on the local device.
-  ///
-  /// You can call this method to bind local video streams to Widget created by [createNativeView] of the  and configure the video display settings.
-  static Future<void> setupLocalVideo(
-      int viewId, VideoRenderMode renderMode) async {
-    await _channel.invokeMethod('setupLocalVideo',
-        {'viewId': viewId, 'renderMode': _intFromVideoRenderMode(renderMode)});
-  }
-
-  /// Sets the remote user's video view.
-  ///
-  /// This method binds the remote user to the Widget created by [createNativeView].
-  static Future<void> setupRemoteVideo(
-      int viewId, VideoRenderMode renderMode, int uid) async {
-    await _channel.invokeMethod('setupRemoteVideo', {
-      'viewId': viewId,
-      'renderMode': _intFromVideoRenderMode(renderMode),
-      'uid': uid,
-    });
-  }
-
-  /// Sets the local video display mode.
-  ///
-  /// This method may be invoked multiple times during a call to change the display mode.
-  static Future<void> setLocalRenderMode(VideoRenderMode renderMode) async {
-    await _channel.invokeMethod(
-        'setLocalRenderMode', {'mode': _intFromVideoRenderMode(renderMode)});
-  }
-
-  /// Sets the remote video display mode.
-  ///
-  /// This method can be invoked multiple times during a call to change the display mode.
-  static Future<void> setRemoteRenderMode(
-      int uid, VideoRenderMode renderMode) async {
-    await _channel.invokeMethod('setRemoteRenderMode',
-        {'uid': uid, 'mode': _intFromVideoRenderMode(renderMode)});
-  }
-
-  /// Starts the local video preview before joining a channel.
-  ///
-  /// Before calling this method, you must:
-  /// 1. Call the [setupLocalVideo] method to set the local preview Widget and configure the attributes.
-  /// 2. Call the [enableVideo] method to enable the video.
-  static Future<void> startPreview() async {
-    await _channel.invokeMethod('startPreview');
-  }
-
-  /// Stops the local video preview and the video.
-  static Future<void> stopPreview() async {
-    await _channel.invokeMethod('stopPreview');
-  }
-
-  /// Disables/Re-enables the local video capture.
-  ///
-  /// The local video is enabled by default. This method disables/re-enables the local video and is only applicable when the user wants to watch the remote video without sending any video stream to the other user.
-  /// Call this method after calling the [enableVideo] method. Otherwise, this method may not work properly.
-  /// Calling the [enableVideo] method enables the local video by default. This method is used to disable/re-enable the local video while the remote video remains unaffected.
-  static Future<void> enableLocalVideo(bool enabled) async {
-    await _channel.invokeMethod('enableLocalVideo', {'enabled': enabled});
-  }
-
-  /// Sends/Stops sending the local video stream.
-  ///
-  /// When you set muted as true, this method does not disable the camera and thus does not affect the retrieval of the local video streams.
-  /// This method responds faster than calling the [enableLocalVideo] method and set muted as false, which controls sending the local video stream.
-  static Future<void> muteLocalVideoStream(bool muted) async {
-    await _channel.invokeMethod('muteLocalVideoStream', {'muted': muted});
-  }
-
-  /// Receives/Stops receiving a specified remote user's video stream.
-  ///
-  /// If you call the [muteAllRemoteVideoStreams] method and set set muted as true to stop receiving all remote video streams, ensure that the [muteAllRemoteVideoStreams] method is called and set muted as false before calling this method.
-  /// The [muteAllRemoteVideoStreams] method sets all remote streams, while this method sets a specified remote user's stream.
-  static Future<void> muteRemoteVideoStream(int uid, bool muted) async {
-    await _channel
-        .invokeMethod('muteRemoteVideoStream', {'uid': uid, 'muted': muted});
-  }
-
-  /// Receives/Stops receiving all remote video streams.
-  static Future<void> muteAllRemoteVideoStreams(bool muted) async {
-    await _channel.invokeMethod('muteAllRemoteVideoStreams', {'muted': muted});
-  }
-
-  /// Sets whether to receive all remote video streams by default.
-  static Future<void> setDefaultMuteAllRemoteVideoStreams(bool muted) async {
-    await _channel
-        .invokeMethod('setDefaultMuteAllRemoteVideoStreams', {'muted': muted});
-  }
-
   // Audio Routing Controller
   /// Sets the default audio playback route.
   static Future<void> setDefaultAudioRouteToSpeaker(
@@ -550,70 +320,6 @@ class AgoraRtcEngine {
   static Future<bool> isSpeakerphoneEnabled() async {
     final bool enabled = await _channel.invokeMethod('isSpeakerphoneEnabled');
     return enabled;
-  }
-
-  // Stream Fallback
-  /// Sets the priority of a remote user. 
-  /// 
-  /// Use this method with the [setRemoteSubscribeFallbackOption] method.
-  /// If the fallback function is enabled for a remote stream, the SDK ensures the high-priority user gets the best possible stream quality.
-  /// The Agora SDK supports setting userPriority as high for one user only.
-  static Future<void> setRemoteUserPriority(int uid, UserPriority userPriority) async {
-    int priorityValue = 100;
-    switch (userPriority) {
-      case UserPriority.Normal:
-        priorityValue = 100;
-        break;
-      case UserPriority.High:
-        priorityValue = 50;
-        break;
-      default:
-        break;
-    }
-    await _channel.invokeMethod(
-        'setRemoteUserPriority', {'uid': uid, 'userPriority': priorityValue});
-  }
-
-  /// Sets the fallback option for the locally published video stream based on the network conditions.
-  static Future<void> setLocalPublishFallbackOption(
-      StreamFallbackOptions options) async {
-    await _channel.invokeMethod(
-        'setLocalPublishFallbackOption', {'option': options.index});
-  }
-
-  /// Sets the fallback option for the remotely subscribed video stream based on the network conditions.
-  static Future<void> setRemoteSubscribeFallbackOption(
-      StreamFallbackOptions options) async {
-    await _channel.invokeMethod(
-        'setRemoteSubscribeFallbackOption', {'option': options.index});
-  }
-
-  // Dual-stream Mode
-  /// Enables/Disables dual-stream mode.
-  ///
-  /// If dual-stream mode is enabled, the receiver can choose to receive the high stream (high-resolution high-bitrate video stream) or low stream (low-resolution low-bitrate video stream) video.
-  static Future<void> enableDualStreamMode(bool enabled) async {
-    await _channel.invokeMethod('enableDualStreamMode', {'enabled': enabled});
-  }
-
-  /// Sets the video stream type of the remotely subscribed video stream when the remote user sends dual streams.
-  ///
-  /// This method allows the app to adjust the corresponding video-stream type based on the size of the video window to reduce the bandwidth and resources.
-  static Future<void> setRemoteVideoStreamType(int uid, int streamType) async {
-    await _channel.invokeMethod(
-        'setRemoteVideoStreamType', {'uid': uid, 'streamType': streamType});
-  }
-
-  /// Sets the default video-stream type of the remotely subscribed video stream when the remote user sends dual streams.
-  static Future<void> setRemoteDefaultVideoStreamType(int streamType) async {
-    await _channel.invokeMethod(
-        'setRemoteDefaultVideoStreamType', {'streamType': streamType});
-  }
-
-  // Camera Control
-  /// Switches between front and rear cameras.
-  static Future<void> switchCamera() async {
-    await _channel.invokeMethod('switchCamera');
   }
 
   // Miscellaneous Methods
@@ -732,86 +438,17 @@ class AgoraRtcEngine {
             onFirstRemoteAudioFrame(values['uid'], values['elapsed']);
           }
           break;
-        case 'onVideoStopped':
-          if (onVideoStopped != null) {
-            onVideoStopped();
-          }
-          break;
-        case 'onFirstLocalVideoFrame':
-          if (onFirstLocalVideoFrame != null) {
-            onFirstLocalVideoFrame(
-                values['width'], values['height'], values['elapsed']);
-          }
-          break;
-        case 'onFirstRemoteVideoDecoded':
-          if (onFirstRemoteVideoDecoded != null) {
-            onFirstRemoteVideoDecoded(values['uid'], values['width'],
-                values['height'], values['elapsed']);
-          }
-          break;
-        case 'onFirstRemoteVideoFrame':
-          if (onFirstRemoteVideoFrame != null) {
-            onFirstRemoteVideoFrame(values['uid'], values['width'],
-                values['height'], values['elapsed']);
-          }
-          break;
         case 'onUserMuteAudio':
           if (onUserMuteAudio != null) {
             onUserMuteAudio(values['uid'], values['muted']);
           }
-          break;
-
-        case 'onUserMuteVideo':
-          if (onUserMuteVideo != null) {
-            onUserMuteVideo(values['uid'], values['muted']);
-          }
-          break;
-        case 'onUserEnableVideo':
-          if (onUserEnableVideo != null) {
-            onUserEnableVideo(values['uid'], values['enabled']);
-          }
-          break;
-        case 'onUserEnableLocalVideo':
-          if (onUserEnableLocalVideo != null) {
-            onUserEnableLocalVideo(values['uid'], values['enabled']);
-          }
-          break;
-        case 'onVideoSizeChanged':
-          if (onVideoSizeChanged != null) {
-            onVideoSizeChanged(values['uid'], values['width'], values['height'],
-                values['rotation']);
-          }
-          break;
-        case 'onRemoteVideoStateChanged':
-          if (onRemoteVideoStateChanged != null) {
-            onRemoteVideoStateChanged(values['uid'], values['state']);
-          }
-          break;
-        // Fallback Events
-        case 'onLocalPublishFallbackToAudioOnly':
-          if (onLocalPublishFallbackToAudioOnly != null) {
-            onLocalPublishFallbackToAudioOnly(values['isFallbackOrRecover']);
-          }
-          break;
-        case 'onRemoteSubscribeFallbackToAudioOnly':
-          if (onRemoteSubscribeFallbackToAudioOnly != null) {
-            onRemoteSubscribeFallbackToAudioOnly(
-                values['uid'], values['isFallbackOrRecover']);
-          }
-          break;
-
+          break;        
         // Device Events
         case 'onAudioRouteChanged':
           if (onAudioRouteChanged != null) {
             onAudioRouteChanged(values['routing']);
           }
           break;
-        case 'onCameraReady':
-          if (onCameraReady != null) {
-            onCameraReady();
-          }
-          break;
-
         // Statistics Events
         case 'onRemoteAudioStats':
           if (onRemoteAudioStats != null) {
@@ -852,37 +489,9 @@ class AgoraRtcEngine {
                 values['uid'], values['txQuality'], values['rxQuality']);
           }
           break;
-        case 'onLocalVideoStats':
-          if (onLocalVideoStats != null) {
-            Map statsValue = values['stats'];
-            LocalVideoStats stats = LocalVideoStats();
-            stats.sentBitrate = statsValue['sentBitrate'];
-            stats.sentFrameRate = statsValue['sentFrameRate'];
-            onLocalVideoStats(stats);
-          }
-          break;
-        case 'onRemoteVideoStats':
-          if (onRemoteVideoStats != null) {
-            Map statsValue = values['stats'];
-            RemoteVideoStats stats = RemoteVideoStats();
-            stats.uid = statsValue['uid'];
-            stats.width = statsValue['width'];
-            stats.height = statsValue['height'];
-            stats.receivedBitrate = statsValue['receivedBitrate'];
-            stats.receivedFrameRate = statsValue['receivedFrameRate'];
-            stats.rxStreamType = statsValue['rxStreamType'];
-            onRemoteVideoStats(stats);
-          }
-          break;
         case 'onRemoteAudioTransportStats':
           if (onRemoteAudioTransportStats != null) {
             onRemoteAudioTransportStats(values['uid'], values['delay'],
-                values['lost'], values['rxKBitRate']);
-          }
-          break;
-        case 'onRemoteVideoTransportStats':
-          if (onRemoteVideoTransportStats != null) {
-            onRemoteVideoTransportStats(values['uid'], values['delay'],
                 values['lost'], values['rxKBitRate']);
           }
           break;

@@ -1,5 +1,5 @@
 #import "AgoraRtcEnginePlugin.h"
-#import <AgoraRtcEngineKit/AgoraRtcEngineKit.h>
+#import <AgoraAudioKit/AgoraRtcEngineKit.h>
 
 @interface AgoraRendererView()
 @property (nonatomic, strong) UIView *renderView;

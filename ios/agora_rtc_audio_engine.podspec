@@ -1,5 +1,5 @@
 Pod::Spec.new do |s|
-  s.name             = 'agora_rtc_audio_engine'
+  s.name             = 'agora_rtc_engine'
   s.version          = '2.4.0'
   s.summary          = 'A new flutter plugin project.'
   s.description      = <<-DESC

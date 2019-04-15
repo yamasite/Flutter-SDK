@@ -1,6 +1,6 @@
 # AgoraRtcEngine Example
 
-Demonstrates how to use the `agora_rtc_engine` plugin.
+Demonstrates how to use the `agora_rtc_audio_engine` plugin.
 
 ### Create an Account and Obtain an App ID
 
@@ -15,7 +15,6 @@ Open the `main.dart` file. In the `_initAgoraRtcEngine()` method, update `YOUR A
 ```
 Future<void> _initAgoraRtcEngine() async {
   AgoraRtcEngine.create('YOUR APP ID');
-  AgoraRtcEngine.enableVideo();
 }
 ```
 
