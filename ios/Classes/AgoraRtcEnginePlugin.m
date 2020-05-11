@@ -1,5 +1,5 @@
 #import "AgoraRtcEnginePlugin.h"
-#import <AgoraRtcEngineKit/AgoraRtcEngineKit.h>
+#import <AgoraRtcKit/AgoraRtcEngineKit.h>
 
 @interface AgoraRendererView ()
 @property(nonatomic, strong) UIView *renderView;
@@ -299,13 +299,15 @@
         [self.agoraRtcEngine setupRemoteVideo:canvas];
         result(nil);
     } else if ([@"setLocalRenderMode" isEqualToString:method]) {
-        NSInteger mode = [self intFromArguments:params key:@"mode"];
-        [self.agoraRtcEngine setLocalRenderMode:mode];
+        NSInteger renderMode = [self intFromArguments:params key:@"renderMode"];
+        NSInteger mirrorMode = [self intFromArguments:params key:@"mirrorMode"];
+        [self.agoraRtcEngine setLocalRenderMode:renderMode mirrorMode:mirrorMode];
         result(nil);
     } else if ([@"setRemoteRenderMode" isEqualToString:method]) {
         NSInteger uid = [self intFromArguments:params key:@"uid"];
-        NSInteger mode = [self intFromArguments:params key:@"mode"];
-        [self.agoraRtcEngine setRemoteRenderMode:uid mode:mode];
+        NSInteger renderMode = [self intFromArguments:params key:@"renderMode"];
+        NSInteger mirrorMode = [self intFromArguments:params key:@"mirrorMode"];
+        [self.agoraRtcEngine setRemoteRenderMode:uid renderMode:renderMode mirrorMode:mirrorMode];
         result(nil);
     } else if ([@"startPreview" isEqualToString:method]) {
         [self.agoraRtcEngine startPreview];
@@ -788,6 +790,12 @@
         [self.agoraRtcEngine switchCamera];
         result(nil);
     }
+    else if ([@"setCameraZoomFactor" isEqualToString:method]) {
+        double factor = [self doubleFromArguments:params key:@"factor"];
+        [self.agoraRtcEngine setCameraZoomFactor:factor];
+        result(nil);
+    }
+    
         // Miscellaneous Methods
     else if ([@"getSdkVersion" isEqualToString:method]) {
         NSString *version = [AgoraRtcEngineKit getSdkVersion];
