@@ -676,27 +676,34 @@ class AgoraRtcEngine {
   ///
   /// The Widget is identified by viewId, the operation and layout of the Widget are managed by the app.
   static Widget createNativeView(Function(int viewId) created, {Key key}) {
-    if (Platform.isIOS) {
-      return UiKitView(
-        key: key,
-        viewType: 'AgoraRendererView',
-        onPlatformViewCreated: (viewId) {
-          if (created != null) {
-            created(viewId);
-          }
-        },
-      );
-    } else {
-      return AndroidView(
-        key: key,
-        viewType: 'AgoraRendererView',
-        onPlatformViewCreated: (viewId) {
-          if (created != null) {
-            created(viewId);
-          }
-        },
-      );
+    try {
+      // if (Platform.isIOS) {
+      //   return UiKitView(
+      //     key: key,
+      //     viewType: 'AgoraRendererView',
+      //     onPlatformViewCreated: (viewId) {
+      //       if (created != null) {
+      //         created(viewId);
+      //       }
+      //     },
+      //   );
+      // } else if(Platform.isAndroid) {
+      //   return AndroidView(
+      //     key: key,
+      //     viewType: 'AgoraRendererView',
+      //     onPlatformViewCreated: (viewId) {
+      //       if (created != null) {
+      //         created(viewId);
+      //       }
+      //     },
+      //   );
+      // } else {
+        return HtmlElementView(viewType: 'AgoraWebRendererView');
+      // }
+    } catch(e) {
+      print(e);
     }
+    return Container(width: 0.0,height:0.0);
   }
 
   /// Remove the video renderer Widget.

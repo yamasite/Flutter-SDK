@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
+import 'package:agora_rtc_engine/agora_rtc_engine_web.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(MyApp());
@@ -88,16 +89,16 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> _initAgoraRtcEngine() async {
-    AgoraRtcEngine.create('YOUR APP ID');
+    await AgoraRtcEngine.create('aab8b8f5a8cd4469a63042fcfafe7063');
 
-    AgoraRtcEngine.enableVideo();
-    AgoraRtcEngine.enableAudio();
+    await AgoraRtcEngine.enableVideo();
+    await AgoraRtcEngine.enableAudio();
     // AgoraRtcEngine.setParameters('{\"che.video.lowBitRateStreamParameter\":{\"width\":320,\"height\":180,\"frameRate\":15,\"bitRate\":140}}');
-    AgoraRtcEngine.setChannelProfile(ChannelProfile.Communication);
+    await AgoraRtcEngine.setChannelProfile(ChannelProfile.Communication);
 
     VideoEncoderConfiguration config = VideoEncoderConfiguration();
     config.orientationMode = VideoOutputOrientationMode.FixedPortrait;
-    AgoraRtcEngine.setVideoEncoderConfiguration(config);
+    await AgoraRtcEngine.setVideoEncoderConfiguration(config);
   }
 
   void _addAgoraEventHandlers() {

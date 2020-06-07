@@ -4,14 +4,25 @@ version: 1.0.12
 author: Agora.io
 homepage: https://www.agora.io
 
-environment:
-  sdk: ">=2.5.2 <3.0.0"
+flutter:
+  plugin:
+    platforms:
+      android:
+        package: io.agora.agorartcengine
+        pluginClass: AgoraRtcEnginePlugin
+      ios:
+        pluginClass: AgoraRtcEnginePlugin
+      web:
+        fileName: agora_rtc_engine_web.dart
+        pluginClass: AgoraRtcEnginePlugin
 
 dependencies:
   flutter:
     sdk: flutter
+  flutter_web_plugins:
+    sdk: flutter
+  js: any
 
-flutter:
-  plugin:
-    androidPackage: io.agora.agorartcengine
-    pluginClass: AgoraRtcEnginePlugin
+
+environment:
+  sdk: ">=2.5.2 <3.0.0"
