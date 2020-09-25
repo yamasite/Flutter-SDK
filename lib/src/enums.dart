@@ -225,7 +225,6 @@ enum AudioProfile {
   MusicHighQualityStereo,
 }
 
-
 /// `onRecordAudioFrame` 的使用模式。// TODO 将 on 去掉？
 /// TODO @nodoc setPlaybackAudioFrameParameters // TODO 这个枚举是用不到吗？
 enum AudioRawFrameOperationMode {
@@ -391,11 +390,9 @@ enum AudioReverbPreset {
   @JsonValue(0x00100008)
   FX_PHONOGRAPH,
 
-
   /// 虚拟立体声。虚拟立体声是指将单声道的音轨渲染出立体声的效果，使频道内所有用户听到有空间感的声音效果。为达到更好的虚拟立体声效果，
   /// Agora 推荐在调用该方法前将 `setAudioProfile` 的 `profile` 参数设置为 `MusicHighQualityStereo`(5)。
   /// 详见 [RtcEngine.setAudioProfile]。
-  ///
   /// 详见 [AudioProfile.MusicHighQualityStereo]。
   @JsonValue(0x00200001)
   VIRTUAL_STEREO,
@@ -465,7 +462,6 @@ enum AudioScenario {
   @JsonValue(5)
   ChatRoomGaming,
 }
-
 
 /// 音频会话控制权限。（仅适用于 iOS）
 enum AudioSessionOperationRestriction {
@@ -1678,7 +1674,6 @@ enum UserPriority {
 }
 
 /// 视频 buffer 类型。（仅适用于 iOS）
-/// TODO @nodoc iOS AgoraVideoSourceProtocol AgoraVideoSinkProtocol
 enum VideoBufferType {
   /// 使用 Pixel Buffer 类型的 Buffer。
   @JsonValue(1)
@@ -1705,7 +1700,6 @@ enum VideoCodecProfileType {
 }
 
 /// 屏幕共享的内容类型。（仅适用于 iOS）
-/// TODO @nodoc MacOS setScreenCaptureContentHint
 enum VideoContentHint {
   /// （默认）无指定的内容类型。
   @JsonValue(0)
@@ -1973,7 +1967,6 @@ enum VideoOutputOrientationMode {
 }
 
 /// 视频像素格式。（仅适用于 iOS）
-/// TODO @nodoc iOS AgoraVideoSinkProtocol
 enum VideoPixelFormat {
   /// I420。
   @JsonValue(1)
@@ -2005,7 +1998,6 @@ enum VideoQualityAdaptIndication {
 
 /// 远端视频流状态。
 enum VideoRemoteState {
-
   /// 远端视频默认初始状态。在
   /// - [VideoRemoteStateReason.LocalMuted]、
   /// - [VideoRemoteStateReason.RemoteMuted] 或
@@ -2100,7 +2092,6 @@ enum VideoRenderMode {
 }
 
 /// 视频的顺时针旋转角度。（仅适用于 iOS）
-/// TODO @nodoc iOS AgoraVideoSourceProtocol AgoraVideoSinkProtocol
 enum VideoRotation {
   /// 顺时针旋转 0 度。
   @JsonValue(0)
