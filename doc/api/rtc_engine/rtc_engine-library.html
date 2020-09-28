@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="rtc_engine library API docs, for the Dart programming language.">
+  <title>rtc_engine library - Dart API</title>
+
+  
+  <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500,400i,400,300|Source+Sans+Pro:400,300,700" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="../static-assets/github.css">
+  <link rel="stylesheet" href="../static-assets/styles.css">
+  <link rel="icon" href="../static-assets/favicon.png">
+
+</head>
+
+<body data-base-href="../"
+      data-using-base-href="false">
+
+<div id="overlay-under-drawer"></div>
+
+<header id="title">
+  <button id="sidenav-left-toggle" type="button">&nbsp;</button>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../index.html">agora_rtc_engine</a></li>
+    <li class="self-crumb">rtc_engine library</li>
+  </ol>
+  <div class="self-name">rtc_engine</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<main>
+
+  <div id="dartdoc-sidebar-left" class="col-xs-6 col-sm-3 col-md-2 sidebar sidebar-offcanvas-left">
+    <header id="header-search-sidebar" class="hidden-l">
+      <form class="search-sidebar" role="search">
+        <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+      </form>
+    </header>
+    
+    <ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+      <li><a href="../index.html">agora_rtc_engine</a></li>
+      <li class="self-crumb">rtc_engine library</li>
+    </ol>
+    
+    <h5><span class="package-name">agora_rtc_engine</span> <span class="package-kind">package</span></h5>
+    <ol>
+          <li class="section-title">Libraries</li>
+          <li><a href="../rtc_channel/rtc_channel-library.html">rtc_channel</a></li>
+          <li><a href="../rtc_engine/rtc_engine-library.html">rtc_engine</a></li>
+          <li><a href="../rtc_local_view/rtc_local_view-library.html">rtc_local_view</a></li>
+          <li><a href="../rtc_remote_view/rtc_remote_view-library.html">rtc_remote_view</a></li>
+    </ol>
+  </div>
+
+  <div id="dartdoc-main-content" class="col-xs-12 col-sm-9 col-md-8 main-content">
+      <div><h1><span class="kind-library">rtc_engine</span> library  </h1></div>
+
+    
+    <section class="summary offset-anchor" id="classes">
+      <h2>Classes</h2>
+
+      <dl>
+        <dt id="AgoraImage">
+          <span class="name "><a href="../rtc_engine/AgoraImage-class.html">AgoraImage</a></span>         
+        </dt>
+        <dd>
+          Agora 图像属性。用于设置直播视频的水印和背景图片的属性。 
+        </dd>
+        <dt id="AudioVolumeInfo">
+          <span class="name "><a href="../rtc_engine/AudioVolumeInfo-class.html">AudioVolumeInfo</a></span>         
+        </dt>
+        <dd>
+          声音音量信息。 一个数组，包含每个说话者的用户 ID 和音量信息。
+Contains the user ID and volume information for each speaker. 
+        </dd>
+        <dt id="BeautyOptions">
+          <span class="name "><a href="../rtc_engine/BeautyOptions-class.html">BeautyOptions</a></span>         
+        </dt>
+        <dd>
+          美颜效果选项。 
+        </dd>
+        <dt id="CameraCapturerConfiguration">
+          <span class="name "><a href="../rtc_engine/CameraCapturerConfiguration-class.html">CameraCapturerConfiguration</a></span>         
+        </dt>
+        <dd>
+          CameraCapturerConfiguration 的定义。 
+        </dd>
+        <dt id="ChannelMediaInfo">
+          <span class="name "><a href="../rtc_engine/ChannelMediaInfo-class.html">ChannelMediaInfo</a></span>         
+        </dt>
+        <dd>
+          <code>ChannelMediaInfo</code> 类。 
+        </dd>
+        <dt id="ChannelMediaOptions">
+          <span class="name "><a href="../rtc_engine/ChannelMediaOptions-class.html">ChannelMediaOptions</a></span>         
+        </dt>
+        <dd>
+          频道媒体设置选项。 
+        </dd>
+        <dt id="ChannelMediaRelayConfiguration">
+          <span class="name "><a href="../rtc_engine/ChannelMediaRelayConfiguration-class.html">ChannelMediaRelayConfiguration</a></span>         
+        </dt>
+        <dd>
+          配置跨频道媒体流转发的 <code>ChannelMediaRelayConfiguration</code> 类。 
+        </dd>
+        <dt id="Color">
+          <span class="name "><a href="../rtc_engine/Color-class.html">Color</a></span>         
+        </dt>
+        <dd>
+          背景色，格式为 RGB 定义下的 Hex 值，不要带 # 号，如 0xFFB6C1 表示浅粉色。默认0x000000，黑色。// TODO 优化 RN 
+        </dd>
+        <dt id="FacePositionInfo">
+          <span class="name "><a href="../rtc_engine/FacePositionInfo-class.html">FacePositionInfo</a></span>         
+        </dt>
+        <dd>
+          检测到的人脸信息。 
+        </dd>
+        <dt id="JsonSerializable">
+          <span class="name "><a href="../rtc_engine/JsonSerializable-class.html">JsonSerializable</a></span>         
+        </dt>
+        <dd>
+           
+        </dd>
+        <dt id="LastmileProbeConfig">
+          <span class="name "><a href="../rtc_engine/LastmileProbeConfig-class.html">LastmileProbeConfig</a></span>         
+        </dt>
+        <dd>
+          Last-mile 网络探测配置。 
+        </dd>
+        <dt id="LastmileProbeOneWayResult">
+          <span class="name "><a href="../rtc_engine/LastmileProbeOneWayResult-class.html">LastmileProbeOneWayResult</a></span>         
+        </dt>
+        <dd>
+          The one-way last-mile probe result.单向 Last-mile 质量探测结果。 
+        </dd>
+        <dt id="LastmileProbeResult">
+          <span class="name "><a href="../rtc_engine/LastmileProbeResult-class.html">LastmileProbeResult</a></span>         
+        </dt>
+        <dd>
+          上下行 Last-mile 质量探测结果。 
+        </dd>
+        <dt id="LiveInjectStreamConfig">
+          <span class="name "><a href="../rtc_engine/LiveInjectStreamConfig-class.html">LiveInjectStreamConfig</a></span>         
+        </dt>
+        <dd>
+          外部导入音视频流定义。 
+        </dd>
+        <dt id="LiveTranscoding">
+          <span class="name "><a href="../rtc_engine/LiveTranscoding-class.html">LiveTranscoding</a></span>         
+        </dt>
+        <dd>
+          管理 CDN 直播推流转码的接口。 
+        </dd>
+        <dt id="LocalAudioStats">
+          <span class="name "><a href="../rtc_engine/LocalAudioStats-class.html">LocalAudioStats</a></span>         
+        </dt>
+        <dd>
+          本地音频统计数据。 
+        </dd>
+        <dt id="LocalVideoStats">
+          <span class="name "><a href="../rtc_engine/LocalVideoStats-class.html">LocalVideoStats</a></span>         
+        </dt>
+        <dd>
+          本地视频相关的统计信息。 
+        </dd>
+        <dt id="Rect">
+          <span class="name "><a href="../rtc_engine/Rect-class.html">Rect</a></span>         
+        </dt>
+        <dd>
+          长方形区域。 
+        </dd>
+        <dt id="Rectangle">
+          <span class="name "><a href="../rtc_engine/Rectangle-class.html">Rectangle</a></span>         
+        </dt>
+        <dd>
+          水印图片的位置和大小。 
+        </dd>
+        <dt id="RemoteAudioStats">
+          <span class="name "><a href="../rtc_engine/RemoteAudioStats-class.html">RemoteAudioStats</a></span>         
+        </dt>
+        <dd>
+          远端音频统计信息。 
+        </dd>
+        <dt id="RemoteVideoStats">
+          <span class="name "><a href="../rtc_engine/RemoteVideoStats-class.html">RemoteVideoStats</a></span>         
+        </dt>
+        <dd>
+          远端视频相关的统计信息。 
+        </dd>
+        <dt id="RtcEngine">
+          <span class="name "><a href="../rtc_engine/RtcEngine-class.html">RtcEngine</a></span>         
+        </dt>
+        <dd>
+          <code>RtcEngine</code> 类提供了供 App 调用的主要接口方法。 
+        </dd>
+        <dt id="RtcEngineEventHandler">
+          <span class="name "><a href="../rtc_engine/RtcEngineEventHandler-class.html">RtcEngineEventHandler</a></span>         
+        </dt>
+        <dd>
+          主回调事件。 <a href="../rtc_engine/RtcEngineEventHandler-class.html">[...]</a>
+        </dd>
+        <dt id="RtcStats">
+          <span class="name "><a href="../rtc_engine/RtcStats-class.html">RtcStats</a></span>         
+        </dt>
+        <dd>
+          通话相关的统计信息。 
+        </dd>
+        <dt id="TranscodingUser">
+          <span class="name "><a href="../rtc_engine/TranscodingUser-class.html">TranscodingUser</a></span>         
+        </dt>
+        <dd>
+          TranscodingUser 类用于管理参与旁路直播的音视频转码合图的用户。最多支持 17 人同时参与转码合图。//TODO 英文 TranscodingUser 大小写有误 
+        </dd>
+        <dt id="UserInfo">
+          <span class="name "><a href="../rtc_engine/UserInfo-class.html">UserInfo</a></span>         
+        </dt>
+        <dd>
+          标识用户信息的 <code>UserInfo</code> 对象。 
+        </dd>
+        <dt id="VideoDimensions">
+          <span class="name "><a href="../rtc_engine/VideoDimensions-class.html">VideoDimensions</a></span>         
+        </dt>
+        <dd>
+          视频编码像素。 
+        </dd>
+        <dt id="VideoEncoderConfiguration">
+          <span class="name "><a href="../rtc_engine/VideoEncoderConfiguration-class.html">VideoEncoderConfiguration</a></span>         
+        </dt>
+        <dd>
+          视频编码属性的定义。 
+        </dd>
+        <dt id="WatermarkOptions">
+          <span class="name "><a href="../rtc_engine/WatermarkOptions-class.html">WatermarkOptions</a></span>         
+        </dt>
+        <dd>
+          待添加的水印图片的设置选项。 
+        </dd>
+      </dl>
+    </section>
+
+
+
+
+
+
+    <section class="summary offset-anchor" id="enums">
+      <h2>Enums</h2>
+
+      <dl>
+        <dt id="AudioChannel">
+          <span class="name "><a href="../rtc_engine/AudioChannel-class.html">AudioChannel</a></span>         
+        </dt>
+        <dd>
+          直播音频所在声道。 
+        </dd>
+        <dt id="AudioCodecProfileType">
+          <span class="name "><a href="../rtc_engine/AudioCodecProfileType-class.html">AudioCodecProfileType</a></span>         
+        </dt>
+        <dd>
+          用于旁路直播的输出音频的编码规格。 
+        </dd>
+        <dt id="AudioEqualizationBandFrequency">
+          <span class="name "><a href="../rtc_engine/AudioEqualizationBandFrequency-class.html">AudioEqualizationBandFrequency</a></span>         
+        </dt>
+        <dd>
+          语音音效均衡波段的中心频率。 
+        </dd>
+        <dt id="AudioLocalError">
+          <span class="name "><a href="../rtc_engine/AudioLocalError-class.html">AudioLocalError</a></span>         
+        </dt>
+        <dd>
+          本地音频出错原因。 
+        </dd>
+        <dt id="AudioLocalState">
+          <span class="name "><a href="../rtc_engine/AudioLocalState-class.html">AudioLocalState</a></span>         
+        </dt>
+        <dd>
+          本地音频状态。 
+        </dd>
+        <dt id="AudioMixingErrorCode">
+          <span class="name "><a href="../rtc_engine/AudioMixingErrorCode-class.html">AudioMixingErrorCode</a></span>         
+        </dt>
+        <dd>
+          混音音乐文件错误码。 
+        </dd>
+        <dt id="AudioMixingStateCode">
+          <span class="name "><a href="../rtc_engine/AudioMixingStateCode-class.html">AudioMixingStateCode</a></span>         
+        </dt>
+        <dd>
+          混音音乐文件状态。 
+        </dd>
+        <dt id="AudioOutputRouting">
+          <span class="name "><a href="../rtc_engine/AudioOutputRouting-class.html">AudioOutputRouting</a></span>         
+        </dt>
+        <dd>
+          语音路由。 
+        </dd>
+        <dt id="AudioProfile">
+          <span class="name "><a href="../rtc_engine/AudioProfile-class.html">AudioProfile</a></span>         
+        </dt>
+        <dd>
+          音频属性。 
+        </dd>
+        <dt id="AudioRecordingQuality">
+          <span class="name "><a href="../rtc_engine/AudioRecordingQuality-class.html">AudioRecordingQuality</a></span>         
+        </dt>
+        <dd>
+          录音质量。 
+        </dd>
+        <dt id="AudioRemoteState">
+          <span class="name "><a href="../rtc_engine/AudioRemoteState-class.html">AudioRemoteState</a></span>         
+        </dt>
+        <dd>
+          远端音频流状态。 
+        </dd>
+        <dt id="AudioRemoteStateReason">
+          <span class="name "><a href="../rtc_engine/AudioRemoteStateReason-class.html">AudioRemoteStateReason</a></span>         
+        </dt>
+        <dd>
+          远端音频流状态改变的原因。 
+        </dd>
+        <dt id="AudioReverbPreset">
+          <span class="name "><a href="../rtc_engine/AudioReverbPreset-class.html">AudioReverbPreset</a></span>         
+        </dt>
+        <dd>
+          预设的本地语音混响效果选项。 
+        </dd>
+        <dt id="AudioReverbType">
+          <span class="name "><a href="../rtc_engine/AudioReverbType-class.html">AudioReverbType</a></span>         
+        </dt>
+        <dd>
+          音频混响类型。 
+        </dd>
+        <dt id="AudioSampleRateType">
+          <span class="name "><a href="../rtc_engine/AudioSampleRateType-class.html">AudioSampleRateType</a></span>         
+        </dt>
+        <dd>
+          音频采样率。 
+        </dd>
+        <dt id="AudioScenario">
+          <span class="name "><a href="../rtc_engine/AudioScenario-class.html">AudioScenario</a></span>         
+        </dt>
+        <dd>
+          音频应用场景。 
+        </dd>
+        <dt id="AudioSessionOperationRestriction">
+          <span class="name "><a href="../rtc_engine/AudioSessionOperationRestriction-class.html">AudioSessionOperationRestriction</a></span>         
+        </dt>
+        <dd>
+          音频会话控制权限。（仅适用于 iOS） 
+        </dd>
+        <dt id="AudioVoiceChanger">
+          <span class="name "><a href="../rtc_engine/AudioVoiceChanger-class.html">AudioVoiceChanger</a></span>         
+        </dt>
+        <dd>
+          本地语音变声、美音或语聊美声效果选项。 
+        </dd>
+        <dt id="BitRate">
+          <span class="name "><a href="../rtc_engine/BitRate-class.html">BitRate</a></span>         
+        </dt>
+        <dd>
+          视频编码的码率。单位为 Kbps。你可以根据场景需要，参考下面的视频基准码率参考表，手动设置你想要的码率。若设置的视频码率超出合理范围，SDK 会自动按照合理区间处理码率。// TODO 英文没有给出 table <a href="../rtc_engine/BitRate-class.html">[...]</a>
+        </dd>
+        <dt id="CameraCaptureOutputPreference">
+          <span class="name "><a href="../rtc_engine/CameraCaptureOutputPreference-class.html">CameraCaptureOutputPreference</a></span>         
+        </dt>
+        <dd>
+          设置摄像头采集偏好。 
+        </dd>
+        <dt id="CameraDirection">
+          <span class="name "><a href="../rtc_engine/CameraDirection-class.html">CameraDirection</a></span>         
+        </dt>
+        <dd>
+          设置摄像头方向。 
+        </dd>
+        <dt id="ChannelMediaRelayError">
+          <span class="name "><a href="../rtc_engine/ChannelMediaRelayError-class.html">ChannelMediaRelayError</a></span>         
+        </dt>
+        <dd>
+          跨频道媒体流转发出错的错误码。 
+        </dd>
+        <dt id="ChannelMediaRelayEvent">
+          <span class="name "><a href="../rtc_engine/ChannelMediaRelayEvent-class.html">ChannelMediaRelayEvent</a></span>         
+        </dt>
+        <dd>
+          跨频道媒体流转发事件码。 
+        </dd>
+        <dt id="ChannelMediaRelayState">
+          <span class="name "><a href="../rtc_engine/ChannelMediaRelayState-class.html">ChannelMediaRelayState</a></span>         
+        </dt>
+        <dd>
+          跨频道媒体流转发状态。 
+        </dd>
+        <dt id="ChannelProfile">
+          <span class="name "><a href="../rtc_engine/ChannelProfile-class.html">ChannelProfile</a></span>         
+        </dt>
+        <dd>
+          频道场景。 
+        </dd>
+        <dt id="ClientRole">
+          <span class="name "><a href="../rtc_engine/ClientRole-class.html">ClientRole</a></span>         
+        </dt>
+        <dd>
+          直播场景里的用户角色。 
+        </dd>
+        <dt id="ConnectionChangedReason">
+          <span class="name "><a href="../rtc_engine/ConnectionChangedReason-class.html">ConnectionChangedReason</a></span>         
+        </dt>
+        <dd>
+          网络连接状态发生改变的原因。 
+        </dd>
+        <dt id="ConnectionStateType">
+          <span class="name "><a href="../rtc_engine/ConnectionStateType-class.html">ConnectionStateType</a></span>         
+        </dt>
+        <dd>
+          网络连接状态。 
+        </dd>
+        <dt id="DegradationPreference">
+          <span class="name "><a href="../rtc_engine/DegradationPreference-class.html">DegradationPreference</a></span>         
+        </dt>
+        <dd>
+          带宽受限时，视频编码降级偏好。 
+        </dd>
+        <dt id="EncryptionMode">
+          <span class="name "><a href="../rtc_engine/EncryptionMode-class.html">EncryptionMode</a></span>         
+        </dt>
+        <dd>
+          加密模式。// TODO 英文也删一下 @enume string 
+        </dd>
+        <dt id="ErrorCode">
+          <span class="name "><a href="../rtc_engine/ErrorCode-class.html">ErrorCode</a></span>         
+        </dt>
+        <dd>
+          错误代码。SDK 上报的错误意味着 SDK 无法自动恢复，需要 App 干预或提示用户。 
+        </dd>
+        <dt id="InjectStreamStatus">
+          <span class="name "><a href="../rtc_engine/InjectStreamStatus-class.html">InjectStreamStatus</a></span>         
+        </dt>
+        <dd>
+          输入进直播的外部视频源状态。 
+        </dd>
+        <dt id="IPAreaCode">
+          <span class="name "><a href="../rtc_engine/IPAreaCode-class.html">IPAreaCode</a></span>         
+        </dt>
+        <dd>
+          IP 区域。 
+        </dd>
+        <dt id="LastmileProbeResultState">
+          <span class="name "><a href="../rtc_engine/LastmileProbeResultState-class.html">LastmileProbeResultState</a></span>         
+        </dt>
+        <dd>
+          Last-mile 质量探测结果的状态。 
+        </dd>
+        <dt id="LighteningContrastLevel">
+          <span class="name "><a href="../rtc_engine/LighteningContrastLevel-class.html">LighteningContrastLevel</a></span>         
+        </dt>
+        <dd>
+          亮度明暗对比度。 
+        </dd>
+        <dt id="LocalVideoStreamError">
+          <span class="name "><a href="../rtc_engine/LocalVideoStreamError-class.html">LocalVideoStreamError</a></span>         
+        </dt>
+        <dd>
+          本地视频出错原因。 
+        </dd>
+        <dt id="LocalVideoStreamState">
+          <span class="name "><a href="../rtc_engine/LocalVideoStreamState-class.html">LocalVideoStreamState</a></span>         
+        </dt>
+        <dd>
+          本地视频状态。 
+        </dd>
+        <dt id="LogFilter">
+          <span class="name "><a href="../rtc_engine/LogFilter-class.html">LogFilter</a></span>         
+        </dt>
+        <dd>
+          输出日志过滤分级。 
+        </dd>
+        <dt id="MediaDeviceType">
+          <span class="name "><a href="../rtc_engine/MediaDeviceType-class.html">MediaDeviceType</a></span>         
+        </dt>
+        <dd>
+          媒体设备类型。（仅适用于 iOS） 
+        </dd>
+        <dt id="NetworkQuality">
+          <span class="name "><a href="../rtc_engine/NetworkQuality-class.html">NetworkQuality</a></span>         
+        </dt>
+        <dd>
+          网络质量。 
+        </dd>
+        <dt id="NetworkType">
+          <span class="name "><a href="../rtc_engine/NetworkType-class.html">NetworkType</a></span>         
+        </dt>
+        <dd>
+          网络类型。 
+        </dd>
+        <dt id="RtcDefaultCameraPosition">
+          <span class="name "><a href="../rtc_engine/RtcDefaultCameraPosition-class.html">RtcDefaultCameraPosition</a></span>         
+        </dt>
+        <dd>
+          默认相机位置。（仅适用于 Android） 
+        </dd>
+        <dt id="RtmpStreamingErrorCode">
+          <span class="name "><a href="../rtc_engine/RtmpStreamingErrorCode-class.html">RtmpStreamingErrorCode</a></span>         
+        </dt>
+        <dd>
+          详细的推流错误信息。 
+        </dd>
+        <dt id="RtmpStreamingState">
+          <span class="name "><a href="../rtc_engine/RtmpStreamingState-class.html">RtmpStreamingState</a></span>         
+        </dt>
+        <dd>
+          RTMP 推流状态。 
+        </dd>
+        <dt id="RtmpStreamLifeCycle">
+          <span class="name "><a href="../rtc_engine/RtmpStreamLifeCycle-class.html">RtmpStreamLifeCycle</a></span>         
+        </dt>
+        <dd>
+          服务端转码推流的生命周期。 
+        </dd>
+        <dt id="StreamFallbackOptions">
+          <span class="name "><a href="../rtc_engine/StreamFallbackOptions-class.html">StreamFallbackOptions</a></span>         
+        </dt>
+        <dd>
+          流回退选项。 
+        </dd>
+        <dt id="UserOfflineReason">
+          <span class="name "><a href="../rtc_engine/UserOfflineReason-class.html">UserOfflineReason</a></span>         
+        </dt>
+        <dd>
+          用户离线原因。 
+        </dd>
+        <dt id="UserPriority">
+          <span class="name "><a href="../rtc_engine/UserPriority-class.html">UserPriority</a></span>         
+        </dt>
+        <dd>
+          远端用户的优先级。 
+        </dd>
+        <dt id="VideoCodecProfileType">
+          <span class="name "><a href="../rtc_engine/VideoCodecProfileType-class.html">VideoCodecProfileType</a></span>         
+        </dt>
+        <dd>
+          用于旁路直播的输出视频的编码规格。 
+        </dd>
+        <dt id="VideoCodecType">
+          <span class="name "><a href="../rtc_engine/VideoCodecType-class.html">VideoCodecType</a></span>         
+        </dt>
+        <dd>
+          视频的编码类型。 
+        </dd>
+        <dt id="VideoFrameRate">
+          <span class="name "><a href="../rtc_engine/VideoFrameRate-class.html">VideoFrameRate</a></span>         
+        </dt>
+        <dd>
+          视频编码的帧率。 
+        </dd>
+        <dt id="VideoMirrorMode">
+          <span class="name "><a href="../rtc_engine/VideoMirrorMode-class.html">VideoMirrorMode</a></span>         
+        </dt>
+        <dd>
+          视频镜像模式。 
+        </dd>
+        <dt id="VideoOutputOrientationMode">
+          <span class="name "><a href="../rtc_engine/VideoOutputOrientationMode-class.html">VideoOutputOrientationMode</a></span>         
+        </dt>
+        <dd>
+          视频输出方向模式。 
+        </dd>
+        <dt id="VideoQualityAdaptIndication">
+          <span class="name "><a href="../rtc_engine/VideoQualityAdaptIndication-class.html">VideoQualityAdaptIndication</a></span>         
+        </dt>
+        <dd>
+          自上次统计后本地视频质量的自适应情况（基于目标帧率和目标码率）。 
+        </dd>
+        <dt id="VideoRemoteState">
+          <span class="name "><a href="../rtc_engine/VideoRemoteState-class.html">VideoRemoteState</a></span>         
+        </dt>
+        <dd>
+          远端视频流状态。 
+        </dd>
+        <dt id="VideoRemoteStateReason">
+          <span class="name "><a href="../rtc_engine/VideoRemoteStateReason-class.html">VideoRemoteStateReason</a></span>         
+        </dt>
+        <dd>
+          远端视频流状态改变的具体原因。 
+        </dd>
+        <dt id="VideoRenderMode">
+          <span class="name "><a href="../rtc_engine/VideoRenderMode-class.html">VideoRenderMode</a></span>         
+        </dt>
+        <dd>
+          视频显示模式。 
+        </dd>
+        <dt id="VideoStreamType">
+          <span class="name "><a href="../rtc_engine/VideoStreamType-class.html">VideoStreamType</a></span>         
+        </dt>
+        <dd>
+          视频流类型。 
+        </dd>
+        <dt id="WarningCode">
+          <span class="name "><a href="../rtc_engine/WarningCode-class.html">WarningCode</a></span>         
+        </dt>
+        <dd>
+          警告回调表示 SDK 运行时出现了（网络或媒体相关的）警告。通常情况下，SDK 上报的警告信息 App 可以忽略，
+SDK 会自动恢复。比如和服务器失去连接时，SDK 可能会上报 `OpenChannelTimeout 警告，同时自动尝试重连。
+详见 <a href="../rtc_engine/WarningCode-class.html">WarningCode.OpenChannelTimeout</a>。 
+        </dd>
+      </dl>
+    </section>
+
+
+
+  </div> <!-- /.main-content -->
+
+  <div id="dartdoc-sidebar-right" class="col-xs-6 col-sm-6 col-md-2 sidebar sidebar-offcanvas-right">
+    <h5>rtc_engine library</h5>
+    <ol>
+      <li class="section-title"><a href="../rtc_engine/rtc_engine-library.html#classes">Classes</a></li>
+      <li><a href="../rtc_engine/AgoraImage-class.html">AgoraImage</a></li>
+      <li><a href="../rtc_engine/AudioVolumeInfo-class.html">AudioVolumeInfo</a></li>
+      <li><a href="../rtc_engine/BeautyOptions-class.html">BeautyOptions</a></li>
+      <li><a href="../rtc_engine/CameraCapturerConfiguration-class.html">CameraCapturerConfiguration</a></li>
+      <li><a href="../rtc_engine/ChannelMediaInfo-class.html">ChannelMediaInfo</a></li>
+      <li><a href="../rtc_engine/ChannelMediaOptions-class.html">ChannelMediaOptions</a></li>
+      <li><a href="../rtc_engine/ChannelMediaRelayConfiguration-class.html">ChannelMediaRelayConfiguration</a></li>
+      <li><a href="../rtc_engine/Color-class.html">Color</a></li>
+      <li><a href="../rtc_engine/FacePositionInfo-class.html">FacePositionInfo</a></li>
+      <li><a href="../rtc_engine/JsonSerializable-class.html">JsonSerializable</a></li>
+      <li><a href="../rtc_engine/LastmileProbeConfig-class.html">LastmileProbeConfig</a></li>
+      <li><a href="../rtc_engine/LastmileProbeOneWayResult-class.html">LastmileProbeOneWayResult</a></li>
+      <li><a href="../rtc_engine/LastmileProbeResult-class.html">LastmileProbeResult</a></li>
+      <li><a href="../rtc_engine/LiveInjectStreamConfig-class.html">LiveInjectStreamConfig</a></li>
+      <li><a href="../rtc_engine/LiveTranscoding-class.html">LiveTranscoding</a></li>
+      <li><a href="../rtc_engine/LocalAudioStats-class.html">LocalAudioStats</a></li>
+      <li><a href="../rtc_engine/LocalVideoStats-class.html">LocalVideoStats</a></li>
+      <li><a href="../rtc_engine/Rect-class.html">Rect</a></li>
+      <li><a href="../rtc_engine/Rectangle-class.html">Rectangle</a></li>
+      <li><a href="../rtc_engine/RemoteAudioStats-class.html">RemoteAudioStats</a></li>
+      <li><a href="../rtc_engine/RemoteVideoStats-class.html">RemoteVideoStats</a></li>
+      <li><a href="../rtc_engine/RtcEngine-class.html">RtcEngine</a></li>
+      <li><a href="../rtc_engine/RtcEngineEventHandler-class.html">RtcEngineEventHandler</a></li>
+      <li><a href="../rtc_engine/RtcStats-class.html">RtcStats</a></li>
+      <li><a href="../rtc_engine/TranscodingUser-class.html">TranscodingUser</a></li>
+      <li><a href="../rtc_engine/UserInfo-class.html">UserInfo</a></li>
+      <li><a href="../rtc_engine/VideoDimensions-class.html">VideoDimensions</a></li>
+      <li><a href="../rtc_engine/VideoEncoderConfiguration-class.html">VideoEncoderConfiguration</a></li>
+      <li><a href="../rtc_engine/WatermarkOptions-class.html">WatermarkOptions</a></li>
+    
+    
+    
+    
+    
+    
+      <li class="section-title"><a href="../rtc_engine/rtc_engine-library.html#enums">Enums</a></li>
+      <li><a href="../rtc_engine/AudioChannel-class.html">AudioChannel</a></li>
+      <li><a href="../rtc_engine/AudioCodecProfileType-class.html">AudioCodecProfileType</a></li>
+      <li><a href="../rtc_engine/AudioEqualizationBandFrequency-class.html">AudioEqualizationBandFrequency</a></li>
+      <li><a href="../rtc_engine/AudioLocalError-class.html">AudioLocalError</a></li>
+      <li><a href="../rtc_engine/AudioLocalState-class.html">AudioLocalState</a></li>
+      <li><a href="../rtc_engine/AudioMixingErrorCode-class.html">AudioMixingErrorCode</a></li>
+      <li><a href="../rtc_engine/AudioMixingStateCode-class.html">AudioMixingStateCode</a></li>
+      <li><a href="../rtc_engine/AudioOutputRouting-class.html">AudioOutputRouting</a></li>
+      <li><a href="../rtc_engine/AudioProfile-class.html">AudioProfile</a></li>
+      <li><a href="../rtc_engine/AudioRecordingQuality-class.html">AudioRecordingQuality</a></li>
+      <li><a href="../rtc_engine/AudioRemoteState-class.html">AudioRemoteState</a></li>
+      <li><a href="../rtc_engine/AudioRemoteStateReason-class.html">AudioRemoteStateReason</a></li>
+      <li><a href="../rtc_engine/AudioReverbPreset-class.html">AudioReverbPreset</a></li>
+      <li><a href="../rtc_engine/AudioReverbType-class.html">AudioReverbType</a></li>
+      <li><a href="../rtc_engine/AudioSampleRateType-class.html">AudioSampleRateType</a></li>
+      <li><a href="../rtc_engine/AudioScenario-class.html">AudioScenario</a></li>
+      <li><a href="../rtc_engine/AudioSessionOperationRestriction-class.html">AudioSessionOperationRestriction</a></li>
+      <li><a href="../rtc_engine/AudioVoiceChanger-class.html">AudioVoiceChanger</a></li>
+      <li><a href="../rtc_engine/BitRate-class.html">BitRate</a></li>
+      <li><a href="../rtc_engine/CameraCaptureOutputPreference-class.html">CameraCaptureOutputPreference</a></li>
+      <li><a href="../rtc_engine/CameraDirection-class.html">CameraDirection</a></li>
+      <li><a href="../rtc_engine/ChannelMediaRelayError-class.html">ChannelMediaRelayError</a></li>
+      <li><a href="../rtc_engine/ChannelMediaRelayEvent-class.html">ChannelMediaRelayEvent</a></li>
+      <li><a href="../rtc_engine/ChannelMediaRelayState-class.html">ChannelMediaRelayState</a></li>
+      <li><a href="../rtc_engine/ChannelProfile-class.html">ChannelProfile</a></li>
+      <li><a href="../rtc_engine/ClientRole-class.html">ClientRole</a></li>
+      <li><a href="../rtc_engine/ConnectionChangedReason-class.html">ConnectionChangedReason</a></li>
+      <li><a href="../rtc_engine/ConnectionStateType-class.html">ConnectionStateType</a></li>
+      <li><a href="../rtc_engine/DegradationPreference-class.html">DegradationPreference</a></li>
+      <li><a href="../rtc_engine/EncryptionMode-class.html">EncryptionMode</a></li>
+      <li><a href="../rtc_engine/ErrorCode-class.html">ErrorCode</a></li>
+      <li><a href="../rtc_engine/InjectStreamStatus-class.html">InjectStreamStatus</a></li>
+      <li><a href="../rtc_engine/IPAreaCode-class.html">IPAreaCode</a></li>
+      <li><a href="../rtc_engine/LastmileProbeResultState-class.html">LastmileProbeResultState</a></li>
+      <li><a href="../rtc_engine/LighteningContrastLevel-class.html">LighteningContrastLevel</a></li>
+      <li><a href="../rtc_engine/LocalVideoStreamError-class.html">LocalVideoStreamError</a></li>
+      <li><a href="../rtc_engine/LocalVideoStreamState-class.html">LocalVideoStreamState</a></li>
+      <li><a href="../rtc_engine/LogFilter-class.html">LogFilter</a></li>
+      <li><a href="../rtc_engine/MediaDeviceType-class.html">MediaDeviceType</a></li>
+      <li><a href="../rtc_engine/NetworkQuality-class.html">NetworkQuality</a></li>
+      <li><a href="../rtc_engine/NetworkType-class.html">NetworkType</a></li>
+      <li><a href="../rtc_engine/RtcDefaultCameraPosition-class.html">RtcDefaultCameraPosition</a></li>
+      <li><a href="../rtc_engine/RtmpStreamingErrorCode-class.html">RtmpStreamingErrorCode</a></li>
+      <li><a href="../rtc_engine/RtmpStreamingState-class.html">RtmpStreamingState</a></li>
+      <li><a href="../rtc_engine/RtmpStreamLifeCycle-class.html">RtmpStreamLifeCycle</a></li>
+      <li><a href="../rtc_engine/StreamFallbackOptions-class.html">StreamFallbackOptions</a></li>
+      <li><a href="../rtc_engine/UserOfflineReason-class.html">UserOfflineReason</a></li>
+      <li><a href="../rtc_engine/UserPriority-class.html">UserPriority</a></li>
+      <li><a href="../rtc_engine/VideoCodecProfileType-class.html">VideoCodecProfileType</a></li>
+      <li><a href="../rtc_engine/VideoCodecType-class.html">VideoCodecType</a></li>
+      <li><a href="../rtc_engine/VideoFrameRate-class.html">VideoFrameRate</a></li>
+      <li><a href="../rtc_engine/VideoMirrorMode-class.html">VideoMirrorMode</a></li>
+      <li><a href="../rtc_engine/VideoOutputOrientationMode-class.html">VideoOutputOrientationMode</a></li>
+      <li><a href="../rtc_engine/VideoQualityAdaptIndication-class.html">VideoQualityAdaptIndication</a></li>
+      <li><a href="../rtc_engine/VideoRemoteState-class.html">VideoRemoteState</a></li>
+      <li><a href="../rtc_engine/VideoRemoteStateReason-class.html">VideoRemoteStateReason</a></li>
+      <li><a href="../rtc_engine/VideoRenderMode-class.html">VideoRenderMode</a></li>
+      <li><a href="../rtc_engine/VideoStreamType-class.html">VideoStreamType</a></li>
+      <li><a href="../rtc_engine/WarningCode-class.html">WarningCode</a></li>
+    
+    
+    </ol>
+  </div><!--/sidebar-offcanvas-right-->
+
+</main>
+
+<footer>
+  <span class="no-break">
+    agora_rtc_engine
+      3.0.1-dev.7
+  </span>
+
+</footer>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="../static-assets/typeahead.bundle.min.js"></script>
+<script src="../static-assets/highlight.pack.js"></script>
+<script src="../static-assets/URI.js"></script>
+<script src="../static-assets/script.js"></script>
+
+
+</body>
+
+</html>
