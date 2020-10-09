@@ -69,7 +69,9 @@
       <div><h1><span class="kind-class">TextureView</span> class  </h1></div>
 
     <section class="desc markdown">
-      <p>(Android only) TextureView.</p>
+      <p>仅适用于 （Android） TextureView 类。</p>
+<p><strong>Note</strong>
+在 iOS 平台，请使用 <a href="https://developer.apple.com/documentation/uikit/uiview">UIView</a>。</p>
     </section>
     
     <section>
@@ -95,7 +97,7 @@
 
       <dl class="constructor-summary-list">
         <dt id="TextureView" class="callable">
-          <span class="name"><a href="../rtc_remote_view/TextureView/TextureView.html">TextureView</a></span><span class="signature">(<span class="parameter" id="-param-key">{<span class="type-annotation"><a href="https://api.flutter.dev/flutter/foundation/Key-class.html">Key</a></span> <span class="parameter-name">key</span>, </span><span class="parameter" id="-param-uid"><span>@<a href="https://api.flutter.dev/flutter/widgets/required-constant.html">required</a></span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">uid</span>, </span><span class="parameter" id="-param-channelId"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">channelId</span>, </span><span class="parameter" id="-param-mirror"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">mirror</span>: <span class="default-value">false</span>, </span><span class="parameter" id="-param-gestureRecognizers"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/Set-class.html">Set</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/foundation/Factory-class.html">Factory</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/gestures/OneSequenceGestureRecognizer-class.html">OneSequenceGestureRecognizer</a></span>&gt;</span></span>&gt;</span></span> <span class="parameter-name">gestureRecognizers</span>, </span><span class="parameter" id="-param-onPlatformViewCreated"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/services/PlatformViewCreatedCallback.html">PlatformViewCreatedCallback</a></span> <span class="parameter-name">onPlatformViewCreated</span>}</span>)</span>
+          <span class="name"><a href="../rtc_remote_view/TextureView/TextureView.html">TextureView</a></span><span class="signature">(<span class="parameter" id="-param-key">{<span class="type-annotation"><a href="https://api.flutter.dev/flutter/foundation/Key-class.html">Key</a></span> <span class="parameter-name">key</span>, </span><span class="parameter" id="-param-uid"><span>@<a href="https://api.flutter.dev/flutter/widgets/required-constant.html">required</a></span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">uid</span>, </span><span class="parameter" id="-param-renderMode"><span class="type-annotation"><a href="../rtc_engine/VideoRenderMode-class.html">VideoRenderMode</a></span> <span class="parameter-name">renderMode</span>: <span class="default-value">VideoRenderMode.Hidden</span>, </span><span class="parameter" id="-param-channelId"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">channelId</span>, </span><span class="parameter" id="-param-mirrorMode"><span class="type-annotation"><a href="../rtc_engine/VideoMirrorMode-class.html">VideoMirrorMode</a></span> <span class="parameter-name">mirrorMode</span>: <span class="default-value">VideoMirrorMode.Auto</span>, </span><span class="parameter" id="-param-gestureRecognizers"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/Set-class.html">Set</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/foundation/Factory-class.html">Factory</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/gestures/OneSequenceGestureRecognizer-class.html">OneSequenceGestureRecognizer</a></span>&gt;</span></span>&gt;</span></span> <span class="parameter-name">gestureRecognizers</span>, </span><span class="parameter" id="-param-onPlatformViewCreated"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/services/PlatformViewCreatedCallback.html">PlatformViewCreatedCallback</a></span> <span class="parameter-name">onPlatformViewCreated</span>}</span>)</span>
         </dt>
         <dd>
           Constructs a <a href="../rtc_remote_view/TextureView-class.html">TextureView</a> 
@@ -112,7 +114,7 @@
           <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>         
         </dt>
         <dd class="inherited">
-          The unique channel name for the AgoraRTC session in the string format. The string length must be less than 64 bytes. Supported character scopes are: <a href="../rtc_remote_view/TextureView/channelId.html">[...]</a>
+          标识通话的频道名称，长度在 64 字节以内的字符串。以下为支持的字符集范围（共 89 个字符）： <a href="../rtc_remote_view/TextureView/channelId.html">[...]</a>
                   <div class="features">final, inherited</div>
 </dd>
         <dt id="gestureRecognizers" class="property inherited">
@@ -120,7 +122,7 @@
           <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/Set-class.html">Set</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/foundation/Factory-class.html">Factory</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/gestures/OneSequenceGestureRecognizer-class.html">OneSequenceGestureRecognizer</a></span>&gt;</span></span>&gt;</span></span>         
         </dt>
         <dd class="inherited">
-          Which gestures should be consumed by the web view. <a href="../rtc_remote_view/TextureView/gestureRecognizers.html">[...]</a>
+          指定 Web 视图使用的手势。 <a href="../rtc_remote_view/TextureView/gestureRecognizers.html">[...]</a>
                   <div class="features">final, inherited</div>
 </dd>
         <dt id="hashCode" class="property inherited">
@@ -139,12 +141,12 @@
           Controls how one widget replaces another widget in the tree. <a href="https://api.flutter.dev/flutter/widgets/Widget/key.html">[...]</a>
                   <div class="features">final, inherited</div>
 </dd>
-        <dt id="mirror" class="property inherited">
-          <span class="name"><a href="../rtc_remote_view/TextureView/mirror.html">mirror</a></span>
-          <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span>         
+        <dt id="mirrorMode" class="property inherited">
+          <span class="name"><a href="../rtc_remote_view/TextureView/mirrorMode.html">mirrorMode</a></span>
+          <span class="signature">&#8594; <a href="../rtc_engine/VideoMirrorMode-class.html">VideoMirrorMode</a></span>         
         </dt>
         <dd class="inherited">
-          The video mirror. 
+          视频的镜像模式。 
                   <div class="features">final, inherited</div>
 </dd>
         <dt id="onPlatformViewCreated" class="property inherited">
@@ -152,7 +154,15 @@
           <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/services/PlatformViewCreatedCallback.html">PlatformViewCreatedCallback</a></span>         
         </dt>
         <dd class="inherited">
-          Callback signature for when a platform view was created. <a href="../rtc_remote_view/TextureView/onPlatformViewCreated.html">[...]</a>
+          创建平台视图回调。 <a href="../rtc_remote_view/TextureView/onPlatformViewCreated.html">[...]</a>
+                  <div class="features">final, inherited</div>
+</dd>
+        <dt id="renderMode" class="property inherited">
+          <span class="name"><a href="../rtc_remote_view/TextureView/renderMode.html">renderMode</a></span>
+          <span class="signature">&#8594; <a href="../rtc_engine/VideoRenderMode-class.html">VideoRenderMode</a></span>         
+        </dt>
+        <dd class="inherited">
+          视频视图的渲染模式。 
                   <div class="features">final, inherited</div>
 </dd>
         <dt id="runtimeType" class="property inherited">
@@ -168,7 +178,7 @@
           <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span>         
         </dt>
         <dd class="inherited">
-          User ID. 
+          用户 ID。 
                   <div class="features">final, inherited</div>
 </dd>
       </dl>
@@ -305,8 +315,9 @@ tools and by <a href="https://api.flutter.dev/flutter/foundation/DiagnosticsNode
       <li class="inherited"><a href="../rtc_remote_view/TextureView/gestureRecognizers.html">gestureRecognizers</a></li>
       <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/Widget/hashCode.html">hashCode</a></li>
       <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/Widget/key.html">key</a></li>
-      <li class="inherited"><a href="../rtc_remote_view/TextureView/mirror.html">mirror</a></li>
+      <li class="inherited"><a href="../rtc_remote_view/TextureView/mirrorMode.html">mirrorMode</a></li>
       <li class="inherited"><a href="../rtc_remote_view/TextureView/onPlatformViewCreated.html">onPlatformViewCreated</a></li>
+      <li class="inherited"><a href="../rtc_remote_view/TextureView/renderMode.html">renderMode</a></li>
       <li class="inherited"><a href="https://api.flutter.dev/flutter/dart-core/Object/runtimeType.html">runtimeType</a></li>
       <li class="inherited"><a href="../rtc_remote_view/TextureView/uid.html">uid</a></li>
     

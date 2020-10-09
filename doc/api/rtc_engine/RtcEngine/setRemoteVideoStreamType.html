@@ -81,6 +81,7 @@
         <li><a href="../../rtc_engine/RtcEngine/enableAudio.html">enableAudio</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableAudioVolumeIndication.html">enableAudioVolumeIndication</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableDualStreamMode.html">enableDualStreamMode</a></li>
+        <li><a href="../../rtc_engine/RtcEngine/enableEncryption.html">enableEncryption</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableFaceDetection.html">enableFaceDetection</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableInEarMonitoring.html">enableInEarMonitoring</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableLastmileTest.html">enableLastmileTest</a></li>
@@ -163,6 +164,7 @@
         <li><a href="../../rtc_engine/RtcEngine/setLogFileSize.html">setLogFileSize</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setLogFilter.html">setLogFilter</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setMaxMetadataSize.html">setMaxMetadataSize</a></li>
+        <li><a href="../../rtc_engine/RtcEngine/setParameters.html">setParameters</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteDefaultVideoStreamType.html">setRemoteDefaultVideoStreamType</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteSubscribeFallbackOption.html">setRemoteSubscribeFallbackOption</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteUserPriority.html">setRemoteUserPriority</a></li>
@@ -222,15 +224,15 @@
     </section>
     <section class="desc markdown">
       <p>设置订阅的视频流类型。</p>
-<p>在网络条件受限的情况下，如果发送端没有调用 <a href="false">RtcEngine.enableDualStreamMode</a> 关闭双流模式，
+<p>在网络条件受限的情况下，如果发送端没有调用 <a href="../../rtc_engine/RtcEngine/enableDualStreamMode.html">RtcEngine.enableDualStreamMode</a> (<code>false</code>) 关闭双流模式，
 接收端可以选择接收大流还是小流。其中，大流可以接为高分辨率高码率的视频流，
 小流则是低分辨率低码率的视频流。</p>
 <p>正常情况下，用户默认接收大流。如需节约带宽和计算资源，则可以调用该方法动态调整对应远端视频流的大小。
 SDK 会根据该方法中的设置，切换大小流。</p>
 <p>视频小流默认的宽高比和视频大流的宽高比一致。根据当前大流的宽高比，系统会自动分配小流的分辨率、帧率及码率。</p>
 <p>调用本方法的执行结果将在 <a href="../../rtc_engine/RtcEngineEventHandler/apiCallExecuted.html">RtcEngineEventHandler.apiCallExecuted</a> 中返回。</p>
-<p>Param <code>uid</code> 用户 ID。</p>
-<p>Param <code>streamType</code> 视频流类型。详见 <a href="../../rtc_engine/VideoStreamType-class.html">VideoStreamType</a>。</p>
+<p><strong>Parameter</strong> <code>uid</code> 用户 ID。</p>
+<p><strong>Parameter</strong> <code>streamType</code> 视频流类型。详见 <a href="../../rtc_engine/VideoStreamType-class.html">VideoStreamType</a>。</p>
     </section>
     
     <section class="summary source-code" id="source">

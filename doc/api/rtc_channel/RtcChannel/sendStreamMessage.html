@@ -67,6 +67,7 @@
         <li><a href="../../rtc_channel/RtcChannel/adjustUserPlaybackSignalVolume.html">adjustUserPlaybackSignalVolume</a></li>
         <li><a href="../../rtc_channel/RtcChannel/createDataStream.html">createDataStream</a></li>
         <li><a href="../../rtc_channel/RtcChannel/destroy.html">destroy</a></li>
+        <li><a href="../../rtc_channel/RtcChannel/enableEncryption.html">enableEncryption</a></li>
         <li><a href="../../rtc_channel/RtcChannel/getCallId.html">getCallId</a></li>
         <li><a href="../../rtc_channel/RtcChannel/getConnectionState.html">getConnectionState</a></li>
         <li><a href="../../rtc_channel/RtcChannel/joinChannel.html">joinChannel</a></li>
@@ -142,8 +143,8 @@
 </ul>
 <p>成功调用该方法后，远端会触发 <a href="../../rtc_channel/RtcChannelEventHandler/streamMessage.html">RtcChannelEventHandler.streamMessage</a> 回调，远端用户可以在该回调中获取接收到的流消息；
 若调用失败，远端会触发 <a href="../../rtc_channel/RtcChannelEventHandler/streamMessageError.html">RtcChannelEventHandler.streamMessageError</a> 回调。</p>
-<p>Param <code>streamId</code> <a href="../../rtc_channel/RtcChannel/createDataStream.html">RtcChannel.createDataStream</a> 方法返回的数据流 ID。</p>
-<p>Param <code>message</code> 待发送的数据，格式为 byte[]。</p>
+<p><strong>Parameter</strong> <code>streamId</code> <a href="../../rtc_channel/RtcChannel/createDataStream.html">RtcChannel.createDataStream</a> 方法返回的数据流 ID。</p>
+<p><strong>Parameter</strong> <code>message</code> 待发送的数据，格式为 byte[]。</p>
     </section>
     
     <section class="summary source-code" id="source">

@@ -81,6 +81,7 @@
         <li><a href="../../rtc_engine/RtcEngine/enableAudio.html">enableAudio</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableAudioVolumeIndication.html">enableAudioVolumeIndication</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableDualStreamMode.html">enableDualStreamMode</a></li>
+        <li><a href="../../rtc_engine/RtcEngine/enableEncryption.html">enableEncryption</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableFaceDetection.html">enableFaceDetection</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableInEarMonitoring.html">enableInEarMonitoring</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableLastmileTest.html">enableLastmileTest</a></li>
@@ -163,6 +164,7 @@
         <li><a href="../../rtc_engine/RtcEngine/setLogFileSize.html">setLogFileSize</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setLogFilter.html">setLogFilter</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setMaxMetadataSize.html">setMaxMetadataSize</a></li>
+        <li><a href="../../rtc_engine/RtcEngine/setParameters.html">setParameters</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteDefaultVideoStreamType.html">setRemoteDefaultVideoStreamType</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteSubscribeFallbackOption.html">setRemoteSubscribeFallbackOption</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteUserPriority.html">setRemoteUserPriority</a></li>
@@ -208,6 +210,11 @@
       <div><h1><span class="kind-method">setLogFileSize</span> method </h1></div>
 
     <section class="multi-line-signature">
+      <div>
+        <ol class="annotation-list">
+          <li>@<a href="https://api.flutter.dev/flutter/dart-core/override-constant.html">override</a></li>
+        </ol>
+      </div>
       <span class="returntype"><a href="https://api.flutter.dev/flutter/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">void</span>&gt;</span></span>
             <span class="name ">setLogFileSize</span>
 (<wbr><ol class="parameter-list"><li><span class="parameter" id="setLogFileSize-param-fileSizeInKBytes"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">fileSizeInKBytes</span></span></li>
@@ -215,14 +222,15 @@
       
     </section>
     <section class="desc markdown">
-      <p>设置日志文件大小，单位为 KB。</p>
-<p>Agora SDK 设有 2 个日志文件，每个文件大小为 512 KB。如果你将 <code>fileSizeInKByte</code> 设置为 1024 KB， SDK 会最多输出 2 MB 的日志文件。如果日志文件大小超出设置值，新的日志会覆盖之前的日志。</p>
-<p>Param <code>fileSizeInKBytes</code> 日志文件大小，单位为 KB。</p>
+      <p>设置 Agora SDK 输出的单个日志文件大小。</p>
+<p>默认情况下，SDK 会生成 agorasdk.log、agorasdk_1.log、agorasdk_2.log、agorasdk_3.log、agorasdk_4.log 这 5 个日志文件。每个文件的默认大小为 1024 KB。日志文件为 UTF-8 编码。 最新的日志永远写在 agorasdk.log 中。agorasdk.log 写满后，SDK 会从 1-4 中删除修改时间最早的一个文件，然后将 agorasdk.log 重命名为该文件，并建立新的 agorasdk.log 写入最新的日志。</p>
+<p><strong>Parameter</strong> <code>fileSizeInKBytes</code> 单个日志文件的大小，单位为 KB。默认值为 1024 KB。如果你将 <code>fileSizeInKBytes</code> 设为 1024 KB，SDK 会最多输出 5 MB 的日志文件。如果你将 <code>fileSizeInKBytes</code> 设为 小于 1024 KB，单个日志文件最大仍为 1024 KB。</p>
     </section>
     
     <section class="summary source-code" id="source">
       <h2><span>Implementation</span></h2>
-      <pre class="language-dart"><code class="language-dart">Future&lt;void&gt; setLogFileSize(int fileSizeInKBytes) {
+      <pre class="language-dart"><code class="language-dart">@override
+Future&lt;void&gt; setLogFileSize(int fileSizeInKBytes) {
   return _invokeMethod(
       &#39;setLogFileSize&#39;, {&#39;fileSizeInKBytes&#39;: fileSizeInKBytes});
 }</code></pre>

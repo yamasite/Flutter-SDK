@@ -81,6 +81,7 @@
         <li><a href="../../rtc_engine/RtcEngine/enableAudio.html">enableAudio</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableAudioVolumeIndication.html">enableAudioVolumeIndication</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableDualStreamMode.html">enableDualStreamMode</a></li>
+        <li><a href="../../rtc_engine/RtcEngine/enableEncryption.html">enableEncryption</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableFaceDetection.html">enableFaceDetection</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableInEarMonitoring.html">enableInEarMonitoring</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableLastmileTest.html">enableLastmileTest</a></li>
@@ -163,6 +164,7 @@
         <li><a href="../../rtc_engine/RtcEngine/setLogFileSize.html">setLogFileSize</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setLogFilter.html">setLogFilter</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setMaxMetadataSize.html">setMaxMetadataSize</a></li>
+        <li><a href="../../rtc_engine/RtcEngine/setParameters.html">setParameters</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteDefaultVideoStreamType.html">setRemoteDefaultVideoStreamType</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteSubscribeFallbackOption.html">setRemoteSubscribeFallbackOption</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteUserPriority.html">setRemoteUserPriority</a></li>
@@ -227,7 +229,7 @@
 <li>静音本地音频需同时调用该方法和 <a href="../../rtc_engine/RtcEngine/adjustAudioMixingVolume.html">RtcEngine.adjustAudioMixingVolume</a> 方法，并将 <code>volume</code> 参数设置为 0。</li>
 <li>为避免回声并提升通话质量，Agora 建议将 <code>volume</code> 值设为 <code>0,100</code>。如果 <code>volume</code> 值需超过 100，联系<a href="https://agora-ticket.agora.io/">技术支持</a>。</li>
 </ul>
-<p>Param <code>volume</code> 播放音量，取值范围为 <code>0,400</code>：</p>
+<p><strong>Parameter</strong> <code>volume</code> 播放音量，取值范围为 <code>0,400</code>：</p>
 <ul>
 <li>0：静音。</li>
 <li>100：原始音量。</li>

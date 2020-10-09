@@ -81,6 +81,7 @@
         <li><a href="../../rtc_engine/RtcEngine/enableAudio.html">enableAudio</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableAudioVolumeIndication.html">enableAudioVolumeIndication</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableDualStreamMode.html">enableDualStreamMode</a></li>
+        <li><a href="../../rtc_engine/RtcEngine/enableEncryption.html">enableEncryption</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableFaceDetection.html">enableFaceDetection</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableInEarMonitoring.html">enableInEarMonitoring</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableLastmileTest.html">enableLastmileTest</a></li>
@@ -163,6 +164,7 @@
         <li><a href="../../rtc_engine/RtcEngine/setLogFileSize.html">setLogFileSize</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setLogFilter.html">setLogFilter</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setMaxMetadataSize.html">setMaxMetadataSize</a></li>
+        <li><a href="../../rtc_engine/RtcEngine/setParameters.html">setParameters</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteDefaultVideoStreamType.html">setRemoteDefaultVideoStreamType</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteSubscribeFallbackOption.html">setRemoteSubscribeFallbackOption</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteUserPriority.html">setRemoteUserPriority</a></li>
@@ -223,8 +225,8 @@
       <p>开启/关闭本地音频采集。</p>
 <p>当 app 加入频道时，它的语音功能默认是开启的。该方法可以关闭或重新开启本地语音，即停止或重新开始本地音频采集。</p>
 <p>该方法不影响接收或播放远端音频流，<code>enableLocalAudio(false)</code> 适用于只听不发的用户场景。</p>
-<p>语音功能关闭或重新开启后，会收到回调 <code>RtcEngineEventHandler.LocalAudioStateChanged</code>，
-并报告 <a href="../../rtc_engine/AudioLocalState-class.html">AudioLocalState.Stopped</a> 或 <a href="../../rtc_engine/AudioLocalState-class.html">AudioLocalState.Recording</a>。// TODO 触发什么回调？</p>
+<p>语音功能关闭或重新开启后，会收到回调 <a href="../../rtc_engine/RtcEngineEventHandler/localAudioStateChanged.html">RtcEngineEventHandler.localAudioStateChanged</a>，
+并报告 <a href="../../rtc_engine/AudioLocalState-class.html">AudioLocalState.Stopped</a> 或 <a href="../../rtc_engine/AudioLocalState-class.html">AudioLocalState.Recording</a>。</p>
 <p><strong>Note</strong></p>
 <ul>
 <li>调用 <code>enableLocalAudio(false)</code> 关闭本地采集后，系统会走媒体音量；调用 <code>enableLocalAudio(true)</code> 重新打开本地采集后，系统会恢复为通话音量。</li>
@@ -235,10 +237,10 @@
 </ul>
 </li>
 </ul>
-<p>Param <code>enabled</code> 是否开启本地语音。</p>
+<p><strong>Parameter</strong> <code>enabled</code> 是否开启本地语音。</p>
 <ul>
-<li>true：（默认）重新开启本地语音，即开启本地语音采集。</li>
-<li>false：关闭本地语音，即停止本地语音采集。</li>
+<li><code>true</code>：（默认）重新开启本地语音，即开启本地语音采集。</li>
+<li><code>false</code>：关闭本地语音，即停止本地语音采集。</li>
 </ul>
     </section>
     

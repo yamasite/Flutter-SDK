@@ -67,6 +67,7 @@
         <li><a href="../../rtc_channel/RtcChannel/adjustUserPlaybackSignalVolume.html">adjustUserPlaybackSignalVolume</a></li>
         <li><a href="../../rtc_channel/RtcChannel/createDataStream.html">createDataStream</a></li>
         <li><a href="../../rtc_channel/RtcChannel/destroy.html">destroy</a></li>
+        <li><a href="../../rtc_channel/RtcChannel/enableEncryption.html">enableEncryption</a></li>
         <li><a href="../../rtc_channel/RtcChannel/getCallId.html">getCallId</a></li>
         <li><a href="../../rtc_channel/RtcChannel/getConnectionState.html">getConnectionState</a></li>
         <li><a href="../../rtc_channel/RtcChannel/joinChannel.html">joinChannel</a></li>
@@ -139,8 +140,8 @@
 <p>正常情况下，用户默认接收大流。如需节约带宽和计算资源，则可以调用该方法动态调整对应远端视频流的大小。
 SDK 会根据该方法中的设置，切换大小流。</p>
 <p>视频小流默认的宽高比和视频大流的宽高比一致。根据当前大流的宽高比，系统会自动分配小流的分辨率、帧率及码率。</p>
-<p>Param <code>uid</code> 远端用户的 ID。</p>
-<p>Param <code>streamType</code> 设置视频流大小类型。详见 <a href="../../rtc_engine/VideoStreamType-class.html">VideoStreamType</a>。</p>
+<p><strong>Parameter</strong> <code>uid</code> 远端用户的 ID。</p>
+<p><strong>Parameter</strong> <code>streamType</code> 设置视频流大小类型。详见 <a href="../../rtc_engine/VideoStreamType-class.html">VideoStreamType</a>。</p>
     </section>
     
     <section class="summary source-code" id="source">

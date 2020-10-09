@@ -81,6 +81,7 @@
         <li><a href="../../rtc_engine/RtcEngine/enableAudio.html">enableAudio</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableAudioVolumeIndication.html">enableAudioVolumeIndication</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableDualStreamMode.html">enableDualStreamMode</a></li>
+        <li><a href="../../rtc_engine/RtcEngine/enableEncryption.html">enableEncryption</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableFaceDetection.html">enableFaceDetection</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableInEarMonitoring.html">enableInEarMonitoring</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableLastmileTest.html">enableLastmileTest</a></li>
@@ -163,6 +164,7 @@
         <li><a href="../../rtc_engine/RtcEngine/setLogFileSize.html">setLogFileSize</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setLogFilter.html">setLogFilter</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setMaxMetadataSize.html">setMaxMetadataSize</a></li>
+        <li><a href="../../rtc_engine/RtcEngine/setParameters.html">setParameters</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteDefaultVideoStreamType.html">setRemoteDefaultVideoStreamType</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteSubscribeFallbackOption.html">setRemoteSubscribeFallbackOption</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteUserPriority.html">setRemoteUserPriority</a></li>
@@ -226,24 +228,24 @@
 <p>该方法允许 SDK 定期向 App 反馈当前谁在说话以及说话者的音量。启用该方法后，无论频道内是否有人说话，
 都会在说话声音音量提示回调 <a href="../../rtc_engine/RtcEngineEventHandler/audioVolumeIndication.html">RtcEngineEventHandler.audioVolumeIndication</a> 回调
 中按设置的间隔时间返回音量提示。</p>
-<p>Param <code>interval</code> 指定音量提示的时间间隔：</p>
+<p><strong>Parameter</strong> <code>interval</code> 指定音量提示的时间间隔：</p>
 <ul>
 <li>≤ 0：禁用音量提示功能。</li>
 <li>&gt; 0：返回音量提示的间隔，单位为毫秒。建议设置到大于 200 毫秒。最小不得少于 10 毫秒，否则会收不到 <a href="../../rtc_engine/RtcEngineEventHandler/audioVolumeIndication.html">RtcEngineEventHandler.audioVolumeIndication</a> 回调。</li>
 </ul>
-<p>Param <code>smooth</code> 平滑系数，指定音量提示的灵敏度。取值范围为 <code>0, 10</code>，建议值为 3，数字越大，波动越灵敏；数字越小，波动越平滑。</p>
-<p>Param <code>report_vad</code> 是否开启人声检测</p>
+<p><strong>Parameter</strong> <code>smooth</code> 平滑系数，指定音量提示的灵敏度。取值范围为 <code>0, 10</code>，建议值为 3，数字越大，波动越灵敏；数字越小，波动越平滑。</p>
+<p><strong>Parameter</strong> <code>report_vad</code> 是否开启人声检测</p>
 <ul>
-<li>true: 开启本地人声检测功能。开启后，<a href="../../rtc_engine/RtcEngineEventHandler/audioVolumeIndication.html">RtcEngineEventHandler.audioVolumeIndication</a> 回调的 <code>vad</code> 参数会报告是否在本地检测到人声。</li>
-<li>false: （默认）关闭本地人声检测功能。除引擎自动进行本地人声检测的场景外，<a href="../../rtc_engine/RtcEngineEventHandler/audioVolumeIndication.html">RtcEngineEventHandler.audioVolumeIndication</a> 回调的 <code>vad</code> 参数不会报告是否在本地检测到人声。</li>
+<li><code>true</code>: 开启本地人声检测功能。开启后，<a href="../../rtc_engine/RtcEngineEventHandler/audioVolumeIndication.html">RtcEngineEventHandler.audioVolumeIndication</a> 回调的 <code>vad</code> 参数会报告是否在本地检测到人声。</li>
+<li><code>false</code>: （默认）关闭本地人声检测功能。除引擎自动进行本地人声检测的场景外，<a href="../../rtc_engine/RtcEngineEventHandler/audioVolumeIndication.html">RtcEngineEventHandler.audioVolumeIndication</a> 回调的 <code>vad</code> 参数不会报告是否在本地检测到人声。</li>
 </ul>
     </section>
     
     <section class="summary source-code" id="source">
       <h2><span>Implementation</span></h2>
       <pre class="language-dart"><code class="language-dart">@override
-Future&lt;void&gt; enableAudioVolumeIndication(int interval, int smooth,
-    bool report_vad) {
+Future&lt;void&gt; enableAudioVolumeIndication(
+    int interval, int smooth, bool report_vad) {
   return _invokeMethod(&#39;enableAudioVolumeIndication&#39;,
       {&#39;interval&#39;: interval, &#39;smooth&#39;: smooth, &#39;report_vad&#39;: report_vad});
 }</code></pre>

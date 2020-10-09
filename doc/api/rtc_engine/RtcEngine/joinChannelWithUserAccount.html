@@ -81,6 +81,7 @@
         <li><a href="../../rtc_engine/RtcEngine/enableAudio.html">enableAudio</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableAudioVolumeIndication.html">enableAudioVolumeIndication</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableDualStreamMode.html">enableDualStreamMode</a></li>
+        <li><a href="../../rtc_engine/RtcEngine/enableEncryption.html">enableEncryption</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableFaceDetection.html">enableFaceDetection</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableInEarMonitoring.html">enableInEarMonitoring</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableLastmileTest.html">enableLastmileTest</a></li>
@@ -163,6 +164,7 @@
         <li><a href="../../rtc_engine/RtcEngine/setLogFileSize.html">setLogFileSize</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setLogFilter.html">setLogFilter</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setMaxMetadataSize.html">setMaxMetadataSize</a></li>
+        <li><a href="../../rtc_engine/RtcEngine/setParameters.html">setParameters</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteDefaultVideoStreamType.html">setRemoteDefaultVideoStreamType</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteSubscribeFallbackOption.html">setRemoteSubscribeFallbackOption</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteUserPriority.html">setRemoteUserPriority</a></li>
@@ -231,12 +233,12 @@
 <p><strong>Note</strong></p>
 <p>为保证通信质量，请确保频道内使用同一类型的数据标识用户身份。即同一频道内需要统一使用 UID 或 User Account。
 如果有用户通过 Agora Web SDK 加入频道，请确保 Web 加入的用户也是同样类型。</p>
-<p>Param <code>token</code> 在服务器端生成的用于鉴权的 Token。</p>
+<p><strong>Parameter</strong> <code>token</code> 在服务器端生成的用于鉴权的 Token。</p>
 <ul>
 <li>安全要求不高：你可以使用控制台生成的临时 Token，详见<a href="https://docs.agora.io/cn/Agora%20Platform/token?platform=All%20Platforms#temptoken">获取临时 Token</a>。</li>
 <li>安全要求高：将值设为你的服务端生成的正式 Token，详见<a href="https://docs.agora.io/cn/Agora%20Platform/token?platform=All%20Platforms#generatetoken">从服务端生成 Token</a>。</li>
 </ul>
-<p>Param <code>channelName</code> 标识频道的频道名，最大不超过 64 字节。以下为支持的字符集范围（共 89 个字符）：</p>
+<p><strong>Parameter</strong> <code>channelName</code> 标识频道的频道名，最大不超过 64 字节。以下为支持的字符集范围（共 89 个字符）：</p>
 <ul>
 <li>26 个小写英文字母 a-z</li>
 <li>26 个大写英文字母 A-Z</li>
@@ -244,7 +246,7 @@
 <li>空格</li>
 <li>"!", "#", "$", "%", "&amp;", "(", ")", "+", "-", ":", ";", "&lt;", "=", ".", "&gt;", "?", "@", "<code>", "</code>", "^", "_", " {", "}", "|", "~", ","</li>
 </ul>
-<p>Param <code>userAccount</code> 用户 User Account。该参数为必需，最大不超过 255 字节，不可为 null。请确保加入频道的 User Account 的唯一性。以下为支持的字符集范围（共 89 个字符）：</p>
+<p><strong>Parameter</strong> <code>userAccount</code> 用户 User Account。该参数为必需，最大不超过 255 字节，不可为 null。请确保加入频道的 User Account 的唯一性。以下为支持的字符集范围（共 89 个字符）：</p>
 <ul>
 <li>26 个小写英文字母 a-z</li>
 <li>26 个大写英文字母 A-Z</li>
@@ -257,8 +259,8 @@
     <section class="summary source-code" id="source">
       <h2><span>Implementation</span></h2>
       <pre class="language-dart"><code class="language-dart">@override
-Future&lt;void&gt; joinChannelWithUserAccount(String token, String channelName,
-    String userAccount) {
+Future&lt;void&gt; joinChannelWithUserAccount(
+    String token, String channelName, String userAccount) {
   return _invokeMethod(&#39;joinChannelWithUserAccount&#39;, {
     &#39;token&#39;: token,
     &#39;channelName&#39;: channelName,

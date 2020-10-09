@@ -81,6 +81,7 @@
         <li><a href="../../rtc_engine/RtcEngine/enableAudio.html">enableAudio</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableAudioVolumeIndication.html">enableAudioVolumeIndication</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableDualStreamMode.html">enableDualStreamMode</a></li>
+        <li><a href="../../rtc_engine/RtcEngine/enableEncryption.html">enableEncryption</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableFaceDetection.html">enableFaceDetection</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableInEarMonitoring.html">enableInEarMonitoring</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableLastmileTest.html">enableLastmileTest</a></li>
@@ -163,6 +164,7 @@
         <li><a href="../../rtc_engine/RtcEngine/setLogFileSize.html">setLogFileSize</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setLogFilter.html">setLogFilter</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setMaxMetadataSize.html">setMaxMetadataSize</a></li>
+        <li><a href="../../rtc_engine/RtcEngine/setParameters.html">setParameters</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteDefaultVideoStreamType.html">setRemoteDefaultVideoStreamType</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteSubscribeFallbackOption.html">setRemoteSubscribeFallbackOption</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteUserPriority.html">setRemoteUserPriority</a></li>
@@ -223,15 +225,15 @@
     <section class="desc markdown">
       <p>设置手动对焦位置，并触发对焦。</p>
 <p>成功调用该方法后，本地会触发 <a href="../../rtc_engine/RtcEngineEventHandler/cameraFocusAreaChanged.html">RtcEngineEventHandler.cameraFocusAreaChanged</a> 回调。</p>
-<p>Param <code>positionX</code> 触摸点相对于视图的横坐标。</p>
-<p>Param <code>positionY</code> 触摸点相对于视图的纵坐标。</p>
+<p><strong>Parameter</strong> <code>positionX</code> 触摸点相对于视图的横坐标。</p>
+<p><strong>Parameter</strong> <code>positionY</code> 触摸点相对于视图的纵坐标。</p>
     </section>
     
     <section class="summary source-code" id="source">
       <h2><span>Implementation</span></h2>
       <pre class="language-dart"><code class="language-dart">@override
-Future&lt;void&gt; setCameraFocusPositionInPreview(double positionX,
-    double positionY) {
+Future&lt;void&gt; setCameraFocusPositionInPreview(
+    double positionX, double positionY) {
   return _invokeMethod(&#39;setCameraFocusPositionInPreview&#39;,
       {&#39;positionX&#39;: positionX, &#39;positionY&#39;: positionY});
 }</code></pre>

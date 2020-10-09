@@ -61,6 +61,8 @@
         <a href="../../rtc_channel/RtcChannelEventHandler-class.html#instance-properties">Properties</a>
       </li>
       <li><a href="../../rtc_channel/RtcChannelEventHandler/activeSpeaker.html">activeSpeaker</a></li>
+      <li><a href="../../rtc_channel/RtcChannelEventHandler/audioPublishStateChanged.html">audioPublishStateChanged</a></li>
+      <li><a href="../../rtc_channel/RtcChannelEventHandler/audioSubscribeStateChanged.html">audioSubscribeStateChanged</a></li>
       <li><a href="../../rtc_channel/RtcChannelEventHandler/channelMediaRelayEvent.html">channelMediaRelayEvent</a></li>
       <li><a href="../../rtc_channel/RtcChannelEventHandler/channelMediaRelayStateChanged.html">channelMediaRelayStateChanged</a></li>
       <li><a href="../../rtc_channel/RtcChannelEventHandler/clientRoleChanged.html">clientRoleChanged</a></li>
@@ -81,6 +83,7 @@
       <li><a href="../../rtc_channel/RtcChannelEventHandler/remoteVideoStats.html">remoteVideoStats</a></li>
       <li><a href="../../rtc_channel/RtcChannelEventHandler/requestToken.html">requestToken</a></li>
       <li><a href="../../rtc_channel/RtcChannelEventHandler/rtcStats.html">rtcStats</a></li>
+      <li><a href="../../rtc_channel/RtcChannelEventHandler/rtmpStreamingEvent.html">rtmpStreamingEvent</a></li>
       <li><a href="../../rtc_channel/RtcChannelEventHandler/rtmpStreamingStateChanged.html">rtmpStreamingStateChanged</a></li>
       <li class="inherited"><a href="https://api.flutter.dev/flutter/dart-core/Object/runtimeType.html">runtimeType</a></li>
       <li><a href="../../rtc_channel/RtcChannelEventHandler/streamInjectedStatus.html">streamInjectedStatus</a></li>
@@ -90,7 +93,9 @@
       <li><a href="../../rtc_channel/RtcChannelEventHandler/transcodingUpdated.html">transcodingUpdated</a></li>
       <li><a href="../../rtc_channel/RtcChannelEventHandler/userJoined.html">userJoined</a></li>
       <li><a href="../../rtc_channel/RtcChannelEventHandler/userOffline.html">userOffline</a></li>
+      <li><a href="../../rtc_channel/RtcChannelEventHandler/videoPublishStateChanged.html">videoPublishStateChanged</a></li>
       <li><a href="../../rtc_channel/RtcChannelEventHandler/videoSizeChanged.html">videoSizeChanged</a></li>
+      <li><a href="../../rtc_channel/RtcChannelEventHandler/videoSubscribeStateChanged.html">videoSubscribeStateChanged</a></li>
       <li><a href="../../rtc_channel/RtcChannelEventHandler/warning.html">warning</a></li>
     
       <li class="section-title"><a href="../../rtc_channel/RtcChannelEventHandler-class.html#instance-methods">Methods</a></li>
@@ -141,7 +146,12 @@
 <li><span class="parameter" id="-param-streamMessageError"><span class="type-annotation">StreamMessageErrorCallback</span> <span class="parameter-name">streamMessageError</span>, </span></li>
 <li><span class="parameter" id="-param-channelMediaRelayStateChanged"><span class="type-annotation">MediaRelayStateCallback</span> <span class="parameter-name">channelMediaRelayStateChanged</span>, </span></li>
 <li><span class="parameter" id="-param-channelMediaRelayEvent"><span class="type-annotation">MediaRelayEventCallback</span> <span class="parameter-name">channelMediaRelayEvent</span>, </span></li>
-<li><span class="parameter" id="-param-metadataReceived"><span class="type-annotation">MetadataCallback</span> <span class="parameter-name">metadataReceived</span>}</span></li>
+<li><span class="parameter" id="-param-metadataReceived"><span class="type-annotation">MetadataCallback</span> <span class="parameter-name">metadataReceived</span>, </span></li>
+<li><span class="parameter" id="-param-audioPublishStateChanged"><span class="type-annotation">StreamPublishStateCallback</span> <span class="parameter-name">audioPublishStateChanged</span>, </span></li>
+<li><span class="parameter" id="-param-videoPublishStateChanged"><span class="type-annotation">StreamPublishStateCallback</span> <span class="parameter-name">videoPublishStateChanged</span>, </span></li>
+<li><span class="parameter" id="-param-audioSubscribeStateChanged"><span class="type-annotation">StreamSubscribeStateCallback</span> <span class="parameter-name">audioSubscribeStateChanged</span>, </span></li>
+<li><span class="parameter" id="-param-videoSubscribeStateChanged"><span class="type-annotation">StreamSubscribeStateCallback</span> <span class="parameter-name">videoSubscribeStateChanged</span>, </span></li>
+<li><span class="parameter" id="-param-rtmpStreamingEvent"><span class="type-annotation">RtmpStreamingEventCallback</span> <span class="parameter-name">rtmpStreamingEvent</span>}</span></li>
 </ol>)
     </section>
 
@@ -151,7 +161,8 @@
     
     <section class="summary source-code" id="source">
       <h2><span>Implementation</span></h2>
-      <pre class="language-dart"><code class="language-dart">RtcChannelEventHandler({this.warning,
+      <pre class="language-dart"><code class="language-dart">RtcChannelEventHandler(
+  {this.warning,
   this.error,
   this.joinChannelSuccess,
   this.rejoinChannelSuccess,
@@ -180,7 +191,12 @@
   this.streamMessageError,
   this.channelMediaRelayStateChanged,
   this.channelMediaRelayEvent,
-  this.metadataReceived});</code></pre>
+  this.metadataReceived,
+  this.audioPublishStateChanged,
+  this.videoPublishStateChanged,
+  this.audioSubscribeStateChanged,
+  this.videoSubscribeStateChanged,
+  this.rtmpStreamingEvent});</code></pre>
     </section>
 
   </div> <!-- /.main-content -->

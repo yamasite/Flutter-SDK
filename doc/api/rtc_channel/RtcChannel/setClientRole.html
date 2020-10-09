@@ -67,6 +67,7 @@
         <li><a href="../../rtc_channel/RtcChannel/adjustUserPlaybackSignalVolume.html">adjustUserPlaybackSignalVolume</a></li>
         <li><a href="../../rtc_channel/RtcChannel/createDataStream.html">createDataStream</a></li>
         <li><a href="../../rtc_channel/RtcChannel/destroy.html">destroy</a></li>
+        <li><a href="../../rtc_channel/RtcChannel/enableEncryption.html">enableEncryption</a></li>
         <li><a href="../../rtc_channel/RtcChannel/getCallId.html">getCallId</a></li>
         <li><a href="../../rtc_channel/RtcChannel/getConnectionState.html">getConnectionState</a></li>
         <li><a href="../../rtc_channel/RtcChannel/joinChannel.html">joinChannel</a></li>
@@ -120,6 +121,11 @@
       <div><h1><span class="kind-method">setClientRole</span> method </h1></div>
 
     <section class="multi-line-signature">
+      <div>
+        <ol class="annotation-list">
+          <li>@<a href="https://api.flutter.dev/flutter/dart-core/override-constant.html">override</a></li>
+        </ol>
+      </div>
       <span class="returntype"><a href="https://api.flutter.dev/flutter/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">void</span>&gt;</span></span>
             <span class="name ">setClientRole</span>
 (<wbr><ol class="parameter-list"><li><span class="parameter" id="setClientRole-param-role"><span class="type-annotation"><a href="../../rtc_engine/ClientRole-class.html">ClientRole</a></span> <span class="parameter-name">role</span></span></li>
@@ -133,14 +139,15 @@
 <p>成功调用该方法切换用户角色后，SDK 会触发以下回调：</p>
 <ul>
 <li>本地：<a href="../../rtc_channel/RtcChannelEventHandler/clientRoleChanged.html">RtcChannelEventHandler.clientRoleChanged</a>。</li>
-<li>远端：<a href="../../rtc_channel/RtcChannelEventHandler/userJoined.html">RtcChannelEventHandler.userJoined</a> 或 <a href="[UserOfflineReason.BecomeAudience]">RtcChannelEventHandler.userOffline</a>。</li>
+<li>远端：<a href="../../rtc_channel/RtcChannelEventHandler/userJoined.html">RtcChannelEventHandler.userJoined</a> 或 <a href="../../rtc_channel/RtcChannelEventHandler/userOffline.html">RtcChannelEventHandler.userOffline</a> (<code>BecomeAudience</code>)。</li>
 </ul>
-<p>Param <code>role</code> 用户角色。详见 <a href="../../rtc_engine/ClientRole-class.html">ClientRole</a>。</p>
+<p><strong>Parameter</strong> <code>role</code> 用户角色。详见 <a href="../../rtc_engine/ClientRole-class.html">ClientRole</a>。</p>
     </section>
     
     <section class="summary source-code" id="source">
       <h2><span>Implementation</span></h2>
-      <pre class="language-dart"><code class="language-dart">Future&lt;void&gt; setClientRole(ClientRole role) {
+      <pre class="language-dart"><code class="language-dart">@override
+Future&lt;void&gt; setClientRole(ClientRole role) {
   return _invokeMethod(
       &#39;setClientRole&#39;, {&#39;role&#39;: ClientRoleConverter(role).value()});
 }</code></pre>

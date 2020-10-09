@@ -103,18 +103,18 @@
           <div class="features">final, inherited</div>
         </section>
         <section class="desc markdown">
-          <p>The unique channel name for the AgoraRTC session in the string format. The string length must be less than 64 bytes. Supported character scopes are:</p>
+          <p>标识通话的频道名称，长度在 64 字节以内的字符串。以下为支持的字符集范围（共 89 个字符）：</p>
 <ul>
-<li>All lowercase English letters: a to z.</li>
-<li>All uppercase English letters: A to Z.</li>
-<li>All numeric characters: 0 to 9.</li>
-<li>The space character.</li>
-<li>Punctuation characters and other symbols, including: "!", "#", "$", "%", "&amp;", "(", ")", "+", "-", ":", ";", "&lt;", "=", ".", "&gt;", "?", "@", "<code>", "</code>", "^", "_", " {", "}", "|", "~", ",".
-Note</li>
-<li>The default value is the empty string "". Use the default value if the user joins the channel using the joinChannel method in the RtcEngine class.
-See <a href="../../rtc_engine/RtcEngine/joinChannel.html">RtcEngine.joinChannel</a></li>
-<li>If the user joins the channel using the joinChannel method in the RtcChannel class, set this parameter as the channelId of the RtcChannel object.
-See <a href="../../rtc_channel/RtcChannel/joinChannel.html">RtcChannel.joinChannel</a></li>
+<li>26 个小写英文字母 a-z</li>
+<li>26 个大写英文字母 A-Z</li>
+<li>10 个数字 0-9</li>
+<li>空格</li>
+<li>"!", "#", "$", "%", "&amp;", "(", ")", "+", "-", ":", ";", "&lt;", "=", ".", "&gt;", "?", "@", "<code>", "</code>", "^", "_", " {", "}", "|", "~", ","</li>
+</ul>
+<p><strong>Note</strong></p>
+<ul>
+<li>该参数的默认值为空字符 ""。如果用户是通过 <a href="../../rtc_engine/RtcEngine-class.html">RtcEngine</a> 类的 <a href="../../rtc_engine/RtcEngine/joinChannel.html">RtcEngine.joinChannel</a> 方法加入频道的， 则将参数设为默认值，表示该用户在频道内的渲染视图。</li>
+<li>如果用户是通过 <a href="../../rtc_channel/RtcChannel-class.html">RtcChannel</a> 类的 <a href="../../rtc_channel/RtcChannel/joinChannel.html">RtcChannel.joinChannel</a> 方法加入频道的，则将该参数设为该 <a href="../../rtc_channel/RtcChannel-class.html">RtcChannel</a> 类对应的 <code>channelId</code>，表示该用户在该 <code>channelId</code> 对应频道内的渲染视图。</li>
 </ul>
         </section>
                 <section class="summary source-code" id="source">

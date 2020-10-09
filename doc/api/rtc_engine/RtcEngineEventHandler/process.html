@@ -65,8 +65,10 @@
         <li><a href="../../rtc_engine/RtcEngineEventHandler/audioEffectFinished.html">audioEffectFinished</a></li>
         <li><a class="deprecated" href="../../rtc_engine/RtcEngineEventHandler/audioMixingFinished.html">audioMixingFinished</a></li>
         <li><a href="../../rtc_engine/RtcEngineEventHandler/audioMixingStateChanged.html">audioMixingStateChanged</a></li>
+        <li><a href="../../rtc_engine/RtcEngineEventHandler/audioPublishStateChanged.html">audioPublishStateChanged</a></li>
         <li><a class="deprecated" href="../../rtc_engine/RtcEngineEventHandler/audioQuality.html">audioQuality</a></li>
         <li><a href="../../rtc_engine/RtcEngineEventHandler/audioRouteChanged.html">audioRouteChanged</a></li>
+        <li><a href="../../rtc_engine/RtcEngineEventHandler/audioSubscribeStateChanged.html">audioSubscribeStateChanged</a></li>
         <li><a href="../../rtc_engine/RtcEngineEventHandler/audioVolumeIndication.html">audioVolumeIndication</a></li>
         <li><a href="../../rtc_engine/RtcEngineEventHandler/cameraExposureAreaChanged.html">cameraExposureAreaChanged</a></li>
         <li><a href="../../rtc_engine/RtcEngineEventHandler/cameraFocusAreaChanged.html">cameraFocusAreaChanged</a></li>
@@ -81,7 +83,9 @@
         <li><a href="../../rtc_engine/RtcEngineEventHandler/error.html">error</a></li>
         <li><a href="../../rtc_engine/RtcEngineEventHandler/facePositionChanged.html">facePositionChanged</a></li>
         <li><a href="../../rtc_engine/RtcEngineEventHandler/firstLocalAudioFrame.html">firstLocalAudioFrame</a></li>
+        <li><a href="../../rtc_engine/RtcEngineEventHandler/firstLocalAudioFramePublished.html">firstLocalAudioFramePublished</a></li>
         <li><a href="../../rtc_engine/RtcEngineEventHandler/firstLocalVideoFrame.html">firstLocalVideoFrame</a></li>
+        <li><a href="../../rtc_engine/RtcEngineEventHandler/firstLocalVideoFramePublished.html">firstLocalVideoFramePublished</a></li>
         <li><a class="deprecated" href="../../rtc_engine/RtcEngineEventHandler/firstRemoteAudioDecoded.html">firstRemoteAudioDecoded</a></li>
         <li><a class="deprecated" href="../../rtc_engine/RtcEngineEventHandler/firstRemoteAudioFrame.html">firstRemoteAudioFrame</a></li>
         <li><a class="deprecated" href="../../rtc_engine/RtcEngineEventHandler/firstRemoteVideoDecoded.html">firstRemoteVideoDecoded</a></li>
@@ -113,6 +117,7 @@
         <li><a class="deprecated" href="../../rtc_engine/RtcEngineEventHandler/remoteVideoTransportStats.html">remoteVideoTransportStats</a></li>
         <li><a href="../../rtc_engine/RtcEngineEventHandler/requestToken.html">requestToken</a></li>
         <li><a href="../../rtc_engine/RtcEngineEventHandler/rtcStats.html">rtcStats</a></li>
+        <li><a href="../../rtc_engine/RtcEngineEventHandler/rtmpStreamingEvent.html">rtmpStreamingEvent</a></li>
         <li><a href="../../rtc_engine/RtcEngineEventHandler/rtmpStreamingStateChanged.html">rtmpStreamingStateChanged</a></li>
         <li class="inherited"><a href="https://api.flutter.dev/flutter/dart-core/Object/runtimeType.html">runtimeType</a></li>
         <li><a href="../../rtc_engine/RtcEngineEventHandler/streamInjectedStatus.html">streamInjectedStatus</a></li>
@@ -129,8 +134,10 @@
         <li><a class="deprecated" href="../../rtc_engine/RtcEngineEventHandler/userMuteAudio.html">userMuteAudio</a></li>
         <li><a class="deprecated" href="../../rtc_engine/RtcEngineEventHandler/userMuteVideo.html">userMuteVideo</a></li>
         <li><a href="../../rtc_engine/RtcEngineEventHandler/userOffline.html">userOffline</a></li>
+        <li><a href="../../rtc_engine/RtcEngineEventHandler/videoPublishStateChanged.html">videoPublishStateChanged</a></li>
         <li><a href="../../rtc_engine/RtcEngineEventHandler/videoSizeChanged.html">videoSizeChanged</a></li>
         <li><a class="deprecated" href="../../rtc_engine/RtcEngineEventHandler/videoStopped.html">videoStopped</a></li>
+        <li><a href="../../rtc_engine/RtcEngineEventHandler/videoSubscribeStateChanged.html">videoSubscribeStateChanged</a></li>
         <li><a href="../../rtc_engine/RtcEngineEventHandler/warning.html">warning</a></li>
     
         <li class="section-title"><a href="../../rtc_engine/RtcEngineEventHandler-class.html#instance-methods">Methods</a></li>
@@ -165,20 +172,14 @@
       <pre class="language-dart"><code class="language-dart">void process(String methodName, List&lt;dynamic&gt; data) {
   switch (methodName) {
     case &#39;Warning&#39;:
-      warning?.call(WarningCodeConverter
-          .fromValue(data[0])
-          .e);
+      warning?.call(WarningCodeConverter.fromValue(data[0]).e);
       break;
     case &#39;Error&#39;:
-      error?.call(ErrorCodeConverter
-          .fromValue(data[0])
-          .e);
+      error?.call(ErrorCodeConverter.fromValue(data[0]).e);
       break;
     case &#39;ApiCallExecuted&#39;:
       apiCallExecuted?.call(
-          ErrorCodeConverter
-              .fromValue(data[0])
-              .e, data[1], data[2]);
+          ErrorCodeConverter.fromValue(data[0]).e, data[1], data[2]);
       break;
     case &#39;JoinChannelSuccess&#39;:
       joinChannelSuccess?.call(data[0], data[1], data[2]);
@@ -199,35 +200,23 @@
           data[0], UserInfo.fromJson(Map&lt;String, dynamic&gt;.from(data[1])));
       break;
     case &#39;ClientRoleChanged&#39;:
-      clientRoleChanged?.call(ClientRoleConverter
-          .fromValue(data[0])
-          .e,
-          ClientRoleConverter
-              .fromValue(data[1])
-              .e);
+      clientRoleChanged?.call(ClientRoleConverter.fromValue(data[0]).e,
+          ClientRoleConverter.fromValue(data[1]).e);
       break;
     case &#39;UserJoined&#39;:
       userJoined?.call(data[0], data[1]);
       break;
     case &#39;UserOffline&#39;:
       userOffline?.call(
-          data[0], UserOfflineReasonConverter
-          .fromValue(data[1])
-          .e);
+          data[0], UserOfflineReasonConverter.fromValue(data[1]).e);
       break;
     case &#39;ConnectionStateChanged&#39;:
       connectionStateChanged?.call(
-          ConnectionStateTypeConverter
-              .fromValue(data[0])
-              .e,
-          ConnectionChangedReasonConverter
-              .fromValue(data[1])
-              .e);
+          ConnectionStateTypeConverter.fromValue(data[0]).e,
+          ConnectionChangedReasonConverter.fromValue(data[1]).e);
       break;
     case &#39;NetworkTypeChanged&#39;:
-      networkTypeChanged?.call(NetworkTypeConverter
-          .fromValue(data[0])
-          .e);
+      networkTypeChanged?.call(NetworkTypeConverter.fromValue(data[0]).e);
       break;
     case &#39;ConnectionLost&#39;:
       connectionLost?.call();
@@ -243,8 +232,7 @@
       audioVolumeIndication?.call(
           List.generate(
               list.length,
-                  (index) =&gt;
-                  AudioVolumeInfo.fromJson(
+                  (index) =&gt; AudioVolumeInfo.fromJson(
                       Map&lt;String, dynamic&gt;.from(list[index]))),
           data[1]);
       break;
@@ -266,12 +254,8 @@
     case &#39;RemoteVideoStateChanged&#39;:
       remoteVideoStateChanged?.call(
           data[0],
-          VideoRemoteStateConverter
-              .fromValue(data[1])
-              .e,
-          VideoRemoteStateReasonConverter
-              .fromValue(data[2])
-              .e,
+          VideoRemoteStateConverter.fromValue(data[1]).e,
+          VideoRemoteStateReasonConverter.fromValue(data[2]).e,
           data[3]);
       break;
     case &#39;LocalVideoStateChanged&#39;:
@@ -281,12 +265,8 @@
     case &#39;RemoteAudioStateChanged&#39;:
       remoteAudioStateChanged?.call(
           data[0],
-          AudioRemoteStateConverter
-              .fromValue(data[1])
-              .e,
-          AudioRemoteStateReasonConverter
-              .fromValue(data[2])
-              .e,
+          AudioRemoteStateConverter.fromValue(data[1]).e,
+          AudioRemoteStateReasonConverter.fromValue(data[2]).e,
           data[3]);
       break;
     case &#39;LocalAudioStateChanged&#39;:
@@ -301,9 +281,7 @@
       break;
     case &#39;AudioRouteChanged&#39;:
       audioRouteChanged
-          ?.call(AudioOutputRoutingConverter
-          .fromValue(data[0])
-          .e);
+          ?.call(AudioOutputRoutingConverter.fromValue(data[0]).e);
       break;
     case &#39;CameraFocusAreaChanged&#39;:
       cameraFocusAreaChanged
@@ -320,27 +298,20 @@
           data[1],
           List.generate(
               list.length,
-                  (index) =&gt;
-                  FacePositionInfo.fromJson(
+                  (index) =&gt; FacePositionInfo.fromJson(
                       Map&lt;String, dynamic&gt;.from(list[index]))));
       break;
     case &#39;RtcStats&#39;:
       rtcStats?.call(RtcStats.fromJson(Map&lt;String, dynamic&gt;.from(data[0])));
       break;
     case &#39;LastmileQuality&#39;:
-      lastmileQuality?.call(NetworkQualityConverter
-          .fromValue(data[0])
-          .e);
+      lastmileQuality?.call(NetworkQualityConverter.fromValue(data[0]).e);
       break;
     case &#39;NetworkQuality&#39;:
       networkQuality?.call(
           data[0],
-          NetworkQualityConverter
-              .fromValue(data[1])
-              .e,
-          NetworkQualityConverter
-              .fromValue(data[2])
-              .e);
+          NetworkQualityConverter.fromValue(data[1]).e,
+          NetworkQualityConverter.fromValue(data[2]).e);
       break;
     case &#39;LastmileProbeResult&#39;:
       lastmileProbeResult?.call(
@@ -367,12 +338,8 @@
       break;
     case &#39;AudioMixingStateChanged&#39;:
       audioMixingStateChanged?.call(
-        AudioMixingStateCodeConverter
-            .fromValue(data[0])
-            .e,
-        AudioMixingErrorCodeConverter
-            .fromValue(data[1])
-            .e,
+        AudioMixingStateCodeConverter.fromValue(data[0]).e,
+        AudioMixingErrorCodeConverter.fromValue(data[1]).e,
       );
       break;
     case &#39;AudioEffectFinished&#39;:
@@ -381,12 +348,8 @@
     case &#39;RtmpStreamingStateChanged&#39;:
       rtmpStreamingStateChanged?.call(
         data[0],
-        RtmpStreamingStateConverter
-            .fromValue(data[1])
-            .e,
-        RtmpStreamingErrorCodeConverter
-            .fromValue(data[2])
-            .e,
+        RtmpStreamingStateConverter.fromValue(data[1]).e,
+        RtmpStreamingErrorCodeConverter.fromValue(data[2]).e,
       );
       break;
     case &#39;TranscodingUpdated&#39;:
@@ -394,18 +357,14 @@
       break;
     case &#39;StreamInjectedStatus&#39;:
       streamInjectedStatus?.call(
-          data[0], data[1], InjectStreamStatusConverter
-          .fromValue(data[2])
-          .e);
+          data[0], data[1], InjectStreamStatusConverter.fromValue(data[2]).e);
       break;
     case &#39;StreamMessage&#39;:
       streamMessage?.call(data[0], data[1], data[2]);
       break;
     case &#39;StreamMessageError&#39;:
       streamMessageError?.call(data[0], data[1],
-          ErrorCodeConverter
-              .fromValue(data[2])
-              .e, data[3], data[4]);
+          ErrorCodeConverter.fromValue(data[2]).e, data[3], data[4]);
       break;
     case &#39;MediaEngineLoadSuccess&#39;:
       mediaEngineLoadSuccess?.call();
@@ -415,19 +374,13 @@
       break;
     case &#39;ChannelMediaRelayStateChanged&#39;:
       channelMediaRelayStateChanged?.call(
-        ChannelMediaRelayStateConverter
-            .fromValue(data[0])
-            .e,
-        ChannelMediaRelayErrorConverter
-            .fromValue(data[1])
-            .e,
+        ChannelMediaRelayStateConverter.fromValue(data[0]).e,
+        ChannelMediaRelayErrorConverter.fromValue(data[1]).e,
       );
       break;
     case &#39;ChannelMediaRelayEvent&#39;:
       channelMediaRelayEvent
-          ?.call(ChannelMediaRelayEventConverter
-          .fromValue(data[0])
-          .e);
+          ?.call(ChannelMediaRelayEventConverter.fromValue(data[0]).e);
       break;
     case &#39;FirstRemoteVideoFrame&#39;:
       firstRemoteVideoFrame?.call(data[0], data[1], data[2], data[3]);
@@ -442,9 +395,7 @@
       userMuteAudio?.call(data[0], data[1]);
       break;
     case &#39;StreamPublished&#39;:
-      streamPublished?.call(data[0], ErrorCodeConverter
-          .fromValue(data[1])
-          .e);
+      streamPublished?.call(data[0], ErrorCodeConverter.fromValue(data[1]).e);
       break;
     case &#39;StreamUnpublished&#39;:
       streamUnpublished?.call(data[0]);
@@ -484,6 +435,43 @@
       break;
     case &#39;MetadataReceived&#39;:
       metadataReceived?.call(data[0], data[1], data[2]);
+      break;
+      case &#39;FirstLocalAudioFramePublished&#39;:
+      firstLocalAudioFramePublished?.call(data[0]);
+      break;
+    case &#39;FirstLocalVideoFramePublished&#39;:
+      firstLocalVideoFramePublished?.call(data[0]);
+      break;
+    case &#39;AudioPublishStateChanged&#39;:
+      audioPublishStateChanged?.call(
+          data[0],
+          StreamPublishStateConverter.fromValue(data[1]).e,
+          StreamPublishStateConverter.fromValue(data[2]).e,
+          data[3]);
+      break;
+    case &#39;VideoPublishStateChanged&#39;:
+      videoPublishStateChanged?.call(
+          data[0],
+          StreamPublishStateConverter.fromValue(data[1]).e,
+          StreamPublishStateConverter.fromValue(data[2]).e,
+          data[3]);
+      break;
+    case &#39;AudioSubscribeStateChanged&#39;:
+      audioSubscribeStateChanged?.call(
+          data[0],
+          StreamSubscribeStateConverter.fromValue(data[1]).e,
+          StreamSubscribeStateConverter.fromValue(data[2]).e,
+          data[3]);
+      break;
+    case &#39;VideoSubscribeStateChanged&#39;:
+      videoSubscribeStateChanged?.call(
+          data[0],
+          StreamSubscribeStateConverter.fromValue(data[1]).e,
+          StreamSubscribeStateConverter.fromValue(data[2]).e,
+          data[3]);
+      break;
+    case &#39;RtmpStreamingEvent&#39;:
+      rtmpStreamingEvent?.call(data[0], data[1]);
       break;
   }
 }</code></pre>

@@ -81,6 +81,7 @@
         <li><a href="../../rtc_engine/RtcEngine/enableAudio.html">enableAudio</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableAudioVolumeIndication.html">enableAudioVolumeIndication</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableDualStreamMode.html">enableDualStreamMode</a></li>
+        <li><a href="../../rtc_engine/RtcEngine/enableEncryption.html">enableEncryption</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableFaceDetection.html">enableFaceDetection</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableInEarMonitoring.html">enableInEarMonitoring</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableLastmileTest.html">enableLastmileTest</a></li>
@@ -163,6 +164,7 @@
         <li><a href="../../rtc_engine/RtcEngine/setLogFileSize.html">setLogFileSize</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setLogFilter.html">setLogFilter</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setMaxMetadataSize.html">setMaxMetadataSize</a></li>
+        <li><a href="../../rtc_engine/RtcEngine/setParameters.html">setParameters</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteDefaultVideoStreamType.html">setRemoteDefaultVideoStreamType</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteSubscribeFallbackOption.html">setRemoteSubscribeFallbackOption</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteUserPriority.html">setRemoteUserPriority</a></li>
@@ -208,6 +210,11 @@
       <div><h1><span class="kind-method">complain</span> method </h1></div>
 
     <section class="multi-line-signature">
+      <div>
+        <ol class="annotation-list">
+          <li>@<a href="https://api.flutter.dev/flutter/dart-core/override-constant.html">override</a></li>
+        </ol>
+      </div>
       <span class="returntype"><a href="https://api.flutter.dev/flutter/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">void</span>&gt;</span></span>
             <span class="name ">complain</span>
 (<wbr><ol class="parameter-list"><li><span class="parameter" id="complain-param-callId"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">callId</span>, </span></li>
@@ -218,13 +225,14 @@
     <section class="desc markdown">
       <p>投诉通话质量。</p>
 <p>该方法让用户就通话质量进行投诉。一般在通话结束后调用。</p>
-<p>Param <code>callId</code> 通话 <a href="../../rtc_engine/RtcEngine/getCallId.html">RtcEngine.getCallId</a> 函数获取的通话 ID。</p>
-<p>Param <code>description</code> （非必选项）给通话的描述，可选，长度应小于 800 字节。</p>
+<p><strong>Parameter</strong> <code>callId</code> 通话 <a href="../../rtc_engine/RtcEngine/getCallId.html">RtcEngine.getCallId</a> 函数获取的通话 ID。</p>
+<p><strong>Parameter</strong> <code>description</code> （非必选项）给通话的描述，可选，长度应小于 800 字节。</p>
     </section>
     
     <section class="summary source-code" id="source">
       <h2><span>Implementation</span></h2>
-      <pre class="language-dart"><code class="language-dart">Future&lt;void&gt; complain(String callId, String description) {
+      <pre class="language-dart"><code class="language-dart">@override
+Future&lt;void&gt; complain(String callId, String description) {
   return _invokeMethod(
       &#39;complain&#39;, {&#39;callId&#39;: callId, &#39;description&#39;: description});
 }</code></pre>

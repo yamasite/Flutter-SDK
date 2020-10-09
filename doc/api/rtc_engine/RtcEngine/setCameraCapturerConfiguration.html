@@ -81,6 +81,7 @@
         <li><a href="../../rtc_engine/RtcEngine/enableAudio.html">enableAudio</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableAudioVolumeIndication.html">enableAudioVolumeIndication</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableDualStreamMode.html">enableDualStreamMode</a></li>
+        <li><a href="../../rtc_engine/RtcEngine/enableEncryption.html">enableEncryption</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableFaceDetection.html">enableFaceDetection</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableInEarMonitoring.html">enableInEarMonitoring</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableLastmileTest.html">enableLastmileTest</a></li>
@@ -163,6 +164,7 @@
         <li><a href="../../rtc_engine/RtcEngine/setLogFileSize.html">setLogFileSize</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setLogFilter.html">setLogFilter</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setMaxMetadataSize.html">setMaxMetadataSize</a></li>
+        <li><a href="../../rtc_engine/RtcEngine/setParameters.html">setParameters</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteDefaultVideoStreamType.html">setRemoteDefaultVideoStreamType</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteSubscribeFallbackOption.html">setRemoteSubscribeFallbackOption</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteUserPriority.html">setRemoteUserPriority</a></li>
@@ -226,16 +228,16 @@
 <ul>
 <li>使用裸数据自采集接口时，如果 SDK 输出的分辨率和帧率高于 <a href="../../rtc_engine/RtcEngine/setVideoEncoderConfiguration.html">RtcEngine.setVideoEncoderConfiguration</a>
 中指定的参数，在后续处理视频帧的时候，比如美颜功能时，
-会需要更高的 CPU 及内存，容易导致性能问题。在这种情况下，我们推荐将摄像头采集偏好设置为 <a href="1">CameraCaptureOutputPreference.Performance</a>，
+会需要更高的 CPU 及内存，容易导致性能问题。在这种情况下，我们推荐将摄像头采集偏好设置为 <a href="../../rtc_engine/CameraCaptureOutputPreference-class.html">CameraCaptureOutputPreference.Performance</a>，
 避免性能问题。</li>
-<li>如果没有本地预览功能或者对预览质量没有要求，我们推荐将采集偏好设置为 <a href="1">CameraCaptureOutputPreference.Performance</a>，以优化 CPU 和
+<li>如果没有本地预览功能或者对预览质量没有要求，我们推荐将采集偏好设置为 <a href="../../rtc_engine/CameraCaptureOutputPreference-class.html">CameraCaptureOutputPreference.Performance</a>，以优化 CPU 和
 内存的资源分配。</li>
-<li>如果用户希望本地预览视频比实际编码发送的视频清晰，可以将采集偏好设置为 <a href="2">CameraCaptureOutputPreference.Preview</a>。</li>
+<li>如果用户希望本地预览视频比实际编码发送的视频清晰，可以将采集偏好设置为 <a href="../../rtc_engine/CameraCaptureOutputPreference-class.html">CameraCaptureOutputPreference.Preview</a>。</li>
 </ul>
 <p><strong>Note</strong></p>
 <p>请在启动摄像头之前调用该方法，如 <a href="../../rtc_engine/RtcEngine/joinChannel.html">RtcEngine.joinChannel</a>，<a href="../../rtc_engine/RtcEngine/enableVideo.html">RtcEngine.enableVideo</a>
 或者 <a href="../../rtc_engine/RtcEngine/enableLocalVideo.html">RtcEngine.enableLocalVideo</a>。</p>
-<p>Param <code>config</code> 摄像头采集偏好。详见 <a href="../../rtc_engine/CameraCapturerConfiguration-class.html">CameraCapturerConfiguration</a>。</p>
+<p><strong>Parameter</strong> <code>config</code> 摄像头采集偏好。详见 <a href="../../rtc_engine/CameraCapturerConfiguration-class.html">CameraCapturerConfiguration</a>。</p>
     </section>
     
     <section class="summary source-code" id="source">

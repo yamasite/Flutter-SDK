@@ -61,6 +61,8 @@
             <a href="../../rtc_channel/RtcChannelEventHandler-class.html#instance-properties">Properties</a>
         </li>
         <li><a href="../../rtc_channel/RtcChannelEventHandler/activeSpeaker.html">activeSpeaker</a></li>
+        <li><a href="../../rtc_channel/RtcChannelEventHandler/audioPublishStateChanged.html">audioPublishStateChanged</a></li>
+        <li><a href="../../rtc_channel/RtcChannelEventHandler/audioSubscribeStateChanged.html">audioSubscribeStateChanged</a></li>
         <li><a href="../../rtc_channel/RtcChannelEventHandler/channelMediaRelayEvent.html">channelMediaRelayEvent</a></li>
         <li><a href="../../rtc_channel/RtcChannelEventHandler/channelMediaRelayStateChanged.html">channelMediaRelayStateChanged</a></li>
         <li><a href="../../rtc_channel/RtcChannelEventHandler/clientRoleChanged.html">clientRoleChanged</a></li>
@@ -81,6 +83,7 @@
         <li><a href="../../rtc_channel/RtcChannelEventHandler/remoteVideoStats.html">remoteVideoStats</a></li>
         <li><a href="../../rtc_channel/RtcChannelEventHandler/requestToken.html">requestToken</a></li>
         <li><a href="../../rtc_channel/RtcChannelEventHandler/rtcStats.html">rtcStats</a></li>
+        <li><a href="../../rtc_channel/RtcChannelEventHandler/rtmpStreamingEvent.html">rtmpStreamingEvent</a></li>
         <li><a href="../../rtc_channel/RtcChannelEventHandler/rtmpStreamingStateChanged.html">rtmpStreamingStateChanged</a></li>
         <li class="inherited"><a href="https://api.flutter.dev/flutter/dart-core/Object/runtimeType.html">runtimeType</a></li>
         <li><a href="../../rtc_channel/RtcChannelEventHandler/streamInjectedStatus.html">streamInjectedStatus</a></li>
@@ -90,7 +93,9 @@
         <li><a href="../../rtc_channel/RtcChannelEventHandler/transcodingUpdated.html">transcodingUpdated</a></li>
         <li><a href="../../rtc_channel/RtcChannelEventHandler/userJoined.html">userJoined</a></li>
         <li><a href="../../rtc_channel/RtcChannelEventHandler/userOffline.html">userOffline</a></li>
+        <li><a href="../../rtc_channel/RtcChannelEventHandler/videoPublishStateChanged.html">videoPublishStateChanged</a></li>
         <li><a href="../../rtc_channel/RtcChannelEventHandler/videoSizeChanged.html">videoSizeChanged</a></li>
+        <li><a href="../../rtc_channel/RtcChannelEventHandler/videoSubscribeStateChanged.html">videoSubscribeStateChanged</a></li>
         <li><a href="../../rtc_channel/RtcChannelEventHandler/warning.html">warning</a></li>
     
         <li class="section-title"><a href="../../rtc_channel/RtcChannelEventHandler-class.html#instance-methods">Methods</a></li>
@@ -123,6 +128,11 @@
 <li>正常离开的时候，远端用户/主播会收到类似“再见”的消息，接收此消息后，判断用户离开频道。</li>
 <li>超时掉线的依据是，在一定时间内（约 20 秒），用户没有收到对方的任何数据包，则判定为对方掉线。在网络较差的情况下，
 有可能会误报。Agora 建议使用 Agora 实时消息 SDK 来做可靠的掉线检测。</li>
+</ul>
+<p><code>UserOfflineCallback</code> 包含如下参数：</p>
+<ul>
+<li><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a> <code>uid</code>：主播 ID。</li>
+<li><a href="../../rtc_engine/UserOfflineReason-class.html">UserOfflineReason</a> <code>reason</code>：离线原因。</li>
 </ul>
         </section>
                 <section class="summary source-code" id="source">

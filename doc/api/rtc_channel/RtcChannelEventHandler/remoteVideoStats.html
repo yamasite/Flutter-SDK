@@ -61,6 +61,8 @@
             <a href="../../rtc_channel/RtcChannelEventHandler-class.html#instance-properties">Properties</a>
         </li>
         <li><a href="../../rtc_channel/RtcChannelEventHandler/activeSpeaker.html">activeSpeaker</a></li>
+        <li><a href="../../rtc_channel/RtcChannelEventHandler/audioPublishStateChanged.html">audioPublishStateChanged</a></li>
+        <li><a href="../../rtc_channel/RtcChannelEventHandler/audioSubscribeStateChanged.html">audioSubscribeStateChanged</a></li>
         <li><a href="../../rtc_channel/RtcChannelEventHandler/channelMediaRelayEvent.html">channelMediaRelayEvent</a></li>
         <li><a href="../../rtc_channel/RtcChannelEventHandler/channelMediaRelayStateChanged.html">channelMediaRelayStateChanged</a></li>
         <li><a href="../../rtc_channel/RtcChannelEventHandler/clientRoleChanged.html">clientRoleChanged</a></li>
@@ -81,6 +83,7 @@
         <li><a href="../../rtc_channel/RtcChannelEventHandler/remoteVideoStats.html">remoteVideoStats</a></li>
         <li><a href="../../rtc_channel/RtcChannelEventHandler/requestToken.html">requestToken</a></li>
         <li><a href="../../rtc_channel/RtcChannelEventHandler/rtcStats.html">rtcStats</a></li>
+        <li><a href="../../rtc_channel/RtcChannelEventHandler/rtmpStreamingEvent.html">rtmpStreamingEvent</a></li>
         <li><a href="../../rtc_channel/RtcChannelEventHandler/rtmpStreamingStateChanged.html">rtmpStreamingStateChanged</a></li>
         <li class="inherited"><a href="https://api.flutter.dev/flutter/dart-core/Object/runtimeType.html">runtimeType</a></li>
         <li><a href="../../rtc_channel/RtcChannelEventHandler/streamInjectedStatus.html">streamInjectedStatus</a></li>
@@ -90,7 +93,9 @@
         <li><a href="../../rtc_channel/RtcChannelEventHandler/transcodingUpdated.html">transcodingUpdated</a></li>
         <li><a href="../../rtc_channel/RtcChannelEventHandler/userJoined.html">userJoined</a></li>
         <li><a href="../../rtc_channel/RtcChannelEventHandler/userOffline.html">userOffline</a></li>
+        <li><a href="../../rtc_channel/RtcChannelEventHandler/videoPublishStateChanged.html">videoPublishStateChanged</a></li>
         <li><a href="../../rtc_channel/RtcChannelEventHandler/videoSizeChanged.html">videoSizeChanged</a></li>
+        <li><a href="../../rtc_channel/RtcChannelEventHandler/videoSubscribeStateChanged.html">videoSubscribeStateChanged</a></li>
         <li><a href="../../rtc_channel/RtcChannelEventHandler/warning.html">warning</a></li>
     
         <li class="section-title"><a href="../../rtc_channel/RtcChannelEventHandler-class.html#instance-methods">Methods</a></li>
@@ -120,6 +125,10 @@
           <p>通话中远端视频流的统计信息回调。</p>
 <p>该回调描述远端用户在通话中端到端的视频流状态，针对每个远端用户/主播每 2 秒触发一次。
 如果远端同时存在多个用户/主播，该回调每 2 秒会被触发多次。</p>
+<p><code>RemoteVideoStatsCallback</code> 包含如下参数：</p>
+<ul>
+<li><a href="../../rtc_engine/RemoteVideoStats-class.html">RemoteVideoStats</a> <code>stats</code>：远端视频统计数据。</li>
+</ul>
         </section>
                 <section class="summary source-code" id="source">
           <h2><span>Implementation</span></h2>

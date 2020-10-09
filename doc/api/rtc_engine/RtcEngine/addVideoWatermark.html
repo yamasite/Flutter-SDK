@@ -81,6 +81,7 @@
         <li><a href="../../rtc_engine/RtcEngine/enableAudio.html">enableAudio</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableAudioVolumeIndication.html">enableAudioVolumeIndication</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableDualStreamMode.html">enableDualStreamMode</a></li>
+        <li><a href="../../rtc_engine/RtcEngine/enableEncryption.html">enableEncryption</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableFaceDetection.html">enableFaceDetection</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableInEarMonitoring.html">enableInEarMonitoring</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableLastmileTest.html">enableLastmileTest</a></li>
@@ -163,6 +164,7 @@
         <li><a href="../../rtc_engine/RtcEngine/setLogFileSize.html">setLogFileSize</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setLogFilter.html">setLogFilter</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setMaxMetadataSize.html">setMaxMetadataSize</a></li>
+        <li><a href="../../rtc_engine/RtcEngine/setParameters.html">setParameters</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteDefaultVideoStreamType.html">setRemoteDefaultVideoStreamType</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteSubscribeFallbackOption.html">setRemoteSubscribeFallbackOption</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteUserPriority.html">setRemoteUserPriority</a></li>
@@ -240,15 +242,15 @@ Agora 当前只支持在直播视频流中添加一个水印，后添加的水�
 <li>如果你已设置本地视频为镜像模式，那么此处的本地水印也为镜像。为避免本地用户看本地视频时的水印也被镜像，
 Agora 建议你不要对本地视频同时使用镜像和水印功能，请在应用层实现本地水印功能。</li>
 </ul>
-<p>Param <code>watermarkUrl</code> 待添加的水印图片的本地路径。本方法支持从本地路径和 assets 路径添加水印图片。如果使用 assets 路径，需要以 <code>/assets/</code> 开头。</p>
-<p>Param <code>options</code> 待添加的水印图片的设置选项。详见 <a href="../../rtc_engine/WatermarkOptions-class.html">WatermarkOptions</a>。</p>
+<p><strong>Parameter</strong> <code>watermarkUrl</code> 待添加的水印图片的本地路径。本方法支持从本地路径和 assets 路径添加水印图片。如果使用 assets 路径，需要以 <code>/assets/</code> 开头。</p>
+<p><strong>Parameter</strong> <code>options</code> 待添加的水印图片的设置选项。详见 <a href="../../rtc_engine/WatermarkOptions-class.html">WatermarkOptions</a>。</p>
     </section>
     
     <section class="summary source-code" id="source">
       <h2><span>Implementation</span></h2>
       <pre class="language-dart"><code class="language-dart">@override
-Future&lt;void&gt; addVideoWatermark(String watermarkUrl,
-    WatermarkOptions options) {
+Future&lt;void&gt; addVideoWatermark(
+    String watermarkUrl, WatermarkOptions options) {
   return _invokeMethod(&#39;addVideoWatermark&#39;,
       {&#39;watermarkUrl&#39;: watermarkUrl, &#39;options&#39;: options.toJson()});
 }</code></pre>

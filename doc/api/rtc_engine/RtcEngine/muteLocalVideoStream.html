@@ -81,6 +81,7 @@
         <li><a href="../../rtc_engine/RtcEngine/enableAudio.html">enableAudio</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableAudioVolumeIndication.html">enableAudioVolumeIndication</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableDualStreamMode.html">enableDualStreamMode</a></li>
+        <li><a href="../../rtc_engine/RtcEngine/enableEncryption.html">enableEncryption</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableFaceDetection.html">enableFaceDetection</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableInEarMonitoring.html">enableInEarMonitoring</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableLastmileTest.html">enableLastmileTest</a></li>
@@ -163,6 +164,7 @@
         <li><a href="../../rtc_engine/RtcEngine/setLogFileSize.html">setLogFileSize</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setLogFilter.html">setLogFilter</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setMaxMetadataSize.html">setMaxMetadataSize</a></li>
+        <li><a href="../../rtc_engine/RtcEngine/setParameters.html">setParameters</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteDefaultVideoStreamType.html">setRemoteDefaultVideoStreamType</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteSubscribeFallbackOption.html">setRemoteSubscribeFallbackOption</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteUserPriority.html">setRemoteUserPriority</a></li>
@@ -225,15 +227,15 @@
 <p><strong>Note</strong></p>
 <ul>
 <li>调用该方法时，SDK 不再发送本地视频流，但摄像头仍然处于工作状态。
-相比于 <a href="false">RtcEngine.enableLocalVideo</a> 用于控制本地视频流发送的方法，该方法响应速度更快。</li>
+相比于 <a href="../../rtc_engine/RtcEngine/enableLocalVideo.html">RtcEngine.enableLocalVideo</a> (<code>false</code>) 用于控制本地视频流发送的方法，该方法响应速度更快。</li>
 <li>该方法不影响本地视频流获取，没有禁用摄像头。</li>
 <li>如果你在该方法后调用 <a href="../../rtc_engine/RtcEngine/setChannelProfile.html">RtcEngine.setChannelProfile</a> 方法，SDK 会根据你设置的频道模式以及用户角色，
 重新设置是否停止发送本地视频。因此我们建议在 <a href="../../rtc_engine/RtcEngine/setChannelProfile.html">RtcEngine.setChannelProfile</a> 后调用该方法。</li>
 </ul>
-<p>Param <code>muted</code> 是否发送本地视频流:</p>
+<p><strong>Parameter</strong> <code>muted</code> 是否发送本地视频流:</p>
 <ul>
-<li>true：不发送本地视频流。</li>
-<li>false：（默认）发送本地视频流。</li>
+<li><code>true</code>：不发送本地视频流。</li>
+<li><code>false</code>：（默认）发送本地视频流。</li>
 </ul>
     </section>
     

@@ -3,33 +3,40 @@ import 'package:json_annotation/json_annotation.dart';
 import 'events.dart';
 import 'rtc_engine.dart';
 
-/// IP 区域。
- // TODO 该 tag 是否生效？
-enum IPAreaCode {
+/// 访问区域。
+enum AreaCode {
   /// 中国大陆。
-  @JsonValue(1 << 0)
-  AREA_CN,
+  @JsonValue(0x00000001)
+  CN,
 
   /// 北美区域。
-  @JsonValue(1 << 1)
-  AREA_NA,
+  @JsonValue(0x00000002)
+  NA,
 
-  ///  欧洲区域。
-  @JsonValue(1 << 2)
-  AREA_EUR,
+  /// 欧洲区域。
+  @JsonValue(0x00000004)
+  EU,
 
   /// 除中国大陆以外的亚洲区域。
-  @JsonValue(1 << 3)
-  AREA_AS,
+  @JsonValue(0x00000008)
+  AS,
 
-  /// (Default) Global
+  /// 日本。
+  @JsonValue(0x00000010)
+  JP,
+
+  /// 印度。
+  @JsonValue(0x00000020)
+  IN,
+
+  /// （默认）全球。
   @JsonValue(-1)
-  AREA_GLOBAL,
+  GLOB,
 }
 
 /// 用于旁路直播的输出音频的编码规格。
 enum AudioCodecProfileType {
-  /// (默认) LCAAC 规格，表示基本音频编码规格。 // TODO 英文将 LC-AAC 改成 LCAAC。
+  /// (默认) LCAAC 规格，表示基本音频编码规格。
   @JsonValue(0)
   LCAAC,
 
@@ -200,7 +207,7 @@ enum AudioOutputRouting {
 enum AudioProfile {
   ///默认设置。
   /// - 通信场景下，该选项代表指定 32 kHz 采样率，语音编码，单声道，编码码率最大值为 18 Kbps。
-  /// - 直播场景下，该选项代表指定 48 kHz 采样率，音乐编码，单声道，编码码率最大值为 52 Kbps。
+  /// - 直播场景下，该选项代表指定 48 kHz 采样率，音乐编码，单声道，编码码率最大值为 64 Kbps。
   @JsonValue(0)
   Default,
 
@@ -212,36 +219,17 @@ enum AudioProfile {
   @JsonValue(2)
   MusicStandard,
 
-  /// 指定 48 kHz采样率，音乐编码，双声道，编码码率最大值为 56 Kbps。
+  /// 指定 48 kHz采样率，音乐编码，双声道，编码码率最大值为 80 Kbps。
   @JsonValue(3)
   MusicStandardStereo,
 
-  /// 指定 48 kHz 采样率，音乐编码，单声道，编码码率最大值为 128 Kbps。
+  /// 指定 48 kHz 采样率，音乐编码，单声道，编码码率最大值为 96 Kbps。
   @JsonValue(4)
   MusicHighQuality,
 
-  /// 指定 48 kHz 采样率，音乐编码，双声道，编码码率最大值为 192 Kbps。
+  /// 指定 48 kHz 采样率，音乐编码，双声道，编码码率最大值为 128 Kbps。
   @JsonValue(5)
   MusicHighQualityStereo,
-}
-
-
-/// `onRecordAudioFrame` 的使用模式。// TODO 将 on 去掉？
-/// TODO @nodoc setPlaybackAudioFrameParameters // TODO 这个枚举是用不到吗？
-enum AudioRawFrameOperationMode {
-  /// 只读模式，用户仅从 AudioFrame 获取原始音频数据，不作任何修改。
-  /// 例如，如果用户通过 Agora SDK 采集数据，自己进行 RTMP 推流，则可以选择该模式。
-  @JsonValue(0)
-  ReadOnly,
-
-  /// 只写模式，用户替换 AudioFrame 中的数据。例如，如果用户自行采集数据，可选择该模式。
-  @JsonValue(1)
-  WriteOnly,
-
-  /// 读写模式，用户从 AudioFrame 获取数据、修改。
-  /// 例如，如果用户自己有音效处理模块，且想要根据实际需要对数据进行后处理 (例如变声)，则可以选择该模式。
-  @JsonValue(2)
-  ReadWrite,
 }
 
 /// 录音质量。
@@ -466,30 +454,6 @@ enum AudioScenario {
   ChatRoomGaming,
 }
 
-
-/// 音频会话控制权限。（仅适用于 iOS）
-enum AudioSessionOperationRestriction {
-  /// 没有限制，SDK 可以完全控制 Audio Session 操作。
-  @JsonValue(0)
-  None,
-
-  /// SDK 不能更改 Audio Session 的 category。
-  @JsonValue(1)
-  SetCategory,
-
-  /// SDK 不能更改 Audio Session 的 category，mode，categoryOptions。
-  @JsonValue(1 << 1)
-  ConfigureSession,
-
-  /// 离开某个频道时，SDK 会保持 Audio Session 处于活动状态。
-  @JsonValue(1 << 2)
-  DeactivateSession,
-
-  /// 限制 SDK 对 Audio Session 进行任何操作，SDK 将不能再对 Audio Session 进行任何配置。
-  @JsonValue(1 << 7)
-  All,
-}
-
 /// 本地语音变声、美音或语聊美声效果选项。
 enum AudioVoiceChanger {
   /// 原声，即关闭本地语音的变声、美音或语聊美声效果。
@@ -659,7 +623,7 @@ enum ChannelMediaRelayEvent {
   @JsonValue(0)
   Disconnect,
 
-  /// 用户与服务器建立连接。//TODO 为什么英文是 reconnects?
+  /// 用户与服务器建立连接。
   @JsonValue(1)
   Connected,
 
@@ -771,7 +735,6 @@ enum ConnectionChangedReason {
   @JsonValue(3)
   BannedByServer,
 
-  /// The SDK fails to join the channel for more than 20 minutes and stops reconnecting to the channel.
   /// 加入频道失败。SDK 在尝试加入频道 20 分钟后还是没能加入频道，会返回该状态，并停止尝试重连。
   @JsonValue(4)
   JoinFailed,
@@ -848,7 +811,7 @@ enum ConnectionStateType {
   @JsonValue(3)
   Connected,
 
-  /// 重新建立网络连接中。// TODO 英文建议分段
+  /// 重新建立网络连接中。
   ///
   /// 该状态表示 SDK 之前曾加入过频道，但因网络等原因连接中断了，此时 SDK 会自动尝试重新接入频道。
   /// - 如果 SDK 无法在 10 秒内重新加入频道，则 `connectionLost` 会被触发，SDK 会一直保持在 `Reconnecting` 的状态，并不断尝试重新加入频道。
@@ -884,19 +847,30 @@ enum DegradationPreference {
   Balanced
 }
 
-/// 加密模式。// TODO 英文也删一下 @enume string
+/// 加密模式。
 enum EncryptionMode {
+  /// **Deprecated**
+  /// 该模式已废弃。
+  @JsonValue(0)
+  None,
+
   /// （默认）128 位 AES 加密，XTS 模式。
-  @JsonValue('aes-128-xts')
+  @JsonValue(1)
   AES128XTS,
 
+  /// 128 位 AES 加密，ECB 模式。
+  @JsonValue(2)
+  AES128ECB,
+
   /// 256 位 AES 加密，XTS 模式。
-  @JsonValue('aes-256-xts')
+  @JsonValue(3)
   AES256XTS,
 
-  /// 128 位 AES 加密，ECB 模式。
-  @JsonValue('aes-128-ecb')
-  AES128ECB,
+  /// 128 位 SM4 加密，ECB 模式。
+  ///
+  /// @since v3.1.2。
+  @JsonValue(4)
+  SM4128ECB,
 }
 
 /// 错误代码。SDK 上报的错误意味着 SDK 无法自动恢复，需要 App 干预或提示用户。
@@ -1002,9 +976,16 @@ enum ErrorCode {
   @JsonValue(102)
   InvalidChannelId,
 
+  /// 没有服务器资源，请尝试设置其他区域代码。
+  ///
+  /// @since v3.1.2。
+  @JsonValue(103)
+  NoServerResources,
+
+
   /// 当前使用的 Token 过期，不再有效。
   ///
-  /// @deprecated 已废弃。
+  /// **Deprecated** 已废弃。
   ///
   /// 请改用 [`connectionStateChanged`] 回调中的 `TokenExpired`。
   /// 详见 [RtcEngineEventHandler.connectionStateChanged] 和 [ConnectionChangedReason.TokenExpired]。
@@ -1020,7 +1001,7 @@ enum ErrorCode {
 
   /// 生成的 Token 无效。
   ///
-  /// @deprecated 已废弃。请改用 `connectionStateChanged` 回调中的 `InvalidToken`。
+  /// **Deprecated** 已废弃。请改用 `connectionStateChanged` 回调中的 `InvalidToken`。
   /// 详见 [RtcEngineEventHandler.connectionStateChanged] 和 [ConnectionChangedReason.InvalidToken]。
   ///
   /// 一般有以下原因：
@@ -1135,7 +1116,7 @@ enum ErrorCode {
 
   /// 启动摄像头失败，请检查摄像头是否被其他应用占用，或者尝试重新进入频道。
   ///
-  /// @deprecated
+  /// **Deprecated**
   /// 已废弃。请改用 `localVideoStateChanged` 回调中的 `CaptureFailure`(4)。
   /// 详见 [LocalVideoStreamError.CaptureFailure] 和 [RtcEngineEventHandler.localVideoStateChanged]。
   @deprecated
@@ -1244,7 +1225,7 @@ enum ErrorCode {
 
   /// 视频设备模块：视频 Codec 设置错误。
   ///
-  /// @deprecated 该错误代码已废弃。
+  /// **Deprecated** 该错误代码已废弃。
   @deprecated
   @JsonValue(1603)
   VcmEncoderSetError,
@@ -1402,61 +1383,6 @@ enum LogFilter {
   Critical,
 }
 
-/// 媒体设备类型。（仅适用于 iOS）
-enum MediaDeviceType {
-  /// 未知的设备类型。
-  @JsonValue(-1)
-  AudioUnknown,
-
-  /// 音频播放设备。
-  @JsonValue(0)
-  AudioPlayout,
-
-  /// 音频录制设备。
-  @JsonValue(1)
-  AudioRecording,
-
-  /// 视频渲染设备。
-  @JsonValue(2)
-  VideoRender,
-
-  /// 视频采集设备。
-  @JsonValue(3)
-  VideoCapture,
-}
-
-/// 媒体类型。
-/// TODO @nodoc LiveEngine
-enum MediaType {
-  /// 无音视频。
-  @JsonValue(0)
-  None,
-
-  /// 仅有音频。
-  @JsonValue(1)
-  AudioOnly,
-
-  /// 仅有视频。
-  @JsonValue(2)
-  VideoOnly,
-
-  /// 有音视频。
-  @JsonValue(3)
-  AudioAndVideo,
-}
-
-/// 观测器的 Metadata 类型。（仅适用于 Android)
-/// TODO @nodoc registerMediaMetadataObserver
-enum MetadataType {
-  /// Metadata 类型未知。
-  @JsonValue(-1)
-  Unknown,
-
-  /// Metadata 类型为视频。
-  @JsonValue(0)
-  Video,
-}
-
 /// 网络质量。
 enum NetworkQuality {
   /// 网络质量未知。
@@ -1525,28 +1451,6 @@ enum NetworkType {
   /// 网络类型为 4G 移动网络。
   @JsonValue(5)
   Mobile4G,
-}
-
-/// 默认相机位置。（仅适用于 Android）
-enum RtcDefaultCameraPosition {
-  /// 前置摄像头。
-  @JsonValue(0)
-  Front,
-
-  /// 后置摄像头。
-  @JsonValue(1)
-  Back
-}
-
-/// 服务端转码推流的生命周期。
-enum RtmpStreamLifeCycle {
-  /// 跟频道生命周期绑定，即频道内所有主播离开，服务端转码推流会在 30 秒之后停止。
-  @JsonValue(1)
-  BindToChannel,
-
-  /// 跟启动服务端转码推流的主播生命周期绑定，即该主播离开，服务端转码推流会立即停止。
-  @JsonValue(2)
-  BindToOwnner,
 }
 
 /// 详细的推流错误信息。
@@ -1677,18 +1581,6 @@ enum UserPriority {
   Normal,
 }
 
-/// 视频 buffer 类型。（仅适用于 iOS）
-/// TODO @nodoc iOS AgoraVideoSourceProtocol AgoraVideoSinkProtocol
-enum VideoBufferType {
-  /// 使用 Pixel Buffer 类型的 Buffer。
-  @JsonValue(1)
-  PixelBuffer,
-
-  /// 使用 Raw Data 类型的 Buffer。
-  @JsonValue(2)
-  RawData,
-}
-
 /// 用于旁路直播的输出视频的编码规格。
 enum VideoCodecProfileType {
   /// Baseline 级别的视频编码规格，一般用于低阶或需要额外容错的应用，比如视频通话、手机视频等。
@@ -1702,22 +1594,6 @@ enum VideoCodecProfileType {
   ///（默认）High 级别的视频编码规格，一般用于广播及视频碟片存储，高清电视。
   @JsonValue(100)
   High,
-}
-
-/// 屏幕共享的内容类型。（仅适用于 iOS）
-/// TODO @nodoc MacOS setScreenCaptureContentHint
-enum VideoContentHint {
-  /// （默认）无指定的内容类型。
-  @JsonValue(0)
-  None,
-
-  /// 内容类型为动画。当共享的内容是视频、电影或视频游戏时，推荐选择该内容类型。
-  @JsonValue(1)
-  Motion,
-
-  /// 内容类型为细节。当共享的内容是图片或文字时，推荐选择该内容类型。
-  @JsonValue(2)
-  Details,
 }
 
 /// 视频编码的帧率。
@@ -1755,7 +1631,7 @@ enum VideoFrameRate {
   Fps60,
 }
 
-/// 视频编码的码率。单位为 Kbps。你可以根据场景需要，参考下面的视频基准码率参考表，手动设置你想要的码率。若设置的视频码率超出合理范围，SDK 会自动按照合理区间处理码率。// TODO 英文没有给出 table
+/// 视频编码的码率。单位为 Kbps。你可以根据场景需要，参考下面的视频基准码率参考表，手动设置你想要的码率。若设置的视频码率超出合理范围，SDK 会自动按照合理区间处理码率。
 ///
 /// **视频码率参考表**
 /// <table>
@@ -1916,6 +1792,7 @@ enum VideoFrameRate {
 ///         <td>2760</td>
 ///     </tr>
 /// </table>
+///
 /// **Note**
 ///
 /// 该表中的基准码率适用于通信场景。直播场景下通常需要较大码率来提升视频质量。
@@ -1970,22 +1847,6 @@ enum VideoOutputOrientationMode {
   /// 该模式下 SDK 固定输出人像（竖屏）模式的视频。如果采集到的视频是横屏模式，则视频编码器会对其进行裁剪。该模式适用于当接收端无法调整视频方向时，如使用旁路推流场景下。
   @JsonValue(2)
   FixedPortrait,
-}
-
-/// 视频像素格式。（仅适用于 iOS）
-/// TODO @nodoc iOS AgoraVideoSinkProtocol
-enum VideoPixelFormat {
-  /// I420。
-  @JsonValue(1)
-  I420,
-
-  /// BGRA。
-  @JsonValue(2)
-  BGRA,
-
-  /// NV12。
-  @JsonValue(8)
-  NV12,
 }
 
 /// 自上次统计后本地视频质量的自适应情况（基于目标帧率和目标码率）。
@@ -2089,7 +1950,7 @@ enum VideoRenderMode {
   @JsonValue(2)
   Fit,
 
-  /// @deprecated 该模式已废弃。
+  /// **Deprecated** 该模式已废弃。
   @deprecated
   @JsonValue(3)
   Adaptive,
@@ -2097,26 +1958,6 @@ enum VideoRenderMode {
   /// 视频尺寸进行缩放和拉伸以充满显示视窗。
   @JsonValue(4)
   FILL,
-}
-
-/// 视频的顺时针旋转角度。（仅适用于 iOS）
-/// TODO @nodoc iOS AgoraVideoSourceProtocol AgoraVideoSinkProtocol
-enum VideoRotation {
-  /// 顺时针旋转 0 度。
-  @JsonValue(0)
-  RotationNone,
-
-  /// 顺时针旋转 90 度。
-  @JsonValue(1)
-  Rotation90,
-
-  /// 顺时针旋转 180 度。
-  @JsonValue(2)
-  Rotation180,
-
-  /// 顺时针旋转 270 度。
-  @JsonValue(3)
-  Rotation270,
 }
 
 /// 视频流类型。
@@ -2157,7 +1998,7 @@ enum WarningCode {
 
   /// 查找频道请求被服务器拒绝。服务器可能没有办法处理这个请求或请求是非法的。
   ///
-  /// @deprecated 已废弃。请改用 `connectionStateChanged` 回调
+  /// **Deprecated** 已废弃。请改用 `connectionStateChanged` 回调
   /// 中的 `RejectedByServer`(10)。
   /// 详见 [ConnectionChangedReason.RejectedByServer] 和 [RtcEngineEventHandler.connectionStateChanged]。
   @deprecated
@@ -2220,6 +2061,13 @@ enum WarningCode {
   @JsonValue(1025)
   AdmInterruption,
 
+  /// 在通话过程中，`AudioSessionCategory` 必须设置成 `AVAudioSessionCategoryPlayAndRecord`。
+  /// SDK 会监控这个属性值。如果你将 `AudioSessionCategory` 设为其他值，SDK 会触发该警告，并强制设置回 `AVAudioSessionCategoryPlayAndRecord`。
+  ///
+  /// @since v3.1.2。
+  @JsonValue(1029)
+  AdmCategoryNotPlayAndRecord,
+
   /// 音频设备模块：录到的声音太低。
   @JsonValue(1031)
   AdmRecordAudioLowlevel,
@@ -2231,6 +2079,21 @@ enum WarningCode {
   /// 音频设备模块：录制设备被占用。
   @JsonValue(1033)
   AdmRecordIsOccupied,
+
+  /// 音频设备模块：音频驱动器发生异常。解决方案：
+  /// - 禁用并重新启用音频设备
+  /// - 重启 app 运行设备
+  /// - 更新声卡驱动
+  ///
+  /// @since v3.1.2。
+  @JsonValue(1040)
+  AdmNoDataReadyCallback,
+
+  /// 音频设备模块：音频采集设备和播放设备不一致，可能引起回声，建议使用同一设备采集和播放音频。
+  ///
+  /// @since v3.1.2。
+  @JsonValue(1042)
+  AdmInconsistentDevices,
 
   /// （仅通信场景）音频信号处理模块：录制音频时监测到啸叫。
   @JsonValue(1051)
@@ -2289,4 +2152,65 @@ enum VideoCodecType {
   /// 增强 H264。
   @JsonValue(4)
   E264,
+}
+
+/// 发布状态。
+///
+/// @since v3.1.2。
+enum StreamPublishState {
+  /// 加入频道后的初始发布状态。
+  @JsonValue(0)
+  Idle,
+
+  /// 发布失败。可能是因为：
+  /// - 本地用户调用 [RtcEngine.muteLocalAudioStream] (`true`) 或 [RtcEngine.muteLocalVideoStream] (`true`) 停止发送本地媒体流。
+  /// - 本地用户调用 [RtcEngine.disableAudio] 或 [RtcEngine.disableVideo] 关闭本地音频或视频模块。
+  /// - 本地用户调用 [RtcEngine.enableLocalAudio] (`false`) 或 [RtcEngine.enableLocalVideo] (`false`) 关闭本地音频或视频采集。
+  /// - 本地用户角色为观众。
+  @JsonValue(1)
+  NoPublished,
+
+  /// 正在发布。
+  @JsonValue(2)
+  Publishing,
+
+  /// 发布成功。
+  @JsonValue(3)
+  Published,
+}
+
+/// 订阅状态。
+///
+/// @since v3.1.2。
+enum StreamSubscribeState {
+  /// 加入频道后的初始订阅状态。
+  @JsonValue(0)
+  Idle,
+
+  /// 订阅失败。可能是因为：
+  /// - 远端用户：
+  ///   - 调用 [RtcEngine.muteLocalAudioStream] (`true`) 或 [RtcEngine.muteLocalVideoStream] (`true`) 停止发送本地媒体流。
+  ///   - 调用 [RtcEngine.disableAudio] 或 [RtcEngine.disableVideo] 关闭本地音频或视频模块。
+  ///   - 调用 [RtcEngine.enableLocalAudio] (`false`) 或 [RtcEngine.enableLocalVideo] (`false`) 关闭本地音频或视频采集。
+  ///   - 用户角色为观众。
+  /// - 本地用户调用以下方法停止接收远端媒体流：
+  ///   - 调用 [RtcEngine.muteRemoteAudioStream] (`true`)、[RtcEngine.muteAllRemoteAudioStreams] (`true`) 或 [RtcEngine.setDefaultMuteAllRemoteAudioStreams] (`true`) 停止接收远端音频流。
+  ///   - 调用 [RtcEngine.muteRemoteVideoStream] (`true`)、[RtcEngine.muteAllRemoteVideoStreams] (`true`) 或 [RtcEngine.setDefaultMuteAllRemoteVideoStreams] (`true`) 停止接收远端视频流。
+  @JsonValue(1)
+  NoSubscribed,
+
+  /// 正在订阅。
+  @JsonValue(2)
+  Subscribing,
+
+  /// 收到了远端流，订阅成功。
+  @JsonValue(3)
+  Subscribed,
+}
+
+/// RTMP 推流事件码。
+enum RtmpStreamingEvent {
+  /// RTMP 推流时，添加背景图或水印出错。
+  @JsonValue(1)
+  FailedLoadImage,
 }

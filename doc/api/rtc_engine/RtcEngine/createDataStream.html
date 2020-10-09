@@ -81,6 +81,7 @@
         <li><a href="../../rtc_engine/RtcEngine/enableAudio.html">enableAudio</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableAudioVolumeIndication.html">enableAudioVolumeIndication</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableDualStreamMode.html">enableDualStreamMode</a></li>
+        <li><a href="../../rtc_engine/RtcEngine/enableEncryption.html">enableEncryption</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableFaceDetection.html">enableFaceDetection</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableInEarMonitoring.html">enableInEarMonitoring</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableLastmileTest.html">enableLastmileTest</a></li>
@@ -163,6 +164,7 @@
         <li><a href="../../rtc_engine/RtcEngine/setLogFileSize.html">setLogFileSize</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setLogFilter.html">setLogFilter</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setMaxMetadataSize.html">setMaxMetadataSize</a></li>
+        <li><a href="../../rtc_engine/RtcEngine/setParameters.html">setParameters</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteDefaultVideoStreamType.html">setRemoteDefaultVideoStreamType</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteSubscribeFallbackOption.html">setRemoteSubscribeFallbackOption</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteUserPriority.html">setRemoteUserPriority</a></li>
@@ -224,14 +226,14 @@
       <p>创建数据流。</p>
 <p>该方法用于创建数据流。<code>`RtcEngine`</code> 生命周期内，每个用户最多只能创建 5 个数据流。
 频道内数据通道最多允许数据延迟 5 秒，若超过 5 秒接收方尚未收到数据流，则数据通道会向 App 报错。</p>
-<p>Param <code>reliable</code> 是否可靠。</p>
+<p><strong>Parameter</strong> <code>reliable</code> 是否可靠。</p>
 <ul>
-<li>true: 接收方 5 秒内会收到发送方所发送的数据，
+<li><code>true</code>: 接收方 5 秒内会收到发送方所发送的数据，
 否则会收到 <a href="../../rtc_engine/RtcEngineEventHandler/streamMessageError.html">RtcEngineEventHandler.streamMessageError</a> 回调并获得相应报错信息。</li>
-<li>false: 接收方不保证收到，就算数据丢失也不会报错。
-Param <code>ordered</code> 是否有序。</li>
-<li>true: 接收方会按照发送方发送的顺序收到数据包。</li>
-<li>false: 接收方不保证按照发送方发送的顺序收到数据包。</li>
+<li><code>false</code>: 接收方不保证收到，就算数据丢失也不会报错。
+<strong>Parameter</strong> <code>ordered</code> 是否有序。</li>
+<li><code>true</code>: 接收方会按照发送方发送的顺序收到数据包。</li>
+<li><code>false</code>: 接收方不保证按照发送方发送的顺序收到数据包。</li>
 </ul>
 <p><strong>Returns</strong></p>
 <ul>

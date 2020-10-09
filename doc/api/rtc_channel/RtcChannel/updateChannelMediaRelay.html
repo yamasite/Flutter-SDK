@@ -67,6 +67,7 @@
         <li><a href="../../rtc_channel/RtcChannel/adjustUserPlaybackSignalVolume.html">adjustUserPlaybackSignalVolume</a></li>
         <li><a href="../../rtc_channel/RtcChannel/createDataStream.html">createDataStream</a></li>
         <li><a href="../../rtc_channel/RtcChannel/destroy.html">destroy</a></li>
+        <li><a href="../../rtc_channel/RtcChannel/enableEncryption.html">enableEncryption</a></li>
         <li><a href="../../rtc_channel/RtcChannel/getCallId.html">getCallId</a></li>
         <li><a href="../../rtc_channel/RtcChannel/getConnectionState.html">getConnectionState</a></li>
         <li><a href="../../rtc_channel/RtcChannel/joinChannel.html">joinChannel</a></li>
@@ -135,14 +136,14 @@
       <p>更新媒体流转发的频道。</p>
 <p>成功开始跨频道转发媒体流后，如果你希望将流转发到多个目标频道，或退出当前的转发频道，可以调用该方法。</p>
 <p>成功调用该方法后，SDK 会触发 <a href="../../rtc_channel/RtcChannelEventHandler/channelMediaRelayEvent.html">RtcChannelEventHandler.channelMediaRelayEvent</a> 回调，
-并在回调中报告状态码 <a href="7">ChannelMediaRelayEvent.UpdateDestinationChannel</a>。</p>
+并在回调中报告状态码 <a href="../../rtc_engine/ChannelMediaRelayEvent-class.html">ChannelMediaRelayEvent.UpdateDestinationChannel</a>。</p>
 <p><strong>Note</strong></p>
 <ul>
 <li>请在 <a href="../../rtc_channel/RtcChannel/startChannelMediaRelay.html">RtcChannel.startChannelMediaRelay</a> 方法后调用该方法，
 更新媒体流转发的频道。</li>
 <li>跨频道媒体流转发最多支持 4 个目标频道。</li>
 </ul>
-<p>Param <code>channelMediaRelayConfiguration</code> 跨频道媒体流转发参数配置。详见 <a href="../../rtc_engine/ChannelMediaRelayConfiguration-class.html">ChannelMediaRelayConfiguration</a>。</p>
+<p><strong>Parameter</strong> <code>channelMediaRelayConfiguration</code> 跨频道媒体流转发参数配置。详见 <a href="../../rtc_engine/ChannelMediaRelayConfiguration-class.html">ChannelMediaRelayConfiguration</a>。</p>
     </section>
     
     <section class="summary source-code" id="source">

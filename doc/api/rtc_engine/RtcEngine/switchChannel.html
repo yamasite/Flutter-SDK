@@ -81,6 +81,7 @@
         <li><a href="../../rtc_engine/RtcEngine/enableAudio.html">enableAudio</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableAudioVolumeIndication.html">enableAudioVolumeIndication</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableDualStreamMode.html">enableDualStreamMode</a></li>
+        <li><a href="../../rtc_engine/RtcEngine/enableEncryption.html">enableEncryption</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableFaceDetection.html">enableFaceDetection</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableInEarMonitoring.html">enableInEarMonitoring</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableLastmileTest.html">enableLastmileTest</a></li>
@@ -163,6 +164,7 @@
         <li><a href="../../rtc_engine/RtcEngine/setLogFileSize.html">setLogFileSize</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setLogFilter.html">setLogFilter</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setMaxMetadataSize.html">setMaxMetadataSize</a></li>
+        <li><a href="../../rtc_engine/RtcEngine/setParameters.html">setParameters</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteDefaultVideoStreamType.html">setRemoteDefaultVideoStreamType</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteSubscribeFallbackOption.html">setRemoteSubscribeFallbackOption</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteUserPriority.html">setRemoteUserPriority</a></li>
@@ -208,6 +210,11 @@
       <div><h1><span class="kind-method">switchChannel</span> method </h1></div>
 
     <section class="multi-line-signature">
+      <div>
+        <ol class="annotation-list">
+          <li>@<a href="https://api.flutter.dev/flutter/dart-core/override-constant.html">override</a></li>
+        </ol>
+      </div>
       <span class="returntype"><a href="https://api.flutter.dev/flutter/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">void</span>&gt;</span></span>
             <span class="name ">switchChannel</span>
 (<wbr><ol class="parameter-list"><li><span class="parameter" id="switchChannel-param-token"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">token</span>, </span></li>
@@ -224,12 +231,12 @@
 <ul>
 <li>该方法仅适用直播频道中的观众用户。</li>
 </ul>
-<p>Param <code>token</code> 在服务器端生成的用于鉴权的 Token：</p>
+<p><strong>Parameter</strong> <code>token</code> 在服务器端生成的用于鉴权的 Token：</p>
 <ul>
 <li>安全要求不高：你可以使用控制台生成的临时 Token，详见<a href="https://docs.agora.io/cn/Agora%20Platform/token?platform=All%20Platforms#temptoken">获取临时 Token</a>。</li>
 <li>安全要求高：将值设为你的服务端生成的正式 Token，详见<a href="https://docs.agora.io/cn/Agora%20Platform/token?platform=All%20Platforms#generatetoken">从服务端生成 Token</a>。</li>
 </ul>
-<p>Param <code>channelName</code> 标识频道的频道名，最大不超过 64 字节。以下为支持的字符集范围（共 89 个字符）：</p>
+<p><strong>Parameter</strong> <code>channelName</code> 标识频道的频道名，最大不超过 64 字节。以下为支持的字符集范围（共 89 个字符）：</p>
 <ul>
 <li>26 个小写英文字母 a-z</li>
 <li>26 个大写英文字母 A-Z</li>
@@ -241,7 +248,8 @@
     
     <section class="summary source-code" id="source">
       <h2><span>Implementation</span></h2>
-      <pre class="language-dart"><code class="language-dart">Future&lt;void&gt; switchChannel(String token, String channelName) {
+      <pre class="language-dart"><code class="language-dart">@override
+Future&lt;void&gt; switchChannel(String token, String channelName) {
   return _invokeMethod(
       &#39;switchChannel&#39;, {&#39;token&#39;: token, &#39;channelName&#39;: channelName});
 }</code></pre>

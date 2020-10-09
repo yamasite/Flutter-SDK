@@ -81,6 +81,7 @@
         <li><a href="../../rtc_engine/RtcEngine/enableAudio.html">enableAudio</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableAudioVolumeIndication.html">enableAudioVolumeIndication</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableDualStreamMode.html">enableDualStreamMode</a></li>
+        <li><a href="../../rtc_engine/RtcEngine/enableEncryption.html">enableEncryption</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableFaceDetection.html">enableFaceDetection</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableInEarMonitoring.html">enableInEarMonitoring</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableLastmileTest.html">enableLastmileTest</a></li>
@@ -163,6 +164,7 @@
         <li><a href="../../rtc_engine/RtcEngine/setLogFileSize.html">setLogFileSize</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setLogFilter.html">setLogFilter</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setMaxMetadataSize.html">setMaxMetadataSize</a></li>
+        <li><a href="../../rtc_engine/RtcEngine/setParameters.html">setParameters</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteDefaultVideoStreamType.html">setRemoteDefaultVideoStreamType</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteSubscribeFallbackOption.html">setRemoteSubscribeFallbackOption</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteUserPriority.html">setRemoteUserPriority</a></li>
@@ -208,6 +210,11 @@
       <div><h1><span class="kind-method">setLogFile</span> method </h1></div>
 
     <section class="multi-line-signature">
+      <div>
+        <ol class="annotation-list">
+          <li>@<a href="https://api.flutter.dev/flutter/dart-core/override-constant.html">override</a></li>
+        </ol>
+      </div>
       <span class="returntype"><a href="https://api.flutter.dev/flutter/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">void</span>&gt;</span></span>
             <span class="name ">setLogFile</span>
 (<wbr><ol class="parameter-list"><li><span class="parameter" id="setLogFile-param-filePath"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">filePath</span></span></li>
@@ -219,12 +226,13 @@
 <p>设置 SDK 的输出 log 文件。SDK 运行时产生的所有 log 将写入该文件。 App 必须保证指定的目录存在而且可写。</p>
 <p><strong>Note</strong>
 如需调用本方法，请在调用 <a href="../../rtc_engine/RtcEngine/create.html">RtcEngine.create</a> 方法初始化 <code>RtcEngine</code> 对象后立即调用，否则可能造成输出日志不完整。</p>
-<p>Param <code>filePath</code> 日志文件的完整路径。该日志文件为 UTF-8 编码。默认路径为 <code>/storage/emulated/0/Android/data/&lt;package name&gt;=""&gt;/files/agorasdk.log</code>。</p>
+<p><strong>Parameter</strong> <code>filePath</code> 日志文件的完整路径。该日志文件为 UTF-8 编码。默认路径为 <code>/storage/emulated/0/Android/data/&lt;package name&gt;=""&gt;/files/agorasdk.log</code>。</p>
     </section>
     
     <section class="summary source-code" id="source">
       <h2><span>Implementation</span></h2>
-      <pre class="language-dart"><code class="language-dart">Future&lt;void&gt; setLogFile(String filePath) {
+      <pre class="language-dart"><code class="language-dart">@override
+Future&lt;void&gt; setLogFile(String filePath) {
   return _invokeMethod(&#39;setLogFile&#39;, {&#39;filePath&#39;: filePath});
 }</code></pre>
     </section>

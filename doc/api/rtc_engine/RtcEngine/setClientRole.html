@@ -81,6 +81,7 @@
         <li><a href="../../rtc_engine/RtcEngine/enableAudio.html">enableAudio</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableAudioVolumeIndication.html">enableAudioVolumeIndication</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableDualStreamMode.html">enableDualStreamMode</a></li>
+        <li><a href="../../rtc_engine/RtcEngine/enableEncryption.html">enableEncryption</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableFaceDetection.html">enableFaceDetection</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableInEarMonitoring.html">enableInEarMonitoring</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableLastmileTest.html">enableLastmileTest</a></li>
@@ -163,6 +164,7 @@
         <li><a href="../../rtc_engine/RtcEngine/setLogFileSize.html">setLogFileSize</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setLogFilter.html">setLogFilter</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setMaxMetadataSize.html">setMaxMetadataSize</a></li>
+        <li><a href="../../rtc_engine/RtcEngine/setParameters.html">setParameters</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteDefaultVideoStreamType.html">setRemoteDefaultVideoStreamType</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteSubscribeFallbackOption.html">setRemoteSubscribeFallbackOption</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteUserPriority.html">setRemoteUserPriority</a></li>
@@ -208,6 +210,11 @@
       <div><h1><span class="kind-method">setClientRole</span> method </h1></div>
 
     <section class="multi-line-signature">
+      <div>
+        <ol class="annotation-list">
+          <li>@<a href="https://api.flutter.dev/flutter/dart-core/override-constant.html">override</a></li>
+        </ol>
+      </div>
       <span class="returntype"><a href="https://api.flutter.dev/flutter/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">void</span>&gt;</span></span>
             <span class="name ">setClientRole</span>
 (<wbr><ol class="parameter-list"><li><span class="parameter" id="setClientRole-param-role"><span class="type-annotation"><a href="../../rtc_engine/ClientRole-class.html">ClientRole</a></span> <span class="parameter-name">role</span></span></li>
@@ -218,14 +225,14 @@
       <p>设置直播场景下的用户角色。</p>
 <p>在加入频道前，用户需要通过本方法设置观众（默认）或主播模式。在加入频道后，用户可以通过本方法切换用户模式。</p>
 <p>直播场景下，如果你在加入频道后调用该方法切换用户角色，调用成功后，本地会触发 <a href="../../rtc_engine/RtcEngineEventHandler/clientRoleChanged.html">RtcEngineEventHandler.clientRoleChanged</a> 回调；
-远端会触发 <a href="../../rtc_engine/RtcEngineEventHandler/userJoined.html">RtcEngineEventHandler.userJoined</a> 或 <a href="[UserOfflineReason.BecomeAudience]">RtcEngineEventHandler.userOffline</a> 回调。
-//TODO 英文多空格</p>
-<p>Param <code>role</code> 用户角色。详见 <a href="../../rtc_engine/ClientRole-class.html">ClientRole</a>。</p>
+远端会触发 <a href="../../rtc_engine/RtcEngineEventHandler/userJoined.html">RtcEngineEventHandler.userJoined</a> 或 <a href="../../rtc_engine/RtcEngineEventHandler/userOffline.html">RtcEngineEventHandler.userOffline</a> (<code>BecomeAudience</code>) 回调。</p>
+<p><strong>Parameter</strong> <code>role</code> 用户角色。详见 <a href="../../rtc_engine/ClientRole-class.html">ClientRole</a>。</p>
     </section>
     
     <section class="summary source-code" id="source">
       <h2><span>Implementation</span></h2>
-      <pre class="language-dart"><code class="language-dart">Future&lt;void&gt; setClientRole(ClientRole role) {
+      <pre class="language-dart"><code class="language-dart">@override
+Future&lt;void&gt; setClientRole(ClientRole role) {
   return _invokeMethod(
       &#39;setClientRole&#39;, {&#39;role&#39;: ClientRoleConverter(role).value()});
 }</code></pre>

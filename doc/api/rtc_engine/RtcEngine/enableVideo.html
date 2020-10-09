@@ -81,6 +81,7 @@
         <li><a href="../../rtc_engine/RtcEngine/enableAudio.html">enableAudio</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableAudioVolumeIndication.html">enableAudioVolumeIndication</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableDualStreamMode.html">enableDualStreamMode</a></li>
+        <li><a href="../../rtc_engine/RtcEngine/enableEncryption.html">enableEncryption</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableFaceDetection.html">enableFaceDetection</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableInEarMonitoring.html">enableInEarMonitoring</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableLastmileTest.html">enableLastmileTest</a></li>
@@ -163,6 +164,7 @@
         <li><a href="../../rtc_engine/RtcEngine/setLogFileSize.html">setLogFileSize</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setLogFilter.html">setLogFilter</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setMaxMetadataSize.html">setMaxMetadataSize</a></li>
+        <li><a href="../../rtc_engine/RtcEngine/setParameters.html">setParameters</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteDefaultVideoStreamType.html">setRemoteDefaultVideoStreamType</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteSubscribeFallbackOption.html">setRemoteSubscribeFallbackOption</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteUserPriority.html">setRemoteUserPriority</a></li>
@@ -222,7 +224,7 @@
       <p>启用视频模块。</p>
 <p>该方法用于打开视频模式。可以在加入频道前或者通话中调用，在加入频道前调用，则自动开启视频模式，
 在通话中调用则由音频模式切换为视频模式。调用 <a href="../../rtc_engine/RtcEngine/disableVideo.html">RtcEngine.disableVideo</a> 方法可关闭视频模式。</p>
-<p>成功调用该方法后，远端会触发 <a href="true">RtcEngineEventHandler.userEnableVideo</a> 回调。</p>
+<p>成功调用该方法后，远端会触发 <a class="deprecated" href="../../rtc_engine/RtcEngineEventHandler/userEnableVideo.html">RtcEngineEventHandler.userEnableVideo</a> (<code>true</code>) 回调。</p>
 <p><strong>Note</strong></p>
 <ul>
 <li>该方法设置的是内部引擎为开启状态，在频道内和频道外均可调用，且在 <a href="../../rtc_engine/RtcEngine/leaveChannel.html">RtcEngine.leaveChannel</a> 后仍然有效。</li>

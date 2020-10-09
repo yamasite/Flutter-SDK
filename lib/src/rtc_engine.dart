@@ -10,32 +10,10 @@ import 'events.dart';
 import 'rtc_channel.dart';
 
 /// `RtcEngine` 类提供了供 App 调用的主要接口方法。
-class RtcEngine
-    implements
-        RtcUserInfoInterface,
-        RtcAudioInterface,
-        RtcVideoInterface,
-        RtcAudioMixingInterface,
-        RtcAudioEffectInterface,
-        RtcVoiceChangerInterface,
-        RtcVoicePositionInterface,
-        RtcPublishStreamInterface,
-        RtcMediaRelayInterface,
-        RtcAudioRouteInterface,
-        RtcEarMonitoringInterface,
-        RtcDualStreamInterface,
-        RtcFallbackInterface,
-        RtcTestInterface,
-        RtcMediaMetadataInterface,
-        RtcWatermarkInterface,
-        RtcEncryptionInterface,
-        RtcAudioRecorderInterface,
-        RtcInjectStreamInterface,
-        RtcCameraInterface,
-        RtcStreamMessageInterface {
+class RtcEngine with RtcEngineInterface {
   static const MethodChannel _methodChannel = MethodChannel('agora_rtc_engine');
-  static const EventChannel _eventChannel = EventChannel(
-      'agora_rtc_engine/events');
+  static const EventChannel _eventChannel =
+      EventChannel('agora_rtc_engine/events');
 
   static RtcEngine _engine;
 
@@ -62,16 +40,16 @@ class RtcEngine
   /// - 请确保在调用其他 API 前先调用该方法创建并初始化 [RtcEngine]。
   /// - You can create an [RtcEngine] instance either by calling this method or by calling [RtcEngine.createWithAreaCode]. The difference between [RtcEngine.createWithAreaCode] and this method is that [RtcEngine.createWithAreaCode] enables you to specify the connection area.
   /// - 调用该方法和 [RtcEngine.createWithAreaCode] 均能创建 [RtcEngine] 实例。
-  /// - 目前 Agora Flutter SDK 只支持每个 app 创建一个 [RtcEngine] 实例。//TODO 英文这里是否改成 Flutter SDK?
+  /// - 目前 Agora Flutter SDK 只支持每个 app 创建一个 [RtcEngine] 实例。
   ///
-  /// Param [appId] Agora 为 app 开发者签发的 App ID，详见[获取 App ID](https://docs.agora.io/cn/Agora%20Platform/token#get-an-app-id)。使用同一个 App ID 的 app 才能进入同一个频道进行通话或直播。一个 App ID 只能用于创建一个 [RtcEngine]。
+  /// **Parameter** [appId] Agora 为 app 开发者签发的 App ID，详见[获取 App ID](https://docs.agora.io/cn/Agora%20Platform/token#get-an-app-id)。使用同一个 App ID 的 app 才能进入同一个频道进行通话或直播。一个 App ID 只能用于创建一个 [RtcEngine]。
   /// 如需更换 App ID，必须先调用 [destroy] 销毁当前 [RtcEngine]，再调用 [create] 重新创建 [RtcEngine]。
   ///
   /// **Returns**
   /// - 方法调用成功，则返回一个 [RtcEngine] 对象。
   /// - 方法调用失败，则返回错误码。
   static Future<RtcEngine> create(String appId) async {
-    return createWithAreaCode(appId, IPAreaCode.AREA_GLOBAL);
+    return createWithAreaCode(appId, AreaCode.GLOB);
   }
 
   /// 创建 [RtcEngine] 实例。
@@ -85,13 +63,14 @@ class RtcEngine
   /// 时指定访问区域。
   /// - 目前 Agora Flutter SDK 只支持每个 app 创建一个 [RtcEngine] 实例。
   ///
-  /// Param [appId] Agora 为 app 开发者签发的 App ID，详见[获取 App ID](https://docs.agora.io/cn/Agora%20Platform/token#get-an-app-id)。
+  /// **Parameter** [appId] Agora 为 app 开发者签发的 App ID，详见[获取 App ID](https://docs.agora.io/cn/Agora%20Platform/token#get-an-app-id)。
   /// 使用同一个 App ID 的 app 才能进入同一个频道进行通话或直播。一个 App ID 只能用于创建一个 [RtcEngine]。
   /// 如需更换 App ID，必须先调用 [destroy] 销毁当前 [RtcEngine]，再调用 `create` 重新创建 [RtcEngine]。
-  /// Param [areaCode] 服务器的访问区域。该功能为高级设置，适用于有访问安全限制的场景。
+  ///
+  /// **Parameter** [areaCode] 服务器的访问区域。该功能为高级设置，适用于有访问安全限制的场景。
   ///
   /// 支持的区域详见 [`IPAreaCode`]{@link IPAreaCode}。
-  /// 指定访问区域后，集成了 Agora SDK 的 app 会连接指定区域内的 Agora 服务器。//TODO 英文需要将指定多个区域去掉 specify multiple areas.
+  /// 指定访问区域后，集成了 Agora SDK 的 app 会连接指定区域内的 Agora 服务器。
   ///
   /// **Returns**
   /// - 方法调用成功，则返回一个 [RtcEngine] 对象。
@@ -99,24 +78,16 @@ class RtcEngine
   static Future<RtcEngine> createWithAreaCode(String appId,
       IPAreaCode areaCode) async {
     if (_engine != null) return _engine;
-    await _methodChannel.invokeMethod('create',
-        {'appId': appId, 'areaCode': IPAreaCodeConverter(areaCode).value()});
+    await _methodChannel.invokeMethod('create', {
+      'appId': appId,
+      'areaCode': AreaCodeConverter(areaCode).value(),
+      'appType': 4
+    });
     _engine = RtcEngine._();
     return _engine;
   }
 
-  /// 销毁 [RtcEngine] 实例。
-  ///
-  /// 该方法释放 Agora SDK 使用的所有资源。有些 app 只在用户需要时才进行语音通话，
-  /// 不需要时则将资源释放出来用于其他操作，该方法对这类程序可能比较有用。只要调用了 [RtcEngine.destroy] 方法，
-  /// 用户将无法再使用和回调该 SDK 内的其它方法。如需再次使用通信功能，必须重新创建一个 [RtcEngine] 实例。
-  ///
-  /// **Note**
-  /// - 该方法需要在子线程中操作。
-  /// - 该方法为同步调用。在等待 [RtcEngine] 实例资源释放后再返回。
-  /// APP 不应该在 SDK 产生的回调中调用该接口，否则由于 SDK 要等待回调返回才能回收相关的对象资源，会造成死锁。
-  /// - 如果需要在销毁后再次创建 [RtcEngine] 实例，需要等待 [RtcEngine.destroy] 方法执行结束，
-  /// 收到返回值后才能再创建实例。
+  @override
   Future<void> destroy() {
     RtcChannel.destroyAll();
     _engine = null;
@@ -126,70 +97,26 @@ class RtcEngine
   /// 添加 [RtcEngineEventHandler] 回调事件。
   ///
   /// 设置后，你可以通过 [RtcEngineEventHandler] 回调监听对应 [RtcEngine] 对象的事件、获取数据。
-  /// Param [handler] [RtcEngineEventHandler] 回调句柄。
+  /// **Parameter** [handler] [RtcEngineEventHandler] 回调句柄。
   void setEventHandler(RtcEngineEventHandler handler) {
     _handler = handler;
   }
 
-  /// 设置频道场景。
-  ///
-  /// 该方法用于设置 Agora 频道的使用场景。Agora SDK 会针对不同的使用场景采用不同的优化策略，
-  /// 如通信场景偏好流畅，直播场景偏好画质。
-  ///
-  /// Param [profile] 频道使用场景。详见 [ChannelProfile]。
+  @override
   Future<void> setChannelProfile(ChannelProfile profile) {
     return _invokeMethod('setChannelProfile',
         {'profile': ChannelProfileConverter(profile).value()});
   }
 
-  /// 设置直播场景下的用户角色。
-  ///
-  /// 在加入频道前，用户需要通过本方法设置观众（默认）或主播模式。在加入频道后，用户可以通过本方法切换用户模式。
-  ///
-  /// 直播场景下，如果你在加入频道后调用该方法切换用户角色，调用成功后，本地会触发 [RtcEngineEventHandler.clientRoleChanged] 回调；
-  /// 远端会触发 [RtcEngineEventHandler.userJoined] 或 [RtcEngineEventHandler.userOffline]([UserOfflineReason.BecomeAudience]) 回调。
-  /// //TODO 英文多空格
-  ///
-  /// Param [role] 用户角色。详见 [ClientRole]。
+  @override
   Future<void> setClientRole(ClientRole role) {
     return _invokeMethod(
         'setClientRole', {'role': ClientRoleConverter(role).value()});
   }
 
-  /// 加入频道。
-  ///
-  /// 该方法让用户加入通话频道，在同一个频道内的用户可以互相通话，多个用户加入同一个频道，可以群聊。
-  /// 使用不同 App ID 的 App 是不能互通的。如果已在通话中，用户必须调用 [RtcEngine.leaveChannel] 退出当前通话，
-  /// 才能进入下一个频道。
-  ///
-  /// 成功调用该方加入频道后，本地会触发 [RtcEngineEventHandler.joinChannelSuccess] 回调；
-  /// 通信场景下的用户和直播场景下的主播加入频道后，远端会触发 [RtcEngineEventHandler.userJoined] 回调。
-  ///
-  /// 在网络状况不理想的情况下，客户端可能会与 Agora 的服务器失去连接；SDK 会自动尝试重连，重连成功后，
-  /// 本地会触发 [RtcEngineEventHandler.rejoinChannelSuccess] 回调。
-  ///
-  /// **Note**
-  /// - 频道内每个用户的 UID 必须是唯一的。如果将 `uid` 设为 `0`，系统将自动分配一个 UID。
-  /// 如果想要从不同的设备同时接入同一个频道，请确保每个设备上使用的 UID 是不同的。
-  /// - 请确保用于生成 Token 的 App ID 和 `create` 方法创建 [RtcEngine] 对象时用的 App ID 一致。
-  ///
-  /// Param [token] 在 App 服务器端生成的用于鉴权的 Token：
-  /// - 安全要求不高：你可以使用控制台生成的临时 Token，详见[获取临时 Token](https://docs.agora.io/cn/Agora%20Platform/token?platform=All%20Platforms#temptoken)。
-  /// - 安全要求高：将值设为你的服务端生成的正式 Token，详见[从服务端生成 Token](https://docs.agora.io/cn/Agora%20Platform/token?platform=All%20Platforms#generatetoken)。
-  ///
-  /// Param [channelName] 标识通话的频道名称，长度在 64 字节以内的字符串。以下为支持的字符集范围（共 89 个字符）：
-  ///
-  ///  - 26 个小写英文字母 a-z
-  ///  - 26 个大写英文字母 A-Z
-  ///  - 10 个数字 0-9
-  ///  - 空格
-  ///  - "!", "#", "$", "%", "&", "(", ")", "+", "-", ":", ";", "<", "=", ".", ">", "?", "@", "[", "]", "^", "_", " {", "}", "|", "~", ","
-  ///
-  /// Param [optionalInfo] （非必选项）开发者需加入的任何附加信息。一般可设置为空字符串，或频道相关信息。该信息不会传递给频道内的其他用户。
-  /// Param [optionalUid] （非必选项）用户 ID，32 位无符号整数。建议设置范围：1 到 (2^32-1)，并保证唯一性。
-  /// 如果不指定（即设为 0），SDK 会自动分配一个，并在 [RtcEngineEventHandler.joinChannelSuccess] 回调方法中返回，App 层必须记住该返回值并维护，SDK 不对该返回值进行维护。
-  Future<void> joinChannel(String token, String channelName,
-      String optionalInfo, int optionalUid) {
+  @override
+  Future<void> joinChannel(
+      String token, String channelName, String optionalInfo, int optionalUid) {
     return _invokeMethod('joinChannel', {
       'token': token,
       'channelName': channelName,
@@ -198,165 +125,70 @@ class RtcEngine
     });
   }
 
-  /// 快速切换直播频道。
-  ///
-  /// 当直播频道中的观众想从一个频道切换到另一个频道时，可以调用该方法，实现快速切换。
-  ///
-  /// 成功调用该方切换频道后，本地会先收到离开原频道的回调 [RtcEngineEventHandler.leaveChannel]，
-  /// 再收到成功加入新频道的回调 [RtcEngineEventHandler.joinChannelSuccess]。
-  ///
-  /// **Note**
-  /// - 该方法仅适用直播频道中的观众用户。
-  ///
-  /// Param [token] 在服务器端生成的用于鉴权的 Token：
-  /// - 安全要求不高：你可以使用控制台生成的临时 Token，详见[获取临时 Token](https://docs.agora.io/cn/Agora%20Platform/token?platform=All%20Platforms#temptoken)。
-  /// - 安全要求高：将值设为你的服务端生成的正式 Token，详见[从服务端生成 Token](https://docs.agora.io/cn/Agora%20Platform/token?platform=All%20Platforms#generatetoken)。
-  ///
-  /// Param [channelName] 标识频道的频道名，最大不超过 64 字节。以下为支持的字符集范围（共 89 个字符）：
-  /// - 26 个小写英文字母 a-z
-  /// - 26 个大写英文字母 A-Z
-  /// - 10 个数字 0-9
-  /// - 空格
-  /// - "!", "#", "$", "%", "&", "(", ")", "+", "-", ":", ";", "<", "=", ".", ">", "?", "@", "[", "]", "^", "_", " {", "}", "|", "~", ","
+  @override
   Future<void> switchChannel(String token, String channelName) {
     return _invokeMethod(
         'switchChannel', {'token': token, 'channelName': channelName});
   }
 
-  /// 离开频道。
-  ///
-  /// 离开频道，即挂断或退出通话。
-  ///
-  /// 调用 [RtcEngine.joinChannel] 后，必须调用 [leaveChannel] 结束通话，否则无法开始下一次通话。
-  ///
-  /// 不管当前是否在通话中，都可以调用 [leaveChannel]，没有副作用。
-  ///
-  /// 该方法会把会话相关的所有资源释放掉。该方法是异步操作，调用返回时并没有真正退出频道。
-  ///
-  /// 成功调用该方法离开频道后，本地会触发 [RtcEngineEventHandler.leaveChannel] 回调；通信场景下的用户和直播场景下的主播离开频道后，远端会触发 [RtcEngineEventHandler.userOffline] 回调。
-  ///
-  /// **Note**
-  /// - 如果你调用了 `leaveChannel` 后立即调用 [RtcEngine.destroy] 方法，SDK 将无法触发 [RtcEngineEventHandler.leaveChannel] 回调。
-  /// - 如果你在旁路推流过程中调用了 `leaveChannel` 方法， SDK 将自动调用 [RtcEngine.removeInjectStreamUrl] 方法。
+  @override
   Future<void> leaveChannel() {
     return _invokeMethod('leaveChannel');
   }
 
-  /// 更新 Token。
-  ///
-  /// 该方法用于更新 Token。如果启用了 Token 机制，过一段时间后使用的 Token 会失效。以下两种情况下，app 应重新获取 Token，然后
-  /// 调用 `renewToken` 更新 Token，否则 SDK 无法和服务器建立连接：
-  /// - 发生 [RtcEngineEventHandler.tokenPrivilegeWillExpire] 回调时。
-  /// - [RtcEngineEventHandler.connectionStateChanged] 回调报告 [ConnectionChangedReason.TokenExpired](9) 时。
-  ///
-  /// Param [token] 新的 Token。
+  @override
   Future<void> renewToken(String token) {
     return _invokeMethod('renewToken', {'token': token});
   }
 
-  /// 打开与 Web SDK 的互通（仅在直播下适用）。
-  ///
-  /// **Deprecated**
-  /// 该方法已废弃。自 v3.0.1 起，SDK 自动开启与 Web SDK 的互通，无需调用该方法开启。
-  ///
-  /// 该方法打开或关闭与 Agora Web SDK 的互通。如果有用户通过 Web SDK 加入频道，请确保调用该方法，否则 Web 端用户看 Native 端的画面会是黑屏。
-  ///
-  /// 该方法仅在直播场景下适用，通信场景下默认互通是打开的。
-  ///
-  /// Param [enabled] 是否打开与 Agora Web SDK 的互通：
-  /// - true：打开互通。
-  /// - false：（默认）关闭互通。
+  @override
   @deprecated
   Future<void> enableWebSdkInteroperability(bool enabled) {
     return _invokeMethod('enableWebSdkInteroperability', {'enabled': enabled});
   }
 
-  /// 获取当前网络连接状态。
+  @override
   Future<ConnectionStateType> getConnectionState() {
     return _invokeMethod('getConnectionState').then((value) {
-      return ConnectionStateTypeConverter
-          .fromValue(value)
-          .e;
+      return ConnectionStateTypeConverter.fromValue(value).e;
     });
   }
 
-  /// 获取通话 ID。
-  ///
-  /// 获取当前的通话 ID。客户端在每次 [RtcEngine.joinChannel] 后会生成一个对应的 `CallId`，
-  /// 标识该客户端的此次通话。有些方法如 [RtcEngine.rate]、[RtcEngine.complain] 需要在通话结束后调用，向 SDK 提交反馈，这些方法必须指定 `CallId` 参数。
-  /// 使用这些反馈方法，需要在通话过程中调用 [RtcEngine.getCallId] 方法获取 `CallId`，在通话结束后在反馈方法中作为参数传入。
-  ///
-  /// **Returns**
-  /// 通话 ID。
+  @override
   Future<String> getCallId() {
     return _invokeMethod('getCallId');
   }
 
-  /// 给通话评分。
-  ///
-  /// Param [callId] 通过 [RtcEngine.getCallId] 函数获取的通话 ID。
-  ///
-  /// Param [rating] 给通话的评分，最低 1 分，最高 5 分，如超过这个范围，SDK 会返回 [ErrorCode.InvalidArgument](-2) 错误。
-  ///
-  /// Param [description] （非必选项）给通话的描述，可选，长度应小于 800 字节。
+  @override
   Future<void> rate(String callId, int rating, {String description}) {
     return _invokeMethod('rate',
         {'callId': callId, 'rating': rating, 'description': description});
   }
 
-  /// 投诉通话质量。
-  ///
-  /// 该方法让用户就通话质量进行投诉。一般在通话结束后调用。
-  ///
-  /// Param [callId] 通话 [RtcEngine.getCallId] 函数获取的通话 ID。
-  ///
-  /// Param [description] （非必选项）给通话的描述，可选，长度应小于 800 字节。
+  @override
   Future<void> complain(String callId, String description) {
     return _invokeMethod(
         'complain', {'callId': callId, 'description': description});
   }
 
-  /// 设置 Agora SDK 输出的日志文件。
-  ///
-  /// 设置 SDK 的输出 log 文件。SDK 运行时产生的所有 log 将写入该文件。 App 必须保证指定的目录存在而且可写。
-  ///
-  /// **Note**
-  /// 如需调用本方法，请在调用 [RtcEngine.create] 方法初始化 `RtcEngine` 对象后立即调用，否则可能造成输出日志不完整。
-  ///
-  /// Param [filePath] 日志文件的完整路径。该日志文件为 UTF-8 编码。默认路径为 `/storage/emulated/0/Android/data/<package name>="">/files/agorasdk.log`。
+  @override
   Future<void> setLogFile(String filePath) {
     return _invokeMethod('setLogFile', {'filePath': filePath});
   }
 
-  /// 设置日志输出等级
-  ///
-  /// 该方法设置 SDK 的日志输出等级。不同的等级可以单独或组合使用。
-  ///
-  /// 日志级别顺序依次为 `OFF`、`CRITICAL`、`ERROR`、`WARNING`、`INFO` 和 `DEBUG`。选择一个级别，你就可以看到在该级别之前所有级别的日志信息。 例如，你选择 `WARNING` 级别，就可以看到在 `CRITICAL`、`ERROR` 和 `WARNING` 级别上的所有日志信息。
-  ///
-  ///
-  /// Param [filter] 日志输出等级。详见 [LogFilter]。
+  @override
   Future<void> setLogFilter(LogFilter filter) {
     return _invokeMethod(
         'setLogFilter', {'filter': LogFilterConverter(filter).value()});
   }
 
-  /// 设置日志文件大小，单位为 KB。
-  ///
-  /// Agora SDK 设有 2 个日志文件，每个文件大小为 512 KB。如果你将 `fileSizeInKByte` 设置为 1024 KB， SDK 会最多输出 2 MB 的日志文件。如果日志文件大小超出设置值，新的日志会覆盖之前的日志。
-  ///
-  /// Param [fileSizeInKBytes] 日志文件大小，单位为 KB。
+  @override
   Future<void> setLogFileSize(int fileSizeInKBytes) {
     return _invokeMethod(
         'setLogFileSize', {'fileSizeInKBytes': fileSizeInKBytes});
   }
 
-  /// 通过 JSON 配置 SDK 提供技术预览或特别定制功能。
-  ///
-  /// JSON 选项默认不公开。声网工程师正在努力寻求以标准化方式公开 JSON 选项。
-  ///
-  /// Param [parameters] JSON 字符串形式的参数。
-  /// @nodoc //TODO 英文是否不要发布？
+  @override
   Future<void> setParameters(String parameters) {
     return _invokeMethod('setParameters', {'parameters': parameters});
   }
@@ -377,8 +209,8 @@ class RtcEngine
   }
 
   @override
-  Future<void> joinChannelWithUserAccount(String token, String channelName,
-      String userAccount) {
+  Future<void> joinChannelWithUserAccount(
+      String token, String channelName, String userAccount) {
     return _invokeMethod('joinChannelWithUserAccount', {
       'token': token,
       'channelName': channelName,
@@ -419,8 +251,8 @@ class RtcEngine
   }
 
   @override
-  Future<void> enableAudioVolumeIndication(int interval, int smooth,
-      bool report_vad) {
+  Future<void> enableAudioVolumeIndication(
+      int interval, int smooth, bool report_vad) {
     return _invokeMethod('enableAudioVolumeIndication',
         {'interval': interval, 'smooth': smooth, 'report_vad': report_vad});
   }
@@ -568,8 +400,8 @@ class RtcEngine
   }
 
   @override
-  Future<void> startAudioMixing(String filePath, bool loopback, bool replace,
-      int cycle) {
+  Future<void> startAudioMixing(
+      String filePath, bool loopback, bool replace, int cycle) {
     return _invokeMethod('startAudioMixing', {
       'filePath': filePath,
       'loopback': loopback,
@@ -596,8 +428,8 @@ class RtcEngine
   }
 
   @override
-  Future<void> addVideoWatermark(String watermarkUrl,
-      WatermarkOptions options) {
+  Future<void> addVideoWatermark(
+      String watermarkUrl, WatermarkOptions options) {
     return _invokeMethod('addVideoWatermark',
         {'watermarkUrl': watermarkUrl, 'options': options.toJson()});
   }
@@ -758,8 +590,8 @@ class RtcEngine
   }
 
   @override
-  Future<void> setCameraExposurePosition(double positionXinView,
-      double positionYinView) {
+  Future<void> setCameraExposurePosition(
+      double positionXinView, double positionYinView) {
     return _invokeMethod('setCameraExposurePosition', {
       'positionXinView': positionXinView,
       'positionYinView': positionYinView
@@ -767,8 +599,8 @@ class RtcEngine
   }
 
   @override
-  Future<void> setCameraFocusPositionInPreview(double positionX,
-      double positionY) {
+  Future<void> setCameraFocusPositionInPreview(
+      double positionX, double positionY) {
     return _invokeMethod('setCameraFocusPositionInPreview',
         {'positionX': positionX, 'positionY': positionY});
   }
@@ -998,7 +830,234 @@ class RtcEngine
   Future<void> setAudioMixingPitch(int pitch) {
     return _invokeMethod('setAudioMixingPitch', {'pitch': pitch});
   }
+  @override
+  Future<void> enableEncryption(bool enabled, EncryptionConfig config) {
+    return _invokeMethod(
+        'enableEncryption', {'enabled': enabled, 'config': config.toJson()});
+  }
 }
+
+mixin RtcEngineInterface
+    implements
+        RtcUserInfoInterface,
+        RtcAudioInterface,
+        RtcVideoInterface,
+        RtcAudioMixingInterface,
+        RtcAudioEffectInterface,
+        RtcVoiceChangerInterface,
+        RtcVoicePositionInterface,
+        RtcPublishStreamInterface,
+        RtcMediaRelayInterface,
+        RtcAudioRouteInterface,
+        RtcEarMonitoringInterface,
+        RtcDualStreamInterface,
+        RtcFallbackInterface,
+        RtcTestInterface,
+        RtcMediaMetadataInterface,
+        RtcWatermarkInterface,
+        RtcEncryptionInterface,
+        RtcAudioRecorderInterface,
+        RtcInjectStreamInterface,
+        RtcCameraInterface,
+        RtcStreamMessageInterface {
+  /// 销毁 [RtcEngine] 实例。
+  ///
+  /// 该方法释放 Agora SDK 使用的所有资源。有些 app 只在用户需要时才进行语音通话，
+  /// 不需要时则将资源释放出来用于其他操作，该方法对这类程序可能比较有用。只要调用了 [RtcEngine.destroy] 方法，
+  /// 用户将无法再使用和回调该 SDK 内的其它方法。如需再次使用通信功能，必须重新创建一个 [RtcEngine] 实例。
+  ///
+  /// **Note**
+  /// - 该方法需要在子线程中操作。
+  /// - 该方法为同步调用。在等待 [RtcEngine] 实例资源释放后再返回。
+  /// APP 不应该在 SDK 产生的回调中调用该接口，否则由于 SDK 要等待回调返回才能回收相关的对象资源，会造成死锁。
+  /// - 如果需要在销毁后再次创建 [RtcEngine] 实例，需要等待 [RtcEngine.destroy] 方法执行结束，
+  /// 收到返回值后才能再创建实例。
+  Future<void> destroy();
+
+  /// 设置频道场景。
+  ///
+  /// 该方法用于设置 Agora 频道的使用场景。Agora SDK 会针对不同的使用场景采用不同的优化策略，
+  /// 如通信场景偏好流畅，直播场景偏好画质。
+  ///
+  /// **Parameter** [profile] 频道使用场景。详见 [ChannelProfile]。
+  Future<void> setChannelProfile(ChannelProfile profile);
+
+  /// 设置直播场景下的用户角色。
+  ///
+  /// 在加入频道前，用户需要通过本方法设置观众（默认）或主播模式。在加入频道后，用户可以通过本方法切换用户模式。
+  ///
+  /// 直播场景下，如果你在加入频道后调用该方法切换用户角色，调用成功后，本地会触发 [RtcEngineEventHandler.clientRoleChanged] 回调；
+  /// 远端会触发 [RtcEngineEventHandler.userJoined] 或 [RtcEngineEventHandler.userOffline] (`BecomeAudience`) 回调。
+  ///
+  /// **Parameter** [role] 用户角色。详见 [ClientRole]。
+  Future<void> setClientRole(ClientRole role);
+
+  /// 加入频道。
+  ///
+  /// 该方法让用户加入通话频道，在同一个频道内的用户可以互相通话，多个用户加入同一个频道，可以群聊。
+  /// 使用不同 App ID 的 App 是不能互通的。如果已在通话中，用户必须调用 [RtcEngine.leaveChannel] 退出当前通话，
+  /// 才能进入下一个频道。
+  ///
+  /// 成功调用该方加入频道后，本地会触发 [RtcEngineEventHandler.joinChannelSuccess] 回调；
+  /// 通信场景下的用户和直播场景下的主播加入频道后，远端会触发 [RtcEngineEventHandler.userJoined] 回调。
+  ///
+  /// 在网络状况不理想的情况下，客户端可能会与 Agora 的服务器失去连接；SDK 会自动尝试重连，重连成功后，
+  /// 本地会触发 [RtcEngineEventHandler.rejoinChannelSuccess] 回调。
+  ///
+  /// **Note**
+  /// - 频道内每个用户的 UID 必须是唯一的。如果将 `uid` 设为 `0`，系统将自动分配一个 UID。
+  /// 如果想要从不同的设备同时接入同一个频道，请确保每个设备上使用的 UID 是不同的。
+  /// - 请确保用于生成 Token 的 App ID 和 `create` 方法创建 [RtcEngine] 对象时用的 App ID 一致。
+  ///
+  /// **Parameter** [token] 在 App 服务器端生成的用于鉴权的 Token：
+  /// - 安全要求不高：你可以使用控制台生成的临时 Token，详见[获取临时 Token](https://docs.agora.io/cn/Agora%20Platform/token?platform=All%20Platforms#temptoken)。
+  /// - 安全要求高：将值设为你的服务端生成的正式 Token，详见[从服务端生成 Token](https://docs.agora.io/cn/Agora%20Platform/token?platform=All%20Platforms#generatetoken)。
+  ///
+  /// **Parameter** [channelName] 标识通话的频道名称，长度在 64 字节以内的字符串。以下为支持的字符集范围（共 89 个字符）：
+  ///
+  ///  - 26 个小写英文字母 a-z
+  ///  - 26 个大写英文字母 A-Z
+  ///  - 10 个数字 0-9
+  ///  - 空格
+  ///  - "!", "#", "$", "%", "&", "(", ")", "+", "-", ":", ";", "<", "=", ".", ">", "?", "@", "[", "]", "^", "_", " {", "}", "|", "~", ","
+  ///
+  /// **Parameter** [optionalInfo] （非必选项）开发者需加入的任何附加信息。一般可设置为空字符串，或频道相关信息。该信息不会传递给频道内的其他用户。
+  ///
+  /// **Parameter** [optionalUid] （非必选项）用户 ID，32 位无符号整数。建议设置范围：1 到 (2^32-1)，并保证唯一性。
+  /// 如果不指定（即设为 0），SDK 会自动分配一个，并在 [RtcEngineEventHandler.joinChannelSuccess] 回调方法中返回，App 层必须记住该返回值并维护，SDK 不对该返回值进行维护。
+  Future<void> joinChannel(
+      String token, String channelName, String optionalInfo, int optionalUid);
+
+  /// 快速切换直播频道。
+  ///
+  /// 当直播频道中的观众想从一个频道切换到另一个频道时，可以调用该方法，实现快速切换。
+  ///
+  /// 成功调用该方切换频道后，本地会先收到离开原频道的回调 [RtcEngineEventHandler.leaveChannel]，
+  /// 再收到成功加入新频道的回调 [RtcEngineEventHandler.joinChannelSuccess]。
+  ///
+  /// **Note**
+  /// - 该方法仅适用直播频道中的观众用户。
+  ///
+  /// **Parameter** [token] 在服务器端生成的用于鉴权的 Token：
+  /// - 安全要求不高：你可以使用控制台生成的临时 Token，详见[获取临时 Token](https://docs.agora.io/cn/Agora%20Platform/token?platform=All%20Platforms#temptoken)。
+  /// - 安全要求高：将值设为你的服务端生成的正式 Token，详见[从服务端生成 Token](https://docs.agora.io/cn/Agora%20Platform/token?platform=All%20Platforms#generatetoken)。
+  ///
+  /// **Parameter** [channelName] 标识频道的频道名，最大不超过 64 字节。以下为支持的字符集范围（共 89 个字符）：
+  /// - 26 个小写英文字母 a-z
+  /// - 26 个大写英文字母 A-Z
+  /// - 10 个数字 0-9
+  /// - 空格
+  /// - "!", "#", "$", "%", "&", "(", ")", "+", "-", ":", ";", "<", "=", ".", ">", "?", "@", "[", "]", "^", "_", " {", "}", "|", "~", ","
+  Future<void> switchChannel(String token, String channelName);
+
+  /// 离开频道。
+  ///
+  /// 离开频道，即挂断或退出通话。
+  ///
+  /// 调用 [RtcEngine.joinChannel] 后，必须调用 [leaveChannel] 结束通话，否则无法开始下一次通话。
+  ///
+  /// 不管当前是否在通话中，都可以调用 [leaveChannel]，没有副作用。
+  ///
+  /// 该方法会把会话相关的所有资源释放掉。该方法是异步操作，调用返回时并没有真正退出频道。
+  ///
+  /// 成功调用该方法离开频道后，本地会触发 [RtcEngineEventHandler.leaveChannel] 回调；通信场景下的用户和直播场景下的主播离开频道后，远端会触发 [RtcEngineEventHandler.userOffline] 回调。
+  ///
+  /// **Note**
+  /// - 如果你调用了 `leaveChannel` 后立即调用 [RtcEngine.destroy] 方法，SDK 将无法触发 [RtcEngineEventHandler.leaveChannel] 回调。
+  /// - 如果你在旁路推流过程中调用了 `leaveChannel` 方法， SDK 将自动调用 [RtcEngine.removeInjectStreamUrl] 方法。
+  Future<void> leaveChannel();
+
+  /// 更新 Token。
+  ///
+  /// 该方法用于更新 Token。如果启用了 Token 机制，过一段时间后使用的 Token 会失效。以下两种情况下，app 应重新获取 Token，然后
+  /// 调用 `renewToken` 更新 Token，否则 SDK 无法和服务器建立连接：
+  /// - 发生 [RtcEngineEventHandler.tokenPrivilegeWillExpire] 回调时。
+  /// - [RtcEngineEventHandler.connectionStateChanged] 回调报告 [ConnectionChangedReason.TokenExpired] 时。
+  ///
+  /// **Parameter** [token] 新的 Token。
+  Future<void> renewToken(String token);
+
+  /// 打开与 Web SDK 的互通（仅在直播下适用）。
+  ///
+  /// **Deprecated**
+  /// 该方法已废弃。自 v3.0.1 起，SDK 自动开启与 Web SDK 的互通，无需调用该方法开启。
+  ///
+  /// 该方法打开或关闭与 Agora Web SDK 的互通。如果有用户通过 Web SDK 加入频道，请确保调用该方法，否则 Web 端用户看 Native 端的画面会是黑屏。
+  ///
+  /// 该方法仅在直播场景下适用，通信场景下默认互通是打开的。
+  ///
+  /// **Parameter** [enabled] 是否打开与 Agora Web SDK 的互通：
+  /// - `true`：打开互通。
+  /// - `false`：（默认）关闭互通。
+  @deprecated
+  Future<void> enableWebSdkInteroperability(bool enabled);
+
+  /// 获取当前网络连接状态。
+  Future<ConnectionStateType> getConnectionState();
+
+  /// 获取通话 ID。
+  ///
+  /// 获取当前的通话 ID。客户端在每次 [RtcEngine.joinChannel] 后会生成一个对应的 `CallId`，
+  /// 标识该客户端的此次通话。有些方法如 [RtcEngine.rate]、[RtcEngine.complain] 需要在通话结束后调用，向 SDK 提交反馈，这些方法必须指定 `CallId` 参数。
+  /// 使用这些反馈方法，需要在通话过程中调用 [RtcEngine.getCallId] 方法获取 `CallId`，在通话结束后在反馈方法中作为参数传入。
+  ///
+  /// **Returns**
+  /// 通话 ID。
+  Future<String> getCallId();
+
+  /// 给通话评分。
+  ///
+  /// **Parameter** [callId] 通过 [RtcEngine.getCallId] 函数获取的通话 ID。
+  ///
+  /// **Parameter** [rating] 给通话的评分，最低 1 分，最高 5 分，如超过这个范围，SDK 会返回 [ErrorCode.InvalidArgument] 错误。
+  ///
+  /// **Parameter** [description] （非必选项）给通话的描述，可选，长度应小于 800 字节。
+  Future<void> rate(String callId, int rating, {String description});
+
+  /// 投诉通话质量。
+  ///
+  /// 该方法让用户就通话质量进行投诉。一般在通话结束后调用。
+  ///
+  /// **Parameter** [callId] 通话 [RtcEngine.getCallId] 函数获取的通话 ID。
+  ///
+  /// **Parameter** [description] （非必选项）给通话的描述，可选，长度应小于 800 字节。
+  Future<void> complain(String callId, String description);
+
+  /// 设置 Agora SDK 输出的日志文件。
+  ///
+  /// 设置 SDK 的输出 log 文件。SDK 运行时产生的所有 log 将写入该文件。 App 必须保证指定的目录存在而且可写。
+  ///
+  /// **Note**
+  /// 如需调用本方法，请在调用 [RtcEngine.create] 方法初始化 `RtcEngine` 对象后立即调用，否则可能造成输出日志不完整。
+  ///
+  /// **Parameter** [filePath] 日志文件的完整路径。该日志文件为 UTF-8 编码。默认路径为 `/storage/emulated/0/Android/data/<package name>="">/files/agorasdk.log`。
+  Future<void> setLogFile(String filePath);
+
+  /// 设置日志输出等级
+  ///
+  /// 该方法设置 SDK 的日志输出等级。不同的等级可以单独或组合使用。
+  ///
+  /// 日志级别顺序依次为 `OFF`、`CRITICAL`、`ERROR`、`WARNING`、`INFO` 和 `DEBUG`。选择一个级别，你就可以看到在该级别之前所有级别的日志信息。 例如，你选择 `WARNING` 级别，就可以看到在 `CRITICAL`、`ERROR` 和 `WARNING` 级别上的所有日志信息。
+  ///
+  ///
+  /// **Parameter** [filter] 日志输出等级。详见 [LogFilter]。
+  Future<void> setLogFilter(LogFilter filter);
+
+  /// 设置 Agora SDK 输出的单个日志文件大小。
+  ///
+  /// 默认情况下，SDK 会生成 agorasdk.log、agorasdk_1.log、agorasdk_2.log、agorasdk_3.log、agorasdk_4.log 这 5 个日志文件。每个文件的默认大小为 1024 KB。日志文件为 UTF-8 编码。 最新的日志永远写在 agorasdk.log 中。agorasdk.log 写满后，SDK 会从 1-4 中删除修改时间最早的一个文件，然后将 agorasdk.log 重命名为该文件，并建立新的 agorasdk.log 写入最新的日志。
+  ///
+  /// **Parameter** [fileSizeInKBytes] 单个日志文件的大小，单位为 KB。默认值为 1024 KB。如果你将 `fileSizeInKBytes` 设为 1024 KB，SDK 会最多输出 5 MB 的日志文件。如果你将 `fileSizeInKBytes` 设为 小于 1024 KB，单个日志文件最大仍为 1024 KB。
+  Future<void> setLogFileSize(int fileSizeInKBytes);
+
+  /// 通过 JSON 配置 SDK 提供技术预览或特别定制功能。
+  ///
+  /// JSON 选项默认不公开。声网工程师正在努力寻求以标准化方式公开 JSON 选项。
+  ///
+  /// **Parameter** [parameters] JSON 字符串形式的参数。
+  /// @nodoc
+  Future<void> setParameters(String parameters);
+  }
 
 mixin RtcUserInfoInterface {
   /// 注册本地用户 User Account。
@@ -1021,9 +1080,9 @@ mixin RtcUserInfoInterface {
   /// - 为保证通信质量，请确保频道内使用同一类型的数据标识用户身份。即同一频道内需要统一使用 UID 或 User Account。
   /// 如果有用户通过 Agora Web SDK 加入频道，请确保 Web 加入的用户也是同样类型。
   ///
-  /// Param [appId] 你的项目在 Agora 控制台注册的 App ID。
+  /// **Parameter** [appId] 你的项目在 Agora 控制台注册的 App ID。
   ///
-  /// Param [userAccount] 用户 User Account。该参数为必填，最大不超过 255 字节，不可填 null。请确保注册的 User Account 的唯一性。以下为支持的字符集范围（共 89 个字符）：
+  /// **Parameter** [userAccount] 用户 User Account。该参数为必填，最大不超过 255 字节，不可填 null。请确保注册的 User Account 的唯一性。以下为支持的字符集范围（共 89 个字符）：
   /// - 26 个小写英文字母 a-z
   /// - 26 个大写英文字母 A-Z
   /// - 10 个数字 0-9
@@ -1042,26 +1101,26 @@ mixin RtcUserInfoInterface {
   /// 为保证通信质量，请确保频道内使用同一类型的数据标识用户身份。即同一频道内需要统一使用 UID 或 User Account。
   /// 如果有用户通过 Agora Web SDK 加入频道，请确保 Web 加入的用户也是同样类型。
   ///
-  /// Param [token] 在服务器端生成的用于鉴权的 Token。
+  /// **Parameter** [token] 在服务器端生成的用于鉴权的 Token。
   ///  - 安全要求不高：你可以使用控制台生成的临时 Token，详见[获取临时 Token](https://docs.agora.io/cn/Agora%20Platform/token?platform=All%20Platforms#temptoken)。
   ///  - 安全要求高：将值设为你的服务端生成的正式 Token，详见[从服务端生成 Token](https://docs.agora.io/cn/Agora%20Platform/token?platform=All%20Platforms#generatetoken)。
   ///
-  /// Param [channelName] 标识频道的频道名，最大不超过 64 字节。以下为支持的字符集范围（共 89 个字符）：
+  /// **Parameter** [channelName] 标识频道的频道名，最大不超过 64 字节。以下为支持的字符集范围（共 89 个字符）：
   ///  - 26 个小写英文字母 a-z
   ///  - 26 个大写英文字母 A-Z
   ///  - 10 个数字 0-9
   ///  - 空格
   ///  - "!", "#", "$", "%", "&", "(", ")", "+", "-", ":", ";", "<", "=", ".", ">", "?", "@", "[", "]", "^", "_", " {", "}", "|", "~", ","
   ///
-  /// Param [userAccount] 用户 User Account。该参数为必需，最大不超过 255 字节，不可为 null。请确保加入频道的 User Account 的唯一性。以下为支持的字符集范围（共 89 个字符）：
+  /// **Parameter** [userAccount] 用户 User Account。该参数为必需，最大不超过 255 字节，不可为 null。请确保加入频道的 User Account 的唯一性。以下为支持的字符集范围（共 89 个字符）：
   ///  - 26 个小写英文字母 a-z
   ///  - 26 个大写英文字母 A-Z
   ///  - 10 个数字 0-9
   ///  - 空格
   ///  - "!", "#", "$", "%", "&", "(", ")", "+", "-", ":", ";", "<", "=", ".", ">", "?", "@", "[", "]", "^", "_", " {", "}", "|", "~", ","
   ///
-  Future<void> joinChannelWithUserAccount(String token, String channelName,
-      String userAccount);
+  Future<void> joinChannelWithUserAccount(
+      String token, String channelName, String userAccount);
 
   /// 通过 User Account 获取用户信息。
   ///
@@ -1069,7 +1128,7 @@ mixin RtcUserInfoInterface {
   /// 并在本地触发 [RtcEngineEventHandler.userInfoUpdated] 回调。
   /// 收到这个回调后，你可以调用该方法，通过传入 User Account 获取包含了指定用户 User Account 的 UserInfo 对象。
   ///
-  /// Param [userAccount] User Account。该参数为必填。
+  /// **Parameter** [userAccount] User Account。该参数为必填。
   Future<UserInfo> getUserInfoByUserAccount(String userAccount);
 
   /// 通过 UID 获取用户信息。
@@ -1078,7 +1137,7 @@ mixin RtcUserInfoInterface {
   /// 并在本地触发 [RtcEngineEventHandler.userInfoUpdated] 回调。
   /// 收到这个回调后，你可以调用该方法，通过传入 UID 获取包含了指定用户 User Account 的 UserInfo 对象。
   ///
-  /// Param [uid] 用户 ID。该参数为必填。
+  /// **Parameter** [uid] 用户 ID。该参数为必填。
   Future<UserInfo> getUserInfoByUid(int uid);
 }
 
@@ -1110,12 +1169,11 @@ mixin RtcAudioInterface {
   /// **Note**
   /// - 该方法需要在 [RtcEngine.joinChannel] 之前设置好，[RtcEngine.joinChannel] 后设置不生效。
   /// - 通信和直播场景下，音质（码率）会有网络自适应的调整，通过该方法设置的是一个最高码率。
-  /// - 在有高音质需求的场景（例如音乐教学场景）中，建议将 `profile` 设置为 [AudioProfile.MusicHighQuality](4)，`scenario` 设置为 [AudioScenario.GameStreaming](3)。
-  /// //TODO setting profile as [AudioScenario.ShowRoom](4)?
+  /// - 在有高音质需求的场景（例如音乐教学场景）中，建议将 `profile` 设置为 [AudioProfile.MusicHighQuality]，`scenario` 设置为 [AudioScenario.GameStreaming]。
   ///
-  /// Param [profile] 设置采样率，码率，编码模式和声道数。详见 [AudioProfile]。
+  /// **Parameter** [profile] 设置采样率，码率，编码模式和声道数。详见 [AudioProfile]。
   ///
-  /// Param [scenario] 设置音频应用场景。不同的音频场景下，设备的系统音量是不同的。详见 [AudioScenario]。
+  /// **Parameter** [scenario] 设置音频应用场景。不同的音频场景下，设备的系统音量是不同的。详见 [AudioScenario]。
   Future<void> setAudioProfile(AudioProfile profile, AudioScenario scenario);
 
   /// 调节录音音量。
@@ -1124,7 +1182,7 @@ mixin RtcAudioInterface {
   ///
   /// 为避免回声并提升通话质量，Agora 建议将 `volume` 值设为 [0,100]。如果 `volume` 值需超过 100，联系[技术支持](https://agora-ticket.agora.io/)。
   ///
-  /// Param [volume] 录音信号音量，可在 [0,400] 范围内进行调节：
+  /// **Parameter** [volume] 录音信号音量，可在 [0,400] 范围内进行调节：
   /// - 0：静音。
   /// - 100：原始音量。
   /// - 400：最大可为原始音量的 4 倍（自带溢出保护）。
@@ -1139,9 +1197,9 @@ mixin RtcAudioInterface {
   /// - 该方法调节的是本地播放的指定远端用户混音后的音量。
   /// - 该方法每次只能调整一位远端用户在本地播放的音量。如需调整多位远端用户在本地播放的音量，则需多次调用该方法。
   ///
-  /// Param [uid] 远端用户的 ID。
+  /// **Parameter** [uid] 远端用户的 ID。
   ///
-  /// Param [volume] 播放音量，取值范围为 [0,100]。
+  /// **Parameter** [volume] 播放音量，取值范围为 [0,100]。
   /// - 0：静音。
   /// - 100：原始音量。
   Future<void> adjustUserPlaybackSignalVolume(int uid, int volume);
@@ -1153,7 +1211,7 @@ mixin RtcAudioInterface {
   /// - 静音本地音频需同时调用该方法和 [RtcEngine.adjustAudioMixingVolume] 方法，并将 `volume` 参数设置为 0。
   /// - 为避免回声并提升通话质量，Agora 建议将 `volume` 值设为 [0,100]。如果 `volume` 值需超过 100，联系[技术支持](https://agora-ticket.agora.io/)。
   ///
-  /// Param [volume] 播放音量，取值范围为 [0,400]：
+  /// **Parameter** [volume] 播放音量，取值范围为 [0,400]：
   /// - 0：静音。
   /// - 100：原始音量。
   /// - 400：最大可为原始音量的 4 倍（自带溢出保护）。
@@ -1165,8 +1223,8 @@ mixin RtcAudioInterface {
   ///
   /// 该方法不影响接收或播放远端音频流，`enableLocalAudio(false)` 适用于只听不发的用户场景。
   ///
-  /// 语音功能关闭或重新开启后，会收到回调 [RtcEngineEventHandler.LocalAudioStateChanged]，
-  /// 并报告 [AudioLocalState.Stopped] 或 [AudioLocalState.Recording]。// TODO 触发什么回调？
+  /// 语音功能关闭或重新开启后，会收到回调 [RtcEngineEventHandler.localAudioStateChanged]，
+  /// 并报告 [AudioLocalState.Stopped] 或 [AudioLocalState.Recording]。
   ///
   /// **Note**
   /// - 调用 `enableLocalAudio(false)` 关闭本地采集后，系统会走媒体音量；调用 `enableLocalAudio(true)` 重新打开本地采集后，系统会恢复为通话音量。
@@ -1174,9 +1232,9 @@ mixin RtcAudioInterface {
   ///   - [RtcEngine.enableLocalAudio] 开启或关闭本地语音采集及处理。使用 `enableLocalAudio` 关闭或开启本地采集后，本地听远端播放会有短暂中断。
   ///   - [RtcEngine.muteLocalAudioStream] 停止或继续发送本地音频流。
   ///
-  /// Param [enabled] 是否开启本地语音。
-  /// - true：（默认）重新开启本地语音，即开启本地语音采集。
-  /// - false：关闭本地语音，即停止本地语音采集。
+  /// **Parameter** [enabled] 是否开启本地语音。
+  /// - `true`：（默认）重新开启本地语音，即开启本地语音采集。
+  /// - `false`：关闭本地语音，即停止本地语音采集。
   Future<void> enableLocalAudio(bool enabled);
 
   /// 停止/恢复发送本地音频流。
@@ -1189,30 +1247,30 @@ mixin RtcAudioInterface {
   /// - 如果你在该方法后调用 [RtcEngine.setChannelProfile] 方法，SDK 会根据你设置的频道模式以及用户角色，
   /// 重新设置是否停止发送本地音频。因此我们建议在 [RtcEngine.setChannelProfile] 后调用该方法。
   ///
-  /// Param [muted] 是否停止发送本地音频流。
-  /// - true: 停止发送本地音频流。
-  /// - false:（默认）继续发送本地音频流。
+  /// **Parameter** [muted] 是否停止发送本地音频流。
+  /// - `true`: 停止发送本地音频流。
+  /// - `false`:（默认）继续发送本地音频流。
   Future<void> muteLocalAudioStream(bool muted);
 
   /// 停止/恢复接收指定音频流。
   ///
-  /// 如果之前有调用过 [RtcEngine.muteAllRemoteAudioStreams](true) 停止接收
-  /// 所有远端音频流，在调用本 API 之前请确保你已调用 [RtcEngine.muteAllRemoteAudioStreams](false)。
+  /// 如果之前有调用过 [RtcEngine.muteAllRemoteAudioStreams] (`true`) 停止接收
+  /// 所有远端音频流，在调用本 API 之前请确保你已调用 [RtcEngine.muteAllRemoteAudioStreams] (`false`)。
   /// [RtcEngine.muteAllRemoteAudioStreams] 是全局控制，
-  /// [RtcEngine.muteRemoteAudioStream] 是精细控制。//TODO 英文 muteAllRemoteAudioStreams 重复
+  /// [RtcEngine.muteRemoteAudioStream] 是精细控制。
   ///
-  /// Param [uid] 指定的用户 ID。
+  /// **Parameter** [uid] 指定的用户 ID。
   ///
-  /// Param [muted] 是否停止接收指定用户的音频流：
-  /// - true：停止接收指定用户的音频流。
-  /// - false：继续接收指定用户的音频流（默认）。
+  /// **Parameter** [muted] 是否停止接收指定用户的音频流：
+  /// - `true`：停止接收指定用户的音频流。
+  /// - `false`：继续接收指定用户的音频流（默认）。
   Future<void> muteRemoteAudioStream(int uid, bool muted);
 
   /// 停止/恢复接收所有音频流。
   ///
-  /// Param [muted] 是否停止接收所有音频流：
-  /// - true：停止接收所有远端音频流。
-  /// - false：继续接收所有远端音频流（默认）。
+  /// **Parameter** [muted] 是否停止接收所有音频流：
+  /// - `true`：停止接收所有远端音频流。
+  /// - `false`：继续接收所有远端音频流（默认）。
   Future<void> muteAllRemoteAudioStreams(bool muted);
 
   /// 设置是否默认接收音频流。
@@ -1222,14 +1280,14 @@ mixin RtcAudioInterface {
   ///
   /// **Note**
   ///
-  /// 停止接收音频流后，如果想要恢复接收，请调用 [RtcEngine.muteRemoteAudioStream](false)，并指定你想要
+  /// 停止接收音频流后，如果想要恢复接收，请调用 [RtcEngine.muteRemoteAudioStream] (`false`)，并指定你想要
   /// 接收的远端用户的 ID。
   /// 如果想恢复接收多个用户的音频流，则需要多次调用 [RtcEngine.muteRemoteAudioStream]。
-  /// [RtcEngine.setDefaultMuteAllRemoteAudioStreams](false) 只能恢复接收设置后加入频道的用户的音频流。
+  /// [RtcEngine.setDefaultMuteAllRemoteAudioStreams] (`false`) 只能恢复接收设置后加入频道的用户的音频流。
   ///
-  /// Param [muted] 是否默认不接收所有远端音频：
-  /// - true：默认不接收所有远端音频流。
-  /// - false: 默认接收所有远端音频流（默认）。
+  /// **Parameter** [muted] 是否默认不接收所有远端音频：
+  /// - `true`：默认不接收所有远端音频流。
+  /// - `false`: 默认接收所有远端音频流（默认）。
   Future<void> setDefaultMuteAllRemoteAudioStreams(bool muted);
 
   /// 启用说话者音量提示。
@@ -1238,17 +1296,17 @@ mixin RtcAudioInterface {
   /// 都会在说话声音音量提示回调 [RtcEngineEventHandler.audioVolumeIndication] 回调
   /// 中按设置的间隔时间返回音量提示。
   ///
-  /// Param [interval] 指定音量提示的时间间隔：
+  /// **Parameter** [interval] 指定音量提示的时间间隔：
   /// - &le; 0：禁用音量提示功能。
   /// - &gt; 0：返回音量提示的间隔，单位为毫秒。建议设置到大于 200 毫秒。最小不得少于 10 毫秒，否则会收不到 [RtcEngineEventHandler.audioVolumeIndication] 回调。
   ///
-  /// Param [smooth] 平滑系数，指定音量提示的灵敏度。取值范围为 [0, 10]，建议值为 3，数字越大，波动越灵敏；数字越小，波动越平滑。
+  /// **Parameter** [smooth] 平滑系数，指定音量提示的灵敏度。取值范围为 [0, 10]，建议值为 3，数字越大，波动越灵敏；数字越小，波动越平滑。
   ///
-  /// Param [report_vad] 是否开启人声检测
-  /// - true: 开启本地人声检测功能。开启后，[RtcEngineEventHandler.audioVolumeIndication] 回调的 `vad` 参数会报告是否在本地检测到人声。
-  /// - false: （默认）关闭本地人声检测功能。除引擎自动进行本地人声检测的场景外，[RtcEngineEventHandler.audioVolumeIndication] 回调的 `vad` 参数不会报告是否在本地检测到人声。
-  Future<void> enableAudioVolumeIndication(int interval, int smooth,
-      bool report_vad);
+  /// **Parameter** [report_vad] 是否开启人声检测
+  /// - `true`: 开启本地人声检测功能。开启后，[RtcEngineEventHandler.audioVolumeIndication] 回调的 `vad` 参数会报告是否在本地检测到人声。
+  /// - `false`: （默认）关闭本地人声检测功能。除引擎自动进行本地人声检测的场景外，[RtcEngineEventHandler.audioVolumeIndication] 回调的 `vad` 参数不会报告是否在本地检测到人声。
+  Future<void> enableAudioVolumeIndication(
+      int interval, int smooth, bool report_vad);
 }
 
 mixin RtcVideoInterface {
@@ -1257,7 +1315,7 @@ mixin RtcVideoInterface {
   /// 该方法用于打开视频模式。可以在加入频道前或者通话中调用，在加入频道前调用，则自动开启视频模式，
   /// 在通话中调用则由音频模式切换为视频模式。调用 [RtcEngine.disableVideo] 方法可关闭视频模式。
   ///
-  /// 成功调用该方法后，远端会触发 [RtcEngineEventHandler.userEnableVideo](true) 回调。
+  /// 成功调用该方法后，远端会触发 [RtcEngineEventHandler.userEnableVideo] (`true`) 回调。
   ///
   /// **Note**
   ///
@@ -1274,7 +1332,7 @@ mixin RtcVideoInterface {
   /// 该方法用于关闭视频。可以在加入频道前或者通话中调用，在加入频道前调用，则自动开启纯音频模式，在通话中调用则由视频模式切换为纯音频频模式。
   /// 调用 [RtcEngine.enableVideo] 方法可开启视频模式。
   ///
-  /// 成功调用该方法后，远端会触发 [RtcEngineEventHandler.userEnableVideo](false) 回调。
+  /// 成功调用该方法后，远端会触发 [RtcEngineEventHandler.userEnableVideo] (`false`) 回调。
   ///
   /// **Note**
   /// - 该方法设置的是内部引擎为禁用状态，在频道内和频道外均可调用，且在 [RtcEngine.leaveChannel] 后仍然有效。
@@ -1292,7 +1350,7 @@ mixin RtcVideoInterface {
   ///
   /// 如果用户加入频道后不需要重新设置视频编码属性，则 Agora 建议在 [RtcEngine.enableVideo] 前调用该方法，可以加快首帧出图的时间。
   ///
-  /// Param [config] 视频编码属性。详见 [VideoEncoderConfiguration]。
+  /// **Parameter** [config] 视频编码属性。详见 [VideoEncoderConfiguration]。
   Future<void> setVideoEncoderConfiguration(VideoEncoderConfiguration config);
 
   /// 开启视频预览。
@@ -1305,14 +1363,10 @@ mixin RtcVideoInterface {
   ///
   /// **Note**
   /// - 本地预览默认开启镜像功能。
+  ///   - （仅 Android）详见 [TextureView] 和 [SurfaceView]。
+  ///   - （仅 iOS）详见 [UIView](https://developer.apple.com/documentation/uikit/uiview).
   /// - 使用该方法启用了本地视频预览后，如果直接调用 [RtcEngine.leaveChannel] 退出频道，
   /// 并不会关闭预览。如需关闭预览，请调用 [RtcEngine.stopPreview]。
-  ///
-  /// Before calling this method, you must:
-  /// - Create the RtcLocalView.
-  ///   - (Android only) See [SurfaceView].
-  ///   - (iOS only) See [TextureView]. // TODO iOS 不支持 TextureView
-  /// - Call the [RtcEngine.enableVideo] method to enable the video.
   Future<void> startPreview();
 
   /// 停止视频预览。
@@ -1323,7 +1377,7 @@ mixin RtcVideoInterface {
   /// 该方法禁用或重新启用本地视频采集。不影响接收远端视频。
   ///
   /// 调用 [RtcEngine.enableVideo] 后，本地视频即默认开启。
-  /// 你可以调用 [RtcEngine.enableVideo](false) 关闭本地视频采集。关闭后如果想重新开启，则可调用 [RtcEngine.enableVideo](true)。
+  /// 你可以调用 [RtcEngine.enableVideo] (`false`) 关闭本地视频采集。关闭后如果想重新开启，则可调用 [RtcEngine.enableVideo] (`true`)。
   ///
   /// 成功禁用或启用本地视频采集后，远端会触发 [RtcEngineEventHandler.userEnableLocalVideo] 回调。
   ///
@@ -1331,9 +1385,9 @@ mixin RtcVideoInterface {
   ///
   /// 该方法设置的是内部引擎为启用或禁用状态，在 [RtcEngine.leaveChannel] 后仍然有效。
   ///
-  /// Param [enabled] 是否启用本地视频：
-  /// - true：开启本地视频采集和渲染（默认）。
-  /// - false: 关闭使用本地摄像头设备。关闭后，
+  /// **Parameter** [enabled] 是否启用本地视频：
+  /// - `true`：开启本地视频采集和渲染（默认）。
+  /// - `false`: 关闭使用本地摄像头设备。关闭后，
   /// 远端用户会接收不到本地用户的视频流；但本地用户依然可以接收远端用户的视频流。设置为 `false` 时，该方法不需要本地有摄像头。
   Future<void> enableLocalVideo(bool enabled);
 
@@ -1343,36 +1397,36 @@ mixin RtcVideoInterface {
   ///
   /// **Note**
   /// - 调用该方法时，SDK 不再发送本地视频流，但摄像头仍然处于工作状态。
-  /// 相比于 [RtcEngine.enableLocalVideo](false) 用于控制本地视频流发送的方法，该方法响应速度更快。
+  /// 相比于 [RtcEngine.enableLocalVideo] (`false`) 用于控制本地视频流发送的方法，该方法响应速度更快。
   /// - 该方法不影响本地视频流获取，没有禁用摄像头。
   /// - 如果你在该方法后调用 [RtcEngine.setChannelProfile] 方法，SDK 会根据你设置的频道模式以及用户角色，
   /// 重新设置是否停止发送本地视频。因此我们建议在 [RtcEngine.setChannelProfile] 后调用该方法。
   ///
-  /// Param [muted] 是否发送本地视频流:
-  /// - true：不发送本地视频流。
-  /// - false：（默认）发送本地视频流。
+  /// **Parameter** [muted] 是否发送本地视频流:
+  /// - `true`：不发送本地视频流。
+  /// - `false`：（默认）发送本地视频流。
   Future<void> muteLocalVideoStream(bool muted);
 
   /// 停止/恢复接收指定视频流。
   ///
   /// **Note**
   ///
-  /// 如果之前有调用过 [RtcEngine.muteAllRemoteVideoStreams](true) 停止接收所有远端视频流，
-  /// 在调用本 API 之前请确保你已调用 [RtcEngine.muteAllRemoteVideoStreams](false)。
+  /// 如果之前有调用过 [RtcEngine.muteAllRemoteVideoStreams] (`true`) 停止接收所有远端视频流，
+  /// 在调用本 API 之前请确保你已调用 [RtcEngine.muteAllRemoteVideoStreams] (`false`)。
   /// [RtcEngine.muteAllRemoteVideoStreams] 是全局控制，[RtcEngine.muteRemoteVideoStream] 是精细控制。
   ///
-  /// Param [uid] 指定的用户 ID。
+  /// **Parameter** [uid] 指定的用户 ID。
   ///
-  /// Param [muted] 是否停止接收指定用户的视频流：
-  /// - true：停止接收指定用户的视频流。
-  /// - false：（默认）继续接收指定用户的视频流。
+  /// **Parameter** [muted] 是否停止接收指定用户的视频流：
+  /// - `true`：停止接收指定用户的视频流。
+  /// - `false`：（默认）继续接收指定用户的视频流。
   Future<void> muteRemoteVideoStream(int uid, bool muted);
 
   /// 停止/恢复接收所有视频流。
   ///
-  /// Param [muted] 是否停止接收所有远端视频流：
-  /// - true：停止接收所有远端视频流。
-  /// - false：（默认）继续接收所有远端视频流。
+  /// **Parameter** [muted] 是否停止接收所有远端视频流：
+  /// - `true`：停止接收所有远端视频流。
+  /// - `false`：（默认）继续接收所有远端视频流。
   Future<void> muteAllRemoteVideoStreams(bool muted);
 
   /// 设置是否默认接收视频流。
@@ -1381,13 +1435,13 @@ mixin RtcVideoInterface {
   ///
   /// **Note**
   ///
-  /// 停止接收视频流后，如果想要恢复接收，请调用 [RtcEngine.muteRemoteVideoStream](false)，并指定你想要接收的远端用户的 ID。
+  /// 停止接收视频流后，如果想要恢复接收，请调用 [RtcEngine.muteRemoteVideoStream] (`false`)，并指定你想要接收的远端用户的 ID。
   /// 如果想恢复接收多个用户的视频流，则需要多次调用 [RtcEngine.muteRemoteVideoStream]。
   /// `setDefaultMuteAllRemoteVideoStreams(false)` 只能恢复接收设置后加入频道的用户的视频流。
   ///
-  /// Param [muted] 是否默认不接收所有远端视频流：
-  /// - true：默认不接收所有远端视频流。
-  /// - false：默认继续接收所有远端视频流（默认）。
+  /// **Parameter** [muted] 是否默认不接收所有远端视频流：
+  /// - `true`：默认不接收所有远端视频流。
+  /// - `false`：默认继续接收所有远端视频流（默认）。
   Future<void> setDefaultMuteAllRemoteVideoStreams(bool muted);
 
   /// 开启本地美颜功能，并设置美颜效果选项。
@@ -1396,12 +1450,12 @@ mixin RtcVideoInterface {
   /// - 该方法需要在 [RtcEngine.enableVideo] 之后调用。
   /// - 该方法在 Android 和 iOS 均适用。在 Android 平台，该方法仅适用于 Android 4.4 及以上版本。
   ///
-  /// Param [enabled] 是否开启美颜功能：
+  /// **Parameter** [enabled] 是否开启美颜功能：
   ///
-  /// - true：开启。
-  /// - false：（默认）关闭。
+  /// - `true`：开启。
+  /// - `false`：（默认）关闭。
   ///
-  /// Param [options] 美颜选项。详见 [BeautyOptions]。
+  /// **Parameter** [options] 美颜选项。详见 [BeautyOptions]。
   Future<void> setBeautyEffectOptions(bool enabled, BeautyOptions options);
 }
 
@@ -1422,23 +1476,23 @@ mixin RtcAudioMixingInterface {
   /// - 如果本地音乐文件不存在、文件格式不支持、无法访问在线音乐文件 URL 都会返回警告码 [AudioMixingErrorCode.CanNotOpen] = 701。
   /// - 如果在模拟器上使用该 API，暂时只支持存放在 /sdcard/ 中的 mp3 文件。
   ///
-  /// Param [filePath] 指定需要混音的本地或在线音频文件的绝对路径（包含文件名后缀），如 `/sdcard/emulated/0/audio.mp4`。支持的音频格式包括：mp3、mp4、m4a、aac、3gp、mkv 及 wav。
+  /// **Parameter** [filePath] 指定需要混音的本地或在线音频文件的绝对路径（包含文件名后缀），如 `/sdcard/emulated/0/audio.mp4`。支持的音频格式包括：mp3、mp4、m4a、aac、3gp、mkv 及 wav。
   /// - 如果用户提供的目录以 `/assets/` 开头，则去 assets 里面查找该文件。
   /// - 如果用户提供的目录不是以 `/assets/` 开头，一律认为是在绝对路径里查找该文件。
   ///
-  /// Param [loopback]
-  /// - true：只有本地可以听到混音或替换后的音频流。
-  /// - false：本地和对方都可以听到混音或替换后的音频流。
+  /// **Parameter** [loopback]
+  /// - `true`：只有本地可以听到混音或替换后的音频流。
+  /// - `false`：本地和对方都可以听到混音或替换后的音频流。
   ///
-  /// Param [replace]
-  /// - true：只推动设置的本地音频文件或者线上音频文件，不传输麦克风收录的音频。
-  /// - false：音频文件内容将会和麦克风采集的音频流进行混音。
+  /// **Parameter** [replace]
+  /// - `true`：只推动设置的本地音频文件或者线上音频文件，不传输麦克风收录的音频。
+  /// - `false`：音频文件内容将会和麦克风采集的音频流进行混音。
   ///
-  /// Param [cycle] 音频文件循环播放的次数：
+  /// **Parameter** [cycle] 音频文件循环播放的次数：
   /// - 正整数：循环的次数。
   /// - -1：无限循环。
-  Future<void> startAudioMixing(String filePath, bool loopback, bool replace,
-      int cycle);
+  Future<void> startAudioMixing(
+      String filePath, bool loopback, bool replace, int cycle);
 
   /// 停止播放音乐文件及混音。
   ///
@@ -1461,21 +1515,21 @@ mixin RtcAudioMixingInterface {
   /// - 该方法调节混音里伴奏在本端和远端播放的音量大小。请在频道内调用该方法。
   /// - 调用该方法不影响调用 [RtcEngine.playEffect] 播放音效文件的音量。
   ///
-  /// Param [volume] 伴奏音量范围为 [0,100]。默认 100 为原始文件音量。
+  /// **Parameter** [volume] 伴奏音量范围为 [0,100]。默认 100 为原始文件音量。
   Future<void> adjustAudioMixingVolume(int volume);
 
   /// 调节音乐文件的本地播放音量。
   ///
   /// 该方法调节混音里音乐文件在本端播放的音量大小。请在频道内调用该方法。
   ///
-  /// Param [volume] 伴奏音量范围为 [0,100]。默认 100 为原始文件音量。
+  /// **Parameter** [volume] 伴奏音量范围为 [0,100]。默认 100 为原始文件音量。
   Future<void> adjustAudioMixingPlayoutVolume(int volume);
 
   /// 调节音乐文件的远端播放音量。
   ///
   /// 该方法调节混音里音乐文件在远端播放的音量大小。请在频道内调用该方法。
   ///
-  /// Param [volume] 伴奏音量范围为 [0,100]。默认 100 为原始文件音量。
+  /// **Parameter** [volume] 伴奏音量范围为 [0,100]。默认 100 为原始文件音量。
   Future<void> adjustAudioMixingPublishVolume(int volume);
 
   /// 获取音乐文件的本地播放音量。
@@ -1504,7 +1558,7 @@ mixin RtcAudioMixingInterface {
 
   /// 设置音乐文件的播放位置。
   ///
-  /// Param [pos] 整数。进度条位置，单位为毫秒。
+  /// **Parameter** [pos] 整数。进度条位置，单位为毫秒。
   Future<void> setAudioMixingPosition(int pos);
 
   /// 调整本地播放的音乐文件的音调。
@@ -1514,7 +1568,7 @@ mixin RtcAudioMixingInterface {
   /// **Note**
   /// 该方法需在 [RtcEngine.startAudioMixing] 后调用。
   ///
-  /// Param [pitch] 按半音音阶调整本地播放的音乐文件的音调，默认值为 0，即不调整音调。
+  /// **Parameter** [pitch] 按半音音阶调整本地播放的音乐文件的音调，默认值为 0，即不调整音调。
   /// 取值范围为 [-12,12]，每相邻两个值的音高距离相差半音。取值的绝对值越大，音调升高或降低得越多。
   Future<void> setAudioMixingPitch(int pitch);
 }
@@ -1529,14 +1583,14 @@ mixin RtcAudioEffectInterface {
 
   /// 设置所有音效文件的播放音量。
   ///
-  /// Param [volume] 所有音效文件的播放音量，取值范围为 [0.0,100.0]。 100.0 为默认值。
+  /// **Parameter** [volume] 所有音效文件的播放音量，取值范围为 [0.0,100.0]。 100.0 为默认值。
   Future<void> setEffectsVolume(double volume);
 
   /// 设置指定音效文件的播放音量。
   ///
-  /// Param [soundId] 指定音效的 ID。每个音效均有唯一的 ID。
+  /// **Parameter** [soundId] 指定音效的 ID。每个音效均有唯一的 ID。
   ///
-  /// Param [volume] 指定音效文件的播放音量，取值范围为 [0.0,100.0]。 100.0 为默认值。
+  /// **Parameter** [volume] 指定音效文件的播放音量，取值范围为 [0.0,100.0]。 100.0 为默认值。
   Future<void> setVolumeOfEffect(int soundId, double volume);
 
   /// 播放指定音效文件。
@@ -1547,30 +1601,30 @@ mixin RtcAudioEffectInterface {
   ///
   /// 调用该方法播放音效结束后，SDK 会触发 [RtcEngineEventHandler.audioEffectFinished] 回调。
   ///
-  /// Param [soundId] 音效的 ID。每个音效均有唯一的 ID。如果你已通过 [RtcEngine.preloadEffect] 将音效加载至内存，
+  /// **Parameter** [soundId] 音效的 ID。每个音效均有唯一的 ID。如果你已通过 [RtcEngine.preloadEffect] 将音效加载至内存，
   /// 确保这里的 `soundID` 与 [RtcEngine.preloadEffect] 设置的 `soundId` 相同。
   ///
-  /// Param [filePath] 待播放的音效文件的绝对路径或 URL 地址。如 `/sdcard/emulated/0/audio.mp4`。建议填写文件后缀名。
+  /// **Parameter** [filePath] 待播放的音效文件的绝对路径或 URL 地址。如 `/sdcard/emulated/0/audio.mp4`。建议填写文件后缀名。
   /// 若无法确定文件后缀名，可不填。支持的音频格式包括：mp3、mp4、m4a、aac、3gp、mkv 及 wav。
   ///
-  /// Param [loopCount] 音效文件循环播放的次数：
+  /// **Parameter** [loopCount] 音效文件循环播放的次数：
   /// - 0：播放音效文件一次。
   /// - 1：播放音效文件两次。
   /// - -1：无限循环播放音效文件，直至调用 [RtcEngine.stopEffect] 或 [RtcEngine.stopAllEffects] 后停止。
   ///
-  /// Param [pitch] 音效的音调。取值范围为 [0.5,2.0]。默认值为 1.0，代表原始音调。取值越小，则音调越低。
+  /// **Parameter** [pitch] 音效的音调。取值范围为 [0.5,2.0]。默认值为 1.0，代表原始音调。取值越小，则音调越低。
   ///
-  /// Param [pan] 音效的空间位置。取值范围为 [-1.0,1.0]：
+  /// **Parameter** [pan] 音效的空间位置。取值范围为 [-1.0,1.0]：
   /// - -1.0：音效出现在左边。
   /// - 0：音效出现在正前边。
   /// - 1.0：音效出现在右边。
   ///
-  /// Param [gain] 音效的音量。取值范围为 [0.0,100.0]。100.0 为默认值，代表原始音量。取值越小，则音量越低。
+  /// **Parameter** [gain] 音效的音量。取值范围为 [0.0,100.0]。100.0 为默认值，代表原始音量。取值越小，则音量越低。
   ///
-  /// Param [publish] 是否将音效发布到远端：
+  /// **Parameter** [publish] 是否将音效发布到远端：
   ///
-  /// - true：音效文件在本地播放的同时，会发布到 Agora 云上，因此远端用户也能听到该音效。
-  /// - false：音效文件不会发布到 Agora 云上，因此只能在本地听到该音效。
+  /// - `true`：音效文件在本地播放的同时，会发布到 Agora 云上，因此远端用户也能听到该音效。
+  /// - `false`：音效文件不会发布到 Agora 云上，因此只能在本地听到该音效。
   ///
   Future<void> playEffect(int soundId, String filePath, int loopCount,
       double pitch, double pan, double gain, bool publish);
@@ -1581,7 +1635,7 @@ mixin RtcAudioEffectInterface {
   ///
   /// 如果你已通过 [RtcEngine.preloadEffect] 将音效加载至内存，确保这里的 `soundID` 与 [RtcEngine.preloadEffect] 设置的 `soundID` 相同
   ///
-  /// Param [soundId] 音效文件的 ID。每个音效均有唯一的 ID。
+  /// **Parameter** [soundId] 音效文件的 ID。每个音效均有唯一的 ID。
   Future<void> stopEffect(int soundId);
 
   /// 停止播放所有音效文件。
@@ -1596,19 +1650,19 @@ mixin RtcAudioEffectInterface {
   /// - 该方法不支持预加载在线音效文件。
   /// - 为保证通话流畅度，请注意控制音效文件的大小。Agora 推荐你在加入频道前调用该方法。
   ///
-  /// Param [soundId] 音效文件的 ID。
+  /// **Parameter** [soundId] 音效文件的 ID。
   ///
-  /// Param [filePath] 音效文件的绝对路径。
+  /// **Parameter** [filePath] 音效文件的绝对路径。
   Future<void> preloadEffect(int soundId, String filePath);
 
   /// 从内存释放指定的预加载音效文件。
   ///
-  /// Param [soundId] 音效文件的 ID。每个音效均有唯一的 ID。
+  /// **Parameter** [soundId] 音效文件的 ID。每个音效均有唯一的 ID。
   Future<void> unloadEffect(int soundId);
 
   /// 暂停播放指定音效文件。
   ///
-  /// Param [soundId] 指定音效的 ID。每个音效均有唯一的 ID。
+  /// **Parameter** [soundId] 指定音效的 ID。每个音效均有唯一的 ID。
   Future<void> pauseEffect(int soundId);
 
   /// 暂停播放所有音效文件。
@@ -1616,7 +1670,7 @@ mixin RtcAudioEffectInterface {
 
   /// 恢复播放指定音效文件。
   ///
-  /// Param [soundId] 指定音效的 ID。每个音效均有唯一的 ID。
+  /// **Parameter** [soundId] 指定音效的 ID。每个音效均有唯一的 ID。
   Future<void> resumeEffect(int soundId);
 
   /// 恢复播放所有音效文件。
@@ -1630,7 +1684,7 @@ mixin RtcVoiceChangerInterface {
   ///
   /// 该方法不能与 [RtcEngine.setLocalVoiceReverbPreset] 方法一同使用，否则先调的方法会不生效。
   ///
-  /// Param [voiceChanger] 本地语音的变声、美音或语聊美声效果选项。详见 [AudioVoiceChanger]。
+  /// **Parameter** [voiceChanger] 本地语音的变声、美音或语聊美声效果选项。详见 [AudioVoiceChanger]。
   Future<void> setLocalVoiceChanger(AudioVoiceChanger voiceChanger);
 
   /// 设置本地语音混响（含虚拟立体声效果）。
@@ -1639,21 +1693,21 @@ mixin RtcVoiceChangerInterface {
   /// - 该方法不能与 [RtcEngine.setLocalVoiceReverb] 方法一同使用。
   /// - 该方法不能与 [RtcEngine.setLocalVoiceChanger] 方法一同使用，否则先调的方法会不生效。
   ///
-  /// Param [preset] 本地语音混响选项。详见 [AudioReverbPreset]。
+  /// **Parameter** [preset] 本地语音混响选项。详见 [AudioReverbPreset]。
   Future<void> setLocalVoiceReverbPreset(AudioReverbPreset preset);
 
   /// 设置本地语音音调。
   /// 该方法改变本地说话人声音的音调。
   ///
-  /// Param [pitch] 语音频率。可以在 [0.5,2.0] 范围内设置。取值越小，则音调越低。默认值为 1.0，表示不需要修改音调。
+  /// **Parameter** [pitch] 语音频率。可以在 [0.5,2.0] 范围内设置。取值越小，则音调越低。默认值为 1.0，表示不需要修改音调。
   Future<void> setLocalVoicePitch(double pitch);
 
   /// 设置本地语音音效均衡。
   ///
-  /// Param [bandFrequency] 频谱子带索引，取值范围是 [0,9]，分别代表 10 个频带，对应的中心频率是 [31，62，125，250，500，1k，2k，4k，8k，16k] Hz。
+  /// **Parameter** [bandFrequency] 频谱子带索引，取值范围是 [0,9]，分别代表 10 个频带，对应的中心频率是 [31，62，125，250，500，1k，2k，4k，8k，16k] Hz。
   /// 详见 [AudioEqualizationBandFrequency]。
   ///
-  /// Param [bandGain] 每个 band 的增益，单位是 dB，每一个值的范围是 [-15,15]，默认值为 0。
+  /// **Parameter** [bandGain] 每个 band 的增益，单位是 dB，每一个值的范围是 [-15,15]，默认值为 0。
   Future<void> setLocalVoiceEqualization(
       AudioEqualizationBandFrequency bandFrequency, int bandGain);
 
@@ -1663,9 +1717,9 @@ mixin RtcVoiceChangerInterface {
   ///
   /// Agora SDK 提供更为简便的接口 [RtcEngine.setLocalVoiceReverbPreset]，该方法通过一系列内置参数的调整，直接实现流行、R&B、摇滚、嘻哈等预置的混响效果。
   ///
-  /// Param [reverbKey] 混响音效 Key。详见 [AudioReverbType]。
+  /// **Parameter** [reverbKey] 混响音效 Key。详见 [AudioReverbType]。
   ///
-  /// Param [value] 各混响音效 Key 所对应的值。
+  /// **Parameter** [value] 各混响音效 Key 所对应的值。
   Future<void> setLocalVoiceReverb(AudioReverbType reverbKey, int value);
 }
 
@@ -1675,9 +1729,9 @@ mixin RtcVoicePositionInterface {
   /// 如果想调用 [RtcEngine.setRemoteVoicePosition] 实现听声辨位的功能，请确保在调用 [RtcEngine.joinChannel]方法前调用该方法。
   ///
   ///
-  /// Param [enabled] 是否开启远端用户语音立体声：
-  /// - true：开启。
-  /// - false：（默认）关闭。
+  /// **Parameter** [enabled] 是否开启远端用户语音立体声：
+  /// - `true`：开启。
+  /// - `false`：（默认）关闭。
   Future<void> enableSoundPositionIndication(bool enabled);
 
   /// 设置远端用户声音的空间位置和音量，方便本地用户听声辨位。
@@ -1689,14 +1743,14 @@ mixin RtcVoicePositionInterface {
   /// - 使用该方法需要在加入频道前调用 [RtcEngine.enableSoundPositionIndication] 开启远端用户的语音立体声。
   /// - 为获得最佳听觉体验，我们建议用户佩戴耳机。
   ///
-  /// Param [uid] 远端用户的 ID。
+  /// **Parameter** [uid] 远端用户的 ID。
   ///
-  /// Param [pan] 设置远端用户声音出现的位置，取值范围为 [-1.0,1.0]：
+  /// **Parameter** [pan] 设置远端用户声音出现的位置，取值范围为 [-1.0,1.0]：
   /// - 0.0：（默认）声音出现在正前方。
   /// - -1.0：声音出现在左边。
   /// - 1.0：声音出现在右边
   ///
-  /// Param [gain] 设置远端用户声音的音量，取值范围为 [0.0,100.0]，默认值为 100.0，表示该用户的原始音量。取值越小，则音量越低。
+  /// **Parameter** [gain] 设置远端用户声音的音量，取值范围为 [0.0,100.0]，默认值为 100.0，表示该用户的原始音量。取值越小，则音量越低。
   Future<void> setRemoteVoicePosition(int uid, double pan, double gain);
 }
 
@@ -1711,7 +1765,7 @@ mixin RtcPublishStreamInterface {
   /// - 该方法仅适用于直播场景下的主播用户。
   /// - 请确保先调用过该方法，再调用 [RtcEngine.addPublishStreamUrl]。
   ///
-  /// Param [transcoding] 旁路推流布局相关设置。详见 [LiveTranscoding]。
+  /// **Parameter** [transcoding] 旁路推流布局相关设置。详见 [LiveTranscoding]。
   Future<void> setLiveTranscoding(LiveTranscoding transcoding);
 
   /// 增加旁路推流地址。
@@ -1725,11 +1779,11 @@ mixin RtcPublishStreamInterface {
   /// - 请确保在成功加入频道后才能调用该接口。
   /// - 该方法每次只能增加一路旁路推流地址。如需推送多路流，则需多次调用该方法。
   ///
-  /// Param [url] CDN 推流地址，格式为 RTMP。该字符长度不能超过 1024 字节。url 不支持中文等特殊字符。
+  /// **Parameter** [url] CDN 推流地址，格式为 RTMP。该字符长度不能超过 1024 字节。url 不支持中文等特殊字符。
   ///
-  /// Param [transcodingEnabled] 是否转码。如果设为 `true`，则需要在该方法前先调用 [RtcEngine.setLiveTranscoding] 方法。
-  /// - true：转码。[转码](https://docs.agora.io/cn/Agora%20Platform/terms?platform=All%20Platforms#转码)是指在旁路推流时对音视频流进行转码处理后，再推送到其他 RTMP 服务器。多适用于频道内有多个主播，需要进行混流、合图的场景。
-  /// - false：不转码。
+  /// **Parameter** [transcodingEnabled] 是否转码。如果设为 `true`，则需要在该方法前先调用 [RtcEngine.setLiveTranscoding] 方法。
+  /// - `true`：转码。[转码](https://docs.agora.io/cn/Agora%20Platform/terms?platform=All%20Platforms#转码)是指在旁路推流时对音视频流进行转码处理后，再推送到其他 RTMP 服务器。多适用于频道内有多个主播，需要进行混流、合图的场景。
+  /// - `false`：不转码。
   Future<void> addPublishStreamUrl(String url, bool transcodingEnabled);
 
   /// 删除旁路推流地址。
@@ -1741,7 +1795,7 @@ mixin RtcPublishStreamInterface {
   /// - 该方法只适用于直播场景。
   /// - 该方法每次只能删除一路旁路推流地址。如需删除多路流，则需多次调用该方法。
   ///
-  /// Param [url] 待删除的推流地址，格式为 RTMP。该字符长度不能超过 1024 字节。推流地址不支持中文等特殊字符。
+  /// **Parameter** [url] 待删除的推流地址，格式为 RTMP。该字符长度不能超过 1024 字节。推流地址不支持中文等特殊字符。
   Future<void> removePublishStreamUrl(String url);
 }
 
@@ -1754,10 +1808,10 @@ mixin RtcMediaRelayInterface {
   /// 和 [RtcEngineEventHandler.channelMediaRelayEvent] 回调，
   /// 并在回调中报告当前的跨频道媒体流转发状态和事件。
   ///
-  /// - 如果 [RtcEngineEventHandler.channelMediaRelayStateChanged] 回调报告 [ChannelMediaRelayState.Running](2) 和 [ChannelMediaRelayError.None](0)
-  /// 且 [RtcEngineEventHandler.channelMediaRelayEvent] 回调报告 [ChannelMediaRelayEvent.SentToDestinationChannel](4)，
+  /// - 如果 [RtcEngineEventHandler.channelMediaRelayStateChanged] 回调报告 [ChannelMediaRelayState.Running] 和 [ChannelMediaRelayError.None]
+  /// 且 [RtcEngineEventHandler.channelMediaRelayEvent] 回调报告 [ChannelMediaRelayEvent.SentToDestinationChannel]，
   /// 则表示 SDK 开始在源频道和目标频道之间转发媒体流。
-  /// - 如果 [RtcEngineEventHandler.channelMediaRelayStateChanged] 回调报告 [ChannelMediaRelayState.Failure](3)，则表示跨频道媒体流转发出现异常。
+  /// - 如果 [RtcEngineEventHandler.channelMediaRelayStateChanged] 回调报告 [ChannelMediaRelayState.Failure]，则表示跨频道媒体流转发出现异常。
   ///
   /// **Note**
   /// - 跨频道媒体流转发功能需要联系 sales@agora.io 开通。
@@ -1766,7 +1820,7 @@ mixin RtcMediaRelayInterface {
   /// - 该方法仅适用于直播场景下的主播。
   /// - 成功调用该方法后，若你想再次调用该方法，必须先调用 [RtcEngine.stopChannelMediaRelay] 方法退出当前的转发状态。
   ///
-  /// Param [channelMediaRelayConfiguration] 跨频道媒体流转发参数配置。
+  /// **Parameter** [channelMediaRelayConfiguration] 跨频道媒体流转发参数配置。
   Future<void> startChannelMediaRelay(
       ChannelMediaRelayConfiguration channelMediaRelayConfiguration);
 
@@ -1775,14 +1829,14 @@ mixin RtcMediaRelayInterface {
   /// 成功开始跨频道转发媒体流后，如果你希望将流转发到多个目标频道，或退出当前的转发频道，可以调用该方法。
   ///
   /// 成功调用该方法后，SDK 会触发 [RtcEngineEventHandler.channelMediaRelayEvent] 回调，
-  /// 并在回调中报告状态码 [ChannelMediaRelayEvent.updateDestinationChannel](7)。
+  /// 并在回调中报告状态码 [ChannelMediaRelayEvent.UpdateDestinationChannel]。
   ///
   /// **Note**
   /// - 请在 [RtcEngine.startChannelMediaRelay] 方法后调用该方法，更新媒体流转发的频道。
   /// - 跨频道媒体流转发最多支持 4 个目标频道。如果直播间里已经有 4 个频道了，你可以在调用该方法之前，
   /// 调用 [ChannelMediaRelayConfiguration] 类中的 `destInfos` 方法移除不需要的频道。
   ///
-  /// Param [channelMediaRelayConfiguration] 跨频道媒体流转发参数配置。详见 [ChannelMediaRelayConfiguration]。
+  /// **Parameter** [channelMediaRelayConfiguration] 跨频道媒体流转发参数配置。详见 [ChannelMediaRelayConfiguration]。
   Future<void> updateChannelMediaRelay(
       ChannelMediaRelayConfiguration channelMediaRelayConfiguration);
 
@@ -1791,12 +1845,12 @@ mixin RtcMediaRelayInterface {
   /// 一旦停止，主播会退出所有目标频道。
   ///
   /// 成功调用该方法后，SDK 会触发 [RtcEngineEventHandler.channelMediaRelayStateChanged] 回调。
-  /// 如果报告 [ChannelMediaRelayState.Idle](0) 和 [ChannelMediaRelayError.None](0)，则表示已停止转发媒体流。
+  /// 如果报告 [ChannelMediaRelayState.Idle] 和 [ChannelMediaRelayError.None]，则表示已停止转发媒体流。
   ///
   /// **Note**
   ///
   /// 如果该方法调用不成功，SDK 会触发 [RtcEngineEventHandler.channelMediaRelayStateChanged] 回调，
-  /// 并报告状态码 [ChannelMediaRelayError.ServerNoResponse](2) 或 [ChannelMediaRelayError.ServerConnectionLost](8)。
+  /// 并报告状态码 [ChannelMediaRelayError.ServerNoResponse] 或 [ChannelMediaRelayError.ServerConnectionLost]。
   /// 你可以调用 [RtcEngine.leaveChannel] 方法离开频道，跨频道媒体流转发会自动停止。
   Future<void> stopChannelMediaRelay();
 }
@@ -1817,9 +1871,9 @@ mixin RtcAudioRouteInterface {
   /// - 该方法仅适用于通信场景。
   /// - 该方法需要在加入频道前设置，否则不生效。
   ///
-  /// Param [defaultToSpeaker] 设置默认的音频播放路由：
-  /// - true：默认从外放（扬声器）出声。如果设备连接了耳机或蓝牙，则无法切换到外放。
-  /// - false：（默认）默认从听筒出声。如果设备连接了耳机，则语音路由走耳机。
+  /// **Parameter** [defaultToSpeaker] 设置默认的音频播放路由：
+  /// - `true`：默认从外放（扬声器）出声。如果设备连接了耳机或蓝牙，则无法切换到外放。
+  /// - `false`：（默认）默认从听筒出声。如果设备连接了耳机，则语音路由走耳机。
   Future<void> setDefaultAudioRoutetoSpeakerphone(bool defaultToSpeaker);
 
   /// 启用/关闭扬声器播放。
@@ -1831,30 +1885,30 @@ mixin RtcAudioRouteInterface {
   /// - 请确保在调用此方法前已调用过 [RtcEngine.joinChannel] 方法。
   /// - 直播频道内的观众调用该 API 无效。
   ///
-  /// Param [enabled] 是否将音频路由到外放：
-  /// - true：切换到外放。
-  /// - false：切换到听筒。如果设备连接了耳机，则语音路由走耳机。
+  /// **Parameter** [enabled] 是否将音频路由到外放：
+  /// - `true`：切换到外放。
+  /// - `false`：切换到听筒。如果设备连接了耳机，则语音路由走耳机。
   Future<void> setEnableSpeakerphone(bool enabled);
 
   /// 检查扬声器状态启用状态。
   ///
   /// **Returns**
-  /// - true：扬声器已开启，语音会输出到扬声器。
-  /// - false：扬声器未开启，语音会输出到非扬声器（听筒，耳机等）。
+  /// - `true`：扬声器已开启，语音会输出到扬声器。
+  /// - `false`：扬声器未开启，语音会输出到非扬声器（听筒，耳机等）。
   Future<bool> isSpeakerphoneEnabled();
 }
 
 mixin RtcEarMonitoringInterface {
   /// 开启耳返功能。
   ///
-  /// Param [enabled] 是否开启耳返功能：
-  /// - true：开启耳返功能。
-  /// - false：（默认）关闭耳返功能。
+  /// **Parameter** [enabled] 是否开启耳返功能：
+  /// - `true`：开启耳返功能。
+  /// - `false`：（默认）关闭耳返功能。
   Future<void> enableInEarMonitoring(bool enabled);
 
   /// 设置耳返音量。
   ///
-  /// Param [volume] 设置耳返音量，取值范围在 0 到 100 间。默认值为 100。
+  /// **Parameter** [volume] 设置耳返音量，取值范围在 0 到 100 间。默认值为 100。
   Future<void> setInEarMonitoringVolume(int volume);
 }
 
@@ -1864,14 +1918,14 @@ mixin RtcDualStreamInterface {
   /// 该方法设置单流或者双流模式。发送端开启双流模式后，接收端可以选择接收大流还是小流。其中，大流指高分辨率、高码率的视频流，
   /// 小流指低分辨率、低码率的视频流。
   ///
-  /// Param [enabled] 指定双流或者单流模式：
-  /// - true：双流。
-  /// - false：（默认）单流。
+  /// **Parameter** [enabled] 指定双流或者单流模式：
+  /// - `true`：双流。
+  /// - `false`：（默认）单流。
   Future<void> enableDualStreamMode(bool enabled);
 
   /// 设置订阅的视频流类型。
   ///
-  /// 在网络条件受限的情况下，如果发送端没有调用 [RtcEngine.enableDualStreamMode](false) 关闭双流模式，
+  /// 在网络条件受限的情况下，如果发送端没有调用 [RtcEngine.enableDualStreamMode] (`false`) 关闭双流模式，
   /// 接收端可以选择接收大流还是小流。其中，大流可以接为高分辨率高码率的视频流，
   /// 小流则是低分辨率低码率的视频流。
   ///
@@ -1882,44 +1936,44 @@ mixin RtcDualStreamInterface {
   ///
   /// 调用本方法的执行结果将在 [RtcEngineEventHandler.apiCallExecuted] 中返回。
   ///
-  /// Param [uid] 用户 ID。
+  /// **Parameter** [uid] 用户 ID。
   ///
-  /// Param [streamType] 视频流类型。详见 [VideoStreamType]。
+  /// **Parameter** [streamType] 视频流类型。详见 [VideoStreamType]。
   Future<void> setRemoteVideoStreamType(int uid, VideoStreamType streamType);
 
   /// 设置默认订阅的视频流类型。
   ///
-  /// Param [streamType] 视频流类型。详见 [VideoStreamType]。
+  /// **Parameter** [streamType] 视频流类型。详见 [VideoStreamType]。
   Future<void> setRemoteDefaultVideoStreamType(VideoStreamType streamType);
 }
 
 mixin RtcFallbackInterface {
   /// 设置弱网条件下发布的音视频流回退选项。
   ///
-  /// 网络不理想的环境下，直播音视频的质量都会下降。使用该接口并将 option 设置为 [StreamFallbackOptions.AudioOnly](2) 后，
+  /// 网络不理想的环境下，直播音视频的质量都会下降。使用该接口并将 option 设置为 [StreamFallbackOptions.AudioOnly] 后，
   /// SDK 会在上行弱网且音视频质量严重受影响时，自动关断视频流，从而保证或提高音频质量。
   /// 同时 SDK 会持续监控网络质量，并在网络质量改善时恢复音视频流。当本地推流回退为音频流时，或由音频流恢复为音视频流时，
   /// SDK 会触发本地发布的媒体流已回退为音频流 [RtcEngineEventHandler.localPublishFallbackToAudioOnly] 回调。
   ///
   /// **Note**
   ///
-  /// 旁路推流场景下，设置本地推流回退为 [StreamFallbackOptions.AudioOnly](2) 可能会导致远端的 CDN 用户听到声音的时间有所延迟。
+  /// 旁路推流场景下，设置本地推流回退为 [StreamFallbackOptions.AudioOnly] 可能会导致远端的 CDN 用户听到声音的时间有所延迟。
   /// 因此在有旁路推流的场景下，Agora 建议不开启该功能。
   ///
-  /// Param [option] 本地推流回退处理选项。详见 [StreamFallbackOptions]。
+  /// **Parameter** [option] 本地推流回退处理选项。详见 [StreamFallbackOptions]。
   ///
   Future<void> setLocalPublishFallbackOption(StreamFallbackOptions option);
 
   /// 设置弱网条件下订阅的音视频流回退选项。
   ///
   /// 网络不理想的环境下，直播音视频的质量都会下降。使用该接口并将 `option` 设置
-  /// 为 [StreamFallbackOptions.VideoStreamLow](1) 或者 [StreamFallbackOptions.AudioOnly](2) 后，//TODO 中英文不一致 [StreamFallbackOptions.VideoStreamLow](1)?
+  /// 为 [StreamFallbackOptions.VideoStreamLow] 或者 [StreamFallbackOptions.AudioOnly] 后，
   /// SDK 会在下行弱网且音视频质量严重受影响时，
   /// 将视频流切换为小流，或关断视频流，从而保证或提高音频质量。同时 SDK 会持续监控网络质量，并在网络质量改善时恢复音视频流。
   /// 当远端订阅流回退为音频流时，或由音频流恢复为音视频流时，SDK 会触发远端订阅流已回退为
   /// 音频流 [RtcEngineEventHandler.remoteSubscribeFallbackToAudioOnly] 回调。
   ///
-  /// Param [option] 远端订阅流回退处理选项。详见 [StreamFallbackOptions]。
+  /// **Parameter** [option] 远端订阅流回退处理选项。详见 [StreamFallbackOptions]。
   Future<void> setRemoteSubscribeFallbackOption(StreamFallbackOptions option);
 
   /// 设置用户媒体流优先级。
@@ -1931,9 +1985,9 @@ mixin RtcFallbackInterface {
   ///
   /// 目前 Agora SDK 仅允许将一名远端用户设为高优先级。
   ///
-  /// Param [uid] 远端用户的 ID。
+  /// **Parameter** [uid] 远端用户的 ID。
   ///
-  /// Param [userPriority] 远端用户的优先级。详见 [UserPriority]。
+  /// **Parameter** [userPriority] 远端用户的优先级。详见 [UserPriority]。
   Future<void> setRemoteUserPriority(int uid, UserPriority userPriority);
 }
 
@@ -1950,7 +2004,7 @@ mixin RtcTestInterface {
   /// 否则不能进行下一次回声测试，也无法调用 [RtcEngine.joinChannel] 加入频道。
   /// - 直播场景下，该方法仅能由用户角色为主播的用户调用。
   ///
-  /// Param [intervalInSeconds] 设置返回语音通话回路测试结果的时间间隔，取值范围为 [2,10]，单位为秒，默认为 10 秒。
+  /// **Parameter** [intervalInSeconds] 设置返回语音通话回路测试结果的时间间隔，取值范围为 [2,10]，单位为秒，默认为 10 秒。
   Future<void> startEchoTest(int intervalInSeconds);
 
   /// 停止语音通话回路测试。
@@ -1996,7 +2050,7 @@ mixin RtcTestInterface {
   /// 否则可能会由于 API 操作过于频繁导致此方法无法执行。
   /// - 直播场景下，如果本地用户为主播，请勿在加入频道后调用该方法。
   ///
-  /// Param [config] Last-mile 网络探测配置。详见 [LastmileProbeConfig]。
+  /// **Parameter** [config] Last-mile 网络探测配置。详见 [LastmileProbeConfig]。
   Future<void> startLastmileProbeTest(LastmileProbeConfig config);
 
   /// 停止通话前网络质量探测。
@@ -2017,12 +2071,12 @@ mixin RtcMediaMetadataInterface {
 
   /// 设置 Metadata 的最大数据大小。
   ///
-  /// Param [size] Metadata 的最大数据大小，单位为 Byte，最大值不超过 1024。
+  /// **Parameter** [size] Metadata 的最大数据大小，单位为 Byte，最大值不超过 1024。
   Future<void> setMaxMetadataSize(int size);
 
   /// 发送 Mtadata。
   ///
-  /// Param [metadata] 想要发送的 Metadata。
+  /// **Parameter** [metadata] 想要发送的 Metadata。
   ///
   /// **Note**
   /// 请确保在该方法中传入的 Metadata 大小不超过 [setMaxMetadataSize] 中设定的值。
@@ -2049,9 +2103,9 @@ mixin RtcWatermarkInterface {
   /// - 如果你已设置本地视频为镜像模式，那么此处的本地水印也为镜像。为避免本地用户看本地视频时的水印也被镜像，
   /// Agora 建议你不要对本地视频同时使用镜像和水印功能，请在应用层实现本地水印功能。
   ///
-  /// Param [watermarkUrl] 待添加的水印图片的本地路径。本方法支持从本地路径和 assets 路径添加水印图片。如果使用 assets 路径，需要以 `/assets/` 开头。
+  /// **Parameter** [watermarkUrl] 待添加的水印图片的本地路径。本方法支持从本地路径和 assets 路径添加水印图片。如果使用 assets 路径，需要以 `/assets/` 开头。
   ///
-  /// Param [options] 待添加的水印图片的设置选项。详见 [WatermarkOptions]。
+  /// **Parameter** [options] 待添加的水印图片的设置选项。详见 [WatermarkOptions]。
   Future<void> addVideoWatermark(String watermarkUrl, WatermarkOptions options);
 
   /// 删除本地视频水印。
@@ -2063,6 +2117,9 @@ mixin RtcWatermarkInterface {
 mixin RtcEncryptionInterface {
   /// 启用内置加密，并设置数据加密密码。
   ///
+  /// **Deprecated**
+  /// 自 v3.1.2 起废弃。请改用 `enableEncryption`。
+  ///
   /// 如果需要启用加密，请在加入频道前调用 [RtcEngine.setEncryptionSecret] 启用
   /// 内置加密功能，并设置加密密码。同一频道内的所有用户应设置相同的密码。
   /// 当用户离开频道时，该频道的密码会自动清除。如果未指定密码或将密码设置为空，则无法激活加密功能。
@@ -2071,10 +2128,13 @@ mixin RtcEncryptionInterface {
   /// - 为保证最佳传输效果，请确保加密后的数据大小不超过原始数据大小 + 16 字节。16 字节是 AES 通用加密模式下最大填充块大小。
   /// - 请勿在转码推流场景中使用该方法。
   ///
-  /// Param [secret] 加密密码。
+  /// **Parameter** [secret] 加密密码。
   Future<void> setEncryptionSecret(String secret);
 
   /// 设置内置的加密方案。
+  ///
+  /// **Deprecated**
+  /// 自 v3.1.2 起废弃。请改用 `enableEncryption`。
   ///
   /// Agora SDK 支持内置加密功能，默认使用 `AES128XTS` 加密方式。如需使用其他加密方式，可以调用该 API 设置。
   /// 同一频道内的所有用户必须设置相同的加密方式和密码才能进行通话。关于这几种加密方式的区别，请参考 AES 加密算法的相关资料。
@@ -2083,8 +2143,26 @@ mixin RtcEncryptionInterface {
   ///
   /// 在调用本方法前，请先调用 [RtcEngine.setEncryptionSecret] 启用内置加密功能。
   ///
-  /// Param [encryptionMode] 加密方式。详见 [EncryptionMode]。
+  /// **Parameter** [encryptionMode] 加密方式。详见 [EncryptionMode]。
   Future<void> setEncryptionMode(EncryptionMode encryptionMode);
+
+  /// 开启或关闭内置加密。
+  ///
+  /// @since v3.1.2。
+  ///
+  /// 在安全要求较高的场景下，Agora 建议你在加入频道前，调用 `enableEncryption` 方法开启内置加密。
+  ///
+  /// 同一频道内所有用户必须使用相同的加密模式和密钥。一旦所有用户都离开频道，该频道的加密密钥会自动清除。
+  ///
+  /// **Note**
+  /// - 如果开启了内置加密，则不能使用 RTMP 推流功能。
+  /// - Agora 支持 4 种加密模式。除 `SM4128ECB` 模式外，其他加密模式都需要在集成 SDK 时，额外添加加密库文件。详见《媒体流加密》。
+  ///
+  /// **Parameter** [enabled] 是否开启内置加密：
+  /// - `true`：开启内置加密。
+  /// - `false`：关闭内置加密。
+  /// **Parameter** [config] 配置内置加密模式和密钥。详见 [EncryptionConfig]。
+  Future<void> enableEncryption(bool enabled, EncryptionConfig config);
 }
 
 mixin RtcAudioRecorderInterface {
@@ -2102,11 +2180,11 @@ mixin RtcAudioRecorderInterface {
   /// - 为保证录音效果，当 `sampleRate` 设为 44.1 kHz 或 48 kHz 时，建议将 `quality` 设
   /// 为 [AudioRecordingQuality.Medium] 或 [AudioRecordingQuality.High]。
   ///
-  /// Param [filePath] 录音文件在本地保存的绝对路径，由用户自行制定，需精确到文件名及格式，例如：`/dir1/dir2/dir3/audio.aac`。
+  /// **Parameter** [filePath] 录音文件在本地保存的绝对路径，由用户自行制定，需精确到文件名及格式，例如：`/dir1/dir2/dir3/audio.aac`。
   ///
-  /// Param [sampleRate] 录音采样率 (Hz)。详见 [AudioSampleRateType]。
+  /// **Parameter** [sampleRate] 录音采样率 (Hz)。详见 [AudioSampleRateType]。
   ///
-  /// Param [quality] 录音音质。详见 [AudioRecordingQuality]。
+  /// **Parameter** [quality] 录音音质。详见 [AudioRecordingQuality]。
   Future<void> startAudioRecording(String filePath,
       AudioSampleRateType sampleRate, AudioRecordingQuality quality);
 
@@ -2132,18 +2210,18 @@ mixin RtcInjectStreamInterface {
   /// - 该方法仅适用于直播场景中的主播用户。
   /// - 频道内同一时间只允许输入一个在线媒体流。
   ///
-  /// Param [url] 添加到直播中的视频流 URL 地址，支持 RTMP，HLS，HTTP-FLV 协议传输。
+  /// **Parameter** [url] 添加到直播中的视频流 URL 地址，支持 RTMP，HLS，HTTP-FLV 协议传输。
   /// - 支持的音频编码格式：AAC。
   /// - 支持的视频编码格式：H264 (AVC)。
   ///
-  /// Param [config] 外部输入的音视频流的配置。
+  /// **Parameter** [config] 外部输入的音视频流的配置。
   Future<void> addInjectStreamUrl(String url, LiveInjectStreamConfig config);
 
   /// 删除输入的在线媒体流。
   ///
   /// 成功删除后，会触发 [RtcEngineEventHandler.userOffline] 回调，其中 uid 为 666。
   ///
-  /// Param [url] 已输入、待删除的外部视频流 URL 地址，格式为 HTTP 或 HTTPS。
+  /// **Parameter** [url] 已输入、待删除的外部视频流 URL 地址，格式为 HTTP 或 HTTPS。
   Future<void> removeInjectStreamUrl(String url);
 }
 
@@ -2154,41 +2232,41 @@ mixin RtcCameraInterface {
   /// 检测设备是否支持摄像头缩放功能。
   ///
   /// **Returns**
-  /// - true：设备支持相机缩放功能。
-  /// - false：设备不支持相机缩放功能。
+  /// - `true`：设备支持相机缩放功能。
+  /// - `false`：设备不支持相机缩放功能。
   Future<bool> isCameraZoomSupported();
 
   /// 检测设备是否支持闪光灯常开。
   ///
   /// **Returns**
-  /// - true：设备支持闪光灯常开。
-  /// - false：设备不支持闪光灯常开。
+  /// - `true`：设备支持闪光灯常开。
+  /// - `false`：设备不支持闪光灯常开。
   Future<bool> isCameraTorchSupported();
 
   /// 检测设备是否支持手动对焦功能。
   ///
   /// **Returns**
-  /// - true：设备支持手动对焦功能。
-  /// - false：设备不支持手动对焦功能。
+  /// - `true`：设备支持手动对焦功能。
+  /// - `false`：设备不支持手动对焦功能。
   Future<bool> isCameraFocusSupported();
 
   /// 检测设备是否支持手动曝光功能。
   ///
   /// **Returns**
-  /// - true：设置支持手动曝光功能。
-  /// - false：设置不支持手动曝光功能。
+  /// - `true`：设置支持手动曝光功能。
+  /// - `false`：设置不支持手动曝光功能。
   Future<bool> isCameraExposurePositionSupported();
 
   /// 检测设备是否支持人脸对焦功能。
   ///
   /// **Returns**
-  /// - true：设备支持人脸对焦功能。
-  /// - false：设备不支持人脸对焦功能。
+  /// - `true`：设备支持人脸对焦功能。
+  /// - `false`：设备不支持人脸对焦功能。
   Future<bool> isCameraAutoFocusFaceModeSupported();
 
   /// 设置摄像头缩放比例。
   ///
-  /// Param [factor] 相机缩放比例，有效范围从 1.0 到最大缩放。
+  /// **Parameter** [factor] 相机缩放比例，有效范围从 1.0 到最大缩放。
   Future<void> setCameraZoomFactor(double factor);
 
   /// 获取摄像头支持最大缩放比例。
@@ -2200,21 +2278,21 @@ mixin RtcCameraInterface {
   ///
   /// 成功调用该方法后，本地会触发 [RtcEngineEventHandler.cameraFocusAreaChanged] 回调。
   ///
-  /// Param [positionX] 触摸点相对于视图的横坐标。
+  /// **Parameter** [positionX] 触摸点相对于视图的横坐标。
   ///
-  /// Param [positionY] 触摸点相对于视图的纵坐标。
-  Future<void> setCameraFocusPositionInPreview(double positionX,
-      double positionY);
+  /// **Parameter** [positionY] 触摸点相对于视图的纵坐标。
+  Future<void> setCameraFocusPositionInPreview(
+      double positionX, double positionY);
 
   /// 设置手动曝光位置。
   ///
   /// 成功调用该方法后，本地会触发 [RtcEngineEventHandler.cameraExposureAreaChanged] 回调。
   ///
-  /// Param [positionXinView] 触摸点相对于视图的横坐标。
+  /// **Parameter** [positionXinView] 触摸点相对于视图的横坐标。
   ///
-  /// Param [positionYinView] 触摸点相对于视图的纵坐标。
-  Future<void> setCameraExposurePosition(double positionXinView,
-      double positionYinView);
+  /// **Parameter** [positionYinView] 触摸点相对于视图的纵坐标。
+  Future<void> setCameraExposurePosition(
+      double positionXinView, double positionYinView);
 
   /// 开启/关闭本地人脸检测。
   ///
@@ -2223,23 +2301,23 @@ mixin RtcCameraInterface {
   /// - 人脸在画面中的位置。
   /// - 人脸距设备屏幕的距离。
   ///
-  /// Param [enable] 是否开启人脸检测：
-  /// - true：开启人脸检测。
-  /// - false：（默认）关闭人脸检测。
+  /// **Parameter** [enable] 是否开启人脸检测：
+  /// - `true`：开启人脸检测。
+  /// - `false`：（默认）关闭人脸检测。
   Future<void> enableFaceDetection(bool enable);
 
   /// 设置是否打开闪光灯。
   ///
-  /// Param [isOn] 是否打开闪光灯：
-  /// - true：打开。
-  /// - false：关闭。
+  /// **Parameter** [isOn] 是否打开闪光灯：
+  /// - `true`：打开。
+  /// - `false`：关闭。
   Future<void> setCameraTorchOn(bool isOn);
 
   /// 设置是否开启人脸对焦功能。
   ///
-  /// Param [enabled] 是否开启人脸对焦：
-  /// - true：开启人脸对焦功能。
-  /// - false：（默认）关闭人脸对焦功能。
+  /// **Parameter** [enabled] 是否开启人脸对焦：
+  /// - `true`：开启人脸对焦功能。
+  /// - `false`：（默认）关闭人脸对焦功能。
   Future<void> setCameraAutoFocusFaceModeEnabled(bool enabled);
 
   /// 设置摄像头的采集偏好。
@@ -2249,18 +2327,18 @@ mixin RtcCameraInterface {
   ///
   /// - 使用裸数据自采集接口时，如果 SDK 输出的分辨率和帧率高于 [RtcEngine.setVideoEncoderConfiguration]
   /// 中指定的参数，在后续处理视频帧的时候，比如美颜功能时，
-  /// 会需要更高的 CPU 及内存，容易导致性能问题。在这种情况下，我们推荐将摄像头采集偏好设置为 [CameraCaptureOutputPreference.Performance](1)，
+  /// 会需要更高的 CPU 及内存，容易导致性能问题。在这种情况下，我们推荐将摄像头采集偏好设置为 [CameraCaptureOutputPreference.Performance]，
   /// 避免性能问题。
-  /// - 如果没有本地预览功能或者对预览质量没有要求，我们推荐将采集偏好设置为 [CameraCaptureOutputPreference.Performance](1)，以优化 CPU 和
+  /// - 如果没有本地预览功能或者对预览质量没有要求，我们推荐将采集偏好设置为 [CameraCaptureOutputPreference.Performance]，以优化 CPU 和
   /// 内存的资源分配。
-  /// - 如果用户希望本地预览视频比实际编码发送的视频清晰，可以将采集偏好设置为 [CameraCaptureOutputPreference.Preview](2)。
+  /// - 如果用户希望本地预览视频比实际编码发送的视频清晰，可以将采集偏好设置为 [CameraCaptureOutputPreference.Preview]。
   ///
   /// **Note**
   ///
   /// 请在启动摄像头之前调用该方法，如 [RtcEngine.joinChannel]，[RtcEngine.enableVideo]
   /// 或者 [RtcEngine.enableLocalVideo]。
   ///
-  /// Param [config] 摄像头采集偏好。详见 [CameraCapturerConfiguration]。
+  /// **Parameter** [config] 摄像头采集偏好。详见 [CameraCapturerConfiguration]。
   Future<void> setCameraCapturerConfiguration(
       CameraCapturerConfiguration config);
 }
@@ -2271,14 +2349,14 @@ mixin RtcStreamMessageInterface {
   /// 该方法用于创建数据流。[`RtcEngine`] 生命周期内，每个用户最多只能创建 5 个数据流。
   /// 频道内数据通道最多允许数据延迟 5 秒，若超过 5 秒接收方尚未收到数据流，则数据通道会向 App 报错。
   ///
-  /// Param [reliable] 是否可靠。
+  /// **Parameter** [reliable] 是否可靠。
   ///
-  ///  - true: 接收方 5 秒内会收到发送方所发送的数据，
+  ///  - `true`: 接收方 5 秒内会收到发送方所发送的数据，
   /// 否则会收到 [RtcEngineEventHandler.streamMessageError] 回调并获得相应报错信息。
-  ///  - false: 接收方不保证收到，就算数据丢失也不会报错。
-  /// Param [ordered] 是否有序。
-  ///  - true: 接收方会按照发送方发送的顺序收到数据包。
-  ///  - false: 接收方不保证按照发送方发送的顺序收到数据包。
+  ///  - `false`: 接收方不保证收到，就算数据丢失也不会报错。
+  /// **Parameter** [ordered] 是否有序。
+  ///  - `true`: 接收方会按照发送方发送的顺序收到数据包。
+  ///  - `false`: 接收方不保证按照发送方发送的顺序收到数据包。
   ///
   /// **Returns**
   /// - 创建数据流成功则返回数据流 ID。
@@ -2298,8 +2376,8 @@ mixin RtcStreamMessageInterface {
   /// - 请确保在调用该方法前，已调用 [RtcEngine.createDataStream] 创建了数据通道。
   /// - 该方法仅适用于通信场景以及直播场景下的主播用户。
   ///
-  /// Param [streamId] 数据流 ID，[RtcEngine.createDataStream] 的返回值。
+  /// **Parameter** [streamId] 数据流 ID，[RtcEngine.createDataStream] 的返回值。
   ///
-  /// Param [message] 待发送的数据。
+  /// **Parameter** [message] 待发送的数据。
   Future<void> sendStreamMessage(int streamId, String message);
 }

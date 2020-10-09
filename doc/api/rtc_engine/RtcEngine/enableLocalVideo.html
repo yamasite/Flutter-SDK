@@ -81,6 +81,7 @@
         <li><a href="../../rtc_engine/RtcEngine/enableAudio.html">enableAudio</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableAudioVolumeIndication.html">enableAudioVolumeIndication</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableDualStreamMode.html">enableDualStreamMode</a></li>
+        <li><a href="../../rtc_engine/RtcEngine/enableEncryption.html">enableEncryption</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableFaceDetection.html">enableFaceDetection</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableInEarMonitoring.html">enableInEarMonitoring</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableLastmileTest.html">enableLastmileTest</a></li>
@@ -163,6 +164,7 @@
         <li><a href="../../rtc_engine/RtcEngine/setLogFileSize.html">setLogFileSize</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setLogFilter.html">setLogFilter</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setMaxMetadataSize.html">setMaxMetadataSize</a></li>
+        <li><a href="../../rtc_engine/RtcEngine/setParameters.html">setParameters</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteDefaultVideoStreamType.html">setRemoteDefaultVideoStreamType</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteSubscribeFallbackOption.html">setRemoteSubscribeFallbackOption</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteUserPriority.html">setRemoteUserPriority</a></li>
@@ -223,14 +225,14 @@
       <p>开启/关闭本地视频采集。</p>
 <p>该方法禁用或重新启用本地视频采集。不影响接收远端视频。</p>
 <p>调用 <a href="../../rtc_engine/RtcEngine/enableVideo.html">RtcEngine.enableVideo</a> 后，本地视频即默认开启。
-你可以调用 <a href="false">RtcEngine.enableVideo</a> 关闭本地视频采集。关闭后如果想重新开启，则可调用 <a href="true">RtcEngine.enableVideo</a>。</p>
+你可以调用 <a href="../../rtc_engine/RtcEngine/enableVideo.html">RtcEngine.enableVideo</a> (<code>false</code>) 关闭本地视频采集。关闭后如果想重新开启，则可调用 <a href="../../rtc_engine/RtcEngine/enableVideo.html">RtcEngine.enableVideo</a> (<code>true</code>)。</p>
 <p>成功禁用或启用本地视频采集后，远端会触发 <a class="deprecated" href="../../rtc_engine/RtcEngineEventHandler/userEnableLocalVideo.html">RtcEngineEventHandler.userEnableLocalVideo</a> 回调。</p>
 <p><strong>Note</strong></p>
 <p>该方法设置的是内部引擎为启用或禁用状态，在 <a href="../../rtc_engine/RtcEngine/leaveChannel.html">RtcEngine.leaveChannel</a> 后仍然有效。</p>
-<p>Param <code>enabled</code> 是否启用本地视频：</p>
+<p><strong>Parameter</strong> <code>enabled</code> 是否启用本地视频：</p>
 <ul>
-<li>true：开启本地视频采集和渲染（默认）。</li>
-<li>false: 关闭使用本地摄像头设备。关闭后，
+<li><code>true</code>：开启本地视频采集和渲染（默认）。</li>
+<li><code>false</code>: 关闭使用本地摄像头设备。关闭后，
 远端用户会接收不到本地用户的视频流；但本地用户依然可以接收远端用户的视频流。设置为 <code>false</code> 时，该方法不需要本地有摄像头。</li>
 </ul>
     </section>

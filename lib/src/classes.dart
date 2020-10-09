@@ -68,7 +68,7 @@ class VideoEncoderConfiguration {
   /// - 1280x720
   ///
   /// **Note**
-  /// - 该值不代表最终视频输出的方向。请查阅 [VideoOutputOrientationMode] 了解设置视频方向。//TODO 英文注释有误。
+  /// - 该值不代表最终视频输出的方向。请查阅 [VideoOutputOrientationMode] 了解设置视频方向。
   /// - 视频能否达到 720P 的分辨率取决于设备的性能，在性能配备较低的设备上有可能无法实现。如果采用 720P 分辨率而设备性能跟不上，则有可能出现帧率过低的情况。
   @JsonKey(includeIfNull: false)
   VideoDimensions dimensions;
@@ -77,21 +77,24 @@ class VideoEncoderConfiguration {
   @JsonKey(includeIfNull: false)
   VideoFrameRate frameRate;
 
-  /// 最低视频编码帧率（fps）。默认值为 [VideoFrameRate.Min]，表示使用系统默认的最低编码帧率。// TODO 检查一下链接
+  /// 最低视频编码帧率（fps）。默认值为 [VideoFrameRate.Min]，表示使用系统默认的最低编码帧率。
   @JsonKey(includeIfNull: false)
   VideoFrameRate minFrameRate;
 
   /// 视频编码的码率。单位为 Kbps。你可以根据场景需要，参考下面的视频基准码率参考表，手动设置你想要的码率。
   /// 若设置的视频码率超出合理范围，SDK 会自动按照合理区间处理码率。
+  ///
   /// 你也可以直接选择如下任意一种模式进行设置：
-  ///     - [BitRate.Standard]：（推荐）标准码率模式。该模式下，视频在通信和直播场景下的码率有所不同：
-  ///        - 通信场景下，码率与基准码率一致。
-  ///        - 直播场景下，码率对照基准码率翻倍。
-  ///     - [BitRate.Compatible]: 适配码率模式。该模式下，视频在通信和直播场景下的码率均与基准码率一致。直播下如果选择该模式，视频帧率可能会低于设置的值。
-  /// Agora 在通信和直播场景下采用不同的编码方式，以提升不同场景下的用户体验。通信场景保证流畅，而直播场景则更注重画面质量，因此直播场景对码率的需求大于通信场景。所以 Agora 推荐将该参数设置为 `0` ([BitRate.Standard])。Therefore, We recommend setting this parameter as `0`. //TODO 这里是否要提一下 0 是 standard？
+  /// - `Standard`：（推荐）标准码率模式。该模式下，视频在通信和直播场景下的码率有所不同：
+  ///    - 通信场景下，码率与基准码率一致。
+  ///    - 直播场景下，码率对照基准码率翻倍。
+  /// - `Compatible`：适配码率模式。该模式下，视频在通信和直播场景下的码率均与基准码率一致。直播下如果选择该模式，视频帧率可能会低于设置的值。
+  ///
+  /// Agora 在通信和直播场景下采用不同的编码方式，以提升不同场景下的用户体验。通信场景保证流畅，而直播场景则更注重画面质量，因此直播场景对码率的需求大于通信场景。所以 Agora 推荐将该参数设置为 `0` ([BitRate.Standard])。
+  ///
   /// **视频码率参考表**
   ///
-  /// | 分辨率                  | 帧率 (fps)       | 基准码率 (通信场景，Kbps)                | 直播码率 (直播场景，Kbps)               |
+  /// |分辨率                   | 帧率 (fps)       | 基准码率 (通信场景，Kbps)                | 直播码率 (直播场景，Kbps)               |
   /// |------------------------|------------------|----------------------------------------|----------------------------------------|
   /// | 160 * 120              | 15               | 65                                     | 130                                    |
   /// | 120 * 120              | 15               | 50                                     | 100                                    |
@@ -229,7 +232,7 @@ class AgoraImage {
 class JsonSerializable {
 }
 
-/// TranscodingUser 类用于管理参与旁路直播的音视频转码合图的用户。最多支持 17 人同时参与转码合图。//TODO 英文 TranscodingUser 大小写有误
+/// TranscodingUser 类用于管理参与旁路直播的音视频转码合图的用户。最多支持 17 人同时参与转码合图。
 @JsonSerializable(explicitToJson: true)
 class TranscodingUser {
   /// 旁路主播的用户 ID。
@@ -248,7 +251,7 @@ class TranscodingUser {
   int height;
 
   /// 视频帧图层编号。取值范围为 [0,100] 中的整型。支持将 `zOrder` 设置为 `0`。
-  /// - 0: 默认）表示该区域图像位于最下层。// TODO RN 逗号改成句号。取值范围为 [0,100] 中的整型 （加整型）
+  /// - 0: （默认）表示该区域图像位于最下层。
   /// - 100: 表示该区域图像位于最上层。
   ///
   /// **Note**
@@ -287,7 +290,7 @@ class TranscodingUser {
   Map<String, dynamic> toJson() => _$TranscodingUserToJson(this);
 }
 
-/// 背景色，格式为 RGB 定义下的 Hex 值，不要带 # 号，如 0xFFB6C1 表示浅粉色。默认0x000000，黑色。// TODO 优化 RN
+/// 背景色，格式为 RGB 定义下的 Hex 值，不要带 # 号，如 0xFFB6C1 表示浅粉色。默认0x000000，黑色。
 @JsonSerializable(explicitToJson: true)
 class Color {
   /// 红。
@@ -328,13 +331,13 @@ class LiveTranscoding {
   @JsonKey(includeIfNull: false)
   int videoBitrate;
 
-  /// 用于旁路推流的输出视频的帧率。取值范围是 (0,30]，单位为 fps。默认值为 15 fps。// TODO 帧率是否可以设为 0？
+  /// 用于旁路推流的输出视频的帧率。取值范围是 (0,30]，单位为 fps。默认值为 15 fps。
   @JsonKey(includeIfNull: false)
   VideoFrameRate videoFramerate;
 
-  /// 已废弃。Agora 不推荐使用。
-  /// - true: 低延时，不保证画质。
-  /// - false:（默认值）高延时，保证画质。
+  /// **Deprecated** 已废弃。Agora 不推荐使用。
+  /// - `true`： 低延时，不保证画质。
+  /// - `false`：（默认值）高延时，保证画质。
   @deprecated
   @JsonKey(includeIfNull: false)
   bool lowLatency;
@@ -367,7 +370,6 @@ class LiveTranscoding {
   /// - 3：三声道
   /// - 4：四声道
   /// - 5：五声道
-  // TODO 将 See [AudioChannel]. 删掉
   @JsonKey(includeIfNull: false)
   AudioChannel audioChannels;
 
@@ -456,7 +458,7 @@ class ChannelMediaRelayConfiguration {
   final ChannelMediaInfo srcInfo;
 
   /// 目标频道信息： [ChannelMediaInfo]，包含如下成员：
-  ///- `channelName`：目标频道的频道名。// TODO 英文 broadcaster 改成 host
+  ///- `channelName`：目标频道的频道名。
   ///- `uid`：标识转发流到目标频道的主播 ID。取值范围为 0 到（2<sup>32</sup>-1），请确保与目标频道中的所有 UID 不同。默认值为 0，表示 SDK 随机分配一个 UID。
   ///  - `token`：能加入目标频道的 token。由你在 `destInfo` 中设置的 `channelName` 和 `uid` 生成。
   ///    - 如未启用 App Certificate，可直接将该参数设为默认值 NULL，表示 SDK 填充 App ID。
@@ -485,7 +487,6 @@ class LastmileProbeConfig {
 
   /// 用户期望的最高发送码率，单位为 bps，范围为 [100000,5000000]。
   /// Agora 推荐参考 [RtcEngine.setVideoEncoderConfiguration] 中的码率值设置该参数的值。
-  ///  It is recommended to set this value according to the required bitrate of selected video profile.// TODO selected video profile?
   final int expectedUplinkBitrate;
 
   /// 用户期望的最高接收码率，单位为 bps，范围为 [100000,5000000]。
@@ -533,8 +534,8 @@ class Rectangle {
 @JsonSerializable(explicitToJson: true)
 class WatermarkOptions {
   /// 是否将水印设为预览时本地可见：
-  /// - true：(默认) 预览时水印本地可见。
-  /// - false：预览时水印本地不可见。
+  /// - `true`：(默认) 预览时水印本地可见。
+  /// - `false`：预览时水印本地不可见。
   @JsonKey(includeIfNull: false)
   bool visibleInPreview;
 
@@ -561,7 +562,7 @@ class WatermarkOptions {
 /// 外部导入音视频流定义。
 @JsonSerializable(explicitToJson: true)
 class LiveInjectStreamConfig {
-  /// 添加进入直播的外部视频源宽度，单位为像素。默认值为 0，即保留视频源原始宽度。// TODO 英文将 broadcast 改成 live streaming。
+  /// 添加进入直播的外部视频源宽度，单位为像素。默认值为 0，即保留视频源原始宽度。
   int width;
 
   /// 添加进入直播的外部视频源高度，单位为像素。默认值为 0，即保留视频源原始高度。
@@ -600,7 +601,8 @@ class LiveInjectStreamConfig {
   AudioChannel audioChannels;
 
   /// Constructs a [LiveInjectStreamConfig]
-  LiveInjectStreamConfig({this.width,
+  LiveInjectStreamConfig(
+    {this.width,
     this.height,
     this.videoGop,
     this.videoFramerate,
@@ -643,16 +645,16 @@ class CameraCapturerConfiguration {
 @JsonSerializable(explicitToJson: true)
 class ChannelMediaOptions {
   /// 设置加入频道时是否自动订阅音频流：
-  /// - true：（默认）订阅。
-  /// - false：不订阅。
+  /// - `true`：（默认）订阅。
+  /// - `false`：不订阅。
   ///
   /// 该成员功能与 [RtcEngine.muteAllRemoteAudioStreams] 相同。
   /// 加入频道后，你可以通过 `muteAllRemoteAudioStreams` 方法重新设置是否订阅频道内的远端音频流。
   final bool autoSubscribeAudio;
 
   /// 设置加入频道是是否自动订阅视频流：
-  /// - true：（默认）订阅。
-  /// - false：不订阅。
+  /// - `true`：（默认）订阅。
+  /// - `false`：不订阅。
   ///
   /// 该成员功能与 [RtcEngine.muteAllRemoteVideoStreams] 相同。
   /// 加入频道后，你可以通过 `muteAllRemoteVideoStreams` 方法重新设置是否订阅频道内的远端视频流。
@@ -667,6 +669,32 @@ class ChannelMediaOptions {
 
   // @nodoc ignore: public_member_api_docs
   Map<String, dynamic> toJson() => _$ChannelMediaOptionsToJson(this);
+}
+
+/// 内置加密配置。
+///
+/// @since v3.1.2。
+@JsonSerializable(explicitToJson: true)
+class EncryptionConfig {
+  /// 内置加密模式，默认为 `AES128XTS` 加密模式。详见 [EncryptionMode]。
+  final EncryptionMode encryptionMode;
+
+  /// 内置加密密钥，字符串类型。
+  ///
+  /// **Note**
+  ///
+  /// 如果未指定该参数或将该参数设置为空，则无法启用内置加密，且 SDK 会返回错误码 `InvalidArgument`。
+  final String encryptionKey;
+
+  /// Constructs a [EncryptionConfig]
+  EncryptionConfig(this.encryptionMode, this.encryptionKey);
+
+  /// @nodoc
+  factory EncryptionConfig.fromJson(Map<String, dynamic> json) =>
+      _$EncryptionConfigFromJson(json);
+
+  /// @nodoc
+  Map<String, dynamic> toJson() => _$EncryptionConfigToJson(this);
 }
 
 /// 通话相关的统计信息。
@@ -763,7 +791,6 @@ class RtcStats {
 }
 
 /// 声音音量信息。 一个数组，包含每个说话者的用户 ID 和音量信息。
-/// Contains the user ID and volume information for each speaker.
 @JsonSerializable(explicitToJson: true)
 class AudioVolumeInfo {
   /// 说话者的用户 ID。如果返回的 `uid` 为 0，则默认为本地用户。
@@ -885,6 +912,11 @@ class LocalAudioStats {
   /// 发送码率的平均值，单位为 Kbps。
   int sentBitrate;
 
+  /// 网络对抗前，本地客户端到边缘服务器的丢包率 (%)。
+  ///
+  /// @since v3.1.2。
+  int txPacketLossRate;
+
   /// Constructs a [LocalAudioStats]
   LocalAudioStats();
 
@@ -931,12 +963,22 @@ class LocalVideoStats {
   int encodedFrameHeight;
 
   /// 视频发送的帧数，累计值。
-  // TODO 英文是 frame rate, 还是 frames?
   int encodedFrameCount;
 
   /// 视频的编码类型。
   /// 详见 [VideoCodecType]。
   VideoCodecType codecType;
+
+  /// 弱网对抗前本地客户端到 Agora 边缘服务器的视频丢包率 (%)。
+  ///
+  /// @since v3.1.2。
+  int txPacketLossRate;
+
+  /// 本地视频采集帧率 (fps)。
+  ///
+  /// @since v3.1.2。
+  int captureFrameRate;
+
 
   /// Constructs a [LocalVideoStats]
   LocalVideoStats();
@@ -988,6 +1030,12 @@ class RemoteAudioStats {
   /// 有效时长是指去除了远端用户进入 mute 状态的总时长。
   int totalActiveTime;
 
+  /// 远端音频流的累计发布时长（毫秒）。
+  ///
+  /// @since v3.1.2。
+  int publishDuration;
+
+
   /// Constructs a [RemoteAudioStats]
   RemoteAudioStats();
 
@@ -1007,7 +1055,7 @@ class RemoteVideoStats {
 
   /// 延迟，单位为毫秒。
   ///
-  /// 该参数已废弃。声网不建议你使用.
+  /// **Deprecated** 该参数已废弃。声网不建议你使用.
   /// 在有音画同步机制的音视频场景中，你可以参考 [RemoteAudioStats] 里的 `networkTransportDelay` 和 `jitterBufferDelay`成员的值，了解视频的延迟数据。
   @deprecated
   int delay;
@@ -1044,6 +1092,11 @@ class RemoteVideoStats {
   /// 视频总有效时长（毫秒）。
   /// 视频总有效时长是远端用户或主播加入频道后，既没有停止发送视频流，也没有禁用视频模块的通话时长。
   int totalActiveTime;
+
+  /// 远端视频流的累计发布时长（毫秒）。
+  ///
+  /// @since v3.1.2。
+  int publishDuration;
 
   /// Constructs a [RemoteVideoStats]
   RemoteVideoStats();

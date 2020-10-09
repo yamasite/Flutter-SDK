@@ -67,6 +67,7 @@
         <li><a href="../../rtc_channel/RtcChannel/adjustUserPlaybackSignalVolume.html">adjustUserPlaybackSignalVolume</a></li>
         <li><a href="../../rtc_channel/RtcChannel/createDataStream.html">createDataStream</a></li>
         <li><a href="../../rtc_channel/RtcChannel/destroy.html">destroy</a></li>
+        <li><a href="../../rtc_channel/RtcChannel/enableEncryption.html">enableEncryption</a></li>
         <li><a href="../../rtc_channel/RtcChannel/getCallId.html">getCallId</a></li>
         <li><a href="../../rtc_channel/RtcChannel/getConnectionState.html">getConnectionState</a></li>
         <li><a href="../../rtc_channel/RtcChannel/joinChannel.html">joinChannel</a></li>
@@ -137,15 +138,15 @@
 <p>该方法用于创建数据流。<a href="../../rtc_channel/RtcChannel-class.html">RtcChannel</a> 生命周期内，每个用户最多只能创建 5 个数据流。</p>
 <p><strong>Note</strong></p>
 <p>请将 <code>reliable</code> 和 <code>ordered</code> 同时设置为 <code>true</code> 或 <code>false</code>，暂不支持交叉设置。</p>
-<p>Param <code>reliable</code> 设置是否保证接收方在 5 秒内收到数据消息：</p>
+<p><strong>Parameter</strong> <code>reliable</code> 设置是否保证接收方在 5 秒内收到数据消息：</p>
 <ul>
-<li>true：接收方 5 秒内会收到发送方所发送的数据，否则会收到 <a href="../../rtc_channel/RtcChannelEventHandler/streamMessageError.html">RtcChannelEventHandler.streamMessageError</a> 回调并获得相应报错信息。</li>
-<li>false：接收方不保证收到，就算数据丢失也不会报错。</li>
+<li><code>true</code>：接收方 5 秒内会收到发送方所发送的数据，否则会收到 <a href="../../rtc_channel/RtcChannelEventHandler/streamMessageError.html">RtcChannelEventHandler.streamMessageError</a> 回调并获得相应报错信息。</li>
+<li><code>false</code>：接收方不保证收到，就算数据丢失也不会报错。</li>
 </ul>
-<p>Param <code>ordered</code> 设置接收方是否按发送方发送的顺序接收数据消息：</p>
+<p><strong>Parameter</strong> <code>ordered</code> 设置接收方是否按发送方发送的顺序接收数据消息：</p>
 <ul>
-<li>true：接收方会按照发送方发送的顺序收到数据包。</li>
-<li>false：接收方不保证按照发送方发送的顺序收到数据包。</li>
+<li><code>true</code>：接收方会按照发送方发送的顺序收到数据包。</li>
+<li><code>false</code>：接收方不保证按照发送方发送的顺序收到数据包。</li>
 </ul>
 <p><strong>Returns</strong></p>
 <ul>

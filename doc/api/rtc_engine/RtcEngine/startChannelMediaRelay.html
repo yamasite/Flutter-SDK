@@ -81,6 +81,7 @@
         <li><a href="../../rtc_engine/RtcEngine/enableAudio.html">enableAudio</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableAudioVolumeIndication.html">enableAudioVolumeIndication</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableDualStreamMode.html">enableDualStreamMode</a></li>
+        <li><a href="../../rtc_engine/RtcEngine/enableEncryption.html">enableEncryption</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableFaceDetection.html">enableFaceDetection</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableInEarMonitoring.html">enableInEarMonitoring</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableLastmileTest.html">enableLastmileTest</a></li>
@@ -163,6 +164,7 @@
         <li><a href="../../rtc_engine/RtcEngine/setLogFileSize.html">setLogFileSize</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setLogFilter.html">setLogFilter</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setMaxMetadataSize.html">setMaxMetadataSize</a></li>
+        <li><a href="../../rtc_engine/RtcEngine/setParameters.html">setParameters</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteDefaultVideoStreamType.html">setRemoteDefaultVideoStreamType</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteSubscribeFallbackOption.html">setRemoteSubscribeFallbackOption</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteUserPriority.html">setRemoteUserPriority</a></li>
@@ -226,10 +228,10 @@
 和 <a href="../../rtc_engine/RtcEngineEventHandler/channelMediaRelayEvent.html">RtcEngineEventHandler.channelMediaRelayEvent</a> 回调，
 并在回调中报告当前的跨频道媒体流转发状态和事件。</p>
 <ul>
-<li>如果 <a href="../../rtc_engine/RtcEngineEventHandler/channelMediaRelayStateChanged.html">RtcEngineEventHandler.channelMediaRelayStateChanged</a> 回调报告 <a href="2">ChannelMediaRelayState.Running</a> 和 <a href="0">ChannelMediaRelayError.None</a>
-且 <a href="../../rtc_engine/RtcEngineEventHandler/channelMediaRelayEvent.html">RtcEngineEventHandler.channelMediaRelayEvent</a> 回调报告 <a href="4">ChannelMediaRelayEvent.SentToDestinationChannel</a>，
+<li>如果 <a href="../../rtc_engine/RtcEngineEventHandler/channelMediaRelayStateChanged.html">RtcEngineEventHandler.channelMediaRelayStateChanged</a> 回调报告 <a href="../../rtc_engine/ChannelMediaRelayState-class.html">ChannelMediaRelayState.Running</a> 和 <a href="../../rtc_engine/ChannelMediaRelayError-class.html">ChannelMediaRelayError.None</a>
+且 <a href="../../rtc_engine/RtcEngineEventHandler/channelMediaRelayEvent.html">RtcEngineEventHandler.channelMediaRelayEvent</a> 回调报告 <a href="../../rtc_engine/ChannelMediaRelayEvent-class.html">ChannelMediaRelayEvent.SentToDestinationChannel</a>，
 则表示 SDK 开始在源频道和目标频道之间转发媒体流。</li>
-<li>如果 <a href="../../rtc_engine/RtcEngineEventHandler/channelMediaRelayStateChanged.html">RtcEngineEventHandler.channelMediaRelayStateChanged</a> 回调报告 <a href="3">ChannelMediaRelayState.Failure</a>，则表示跨频道媒体流转发出现异常。</li>
+<li>如果 <a href="../../rtc_engine/RtcEngineEventHandler/channelMediaRelayStateChanged.html">RtcEngineEventHandler.channelMediaRelayStateChanged</a> 回调报告 <a href="../../rtc_engine/ChannelMediaRelayState-class.html">ChannelMediaRelayState.Failure</a>，则表示跨频道媒体流转发出现异常。</li>
 </ul>
 <p><strong>Note</strong></p>
 <ul>
@@ -239,7 +241,7 @@
 <li>该方法仅适用于直播场景下的主播。</li>
 <li>成功调用该方法后，若你想再次调用该方法，必须先调用 <a href="../../rtc_engine/RtcEngine/stopChannelMediaRelay.html">RtcEngine.stopChannelMediaRelay</a> 方法退出当前的转发状态。</li>
 </ul>
-<p>Param <code>channelMediaRelayConfiguration</code> 跨频道媒体流转发参数配置。</p>
+<p><strong>Parameter</strong> <code>channelMediaRelayConfiguration</code> 跨频道媒体流转发参数配置。</p>
     </section>
     
     <section class="summary source-code" id="source">

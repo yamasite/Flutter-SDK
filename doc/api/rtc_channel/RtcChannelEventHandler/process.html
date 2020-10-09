@@ -61,6 +61,8 @@
             <a href="../../rtc_channel/RtcChannelEventHandler-class.html#instance-properties">Properties</a>
         </li>
         <li><a href="../../rtc_channel/RtcChannelEventHandler/activeSpeaker.html">activeSpeaker</a></li>
+        <li><a href="../../rtc_channel/RtcChannelEventHandler/audioPublishStateChanged.html">audioPublishStateChanged</a></li>
+        <li><a href="../../rtc_channel/RtcChannelEventHandler/audioSubscribeStateChanged.html">audioSubscribeStateChanged</a></li>
         <li><a href="../../rtc_channel/RtcChannelEventHandler/channelMediaRelayEvent.html">channelMediaRelayEvent</a></li>
         <li><a href="../../rtc_channel/RtcChannelEventHandler/channelMediaRelayStateChanged.html">channelMediaRelayStateChanged</a></li>
         <li><a href="../../rtc_channel/RtcChannelEventHandler/clientRoleChanged.html">clientRoleChanged</a></li>
@@ -81,6 +83,7 @@
         <li><a href="../../rtc_channel/RtcChannelEventHandler/remoteVideoStats.html">remoteVideoStats</a></li>
         <li><a href="../../rtc_channel/RtcChannelEventHandler/requestToken.html">requestToken</a></li>
         <li><a href="../../rtc_channel/RtcChannelEventHandler/rtcStats.html">rtcStats</a></li>
+        <li><a href="../../rtc_channel/RtcChannelEventHandler/rtmpStreamingEvent.html">rtmpStreamingEvent</a></li>
         <li><a href="../../rtc_channel/RtcChannelEventHandler/rtmpStreamingStateChanged.html">rtmpStreamingStateChanged</a></li>
         <li class="inherited"><a href="https://api.flutter.dev/flutter/dart-core/Object/runtimeType.html">runtimeType</a></li>
         <li><a href="../../rtc_channel/RtcChannelEventHandler/streamInjectedStatus.html">streamInjectedStatus</a></li>
@@ -90,7 +93,9 @@
         <li><a href="../../rtc_channel/RtcChannelEventHandler/transcodingUpdated.html">transcodingUpdated</a></li>
         <li><a href="../../rtc_channel/RtcChannelEventHandler/userJoined.html">userJoined</a></li>
         <li><a href="../../rtc_channel/RtcChannelEventHandler/userOffline.html">userOffline</a></li>
+        <li><a href="../../rtc_channel/RtcChannelEventHandler/videoPublishStateChanged.html">videoPublishStateChanged</a></li>
         <li><a href="../../rtc_channel/RtcChannelEventHandler/videoSizeChanged.html">videoSizeChanged</a></li>
+        <li><a href="../../rtc_channel/RtcChannelEventHandler/videoSubscribeStateChanged.html">videoSubscribeStateChanged</a></li>
         <li><a href="../../rtc_channel/RtcChannelEventHandler/warning.html">warning</a></li>
     
         <li class="section-title"><a href="../../rtc_channel/RtcChannelEventHandler-class.html#instance-methods">Methods</a></li>
@@ -125,14 +130,10 @@
       <pre class="language-dart"><code class="language-dart">void process(String methodName, List&lt;dynamic&gt; data) {
   switch (methodName) {
     case &#39;Warning&#39;:
-      warning?.call(WarningCodeConverter
-          .fromValue(data[0])
-          .e);
+      warning?.call(WarningCodeConverter.fromValue(data[0]).e);
       break;
     case &#39;Error&#39;:
-      error?.call(ErrorCodeConverter
-          .fromValue(data[0])
-          .e);
+      error?.call(ErrorCodeConverter.fromValue(data[0]).e);
       break;
     case &#39;JoinChannelSuccess&#39;:
       joinChannelSuccess?.call(data[0], data[1]);
@@ -145,30 +146,20 @@
           ?.call(RtcStats.fromJson(Map&lt;String, dynamic&gt;.from(data[0])));
       break;
     case &#39;ClientRoleChanged&#39;:
-      clientRoleChanged?.call(ClientRoleConverter
-          .fromValue(data[0])
-          .e,
-          ClientRoleConverter
-              .fromValue(data[1])
-              .e);
+      clientRoleChanged?.call(ClientRoleConverter.fromValue(data[0]).e,
+          ClientRoleConverter.fromValue(data[1]).e);
       break;
     case &#39;UserJoined&#39;:
       userJoined?.call(data[0], data[1]);
       break;
     case &#39;UserOffline&#39;:
       userOffline?.call(
-          data[0], UserOfflineReasonConverter
-          .fromValue(data[1])
-          .e);
+          data[0], UserOfflineReasonConverter.fromValue(data[1]).e);
       break;
     case &#39;ConnectionStateChanged&#39;:
       connectionStateChanged?.call(
-          ConnectionStateTypeConverter
-              .fromValue(data[0])
-              .e,
-          ConnectionChangedReasonConverter
-              .fromValue(data[1])
-              .e);
+          ConnectionStateTypeConverter.fromValue(data[0]).e,
+          ConnectionChangedReasonConverter.fromValue(data[1]).e);
       break;
     case &#39;ConnectionLost&#39;:
       connectionLost?.call();
@@ -188,23 +179,15 @@
     case &#39;RemoteVideoStateChanged&#39;:
       remoteVideoStateChanged?.call(
           data[0],
-          VideoRemoteStateConverter
-              .fromValue(data[1])
-              .e,
-          VideoRemoteStateReasonConverter
-              .fromValue(data[2])
-              .e,
+          VideoRemoteStateConverter.fromValue(data[1]).e,
+          VideoRemoteStateReasonConverter.fromValue(data[2]).e,
           data[3]);
       break;
     case &#39;RemoteAudioStateChanged&#39;:
       remoteAudioStateChanged?.call(
           data[0],
-          AudioRemoteStateConverter
-              .fromValue(data[1])
-              .e,
-          AudioRemoteStateReasonConverter
-              .fromValue(data[2])
-              .e,
+          AudioRemoteStateConverter.fromValue(data[1]).e,
+          AudioRemoteStateReasonConverter.fromValue(data[2]).e,
           data[3]);
       break;
     case &#39;LocalPublishFallbackToAudioOnly&#39;:
@@ -219,12 +202,8 @@
     case &#39;NetworkQuality&#39;:
       networkQuality?.call(
           data[0],
-          NetworkQualityConverter
-              .fromValue(data[1])
-              .e,
-          NetworkQualityConverter
-              .fromValue(data[2])
-              .e);
+          NetworkQualityConverter.fromValue(data[1]).e,
+          NetworkQualityConverter.fromValue(data[2]).e);
       break;
     case &#39;RemoteVideoStats&#39;:
       remoteVideoStats?.call(
@@ -237,12 +216,8 @@
     case &#39;RtmpStreamingStateChanged&#39;:
       rtmpStreamingStateChanged?.call(
         data[0],
-        RtmpStreamingStateConverter
-            .fromValue(data[1])
-            .e,
-        RtmpStreamingErrorCodeConverter
-            .fromValue(data[2])
-            .e,
+        RtmpStreamingStateConverter.fromValue(data[1]).e,
+        RtmpStreamingErrorCodeConverter.fromValue(data[2]).e,
       );
       break;
     case &#39;TranscodingUpdated&#39;:
@@ -250,37 +225,58 @@
       break;
     case &#39;StreamInjectedStatus&#39;:
       streamInjectedStatus?.call(
-          data[0], data[1], InjectStreamStatusConverter
-          .fromValue(data[2])
-          .e);
+          data[0], data[1], InjectStreamStatusConverter.fromValue(data[2]).e);
       break;
     case &#39;StreamMessage&#39;:
       streamMessage?.call(data[0], data[1], data[2]);
       break;
     case &#39;StreamMessageError&#39;:
       streamMessageError?.call(data[0], data[1],
-          ErrorCodeConverter
-              .fromValue(data[2])
-              .e, data[3], data[4]);
+          ErrorCodeConverter.fromValue(data[2]).e, data[3], data[4]);
       break;
     case &#39;ChannelMediaRelayStateChanged&#39;:
       channelMediaRelayStateChanged?.call(
-        ChannelMediaRelayStateConverter
-            .fromValue(data[0])
-            .e,
-        ChannelMediaRelayErrorConverter
-            .fromValue(data[1])
-            .e,
+        ChannelMediaRelayStateConverter.fromValue(data[0]).e,
+        ChannelMediaRelayErrorConverter.fromValue(data[1]).e,
       );
       break;
     case &#39;ChannelMediaRelayEvent&#39;:
       channelMediaRelayEvent
-          ?.call(ChannelMediaRelayEventConverter
-          .fromValue(data[0])
-          .e);
+          ?.call(ChannelMediaRelayEventConverter.fromValue(data[0]).e);
       break;
     case &#39;MetadataReceived&#39;:
       metadataReceived?.call(data[0], data[1], data[2]);
+      break;
+      case &#39;AudioPublishStateChanged&#39;:
+      audioPublishStateChanged?.call(
+          data[0],
+          StreamPublishStateConverter.fromValue(data[1]).e,
+          StreamPublishStateConverter.fromValue(data[2]).e,
+          data[3]);
+      break;
+    case &#39;VideoPublishStateChanged&#39;:
+      videoPublishStateChanged?.call(
+          data[0],
+          StreamPublishStateConverter.fromValue(data[1]).e,
+          StreamPublishStateConverter.fromValue(data[2]).e,
+          data[3]);
+      break;
+    case &#39;AudioSubscribeStateChanged&#39;:
+      audioSubscribeStateChanged?.call(
+          data[0],
+          StreamSubscribeStateConverter.fromValue(data[1]).e,
+          StreamSubscribeStateConverter.fromValue(data[2]).e,
+          data[3]);
+      break;
+    case &#39;VideoSubscribeStateChanged&#39;:
+      videoSubscribeStateChanged?.call(
+          data[0],
+          StreamSubscribeStateConverter.fromValue(data[1]).e,
+          StreamSubscribeStateConverter.fromValue(data[2]).e,
+          data[3]);
+      break;
+    case &#39;RtmpStreamingEvent&#39;:
+      rtmpStreamingEvent?.call(data[0], data[1]);
       break;
   }
 }</code></pre>

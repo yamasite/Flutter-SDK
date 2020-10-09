@@ -64,8 +64,9 @@
         <li class="inherited"><a href="../../rtc_local_view/TextureView/gestureRecognizers.html">gestureRecognizers</a></li>
         <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/Widget/hashCode.html">hashCode</a></li>
         <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/Widget/key.html">key</a></li>
-        <li class="inherited"><a href="../../rtc_local_view/TextureView/mirror.html">mirror</a></li>
+        <li class="inherited"><a href="../../rtc_local_view/TextureView/mirrorMode.html">mirrorMode</a></li>
         <li class="inherited"><a href="../../rtc_local_view/TextureView/onPlatformViewCreated.html">onPlatformViewCreated</a></li>
+        <li class="inherited"><a href="../../rtc_local_view/TextureView/renderMode.html">renderMode</a></li>
         <li class="inherited"><a href="https://api.flutter.dev/flutter/dart-core/Object/runtimeType.html">runtimeType</a></li>
         <li class="inherited"><a href="../../rtc_local_view/TextureView/uid.html">uid</a></li>
     
@@ -100,13 +101,10 @@
           <div class="features">final, inherited</div>
         </section>
         <section class="desc markdown">
-          <p>Which gestures should be consumed by the web view.</p>
-<p>It is possible for other gesture recognizers to be competing with the web view on pointer
-events, e.g if the web view is inside a <a href="https://api.flutter.dev/flutter/widgets/ListView-class.html">ListView</a> the <a href="https://api.flutter.dev/flutter/widgets/ListView-class.html">ListView</a> will want to handle
-vertical drags. The web view will claim gestures that are recognized by any of the
-recognizers on this list.</p>
-<p>When this set is empty or null, the web view will only handle pointer events for gestures that
-were not claimed by any other gesture recognizer.</p>
+          <p>指定 Web 视图使用的手势。</p>
+<p>如果存在多个手势识别器，其他手势识别器会与 Web 视图竞争指针事件的处权。例如，假设 Web 视图位于 <a href="https://api.flutter.dev/flutter/widgets/ListView-class.html">ListView</a> 中，
+<a href="https://api.flutter.dev/flutter/widgets/ListView-class.html">ListView</a> 会争取对垂直方向的拖动手势进行处理。Web 视图将声明已被其他手势识别器识别的手势。</p>
+<p>如果该集合为空，Web 视图将仅处理没有被任何手势识别器声明的指针事件。</p>
         </section>
                 <section class="summary source-code" id="source">
           <h2><span>Implementation</span></h2>

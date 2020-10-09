@@ -81,6 +81,7 @@
         <li><a href="../../rtc_engine/RtcEngine/enableAudio.html">enableAudio</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableAudioVolumeIndication.html">enableAudioVolumeIndication</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableDualStreamMode.html">enableDualStreamMode</a></li>
+        <li><a href="../../rtc_engine/RtcEngine/enableEncryption.html">enableEncryption</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableFaceDetection.html">enableFaceDetection</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableInEarMonitoring.html">enableInEarMonitoring</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableLastmileTest.html">enableLastmileTest</a></li>
@@ -163,6 +164,7 @@
         <li><a href="../../rtc_engine/RtcEngine/setLogFileSize.html">setLogFileSize</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setLogFilter.html">setLogFilter</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setMaxMetadataSize.html">setMaxMetadataSize</a></li>
+        <li><a href="../../rtc_engine/RtcEngine/setParameters.html">setParameters</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteDefaultVideoStreamType.html">setRemoteDefaultVideoStreamType</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteSubscribeFallbackOption.html">setRemoteSubscribeFallbackOption</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteUserPriority.html">setRemoteUserPriority</a></li>
@@ -231,11 +233,11 @@
 <li>请确保在成功加入频道后才能调用该接口。</li>
 <li>该方法每次只能增加一路旁路推流地址。如需推送多路流，则需多次调用该方法。</li>
 </ul>
-<p>Param <code>url</code> CDN 推流地址，格式为 RTMP。该字符长度不能超过 1024 字节。url 不支持中文等特殊字符。</p>
-<p>Param <code>transcodingEnabled</code> 是否转码。如果设为 <code>true</code>，则需要在该方法前先调用 <a href="../../rtc_engine/RtcEngine/setLiveTranscoding.html">RtcEngine.setLiveTranscoding</a> 方法。</p>
+<p><strong>Parameter</strong> <code>url</code> CDN 推流地址，格式为 RTMP。该字符长度不能超过 1024 字节。url 不支持中文等特殊字符。</p>
+<p><strong>Parameter</strong> <code>transcodingEnabled</code> 是否转码。如果设为 <code>true</code>，则需要在该方法前先调用 <a href="../../rtc_engine/RtcEngine/setLiveTranscoding.html">RtcEngine.setLiveTranscoding</a> 方法。</p>
 <ul>
-<li>true：转码。<a href="https://docs.agora.io/cn/Agora%20Platform/terms?platform=All%20Platforms#转码">转码</a>是指在旁路推流时对音视频流进行转码处理后，再推送到其他 RTMP 服务器。多适用于频道内有多个主播，需要进行混流、合图的场景。</li>
-<li>false：不转码。</li>
+<li><code>true</code>：转码。<a href="https://docs.agora.io/cn/Agora%20Platform/terms?platform=All%20Platforms#转码">转码</a>是指在旁路推流时对音视频流进行转码处理后，再推送到其他 RTMP 服务器。多适用于频道内有多个主播，需要进行混流、合图的场景。</li>
+<li><code>false</code>：不转码。</li>
 </ul>
     </section>
     

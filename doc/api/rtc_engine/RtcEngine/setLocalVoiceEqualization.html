@@ -81,6 +81,7 @@
         <li><a href="../../rtc_engine/RtcEngine/enableAudio.html">enableAudio</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableAudioVolumeIndication.html">enableAudioVolumeIndication</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableDualStreamMode.html">enableDualStreamMode</a></li>
+        <li><a href="../../rtc_engine/RtcEngine/enableEncryption.html">enableEncryption</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableFaceDetection.html">enableFaceDetection</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableInEarMonitoring.html">enableInEarMonitoring</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableLastmileTest.html">enableLastmileTest</a></li>
@@ -163,6 +164,7 @@
         <li><a href="../../rtc_engine/RtcEngine/setLogFileSize.html">setLogFileSize</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setLogFilter.html">setLogFilter</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setMaxMetadataSize.html">setMaxMetadataSize</a></li>
+        <li><a href="../../rtc_engine/RtcEngine/setParameters.html">setParameters</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteDefaultVideoStreamType.html">setRemoteDefaultVideoStreamType</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteSubscribeFallbackOption.html">setRemoteSubscribeFallbackOption</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteUserPriority.html">setRemoteUserPriority</a></li>
@@ -222,9 +224,9 @@
     </section>
     <section class="desc markdown">
       <p>设置本地语音音效均衡。</p>
-<p>Param <code>bandFrequency</code> 频谱子带索引，取值范围是 <code>0,9</code>，分别代表 10 个频带，对应的中心频率是 <code>31，62，125，250，500，1k，2k，4k，8k，16k</code> Hz。
+<p><strong>Parameter</strong> <code>bandFrequency</code> 频谱子带索引，取值范围是 <code>0,9</code>，分别代表 10 个频带，对应的中心频率是 <code>31，62，125，250，500，1k，2k，4k，8k，16k</code> Hz。
 详见 <a href="../../rtc_engine/AudioEqualizationBandFrequency-class.html">AudioEqualizationBandFrequency</a>。</p>
-<p>Param <code>bandGain</code> 每个 band 的增益，单位是 dB，每一个值的范围是 <code>-15,15</code>，默认值为 0。</p>
+<p><strong>Parameter</strong> <code>bandGain</code> 每个 band 的增益，单位是 dB，每一个值的范围是 <code>-15,15</code>，默认值为 0。</p>
     </section>
     
     <section class="summary source-code" id="source">

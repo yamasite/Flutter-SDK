@@ -81,6 +81,7 @@
         <li><a href="../../rtc_engine/RtcEngine/enableAudio.html">enableAudio</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableAudioVolumeIndication.html">enableAudioVolumeIndication</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableDualStreamMode.html">enableDualStreamMode</a></li>
+        <li><a href="../../rtc_engine/RtcEngine/enableEncryption.html">enableEncryption</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableFaceDetection.html">enableFaceDetection</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableInEarMonitoring.html">enableInEarMonitoring</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableLastmileTest.html">enableLastmileTest</a></li>
@@ -163,6 +164,7 @@
         <li><a href="../../rtc_engine/RtcEngine/setLogFileSize.html">setLogFileSize</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setLogFilter.html">setLogFilter</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setMaxMetadataSize.html">setMaxMetadataSize</a></li>
+        <li><a href="../../rtc_engine/RtcEngine/setParameters.html">setParameters</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteDefaultVideoStreamType.html">setRemoteDefaultVideoStreamType</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteSubscribeFallbackOption.html">setRemoteSubscribeFallbackOption</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteUserPriority.html">setRemoteUserPriority</a></li>
@@ -211,7 +213,7 @@
       <span class="returntype"><a href="https://api.flutter.dev/flutter/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../rtc_engine/RtcEngine-class.html">RtcEngine</a></span>&gt;</span></span>
             <span class="name ">createWithAreaCode</span>
 (<wbr><ol class="parameter-list"><li><span class="parameter" id="createWithAreaCode-param-appId"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">appId</span>, </span></li>
-<li><span class="parameter" id="createWithAreaCode-param-areaCode"><span class="type-annotation"><a href="../../rtc_engine/IPAreaCode-class.html">IPAreaCode</a></span> <span class="parameter-name">areaCode</span></span></li>
+<li><span class="parameter" id="createWithAreaCode-param-areaCode"><span class="type-annotation">dynamic</span> <span class="parameter-name">areaCode</span></span></li>
 </ol>)
       
     </section>
@@ -226,12 +228,12 @@
 时指定访问区域。</li>
 <li>目前 Agora Flutter SDK 只支持每个 app 创建一个 <a href="../../rtc_engine/RtcEngine-class.html">RtcEngine</a> 实例。</li>
 </ul>
-<p>Param <code>appId</code> Agora 为 app 开发者签发的 App ID，详见<a href="https://docs.agora.io/cn/Agora%20Platform/token#get-an-app-id">获取 App ID</a>。
+<p><strong>Parameter</strong> <code>appId</code> Agora 为 app 开发者签发的 App ID，详见<a href="https://docs.agora.io/cn/Agora%20Platform/token#get-an-app-id">获取 App ID</a>。
 使用同一个 App ID 的 app 才能进入同一个频道进行通话或直播。一个 App ID 只能用于创建一个 <a href="../../rtc_engine/RtcEngine-class.html">RtcEngine</a>。
-如需更换 App ID，必须先调用 <a href="../../rtc_engine/RtcEngine/destroy.html">destroy</a> 销毁当前 <a href="../../rtc_engine/RtcEngine-class.html">RtcEngine</a>，再调用 <code>create</code> 重新创建 <a href="../../rtc_engine/RtcEngine-class.html">RtcEngine</a>。
-Param <code>areaCode</code> 服务器的访问区域。该功能为高级设置，适用于有访问安全限制的场景。</p>
+如需更换 App ID，必须先调用 <a href="../../rtc_engine/RtcEngine/destroy.html">destroy</a> 销毁当前 <a href="../../rtc_engine/RtcEngine-class.html">RtcEngine</a>，再调用 <code>create</code> 重新创建 <a href="../../rtc_engine/RtcEngine-class.html">RtcEngine</a>。</p>
+<p><strong>Parameter</strong> <code>areaCode</code> 服务器的访问区域。该功能为高级设置，适用于有访问安全限制的场景。</p>
 <p>支持的区域详见 <code>`IPAreaCode`</code>{@link IPAreaCode}。
-指定访问区域后，集成了 Agora SDK 的 app 会连接指定区域内的 Agora 服务器。//TODO 英文需要将指定多个区域去掉 specify multiple areas.</p>
+指定访问区域后，集成了 Agora SDK 的 app 会连接指定区域内的 Agora 服务器。</p>
 <p><strong>Returns</strong></p>
 <ul>
 <li>方法调用成功，则返回一个 <a href="../../rtc_engine/RtcEngine-class.html">RtcEngine</a> 对象。</li>
@@ -244,8 +246,11 @@ Param <code>areaCode</code> 服务器的访问区域。该功能为高级设置�
       <pre class="language-dart"><code class="language-dart">static Future&lt;RtcEngine&gt; createWithAreaCode(String appId,
     IPAreaCode areaCode) async {
   if (_engine != null) return _engine;
-  await _methodChannel.invokeMethod(&#39;create&#39;,
-      {&#39;appId&#39;: appId, &#39;areaCode&#39;: IPAreaCodeConverter(areaCode).value()});
+  await _methodChannel.invokeMethod(&#39;create&#39;, {
+    &#39;appId&#39;: appId,
+    &#39;areaCode&#39;: AreaCodeConverter(areaCode).value(),
+    &#39;appType&#39;: 4
+  });
   _engine = RtcEngine._();
   return _engine;
 }</code></pre>

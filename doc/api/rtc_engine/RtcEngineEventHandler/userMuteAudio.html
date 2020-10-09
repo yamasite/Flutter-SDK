@@ -65,8 +65,10 @@
         <li><a href="../../rtc_engine/RtcEngineEventHandler/audioEffectFinished.html">audioEffectFinished</a></li>
         <li><a class="deprecated" href="../../rtc_engine/RtcEngineEventHandler/audioMixingFinished.html">audioMixingFinished</a></li>
         <li><a href="../../rtc_engine/RtcEngineEventHandler/audioMixingStateChanged.html">audioMixingStateChanged</a></li>
+        <li><a href="../../rtc_engine/RtcEngineEventHandler/audioPublishStateChanged.html">audioPublishStateChanged</a></li>
         <li><a class="deprecated" href="../../rtc_engine/RtcEngineEventHandler/audioQuality.html">audioQuality</a></li>
         <li><a href="../../rtc_engine/RtcEngineEventHandler/audioRouteChanged.html">audioRouteChanged</a></li>
+        <li><a href="../../rtc_engine/RtcEngineEventHandler/audioSubscribeStateChanged.html">audioSubscribeStateChanged</a></li>
         <li><a href="../../rtc_engine/RtcEngineEventHandler/audioVolumeIndication.html">audioVolumeIndication</a></li>
         <li><a href="../../rtc_engine/RtcEngineEventHandler/cameraExposureAreaChanged.html">cameraExposureAreaChanged</a></li>
         <li><a href="../../rtc_engine/RtcEngineEventHandler/cameraFocusAreaChanged.html">cameraFocusAreaChanged</a></li>
@@ -81,7 +83,9 @@
         <li><a href="../../rtc_engine/RtcEngineEventHandler/error.html">error</a></li>
         <li><a href="../../rtc_engine/RtcEngineEventHandler/facePositionChanged.html">facePositionChanged</a></li>
         <li><a href="../../rtc_engine/RtcEngineEventHandler/firstLocalAudioFrame.html">firstLocalAudioFrame</a></li>
+        <li><a href="../../rtc_engine/RtcEngineEventHandler/firstLocalAudioFramePublished.html">firstLocalAudioFramePublished</a></li>
         <li><a href="../../rtc_engine/RtcEngineEventHandler/firstLocalVideoFrame.html">firstLocalVideoFrame</a></li>
+        <li><a href="../../rtc_engine/RtcEngineEventHandler/firstLocalVideoFramePublished.html">firstLocalVideoFramePublished</a></li>
         <li><a class="deprecated" href="../../rtc_engine/RtcEngineEventHandler/firstRemoteAudioDecoded.html">firstRemoteAudioDecoded</a></li>
         <li><a class="deprecated" href="../../rtc_engine/RtcEngineEventHandler/firstRemoteAudioFrame.html">firstRemoteAudioFrame</a></li>
         <li><a class="deprecated" href="../../rtc_engine/RtcEngineEventHandler/firstRemoteVideoDecoded.html">firstRemoteVideoDecoded</a></li>
@@ -113,6 +117,7 @@
         <li><a class="deprecated" href="../../rtc_engine/RtcEngineEventHandler/remoteVideoTransportStats.html">remoteVideoTransportStats</a></li>
         <li><a href="../../rtc_engine/RtcEngineEventHandler/requestToken.html">requestToken</a></li>
         <li><a href="../../rtc_engine/RtcEngineEventHandler/rtcStats.html">rtcStats</a></li>
+        <li><a href="../../rtc_engine/RtcEngineEventHandler/rtmpStreamingEvent.html">rtmpStreamingEvent</a></li>
         <li><a href="../../rtc_engine/RtcEngineEventHandler/rtmpStreamingStateChanged.html">rtmpStreamingStateChanged</a></li>
         <li class="inherited"><a href="https://api.flutter.dev/flutter/dart-core/Object/runtimeType.html">runtimeType</a></li>
         <li><a href="../../rtc_engine/RtcEngineEventHandler/streamInjectedStatus.html">streamInjectedStatus</a></li>
@@ -129,8 +134,10 @@
         <li><a class="deprecated" href="../../rtc_engine/RtcEngineEventHandler/userMuteAudio.html">userMuteAudio</a></li>
         <li><a class="deprecated" href="../../rtc_engine/RtcEngineEventHandler/userMuteVideo.html">userMuteVideo</a></li>
         <li><a href="../../rtc_engine/RtcEngineEventHandler/userOffline.html">userOffline</a></li>
+        <li><a href="../../rtc_engine/RtcEngineEventHandler/videoPublishStateChanged.html">videoPublishStateChanged</a></li>
         <li><a href="../../rtc_engine/RtcEngineEventHandler/videoSizeChanged.html">videoSizeChanged</a></li>
         <li><a class="deprecated" href="../../rtc_engine/RtcEngineEventHandler/videoStopped.html">videoStopped</a></li>
+        <li><a href="../../rtc_engine/RtcEngineEventHandler/videoSubscribeStateChanged.html">videoSubscribeStateChanged</a></li>
         <li><a href="../../rtc_engine/RtcEngineEventHandler/warning.html">warning</a></li>
     
         <li class="section-title"><a href="../../rtc_engine/RtcEngineEventHandler-class.html#instance-methods">Methods</a></li>
@@ -161,13 +168,23 @@
 <p><strong>Deprecated</strong></p>
 <p>该回调已废弃，请改用 <a href="../../rtc_engine/RtcEngineEventHandler/remoteAudioStateChanged.html">remoteAudioStateChanged</a> 回调中的如下参数实现相同功能：</p>
 <ul>
-<li><a href="0">VideoRemoteState.Stopped</a> 和 <a href="5">VideoRemoteStateReason.RemoteMuted</a></li>
-<li><a href="2">VideoRemoteState.Decoding</a> 和 <a href="6">VideoRemoteStateReason.RemoteUnmuted</a></li>
+<li><a href="../../rtc_engine/VideoRemoteState-class.html">VideoRemoteState.Stopped</a> 和 <a href="../../rtc_engine/VideoRemoteStateReason-class.html">VideoRemoteStateReason.RemoteMuted</a></li>
+<li><a href="../../rtc_engine/VideoRemoteState-class.html">VideoRemoteState.Decoding</a> 和 <a href="../../rtc_engine/VideoRemoteStateReason-class.html">VideoRemoteStateReason.RemoteUnmuted</a></li>
 </ul>
 <p>提示有其他用户将他的音频流静音/取消静音。</p>
 <p>该回调是由远端用户调用 <a href="../../rtc_engine/RtcEngine/muteLocalAudioStream.html">RtcEngine.muteLocalAudioStream</a> 方法关闭或开启音频发送触发的。</p>
 <p><strong>Note</strong></p>
-<p>当频道内的用户（通信场景）或主播（直播场景）的人数超过 17 时，Agora 建议你不要使用该回调。// TODO 英文改成 17 人？</p>
+<p>当频道内的用户（通信场景）或主播（直播场景）的人数超过 17 时，Agora 建议你不要使用该回调。</p>
+<p><code>UidWithMutedCallback</code> 包含如下参数：</p>
+<ul>
+<li><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a> <code>uid</code>：用户 ID，提示是哪个用户的视频流。</li>
+<li><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a> <code>muted</code>：该用户是否暂停发送其视频流：
+<ul>
+<li><code>true</code>: 该用户已暂停发送视频流。</li>
+<li><code>false</code>: 该用户已恢复发送视频流。</li>
+</ul>
+</li>
+</ul>
         </section>
                 <section class="summary source-code" id="source">
           <h2><span>Implementation</span></h2>

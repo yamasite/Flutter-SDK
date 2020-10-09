@@ -60,6 +60,7 @@
       <li><a href="../rtc_engine/ChannelMediaOptions-class.html">ChannelMediaOptions</a></li>
       <li><a href="../rtc_engine/ChannelMediaRelayConfiguration-class.html">ChannelMediaRelayConfiguration</a></li>
       <li><a href="../rtc_engine/Color-class.html">Color</a></li>
+      <li><a href="../rtc_engine/EncryptionConfig-class.html">EncryptionConfig</a></li>
       <li><a href="../rtc_engine/FacePositionInfo-class.html">FacePositionInfo</a></li>
       <li><a href="../rtc_engine/JsonSerializable-class.html">JsonSerializable</a></li>
       <li><a href="../rtc_engine/LastmileProbeConfig-class.html">LastmileProbeConfig</a></li>
@@ -88,6 +89,7 @@
     
     
       <li class="section-title"><a href="../rtc_engine/rtc_engine-library.html#enums">Enums</a></li>
+      <li><a href="../rtc_engine/AreaCode-class.html">AreaCode</a></li>
       <li><a href="../rtc_engine/AudioChannel-class.html">AudioChannel</a></li>
       <li><a href="../rtc_engine/AudioCodecProfileType-class.html">AudioCodecProfileType</a></li>
       <li><a href="../rtc_engine/AudioEqualizationBandFrequency-class.html">AudioEqualizationBandFrequency</a></li>
@@ -104,7 +106,6 @@
       <li><a href="../rtc_engine/AudioReverbType-class.html">AudioReverbType</a></li>
       <li><a href="../rtc_engine/AudioSampleRateType-class.html">AudioSampleRateType</a></li>
       <li><a href="../rtc_engine/AudioScenario-class.html">AudioScenario</a></li>
-      <li><a href="../rtc_engine/AudioSessionOperationRestriction-class.html">AudioSessionOperationRestriction</a></li>
       <li><a href="../rtc_engine/AudioVoiceChanger-class.html">AudioVoiceChanger</a></li>
       <li><a href="../rtc_engine/BitRate-class.html">BitRate</a></li>
       <li><a href="../rtc_engine/CameraCaptureOutputPreference-class.html">CameraCaptureOutputPreference</a></li>
@@ -120,20 +121,19 @@
       <li><a href="../rtc_engine/EncryptionMode-class.html">EncryptionMode</a></li>
       <li><a href="../rtc_engine/ErrorCode-class.html">ErrorCode</a></li>
       <li><a href="../rtc_engine/InjectStreamStatus-class.html">InjectStreamStatus</a></li>
-      <li><a href="../rtc_engine/IPAreaCode-class.html">IPAreaCode</a></li>
       <li><a href="../rtc_engine/LastmileProbeResultState-class.html">LastmileProbeResultState</a></li>
       <li><a href="../rtc_engine/LighteningContrastLevel-class.html">LighteningContrastLevel</a></li>
       <li><a href="../rtc_engine/LocalVideoStreamError-class.html">LocalVideoStreamError</a></li>
       <li><a href="../rtc_engine/LocalVideoStreamState-class.html">LocalVideoStreamState</a></li>
       <li><a href="../rtc_engine/LogFilter-class.html">LogFilter</a></li>
-      <li><a href="../rtc_engine/MediaDeviceType-class.html">MediaDeviceType</a></li>
       <li><a href="../rtc_engine/NetworkQuality-class.html">NetworkQuality</a></li>
       <li><a href="../rtc_engine/NetworkType-class.html">NetworkType</a></li>
-      <li><a href="../rtc_engine/RtcDefaultCameraPosition-class.html">RtcDefaultCameraPosition</a></li>
       <li><a href="../rtc_engine/RtmpStreamingErrorCode-class.html">RtmpStreamingErrorCode</a></li>
+      <li><a href="../rtc_engine/RtmpStreamingEvent-class.html">RtmpStreamingEvent</a></li>
       <li><a href="../rtc_engine/RtmpStreamingState-class.html">RtmpStreamingState</a></li>
-      <li><a href="../rtc_engine/RtmpStreamLifeCycle-class.html">RtmpStreamLifeCycle</a></li>
       <li><a href="../rtc_engine/StreamFallbackOptions-class.html">StreamFallbackOptions</a></li>
+      <li><a href="../rtc_engine/StreamPublishState-class.html">StreamPublishState</a></li>
+      <li><a href="../rtc_engine/StreamSubscribeState-class.html">StreamSubscribeState</a></li>
       <li><a href="../rtc_engine/UserOfflineReason-class.html">UserOfflineReason</a></li>
       <li><a href="../rtc_engine/UserPriority-class.html">UserPriority</a></li>
       <li><a href="../rtc_engine/VideoCodecProfileType-class.html">VideoCodecProfileType</a></li>
@@ -168,7 +168,7 @@ App 可以根据需要只继承关心的事件。在回调方法中，App 不应
 
       <dl class="constructor-summary-list">
         <dt id="RtcEngineEventHandler" class="callable">
-          <span class="name"><a href="../rtc_engine/RtcEngineEventHandler/RtcEngineEventHandler.html">RtcEngineEventHandler</a></span><span class="signature">(<span class="parameter" id="-param-warning">{<span class="type-annotation">WarningCallback</span> <span class="parameter-name">warning</span>, </span><span class="parameter" id="-param-error"><span class="type-annotation">ErrorCallback</span> <span class="parameter-name">error</span>, </span><span class="parameter" id="-param-apiCallExecuted"><span class="type-annotation">ApiCallCallback</span> <span class="parameter-name">apiCallExecuted</span>, </span><span class="parameter" id="-param-joinChannelSuccess"><span class="type-annotation">UidWithElapsedAndChannelCallback</span> <span class="parameter-name">joinChannelSuccess</span>, </span><span class="parameter" id="-param-rejoinChannelSuccess"><span class="type-annotation">RtcStatsCallback</span> <span class="parameter-name">rejoinChannelSuccess</span>, </span><span class="parameter" id="-param-leaveChannel"><span class="type-annotation">RtcStatsCallback</span> <span class="parameter-name">leaveChannel</span>, </span><span class="parameter" id="-param-localUserRegistered"><span class="type-annotation">UserAccountCallback</span> <span class="parameter-name">localUserRegistered</span>, </span><span class="parameter" id="-param-userInfoUpdated"><span class="type-annotation">UserInfoCallback</span> <span class="parameter-name">userInfoUpdated</span>, </span><span class="parameter" id="-param-clientRoleChanged"><span class="type-annotation">ClientRoleCallback</span> <span class="parameter-name">clientRoleChanged</span>, </span><span class="parameter" id="-param-userJoined"><span class="type-annotation">UidWithElapsedCallback</span> <span class="parameter-name">userJoined</span>, </span><span class="parameter" id="-param-userOffline"><span class="type-annotation">UserOfflineCallback</span> <span class="parameter-name">userOffline</span>, </span><span class="parameter" id="-param-connectionStateChanged"><span class="type-annotation">ConnectionStateCallback</span> <span class="parameter-name">connectionStateChanged</span>, </span><span class="parameter" id="-param-networkTypeChanged"><span class="type-annotation">NetworkTypeCallback</span> <span class="parameter-name">networkTypeChanged</span>, </span><span class="parameter" id="-param-connectionLost"><span class="type-annotation">EmptyCallback</span> <span class="parameter-name">connectionLost</span>, </span><span class="parameter" id="-param-tokenPrivilegeWillExpire"><span class="type-annotation">TokenCallback</span> <span class="parameter-name">tokenPrivilegeWillExpire</span>, </span><span class="parameter" id="-param-requestToken"><span class="type-annotation">EmptyCallback</span> <span class="parameter-name">requestToken</span>, </span><span class="parameter" id="-param-audioVolumeIndication"><span class="type-annotation">AudioVolumeCallback</span> <span class="parameter-name">audioVolumeIndication</span>, </span><span class="parameter" id="-param-activeSpeaker"><span class="type-annotation">UidCallback</span> <span class="parameter-name">activeSpeaker</span>, </span><span class="parameter" id="-param-firstLocalAudioFrame"><span class="type-annotation">ElapsedCallback</span> <span class="parameter-name">firstLocalAudioFrame</span>, </span><span class="parameter" id="-param-firstLocalVideoFrame"><span class="type-annotation">VideoFrameCallback</span> <span class="parameter-name">firstLocalVideoFrame</span>, </span><span class="parameter" id="-param-userMuteVideo"><span class="type-annotation">UidWithMutedCallback</span> <span class="parameter-name">userMuteVideo</span>, </span><span class="parameter" id="-param-videoSizeChanged"><span class="type-annotation">VideoSizeCallback</span> <span class="parameter-name">videoSizeChanged</span>, </span><span class="parameter" id="-param-remoteVideoStateChanged"><span class="type-annotation">RemoteVideoStateCallback</span> <span class="parameter-name">remoteVideoStateChanged</span>, </span><span class="parameter" id="-param-localVideoStateChanged"><span class="type-annotation">LocalVideoStateCallback</span> <span class="parameter-name">localVideoStateChanged</span>, </span><span class="parameter" id="-param-remoteAudioStateChanged"><span class="type-annotation">RemoteAudioStateCallback</span> <span class="parameter-name">remoteAudioStateChanged</span>, </span><span class="parameter" id="-param-localAudioStateChanged"><span class="type-annotation">LocalAudioStateCallback</span> <span class="parameter-name">localAudioStateChanged</span>, </span><span class="parameter" id="-param-localPublishFallbackToAudioOnly"><span class="type-annotation">FallbackCallback</span> <span class="parameter-name">localPublishFallbackToAudioOnly</span>, </span><span class="parameter" id="-param-remoteSubscribeFallbackToAudioOnly"><span class="type-annotation">FallbackWithUidCallback</span> <span class="parameter-name">remoteSubscribeFallbackToAudioOnly</span>, </span><span class="parameter" id="-param-audioRouteChanged"><span class="type-annotation">AudioRouteCallback</span> <span class="parameter-name">audioRouteChanged</span>, </span><span class="parameter" id="-param-cameraFocusAreaChanged"><span class="type-annotation">RectCallback</span> <span class="parameter-name">cameraFocusAreaChanged</span>, </span><span class="parameter" id="-param-cameraExposureAreaChanged"><span class="type-annotation">RectCallback</span> <span class="parameter-name">cameraExposureAreaChanged</span>, </span><span class="parameter" id="-param-facePositionChanged"><span class="type-annotation">FacePositionCallback</span> <span class="parameter-name">facePositionChanged</span>, </span><span class="parameter" id="-param-rtcStats"><span class="type-annotation">RtcStatsCallback</span> <span class="parameter-name">rtcStats</span>, </span><span class="parameter" id="-param-lastmileQuality"><span class="type-annotation">NetworkQualityCallback</span> <span class="parameter-name">lastmileQuality</span>, </span><span class="parameter" id="-param-networkQuality"><span class="type-annotation">NetworkQualityWithUidCallback</span> <span class="parameter-name">networkQuality</span>, </span><span class="parameter" id="-param-lastmileProbeResult"><span class="type-annotation">LastmileProbeCallback</span> <span class="parameter-name">lastmileProbeResult</span>, </span><span class="parameter" id="-param-localVideoStats"><span class="type-annotation">LocalVideoStatsCallback</span> <span class="parameter-name">localVideoStats</span>, </span><span class="parameter" id="-param-localAudioStats"><span class="type-annotation">LocalAudioStatsCallback</span> <span class="parameter-name">localAudioStats</span>, </span><span class="parameter" id="-param-remoteVideoStats"><span class="type-annotation">RemoteVideoStatsCallback</span> <span class="parameter-name">remoteVideoStats</span>, </span><span class="parameter" id="-param-remoteAudioStats"><span class="type-annotation">RemoteAudioStatsCallback</span> <span class="parameter-name">remoteAudioStats</span>, </span><span class="parameter" id="-param-audioMixingFinished"><span class="type-annotation">EmptyCallback</span> <span class="parameter-name">audioMixingFinished</span>, </span><span class="parameter" id="-param-audioMixingStateChanged"><span class="type-annotation">AudioMixingStateCallback</span> <span class="parameter-name">audioMixingStateChanged</span>, </span><span class="parameter" id="-param-audioEffectFinished"><span class="type-annotation">SoundIdCallback</span> <span class="parameter-name">audioEffectFinished</span>, </span><span class="parameter" id="-param-rtmpStreamingStateChanged"><span class="type-annotation">RtmpStreamingStateCallback</span> <span class="parameter-name">rtmpStreamingStateChanged</span>, </span><span class="parameter" id="-param-transcodingUpdated"><span class="type-annotation">EmptyCallback</span> <span class="parameter-name">transcodingUpdated</span>, </span><span class="parameter" id="-param-streamInjectedStatus"><span class="type-annotation">StreamInjectedStatusCallback</span> <span class="parameter-name">streamInjectedStatus</span>, </span><span class="parameter" id="-param-streamMessage"><span class="type-annotation">StreamMessageCallback</span> <span class="parameter-name">streamMessage</span>, </span><span class="parameter" id="-param-streamMessageError"><span class="type-annotation">StreamMessageErrorCallback</span> <span class="parameter-name">streamMessageError</span>, </span><span class="parameter" id="-param-mediaEngineLoadSuccess"><span class="type-annotation">EmptyCallback</span> <span class="parameter-name">mediaEngineLoadSuccess</span>, </span><span class="parameter" id="-param-mediaEngineStartCallSuccess"><span class="type-annotation">EmptyCallback</span> <span class="parameter-name">mediaEngineStartCallSuccess</span>, </span><span class="parameter" id="-param-channelMediaRelayStateChanged"><span class="type-annotation">MediaRelayStateCallback</span> <span class="parameter-name">channelMediaRelayStateChanged</span>, </span><span class="parameter" id="-param-channelMediaRelayEvent"><span class="type-annotation">MediaRelayEventCallback</span> <span class="parameter-name">channelMediaRelayEvent</span>, </span><span class="parameter" id="-param-firstRemoteVideoFrame"><span class="type-annotation">VideoFrameWithUidCallback</span> <span class="parameter-name">firstRemoteVideoFrame</span>, </span><span class="parameter" id="-param-firstRemoteAudioFrame"><span class="type-annotation">UidWithElapsedCallback</span> <span class="parameter-name">firstRemoteAudioFrame</span>, </span><span class="parameter" id="-param-firstRemoteAudioDecoded"><span class="type-annotation">UidWithElapsedCallback</span> <span class="parameter-name">firstRemoteAudioDecoded</span>, </span><span class="parameter" id="-param-userMuteAudio"><span class="type-annotation">UidWithMutedCallback</span> <span class="parameter-name">userMuteAudio</span>, </span><span class="parameter" id="-param-streamPublished"><span class="type-annotation">UrlWithErrorCallback</span> <span class="parameter-name">streamPublished</span>, </span><span class="parameter" id="-param-streamUnpublished"><span class="type-annotation">UrlCallback</span> <span class="parameter-name">streamUnpublished</span>, </span><span class="parameter" id="-param-remoteAudioTransportStats"><span class="type-annotation">TransportStatsCallback</span> <span class="parameter-name">remoteAudioTransportStats</span>, </span><span class="parameter" id="-param-remoteVideoTransportStats"><span class="type-annotation">TransportStatsCallback</span> <span class="parameter-name">remoteVideoTransportStats</span>, </span><span class="parameter" id="-param-userEnableVideo"><span class="type-annotation">UidWithEnabledCallback</span> <span class="parameter-name">userEnableVideo</span>, </span><span class="parameter" id="-param-userEnableLocalVideo"><span class="type-annotation">UidWithEnabledCallback</span> <span class="parameter-name">userEnableLocalVideo</span>, </span><span class="parameter" id="-param-firstRemoteVideoDecoded"><span class="type-annotation">VideoFrameWithUidCallback</span> <span class="parameter-name">firstRemoteVideoDecoded</span>, </span><span class="parameter" id="-param-microphoneEnabled"><span class="type-annotation">EnabledCallback</span> <span class="parameter-name">microphoneEnabled</span>, </span><span class="parameter" id="-param-connectionInterrupted"><span class="type-annotation">EmptyCallback</span> <span class="parameter-name">connectionInterrupted</span>, </span><span class="parameter" id="-param-connectionBanned"><span class="type-annotation">EmptyCallback</span> <span class="parameter-name">connectionBanned</span>, </span><span class="parameter" id="-param-audioQuality"><span class="type-annotation">AudioQualityCallback</span> <span class="parameter-name">audioQuality</span>, </span><span class="parameter" id="-param-cameraReady"><span class="type-annotation">EmptyCallback</span> <span class="parameter-name">cameraReady</span>, </span><span class="parameter" id="-param-videoStopped"><span class="type-annotation">EmptyCallback</span> <span class="parameter-name">videoStopped</span>, </span><span class="parameter" id="-param-metadataReceived"><span class="type-annotation">MetadataCallback</span> <span class="parameter-name">metadataReceived</span>}</span>)</span>
+          <span class="name"><a href="../rtc_engine/RtcEngineEventHandler/RtcEngineEventHandler.html">RtcEngineEventHandler</a></span><span class="signature">(<span class="parameter" id="-param-warning">{<span class="type-annotation">WarningCallback</span> <span class="parameter-name">warning</span>, </span><span class="parameter" id="-param-error"><span class="type-annotation">ErrorCallback</span> <span class="parameter-name">error</span>, </span><span class="parameter" id="-param-apiCallExecuted"><span class="type-annotation">ApiCallCallback</span> <span class="parameter-name">apiCallExecuted</span>, </span><span class="parameter" id="-param-joinChannelSuccess"><span class="type-annotation">UidWithElapsedAndChannelCallback</span> <span class="parameter-name">joinChannelSuccess</span>, </span><span class="parameter" id="-param-rejoinChannelSuccess"><span class="type-annotation">RtcStatsCallback</span> <span class="parameter-name">rejoinChannelSuccess</span>, </span><span class="parameter" id="-param-leaveChannel"><span class="type-annotation">RtcStatsCallback</span> <span class="parameter-name">leaveChannel</span>, </span><span class="parameter" id="-param-localUserRegistered"><span class="type-annotation">UserAccountCallback</span> <span class="parameter-name">localUserRegistered</span>, </span><span class="parameter" id="-param-userInfoUpdated"><span class="type-annotation">UserInfoCallback</span> <span class="parameter-name">userInfoUpdated</span>, </span><span class="parameter" id="-param-clientRoleChanged"><span class="type-annotation">ClientRoleCallback</span> <span class="parameter-name">clientRoleChanged</span>, </span><span class="parameter" id="-param-userJoined"><span class="type-annotation">UidWithElapsedCallback</span> <span class="parameter-name">userJoined</span>, </span><span class="parameter" id="-param-userOffline"><span class="type-annotation">UserOfflineCallback</span> <span class="parameter-name">userOffline</span>, </span><span class="parameter" id="-param-connectionStateChanged"><span class="type-annotation">ConnectionStateCallback</span> <span class="parameter-name">connectionStateChanged</span>, </span><span class="parameter" id="-param-networkTypeChanged"><span class="type-annotation">NetworkTypeCallback</span> <span class="parameter-name">networkTypeChanged</span>, </span><span class="parameter" id="-param-connectionLost"><span class="type-annotation">EmptyCallback</span> <span class="parameter-name">connectionLost</span>, </span><span class="parameter" id="-param-tokenPrivilegeWillExpire"><span class="type-annotation">TokenCallback</span> <span class="parameter-name">tokenPrivilegeWillExpire</span>, </span><span class="parameter" id="-param-requestToken"><span class="type-annotation">EmptyCallback</span> <span class="parameter-name">requestToken</span>, </span><span class="parameter" id="-param-audioVolumeIndication"><span class="type-annotation">AudioVolumeCallback</span> <span class="parameter-name">audioVolumeIndication</span>, </span><span class="parameter" id="-param-activeSpeaker"><span class="type-annotation">UidCallback</span> <span class="parameter-name">activeSpeaker</span>, </span><span class="parameter" id="-param-firstLocalAudioFrame"><span class="type-annotation">ElapsedCallback</span> <span class="parameter-name">firstLocalAudioFrame</span>, </span><span class="parameter" id="-param-firstLocalVideoFrame"><span class="type-annotation">VideoFrameCallback</span> <span class="parameter-name">firstLocalVideoFrame</span>, </span><span class="parameter" id="-param-userMuteVideo"><span class="type-annotation">UidWithMutedCallback</span> <span class="parameter-name">userMuteVideo</span>, </span><span class="parameter" id="-param-videoSizeChanged"><span class="type-annotation">VideoSizeCallback</span> <span class="parameter-name">videoSizeChanged</span>, </span><span class="parameter" id="-param-remoteVideoStateChanged"><span class="type-annotation">RemoteVideoStateCallback</span> <span class="parameter-name">remoteVideoStateChanged</span>, </span><span class="parameter" id="-param-localVideoStateChanged"><span class="type-annotation">LocalVideoStateCallback</span> <span class="parameter-name">localVideoStateChanged</span>, </span><span class="parameter" id="-param-remoteAudioStateChanged"><span class="type-annotation">RemoteAudioStateCallback</span> <span class="parameter-name">remoteAudioStateChanged</span>, </span><span class="parameter" id="-param-localAudioStateChanged"><span class="type-annotation">LocalAudioStateCallback</span> <span class="parameter-name">localAudioStateChanged</span>, </span><span class="parameter" id="-param-localPublishFallbackToAudioOnly"><span class="type-annotation">FallbackCallback</span> <span class="parameter-name">localPublishFallbackToAudioOnly</span>, </span><span class="parameter" id="-param-remoteSubscribeFallbackToAudioOnly"><span class="type-annotation">FallbackWithUidCallback</span> <span class="parameter-name">remoteSubscribeFallbackToAudioOnly</span>, </span><span class="parameter" id="-param-audioRouteChanged"><span class="type-annotation">AudioRouteCallback</span> <span class="parameter-name">audioRouteChanged</span>, </span><span class="parameter" id="-param-cameraFocusAreaChanged"><span class="type-annotation">RectCallback</span> <span class="parameter-name">cameraFocusAreaChanged</span>, </span><span class="parameter" id="-param-cameraExposureAreaChanged"><span class="type-annotation">RectCallback</span> <span class="parameter-name">cameraExposureAreaChanged</span>, </span><span class="parameter" id="-param-facePositionChanged"><span class="type-annotation">FacePositionCallback</span> <span class="parameter-name">facePositionChanged</span>, </span><span class="parameter" id="-param-rtcStats"><span class="type-annotation">RtcStatsCallback</span> <span class="parameter-name">rtcStats</span>, </span><span class="parameter" id="-param-lastmileQuality"><span class="type-annotation">NetworkQualityCallback</span> <span class="parameter-name">lastmileQuality</span>, </span><span class="parameter" id="-param-networkQuality"><span class="type-annotation">NetworkQualityWithUidCallback</span> <span class="parameter-name">networkQuality</span>, </span><span class="parameter" id="-param-lastmileProbeResult"><span class="type-annotation">LastmileProbeCallback</span> <span class="parameter-name">lastmileProbeResult</span>, </span><span class="parameter" id="-param-localVideoStats"><span class="type-annotation">LocalVideoStatsCallback</span> <span class="parameter-name">localVideoStats</span>, </span><span class="parameter" id="-param-localAudioStats"><span class="type-annotation">LocalAudioStatsCallback</span> <span class="parameter-name">localAudioStats</span>, </span><span class="parameter" id="-param-remoteVideoStats"><span class="type-annotation">RemoteVideoStatsCallback</span> <span class="parameter-name">remoteVideoStats</span>, </span><span class="parameter" id="-param-remoteAudioStats"><span class="type-annotation">RemoteAudioStatsCallback</span> <span class="parameter-name">remoteAudioStats</span>, </span><span class="parameter" id="-param-audioMixingFinished"><span class="type-annotation">EmptyCallback</span> <span class="parameter-name">audioMixingFinished</span>, </span><span class="parameter" id="-param-audioMixingStateChanged"><span class="type-annotation">AudioMixingStateCallback</span> <span class="parameter-name">audioMixingStateChanged</span>, </span><span class="parameter" id="-param-audioEffectFinished"><span class="type-annotation">SoundIdCallback</span> <span class="parameter-name">audioEffectFinished</span>, </span><span class="parameter" id="-param-rtmpStreamingStateChanged"><span class="type-annotation">RtmpStreamingStateCallback</span> <span class="parameter-name">rtmpStreamingStateChanged</span>, </span><span class="parameter" id="-param-transcodingUpdated"><span class="type-annotation">EmptyCallback</span> <span class="parameter-name">transcodingUpdated</span>, </span><span class="parameter" id="-param-streamInjectedStatus"><span class="type-annotation">StreamInjectedStatusCallback</span> <span class="parameter-name">streamInjectedStatus</span>, </span><span class="parameter" id="-param-streamMessage"><span class="type-annotation">StreamMessageCallback</span> <span class="parameter-name">streamMessage</span>, </span><span class="parameter" id="-param-streamMessageError"><span class="type-annotation">StreamMessageErrorCallback</span> <span class="parameter-name">streamMessageError</span>, </span><span class="parameter" id="-param-mediaEngineLoadSuccess"><span class="type-annotation">EmptyCallback</span> <span class="parameter-name">mediaEngineLoadSuccess</span>, </span><span class="parameter" id="-param-mediaEngineStartCallSuccess"><span class="type-annotation">EmptyCallback</span> <span class="parameter-name">mediaEngineStartCallSuccess</span>, </span><span class="parameter" id="-param-channelMediaRelayStateChanged"><span class="type-annotation">MediaRelayStateCallback</span> <span class="parameter-name">channelMediaRelayStateChanged</span>, </span><span class="parameter" id="-param-channelMediaRelayEvent"><span class="type-annotation">MediaRelayEventCallback</span> <span class="parameter-name">channelMediaRelayEvent</span>, </span><span class="parameter" id="-param-firstRemoteVideoFrame"><span class="type-annotation">VideoFrameWithUidCallback</span> <span class="parameter-name">firstRemoteVideoFrame</span>, </span><span class="parameter" id="-param-firstRemoteAudioFrame"><span class="type-annotation">UidWithElapsedCallback</span> <span class="parameter-name">firstRemoteAudioFrame</span>, </span><span class="parameter" id="-param-firstRemoteAudioDecoded"><span class="type-annotation">UidWithElapsedCallback</span> <span class="parameter-name">firstRemoteAudioDecoded</span>, </span><span class="parameter" id="-param-userMuteAudio"><span class="type-annotation">UidWithMutedCallback</span> <span class="parameter-name">userMuteAudio</span>, </span><span class="parameter" id="-param-streamPublished"><span class="type-annotation">UrlWithErrorCallback</span> <span class="parameter-name">streamPublished</span>, </span><span class="parameter" id="-param-streamUnpublished"><span class="type-annotation">UrlCallback</span> <span class="parameter-name">streamUnpublished</span>, </span><span class="parameter" id="-param-remoteAudioTransportStats"><span class="type-annotation">TransportStatsCallback</span> <span class="parameter-name">remoteAudioTransportStats</span>, </span><span class="parameter" id="-param-remoteVideoTransportStats"><span class="type-annotation">TransportStatsCallback</span> <span class="parameter-name">remoteVideoTransportStats</span>, </span><span class="parameter" id="-param-userEnableVideo"><span class="type-annotation">UidWithEnabledCallback</span> <span class="parameter-name">userEnableVideo</span>, </span><span class="parameter" id="-param-userEnableLocalVideo"><span class="type-annotation">UidWithEnabledCallback</span> <span class="parameter-name">userEnableLocalVideo</span>, </span><span class="parameter" id="-param-firstRemoteVideoDecoded"><span class="type-annotation">VideoFrameWithUidCallback</span> <span class="parameter-name">firstRemoteVideoDecoded</span>, </span><span class="parameter" id="-param-microphoneEnabled"><span class="type-annotation">EnabledCallback</span> <span class="parameter-name">microphoneEnabled</span>, </span><span class="parameter" id="-param-connectionInterrupted"><span class="type-annotation">EmptyCallback</span> <span class="parameter-name">connectionInterrupted</span>, </span><span class="parameter" id="-param-connectionBanned"><span class="type-annotation">EmptyCallback</span> <span class="parameter-name">connectionBanned</span>, </span><span class="parameter" id="-param-audioQuality"><span class="type-annotation">AudioQualityCallback</span> <span class="parameter-name">audioQuality</span>, </span><span class="parameter" id="-param-cameraReady"><span class="type-annotation">EmptyCallback</span> <span class="parameter-name">cameraReady</span>, </span><span class="parameter" id="-param-videoStopped"><span class="type-annotation">EmptyCallback</span> <span class="parameter-name">videoStopped</span>, </span><span class="parameter" id="-param-metadataReceived"><span class="type-annotation">MetadataCallback</span> <span class="parameter-name">metadataReceived</span>, </span><span class="parameter" id="-param-firstLocalAudioFramePublished"><span class="type-annotation">ElapsedCallback</span> <span class="parameter-name">firstLocalAudioFramePublished</span>, </span><span class="parameter" id="-param-firstLocalVideoFramePublished"><span class="type-annotation">ElapsedCallback</span> <span class="parameter-name">firstLocalVideoFramePublished</span>, </span><span class="parameter" id="-param-audioPublishStateChanged"><span class="type-annotation">StreamPublishStateCallback</span> <span class="parameter-name">audioPublishStateChanged</span>, </span><span class="parameter" id="-param-videoPublishStateChanged"><span class="type-annotation">StreamPublishStateCallback</span> <span class="parameter-name">videoPublishStateChanged</span>, </span><span class="parameter" id="-param-audioSubscribeStateChanged"><span class="type-annotation">StreamSubscribeStateCallback</span> <span class="parameter-name">audioSubscribeStateChanged</span>, </span><span class="parameter" id="-param-videoSubscribeStateChanged"><span class="type-annotation">StreamSubscribeStateCallback</span> <span class="parameter-name">videoSubscribeStateChanged</span>, </span><span class="parameter" id="-param-rtmpStreamingEvent"><span class="type-annotation">RtmpStreamingEventCallback</span> <span class="parameter-name">rtmpStreamingEvent</span>}</span>)</span>
         </dt>
         <dd>
           Constructs a <a href="../rtc_engine/RtcEngineEventHandler-class.html">RtcEngineEventHandler</a> 
@@ -221,6 +221,14 @@ App 可以根据需要只继承关心的事件。在回调方法中，App 不应
 调用 <a href="../rtc_engine/RtcEngine/startAudioMixing.html">RtcEngine.startAudioMixing</a> 播放混音音乐文件后，当音乐文件的播放状态发生改变时，会触发该回调。 <a href="../rtc_engine/RtcEngineEventHandler/audioMixingStateChanged.html">[...]</a>
                   <div class="features">read / write</div>
 </dd>
+        <dt id="audioPublishStateChanged" class="property">
+          <span class="name"><a href="../rtc_engine/RtcEngineEventHandler/audioPublishStateChanged.html">audioPublishStateChanged</a></span>
+          <span class="signature">&#8596; StreamPublishStateCallback</span>         
+        </dt>
+        <dd>
+          音频发布状态改变回调。 <a href="../rtc_engine/RtcEngineEventHandler/audioPublishStateChanged.html">[...]</a>
+                  <div class="features">read / write</div>
+</dd>
         <dt id="audioQuality" class="property">
           <span class="name"><a class="deprecated" href="../rtc_engine/RtcEngineEventHandler/audioQuality.html">audioQuality</a></span>
           <span class="signature">&#8596; AudioQualityCallback</span>         
@@ -235,6 +243,14 @@ App 可以根据需要只继承关心的事件。在回调方法中，App 不应
         </dt>
         <dd>
           语音路由已变更回调。 <a href="../rtc_engine/RtcEngineEventHandler/audioRouteChanged.html">[...]</a>
+                  <div class="features">read / write</div>
+</dd>
+        <dt id="audioSubscribeStateChanged" class="property">
+          <span class="name"><a href="../rtc_engine/RtcEngineEventHandler/audioSubscribeStateChanged.html">audioSubscribeStateChanged</a></span>
+          <span class="signature">&#8596; StreamSubscribeStateCallback</span>         
+        </dt>
+        <dd>
+          音频订阅状态发生改变回调。 <a href="../rtc_engine/RtcEngineEventHandler/audioSubscribeStateChanged.html">[...]</a>
                   <div class="features">read / write</div>
 </dd>
         <dt id="audioVolumeIndication" class="property">
@@ -346,7 +362,15 @@ App 可以根据需要只继承关心的事件。在回调方法中，App 不应
           <span class="signature">&#8596; ElapsedCallback</span>         
         </dt>
         <dd>
-          已发送本地音频首帧回调。 
+          已发送本地音频首帧回调。 <a href="../rtc_engine/RtcEngineEventHandler/firstLocalAudioFrame.html">[...]</a>
+                  <div class="features">read / write</div>
+</dd>
+        <dt id="firstLocalAudioFramePublished" class="property">
+          <span class="name"><a href="../rtc_engine/RtcEngineEventHandler/firstLocalAudioFramePublished.html">firstLocalAudioFramePublished</a></span>
+          <span class="signature">&#8596; ElapsedCallback</span>         
+        </dt>
+        <dd>
+          已发布本地音频首帧回调。 <a href="../rtc_engine/RtcEngineEventHandler/firstLocalAudioFramePublished.html">[...]</a>
                   <div class="features">read / write</div>
 </dd>
         <dt id="firstLocalVideoFrame" class="property">
@@ -355,6 +379,14 @@ App 可以根据需要只继承关心的事件。在回调方法中，App 不应
         </dt>
         <dd>
           已显示本地视频首帧回调。 <a href="../rtc_engine/RtcEngineEventHandler/firstLocalVideoFrame.html">[...]</a>
+                  <div class="features">read / write</div>
+</dd>
+        <dt id="firstLocalVideoFramePublished" class="property">
+          <span class="name"><a href="../rtc_engine/RtcEngineEventHandler/firstLocalVideoFramePublished.html">firstLocalVideoFramePublished</a></span>
+          <span class="signature">&#8596; ElapsedCallback</span>         
+        </dt>
+        <dd>
+          已发布本地视频首帧回调。 <a href="../rtc_engine/RtcEngineEventHandler/firstLocalVideoFramePublished.html">[...]</a>
                   <div class="features">read / write</div>
 </dd>
         <dt id="firstRemoteAudioDecoded" class="property">
@@ -498,7 +530,7 @@ App 可以根据需要只继承关心的事件。在回调方法中，App 不应
           <span class="signature">&#8596; MetadataCallback</span>         
         </dt>
         <dd>
-          接收端已接收 Metadata。 
+          接收端已接收 Metadata。 <a href="../rtc_engine/RtcEngineEventHandler/metadataReceived.html">[...]</a>
                   <div class="features">read / write</div>
 </dd>
         <dt id="microphoneEnabled" class="property">
@@ -570,7 +602,7 @@ App 可以根据需要只继承关心的事件。在回调方法中，App 不应
           <span class="signature">&#8596; RemoteVideoStateCallback</span>         
         </dt>
         <dd>
-          远端用户视频状态发生已变化回调。 
+          远端用户视频状态发生已变化回调。 <a href="../rtc_engine/RtcEngineEventHandler/remoteVideoStateChanged.html">[...]</a>
                   <div class="features">read / write</div>
 </dd>
         <dt id="remoteVideoStats" class="property">
@@ -603,7 +635,15 @@ App 可以根据需要只继承关心的事件。在回调方法中，App 不应
         </dt>
         <dd>
           当前通话统计回调。
-该回调在通话中每两秒触发一次。 
+该回调在通话中每两秒触发一次。 <a href="../rtc_engine/RtcEngineEventHandler/rtcStats.html">[...]</a>
+                  <div class="features">read / write</div>
+</dd>
+        <dt id="rtmpStreamingEvent" class="property">
+          <span class="name"><a href="../rtc_engine/RtcEngineEventHandler/rtmpStreamingEvent.html">rtmpStreamingEvent</a></span>
+          <span class="signature">&#8596; RtmpStreamingEventCallback</span>         
+        </dt>
+        <dd>
+          RTMP 推流事件回调。 <a href="../rtc_engine/RtcEngineEventHandler/rtmpStreamingEvent.html">[...]</a>
                   <div class="features">read / write</div>
 </dd>
         <dt id="rtmpStreamingStateChanged" class="property">
@@ -628,7 +668,7 @@ App 可以根据需要只继承关心的事件。在回调方法中，App 不应
           <span class="signature">&#8596; StreamInjectedStatusCallback</span>         
         </dt>
         <dd>
-          输入在线媒体流状态回调。该回调表明向直播输入的外部视频流的状态。 
+          输入在线媒体流状态回调。该回调表明向直播输入的外部视频流的状态。 <a href="../rtc_engine/RtcEngineEventHandler/streamInjectedStatus.html">[...]</a>
                   <div class="features">read / write</div>
 </dd>
         <dt id="streamMessage" class="property">
@@ -735,12 +775,20 @@ App 可以根据需要只继承关心的事件。在回调方法中，App 不应
           远端用户（通信场景）/主播（直播场景）离开当前频道回调。 <a href="../rtc_engine/RtcEngineEventHandler/userOffline.html">[...]</a>
                   <div class="features">read / write</div>
 </dd>
+        <dt id="videoPublishStateChanged" class="property">
+          <span class="name"><a href="../rtc_engine/RtcEngineEventHandler/videoPublishStateChanged.html">videoPublishStateChanged</a></span>
+          <span class="signature">&#8596; StreamPublishStateCallback</span>         
+        </dt>
+        <dd>
+          视频发布状态改变回调。 <a href="../rtc_engine/RtcEngineEventHandler/videoPublishStateChanged.html">[...]</a>
+                  <div class="features">read / write</div>
+</dd>
         <dt id="videoSizeChanged" class="property">
           <span class="name"><a href="../rtc_engine/RtcEngineEventHandler/videoSizeChanged.html">videoSizeChanged</a></span>
           <span class="signature">&#8596; VideoSizeCallback</span>         
         </dt>
         <dd>
-          本地或远端视频大小或旋转信息发生改变回调。 
+          本地或远端视频大小或旋转信息发生改变回调。 <a href="../rtc_engine/RtcEngineEventHandler/videoSizeChanged.html">[...]</a>
                   <div class="features">read / write</div>
 </dd>
         <dt id="videoStopped" class="property">
@@ -749,6 +797,14 @@ App 可以根据需要只继承关心的事件。在回调方法中，App 不应
         </dt>
         <dd>
           视频功能停止回调。 <a href="../rtc_engine/RtcEngineEventHandler/videoStopped.html">[...]</a>
+                  <div class="features">read / write</div>
+</dd>
+        <dt id="videoSubscribeStateChanged" class="property">
+          <span class="name"><a href="../rtc_engine/RtcEngineEventHandler/videoSubscribeStateChanged.html">videoSubscribeStateChanged</a></span>
+          <span class="signature">&#8596; StreamSubscribeStateCallback</span>         
+        </dt>
+        <dd>
+          视频订阅状态发生改变回调。 <a href="../rtc_engine/RtcEngineEventHandler/videoSubscribeStateChanged.html">[...]</a>
                   <div class="features">read / write</div>
 </dd>
         <dt id="warning" class="property">
@@ -829,8 +885,10 @@ App 可以根据需要只继承关心的事件。在回调方法中，App 不应
       <li><a href="../rtc_engine/RtcEngineEventHandler/audioEffectFinished.html">audioEffectFinished</a></li>
       <li><a class="deprecated" href="../rtc_engine/RtcEngineEventHandler/audioMixingFinished.html">audioMixingFinished</a></li>
       <li><a href="../rtc_engine/RtcEngineEventHandler/audioMixingStateChanged.html">audioMixingStateChanged</a></li>
+      <li><a href="../rtc_engine/RtcEngineEventHandler/audioPublishStateChanged.html">audioPublishStateChanged</a></li>
       <li><a class="deprecated" href="../rtc_engine/RtcEngineEventHandler/audioQuality.html">audioQuality</a></li>
       <li><a href="../rtc_engine/RtcEngineEventHandler/audioRouteChanged.html">audioRouteChanged</a></li>
+      <li><a href="../rtc_engine/RtcEngineEventHandler/audioSubscribeStateChanged.html">audioSubscribeStateChanged</a></li>
       <li><a href="../rtc_engine/RtcEngineEventHandler/audioVolumeIndication.html">audioVolumeIndication</a></li>
       <li><a href="../rtc_engine/RtcEngineEventHandler/cameraExposureAreaChanged.html">cameraExposureAreaChanged</a></li>
       <li><a href="../rtc_engine/RtcEngineEventHandler/cameraFocusAreaChanged.html">cameraFocusAreaChanged</a></li>
@@ -845,7 +903,9 @@ App 可以根据需要只继承关心的事件。在回调方法中，App 不应
       <li><a href="../rtc_engine/RtcEngineEventHandler/error.html">error</a></li>
       <li><a href="../rtc_engine/RtcEngineEventHandler/facePositionChanged.html">facePositionChanged</a></li>
       <li><a href="../rtc_engine/RtcEngineEventHandler/firstLocalAudioFrame.html">firstLocalAudioFrame</a></li>
+      <li><a href="../rtc_engine/RtcEngineEventHandler/firstLocalAudioFramePublished.html">firstLocalAudioFramePublished</a></li>
       <li><a href="../rtc_engine/RtcEngineEventHandler/firstLocalVideoFrame.html">firstLocalVideoFrame</a></li>
+      <li><a href="../rtc_engine/RtcEngineEventHandler/firstLocalVideoFramePublished.html">firstLocalVideoFramePublished</a></li>
       <li><a class="deprecated" href="../rtc_engine/RtcEngineEventHandler/firstRemoteAudioDecoded.html">firstRemoteAudioDecoded</a></li>
       <li><a class="deprecated" href="../rtc_engine/RtcEngineEventHandler/firstRemoteAudioFrame.html">firstRemoteAudioFrame</a></li>
       <li><a class="deprecated" href="../rtc_engine/RtcEngineEventHandler/firstRemoteVideoDecoded.html">firstRemoteVideoDecoded</a></li>
@@ -877,6 +937,7 @@ App 可以根据需要只继承关心的事件。在回调方法中，App 不应
       <li><a class="deprecated" href="../rtc_engine/RtcEngineEventHandler/remoteVideoTransportStats.html">remoteVideoTransportStats</a></li>
       <li><a href="../rtc_engine/RtcEngineEventHandler/requestToken.html">requestToken</a></li>
       <li><a href="../rtc_engine/RtcEngineEventHandler/rtcStats.html">rtcStats</a></li>
+      <li><a href="../rtc_engine/RtcEngineEventHandler/rtmpStreamingEvent.html">rtmpStreamingEvent</a></li>
       <li><a href="../rtc_engine/RtcEngineEventHandler/rtmpStreamingStateChanged.html">rtmpStreamingStateChanged</a></li>
       <li class="inherited"><a href="https://api.flutter.dev/flutter/dart-core/Object/runtimeType.html">runtimeType</a></li>
       <li><a href="../rtc_engine/RtcEngineEventHandler/streamInjectedStatus.html">streamInjectedStatus</a></li>
@@ -893,8 +954,10 @@ App 可以根据需要只继承关心的事件。在回调方法中，App 不应
       <li><a class="deprecated" href="../rtc_engine/RtcEngineEventHandler/userMuteAudio.html">userMuteAudio</a></li>
       <li><a class="deprecated" href="../rtc_engine/RtcEngineEventHandler/userMuteVideo.html">userMuteVideo</a></li>
       <li><a href="../rtc_engine/RtcEngineEventHandler/userOffline.html">userOffline</a></li>
+      <li><a href="../rtc_engine/RtcEngineEventHandler/videoPublishStateChanged.html">videoPublishStateChanged</a></li>
       <li><a href="../rtc_engine/RtcEngineEventHandler/videoSizeChanged.html">videoSizeChanged</a></li>
       <li><a class="deprecated" href="../rtc_engine/RtcEngineEventHandler/videoStopped.html">videoStopped</a></li>
+      <li><a href="../rtc_engine/RtcEngineEventHandler/videoSubscribeStateChanged.html">videoSubscribeStateChanged</a></li>
       <li><a href="../rtc_engine/RtcEngineEventHandler/warning.html">warning</a></li>
     
       <li class="section-title"><a href="../rtc_engine/RtcEngineEventHandler-class.html#instance-methods">Methods</a></li>

@@ -67,6 +67,7 @@
         <li><a href="../../rtc_channel/RtcChannel/adjustUserPlaybackSignalVolume.html">adjustUserPlaybackSignalVolume</a></li>
         <li><a href="../../rtc_channel/RtcChannel/createDataStream.html">createDataStream</a></li>
         <li><a href="../../rtc_channel/RtcChannel/destroy.html">destroy</a></li>
+        <li><a href="../../rtc_channel/RtcChannel/enableEncryption.html">enableEncryption</a></li>
         <li><a href="../../rtc_channel/RtcChannel/getCallId.html">getCallId</a></li>
         <li><a href="../../rtc_channel/RtcChannel/getConnectionState.html">getConnectionState</a></li>
         <li><a href="../../rtc_channel/RtcChannel/joinChannel.html">joinChannel</a></li>
@@ -127,10 +128,10 @@
       
     </section>
     <section class="desc markdown">
-      <p>创建并返回 <code>`RtcChannel`</code>{@link RtcChannel} 对象。</p>
+      <p>创建并返回 <a href="../../rtc_channel/RtcChannel-class.html">RtcChannel</a> 对象。</p>
 <p>你可以多次调用该方法，创建多个 <a href="../../rtc_channel/RtcChannel-class.html">RtcChannel</a> 对象，再调用各 <a href="../../rtc_channel/RtcChannel-class.html">RtcChannel</a> 对象中的 <a href="../../rtc_channel/RtcChannel/joinChannel.html">RtcChannel.joinChannel</a> 方法，实现同时加入多个频道。</p>
 <p>加入多个频道后，你可以同时订阅各个频道的音、视频流；但是同一时间只能在一个频道发布一路音、视频流。</p>
-<p>Param <code>channelId</code> 标识通话的频道名称，长度在 64 字节以内的字符串。以下为支持的字符集范围（共 89 个字符）：</p>
+<p><strong>Parameter</strong> <code>channelId</code> 标识通话的频道名称，长度在 64 字节以内的字符串。以下为支持的字符集范围（共 89 个字符）：</p>
 <ul>
 <li>26 个小写英文字母 a-z</li>
 <li>26 个大写英文字母 A-Z</li>
@@ -141,13 +142,13 @@
 <p><strong>Note</strong></p>
 <ul>
 <li>该参数没有默认值，请确保对参数设值。</li>
-<li>请勿将该参数设为空字符 ""，否则 SDK 会返回 <a href="-5">ErrorCode.Refused</a>。</li>
+<li>请勿将该参数设为空字符 ""，否则 SDK 会返回 <a href="../../rtc_engine/ErrorCode-class.html">ErrorCode(5)</a>。</li>
 </ul>
 <p><strong>Returns</strong></p>
 <ul>
 <li>方法调用成功，返回 <a href="../../rtc_channel/RtcChannel-class.html">RtcChannel</a> 对象。</li>
 <li>方法调用失败，返回 null。</li>
-<li>如果将 <code>channelId</code> 设为空字符 ""，则返回错误码 <a href="-5">ErrorCode.Refused</a>。</li>
+<li>如果将 <code>channelId</code> 设为空字符 ""，则返回错误码 <a href="../../rtc_engine/ErrorCode-class.html">ErrorCode(5)</a>。</li>
 </ul>
     </section>
     

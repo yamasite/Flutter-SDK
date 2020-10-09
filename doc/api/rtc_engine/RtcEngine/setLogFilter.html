@@ -81,6 +81,7 @@
         <li><a href="../../rtc_engine/RtcEngine/enableAudio.html">enableAudio</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableAudioVolumeIndication.html">enableAudioVolumeIndication</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableDualStreamMode.html">enableDualStreamMode</a></li>
+        <li><a href="../../rtc_engine/RtcEngine/enableEncryption.html">enableEncryption</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableFaceDetection.html">enableFaceDetection</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableInEarMonitoring.html">enableInEarMonitoring</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableLastmileTest.html">enableLastmileTest</a></li>
@@ -163,6 +164,7 @@
         <li><a href="../../rtc_engine/RtcEngine/setLogFileSize.html">setLogFileSize</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setLogFilter.html">setLogFilter</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setMaxMetadataSize.html">setMaxMetadataSize</a></li>
+        <li><a href="../../rtc_engine/RtcEngine/setParameters.html">setParameters</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteDefaultVideoStreamType.html">setRemoteDefaultVideoStreamType</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteSubscribeFallbackOption.html">setRemoteSubscribeFallbackOption</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteUserPriority.html">setRemoteUserPriority</a></li>
@@ -208,6 +210,11 @@
       <div><h1><span class="kind-method">setLogFilter</span> method </h1></div>
 
     <section class="multi-line-signature">
+      <div>
+        <ol class="annotation-list">
+          <li>@<a href="https://api.flutter.dev/flutter/dart-core/override-constant.html">override</a></li>
+        </ol>
+      </div>
       <span class="returntype"><a href="https://api.flutter.dev/flutter/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">void</span>&gt;</span></span>
             <span class="name ">setLogFilter</span>
 (<wbr><ol class="parameter-list"><li><span class="parameter" id="setLogFilter-param-filter"><span class="type-annotation"><a href="../../rtc_engine/LogFilter-class.html">LogFilter</a></span> <span class="parameter-name">filter</span></span></li>
@@ -218,12 +225,13 @@
       <p>设置日志输出等级</p>
 <p>该方法设置 SDK 的日志输出等级。不同的等级可以单独或组合使用。</p>
 <p>日志级别顺序依次为 <code>OFF</code>、<code>CRITICAL</code>、<code>ERROR</code>、<code>WARNING</code>、<code>INFO</code> 和 <code>DEBUG</code>。选择一个级别，你就可以看到在该级别之前所有级别的日志信息。 例如，你选择 <code>WARNING</code> 级别，就可以看到在 <code>CRITICAL</code>、<code>ERROR</code> 和 <code>WARNING</code> 级别上的所有日志信息。</p>
-<p>Param <code>filter</code> 日志输出等级。详见 <a href="../../rtc_engine/LogFilter-class.html">LogFilter</a>。</p>
+<p><strong>Parameter</strong> <code>filter</code> 日志输出等级。详见 <a href="../../rtc_engine/LogFilter-class.html">LogFilter</a>。</p>
     </section>
     
     <section class="summary source-code" id="source">
       <h2><span>Implementation</span></h2>
-      <pre class="language-dart"><code class="language-dart">Future&lt;void&gt; setLogFilter(LogFilter filter) {
+      <pre class="language-dart"><code class="language-dart">@override
+Future&lt;void&gt; setLogFilter(LogFilter filter) {
   return _invokeMethod(
       &#39;setLogFilter&#39;, {&#39;filter&#39;: LogFilterConverter(filter).value()});
 }</code></pre>

@@ -81,6 +81,7 @@
         <li><a href="../../rtc_engine/RtcEngine/enableAudio.html">enableAudio</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableAudioVolumeIndication.html">enableAudioVolumeIndication</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableDualStreamMode.html">enableDualStreamMode</a></li>
+        <li><a href="../../rtc_engine/RtcEngine/enableEncryption.html">enableEncryption</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableFaceDetection.html">enableFaceDetection</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableInEarMonitoring.html">enableInEarMonitoring</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableLastmileTest.html">enableLastmileTest</a></li>
@@ -163,6 +164,7 @@
         <li><a href="../../rtc_engine/RtcEngine/setLogFileSize.html">setLogFileSize</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setLogFilter.html">setLogFilter</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setMaxMetadataSize.html">setMaxMetadataSize</a></li>
+        <li><a href="../../rtc_engine/RtcEngine/setParameters.html">setParameters</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteDefaultVideoStreamType.html">setRemoteDefaultVideoStreamType</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteSubscribeFallbackOption.html">setRemoteSubscribeFallbackOption</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteUserPriority.html">setRemoteUserPriority</a></li>
@@ -223,13 +225,13 @@
       <p>设置是否默认接收视频流。</p>
 <p>该方法在加入频道前后都可调用。如果在加入频道后调用 <code>setDefaultMuteAllRemoteVideoStreams</code>(true) 会接收不到后面加入频道的用户的音频流。</p>
 <p><strong>Note</strong></p>
-<p>停止接收视频流后，如果想要恢复接收，请调用 <a href="false">RtcEngine.muteRemoteVideoStream</a>，并指定你想要接收的远端用户的 ID。
+<p>停止接收视频流后，如果想要恢复接收，请调用 <a href="../../rtc_engine/RtcEngine/muteRemoteVideoStream.html">RtcEngine.muteRemoteVideoStream</a> (<code>false</code>)，并指定你想要接收的远端用户的 ID。
 如果想恢复接收多个用户的视频流，则需要多次调用 <a href="../../rtc_engine/RtcEngine/muteRemoteVideoStream.html">RtcEngine.muteRemoteVideoStream</a>。
 <code>setDefaultMuteAllRemoteVideoStreams(false)</code> 只能恢复接收设置后加入频道的用户的视频流。</p>
-<p>Param <code>muted</code> 是否默认不接收所有远端视频流：</p>
+<p><strong>Parameter</strong> <code>muted</code> 是否默认不接收所有远端视频流：</p>
 <ul>
-<li>true：默认不接收所有远端视频流。</li>
-<li>false：默认继续接收所有远端视频流（默认）。</li>
+<li><code>true</code>：默认不接收所有远端视频流。</li>
+<li><code>false</code>：默认继续接收所有远端视频流（默认）。</li>
 </ul>
     </section>
     

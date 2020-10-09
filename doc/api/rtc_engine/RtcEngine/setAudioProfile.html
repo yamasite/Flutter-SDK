@@ -81,6 +81,7 @@
         <li><a href="../../rtc_engine/RtcEngine/enableAudio.html">enableAudio</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableAudioVolumeIndication.html">enableAudioVolumeIndication</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableDualStreamMode.html">enableDualStreamMode</a></li>
+        <li><a href="../../rtc_engine/RtcEngine/enableEncryption.html">enableEncryption</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableFaceDetection.html">enableFaceDetection</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableInEarMonitoring.html">enableInEarMonitoring</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableLastmileTest.html">enableLastmileTest</a></li>
@@ -163,6 +164,7 @@
         <li><a href="../../rtc_engine/RtcEngine/setLogFileSize.html">setLogFileSize</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setLogFilter.html">setLogFilter</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setMaxMetadataSize.html">setMaxMetadataSize</a></li>
+        <li><a href="../../rtc_engine/RtcEngine/setParameters.html">setParameters</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteDefaultVideoStreamType.html">setRemoteDefaultVideoStreamType</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteSubscribeFallbackOption.html">setRemoteSubscribeFallbackOption</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteUserPriority.html">setRemoteUserPriority</a></li>
@@ -226,11 +228,10 @@
 <ul>
 <li>该方法需要在 <a href="../../rtc_engine/RtcEngine/joinChannel.html">RtcEngine.joinChannel</a> 之前设置好，<a href="../../rtc_engine/RtcEngine/joinChannel.html">RtcEngine.joinChannel</a> 后设置不生效。</li>
 <li>通信和直播场景下，音质（码率）会有网络自适应的调整，通过该方法设置的是一个最高码率。</li>
-<li>在有高音质需求的场景（例如音乐教学场景）中，建议将 <code>profile</code> 设置为 <a href="4">AudioProfile.MusicHighQuality</a>，<code>scenario</code> 设置为 <a href="3">AudioScenario.GameStreaming</a>。
-//TODO setting profile as <a href="4">AudioScenario.ShowRoom</a>?</li>
+<li>在有高音质需求的场景（例如音乐教学场景）中，建议将 <code>profile</code> 设置为 <a href="../../rtc_engine/AudioProfile-class.html">AudioProfile.MusicHighQuality</a>，<code>scenario</code> 设置为 <a href="../../rtc_engine/AudioScenario-class.html">AudioScenario.GameStreaming</a>。</li>
 </ul>
-<p>Param <code>profile</code> 设置采样率，码率，编码模式和声道数。详见 <a href="../../rtc_engine/AudioProfile-class.html">AudioProfile</a>。</p>
-<p>Param <code>scenario</code> 设置音频应用场景。不同的音频场景下，设备的系统音量是不同的。详见 <a href="../../rtc_engine/AudioScenario-class.html">AudioScenario</a>。</p>
+<p><strong>Parameter</strong> <code>profile</code> 设置采样率，码率，编码模式和声道数。详见 <a href="../../rtc_engine/AudioProfile-class.html">AudioProfile</a>。</p>
+<p><strong>Parameter</strong> <code>scenario</code> 设置音频应用场景。不同的音频场景下，设备的系统音量是不同的。详见 <a href="../../rtc_engine/AudioScenario-class.html">AudioScenario</a>。</p>
     </section>
     
     <section class="summary source-code" id="source">

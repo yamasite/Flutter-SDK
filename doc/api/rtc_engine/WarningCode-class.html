@@ -60,6 +60,7 @@
       <li><a href="../rtc_engine/ChannelMediaOptions-class.html">ChannelMediaOptions</a></li>
       <li><a href="../rtc_engine/ChannelMediaRelayConfiguration-class.html">ChannelMediaRelayConfiguration</a></li>
       <li><a href="../rtc_engine/Color-class.html">Color</a></li>
+      <li><a href="../rtc_engine/EncryptionConfig-class.html">EncryptionConfig</a></li>
       <li><a href="../rtc_engine/FacePositionInfo-class.html">FacePositionInfo</a></li>
       <li><a href="../rtc_engine/JsonSerializable-class.html">JsonSerializable</a></li>
       <li><a href="../rtc_engine/LastmileProbeConfig-class.html">LastmileProbeConfig</a></li>
@@ -88,6 +89,7 @@
     
     
       <li class="section-title"><a href="../rtc_engine/rtc_engine-library.html#enums">Enums</a></li>
+      <li><a href="../rtc_engine/AreaCode-class.html">AreaCode</a></li>
       <li><a href="../rtc_engine/AudioChannel-class.html">AudioChannel</a></li>
       <li><a href="../rtc_engine/AudioCodecProfileType-class.html">AudioCodecProfileType</a></li>
       <li><a href="../rtc_engine/AudioEqualizationBandFrequency-class.html">AudioEqualizationBandFrequency</a></li>
@@ -104,7 +106,6 @@
       <li><a href="../rtc_engine/AudioReverbType-class.html">AudioReverbType</a></li>
       <li><a href="../rtc_engine/AudioSampleRateType-class.html">AudioSampleRateType</a></li>
       <li><a href="../rtc_engine/AudioScenario-class.html">AudioScenario</a></li>
-      <li><a href="../rtc_engine/AudioSessionOperationRestriction-class.html">AudioSessionOperationRestriction</a></li>
       <li><a href="../rtc_engine/AudioVoiceChanger-class.html">AudioVoiceChanger</a></li>
       <li><a href="../rtc_engine/BitRate-class.html">BitRate</a></li>
       <li><a href="../rtc_engine/CameraCaptureOutputPreference-class.html">CameraCaptureOutputPreference</a></li>
@@ -120,20 +121,19 @@
       <li><a href="../rtc_engine/EncryptionMode-class.html">EncryptionMode</a></li>
       <li><a href="../rtc_engine/ErrorCode-class.html">ErrorCode</a></li>
       <li><a href="../rtc_engine/InjectStreamStatus-class.html">InjectStreamStatus</a></li>
-      <li><a href="../rtc_engine/IPAreaCode-class.html">IPAreaCode</a></li>
       <li><a href="../rtc_engine/LastmileProbeResultState-class.html">LastmileProbeResultState</a></li>
       <li><a href="../rtc_engine/LighteningContrastLevel-class.html">LighteningContrastLevel</a></li>
       <li><a href="../rtc_engine/LocalVideoStreamError-class.html">LocalVideoStreamError</a></li>
       <li><a href="../rtc_engine/LocalVideoStreamState-class.html">LocalVideoStreamState</a></li>
       <li><a href="../rtc_engine/LogFilter-class.html">LogFilter</a></li>
-      <li><a href="../rtc_engine/MediaDeviceType-class.html">MediaDeviceType</a></li>
       <li><a href="../rtc_engine/NetworkQuality-class.html">NetworkQuality</a></li>
       <li><a href="../rtc_engine/NetworkType-class.html">NetworkType</a></li>
-      <li><a href="../rtc_engine/RtcDefaultCameraPosition-class.html">RtcDefaultCameraPosition</a></li>
       <li><a href="../rtc_engine/RtmpStreamingErrorCode-class.html">RtmpStreamingErrorCode</a></li>
+      <li><a href="../rtc_engine/RtmpStreamingEvent-class.html">RtmpStreamingEvent</a></li>
       <li><a href="../rtc_engine/RtmpStreamingState-class.html">RtmpStreamingState</a></li>
-      <li><a href="../rtc_engine/RtmpStreamLifeCycle-class.html">RtmpStreamLifeCycle</a></li>
       <li><a href="../rtc_engine/StreamFallbackOptions-class.html">StreamFallbackOptions</a></li>
+      <li><a href="../rtc_engine/StreamPublishState-class.html">StreamPublishState</a></li>
+      <li><a href="../rtc_engine/StreamSubscribeState-class.html">StreamSubscribeState</a></li>
       <li><a href="../rtc_engine/UserOfflineReason-class.html">UserOfflineReason</a></li>
       <li><a href="../rtc_engine/UserPriority-class.html">UserPriority</a></li>
       <li><a href="../rtc_engine/VideoCodecProfileType-class.html">VideoCodecProfileType</a></li>
@@ -166,6 +166,19 @@ SDK 会自动恢复。比如和服务器失去连接时，SDK 可能会上报 `O
       <h2>Constants</h2>
 
       <dl class="properties">
+        <dt id="AdmCategoryNotPlayAndRecord" class="constant">
+          <span class="name ">AdmCategoryNotPlayAndRecord</span>
+          <span class="signature">&#8594; const <a href="../rtc_engine/WarningCode-class.html">WarningCode</a></span>
+                  </dt>
+        <dd>
+          <p>在通话过程中，<code>AudioSessionCategory</code> 必须设置成 <code>AVAudioSessionCategoryPlayAndRecord</code>。
+SDK 会监控这个属性值。如果你将 <code>AudioSessionCategory</code> 设为其他值，SDK 会触发该警告，并强制设置回 <code>AVAudioSessionCategoryPlayAndRecord</code>。</p>
+<p>@since v3.1.2。</p> 
+                  <div class="features">@JsonValue(1029)</div>
+  <div>
+            <span class="signature"><code>const WarningCode(20)</code></span>
+          </div>
+        </dd>
         <dt id="AdmGlitchState" class="constant">
           <span class="name ">AdmGlitchState</span>
           <span class="signature">&#8594; const <a href="../rtc_engine/WarningCode-class.html">WarningCode</a></span>
@@ -174,7 +187,7 @@ SDK 会自动恢复。比如和服务器失去连接时，SDK 可能会上报 `O
           <p>音频设备模块：音频播放会卡顿。</p> 
                   <div class="features">@JsonValue(1052)</div>
   <div>
-            <span class="signature"><code>const WarningCode(24)</code></span>
+            <span class="signature"><code>const WarningCode(27)</code></span>
           </div>
         </dd>
         <dt id="AdmImproperSettings" class="constant">
@@ -184,6 +197,18 @@ SDK 会自动恢复。比如和服务器失去连接时，SDK 可能会上报 `O
         <dd>
           <p>音频设备模块：音频底层设置被修改。</p> 
                   <div class="features">@JsonValue(1053)</div>
+  <div>
+            <span class="signature"><code>const WarningCode(28)</code></span>
+          </div>
+        </dd>
+        <dt id="AdmInconsistentDevices" class="constant">
+          <span class="name ">AdmInconsistentDevices</span>
+          <span class="signature">&#8594; const <a href="../rtc_engine/WarningCode-class.html">WarningCode</a></span>
+                  </dt>
+        <dd>
+          <p>音频设备模块：音频采集设备和播放设备不一致，可能引起回声，建议使用同一设备采集和播放音频。</p>
+<p>@since v3.1.2。</p> 
+                  <div class="features">@JsonValue(1042)</div>
   <div>
             <span class="signature"><code>const WarningCode(25)</code></span>
           </div>
@@ -197,6 +222,23 @@ SDK 会自动恢复。比如和服务器失去连接时，SDK 可能会上报 `O
                   <div class="features">@JsonValue(1025)</div>
   <div>
             <span class="signature"><code>const WarningCode(19)</code></span>
+          </div>
+        </dd>
+        <dt id="AdmNoDataReadyCallback" class="constant">
+          <span class="name ">AdmNoDataReadyCallback</span>
+          <span class="signature">&#8594; const <a href="../rtc_engine/WarningCode-class.html">WarningCode</a></span>
+                  </dt>
+        <dd>
+          <p>音频设备模块：音频驱动器发生异常。解决方案：</p>
+<ul>
+<li>禁用并重新启用音频设备</li>
+<li>重启 app 运行设备</li>
+<li>更新声卡驱动</li>
+</ul>
+<p>@since v3.1.2。</p> 
+                  <div class="features">@JsonValue(1040)</div>
+  <div>
+            <span class="signature"><code>const WarningCode(24)</code></span>
           </div>
         </dd>
         <dt id="AdmPlaybackMalfunction" class="constant">
@@ -218,7 +260,7 @@ SDK 会自动恢复。比如和服务器失去连接时，SDK 可能会上报 `O
           <p>音频设备模块：播放的声音太低。</p> 
                   <div class="features">@JsonValue(1032)</div>
   <div>
-            <span class="signature"><code>const WarningCode(21)</code></span>
+            <span class="signature"><code>const WarningCode(22)</code></span>
           </div>
         </dd>
         <dt id="AdmRecordAudioLowlevel" class="constant">
@@ -229,7 +271,7 @@ SDK 会自动恢复。比如和服务器失去连接时，SDK 可能会上报 `O
           <p>音频设备模块：录到的声音太低。</p> 
                   <div class="features">@JsonValue(1031)</div>
   <div>
-            <span class="signature"><code>const WarningCode(20)</code></span>
+            <span class="signature"><code>const WarningCode(21)</code></span>
           </div>
         </dd>
         <dt id="AdmRecordAudioSilence" class="constant">
@@ -251,7 +293,7 @@ SDK 会自动恢复。比如和服务器失去连接时，SDK 可能会上报 `O
           <p>音频设备模块：录制设备被占用。</p> 
                   <div class="features">@JsonValue(1033)</div>
   <div>
-            <span class="signature"><code>const WarningCode(22)</code></span>
+            <span class="signature"><code>const WarningCode(23)</code></span>
           </div>
         </dd>
         <dt id="AdmRecordMalfunction" class="constant">
@@ -295,7 +337,7 @@ SDK 会自动恢复。比如和服务器失去连接时，SDK 可能会上报 `O
           <p>（仅通信场景）音频信号处理模块：录制音频时监测到啸叫。</p> 
                   <div class="features">@JsonValue(1051)</div>
   <div>
-            <span class="signature"><code>const WarningCode(23)</code></span>
+            <span class="signature"><code>const WarningCode(26)</code></span>
           </div>
         </dd>
         <dt id="AudioMixingOpenError" class="constant">
@@ -337,7 +379,7 @@ SDK 会自动恢复。比如和服务器失去连接时，SDK 可能会上报 `O
                   </dt>
         <dd>
           <p>查找频道请求被服务器拒绝。服务器可能没有办法处理这个请求或请求是非法的。</p>
-<p>@deprecated 已废弃。请改用 <code>connectionStateChanged</code> 回调
+<p><strong>Deprecated</strong> 已废弃。请改用 <code>connectionStateChanged</code> 回调
 中的 <code>RejectedByServer</code>(10)。
 详见 <a href="../rtc_engine/ConnectionChangedReason-class.html">ConnectionChangedReason.RejectedByServer</a> 和 <a href="../rtc_engine/RtcEngineEventHandler/connectionStateChanged.html">RtcEngineEventHandler.connectionStateChanged</a>。</p> 
                   <div class="features">@JsonValue(105)</div>
@@ -546,9 +588,12 @@ SDK 会自动恢复。比如和服务器失去连接时，SDK 可能会上报 `O
   <div id="dartdoc-sidebar-right" class="col-xs-6 col-sm-6 col-md-2 sidebar sidebar-offcanvas-right">
     <ol>
       <li class="section-title"><a href="../rtc_engine/WarningCode-class.html#constants">Constants</a></li>
+      <li>AdmCategoryNotPlayAndRecord</li>
       <li>AdmGlitchState</li>
       <li>AdmImproperSettings</li>
+      <li>AdmInconsistentDevices</li>
       <li>AdmInterruption</li>
+      <li>AdmNoDataReadyCallback</li>
       <li>AdmPlaybackMalfunction</li>
       <li>AdmPlayoutAudioLowlevel</li>
       <li>AdmRecordAudioLowlevel</li>

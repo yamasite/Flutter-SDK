@@ -67,6 +67,7 @@
         <li><a href="../../rtc_channel/RtcChannel/adjustUserPlaybackSignalVolume.html">adjustUserPlaybackSignalVolume</a></li>
         <li><a href="../../rtc_channel/RtcChannel/createDataStream.html">createDataStream</a></li>
         <li><a href="../../rtc_channel/RtcChannel/destroy.html">destroy</a></li>
+        <li><a href="../../rtc_channel/RtcChannel/enableEncryption.html">enableEncryption</a></li>
         <li><a href="../../rtc_channel/RtcChannel/getCallId.html">getCallId</a></li>
         <li><a href="../../rtc_channel/RtcChannel/getConnectionState.html">getConnectionState</a></li>
         <li><a href="../../rtc_channel/RtcChannel/joinChannel.html">joinChannel</a></li>
@@ -120,6 +121,11 @@
       <div><h1><span class="kind-method">publish</span> method </h1></div>
 
     <section class="multi-line-signature">
+      <div>
+        <ol class="annotation-list">
+          <li>@<a href="https://api.flutter.dev/flutter/dart-core/override-constant.html">override</a></li>
+        </ol>
+      </div>
       <span class="returntype"><a href="https://api.flutter.dev/flutter/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">void</span>&gt;</span></span>
             <span class="name ">publish</span>
 (<wbr>)
@@ -127,7 +133,7 @@
     </section>
     <section class="desc markdown">
       <p>将本地音视频流发布到本频道。</p>
-<p>该方法的调用需满足以下要求，否则 SDK 会返回 <a href="-5">ErrorCode.Refused</a>：</p>
+<p>该方法的调用需满足以下要求，否则 SDK 会返回 <a href="../../rtc_engine/ErrorCode-class.html">ErrorCode.Refused</a>：</p>
 <ul>
 <li>该方法仅支持将音视频流发布到当前 <a href="../../rtc_channel/RtcChannel-class.html">RtcChannel</a> 类所对应的频道。</li>
 <li>直播场景下，该方法仅适用于角色为主播的用户。你可以调用该 <a href="../../rtc_channel/RtcChannel-class.html">RtcChannel</a> 类
@@ -138,7 +144,8 @@
     
     <section class="summary source-code" id="source">
       <h2><span>Implementation</span></h2>
-      <pre class="language-dart"><code class="language-dart">Future&lt;void&gt; publish() {
+      <pre class="language-dart"><code class="language-dart">@override
+Future&lt;void&gt; publish() {
   return _invokeMethod(&#39;publish&#39;);
 }</code></pre>
     </section>

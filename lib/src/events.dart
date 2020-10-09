@@ -5,7 +5,8 @@ import 'enums.dart';
 typedef EmptyCallback = void Function();
 typedef WarningCallback = void Function(WarningCode warn);
 typedef ErrorCallback = void Function(ErrorCode err);
-typedef ApiCallCallback = void Function(ErrorCode error, String api, String result);
+typedef ApiCallCallback = void Function(
+    ErrorCode error, String api, String result);
 typedef UidWithElapsedAndChannelCallback = void Function(
     String channel, int uid, int elapsed);
 typedef RtcStatsCallback = void Function(RtcStats stats);
@@ -76,6 +77,18 @@ typedef MetadataCallback = void Function(
     String buffer, int uid, int timeStampMs);
 typedef FacePositionCallback = void Function(
     int imageWidth, int imageHeight, List<FacePositionInfo> faces);
+typedef StreamPublishStateCallback = void Function(
+    String channel,
+    StreamPublishState oldState,
+    StreamPublishState newState,
+    int elapseSinceLastState);
+typedef StreamSubscribeStateCallback = void Function(
+    String channel,
+    StreamSubscribeState oldState,
+    StreamSubscribeState newState,
+    int elapseSinceLastState);
+typedef RtmpStreamingEventCallback = void Function(
+    String url, RtmpStreamingEvent eventCode);
 
 /// 主回调事件。
 ///
@@ -261,23 +274,23 @@ class RtcEngineEventHandler {
   ///
   /// **Note**
   /// - 若需使用该回调 `speakers` 数组中的 `vad` 参数（即本地人声检测功能），请在 [RtcEngine.enableAudioVolumeIndication] 方法中设置 `report_vad` 为 `true`。
-  /// - 用户调用 [RtcEngine.muteLocalAudioStream`] 方法会对 SDK 行为产生影响：
+  /// - 用户调用 [RtcEngine.muteLocalAudioStream] 方法会对 SDK 行为产生影响：
   ///   - 本地用户调用该方法后 SDK 即不再返回本地用户的音量提示回调。
   ///   - 远端用户调用该方法后 20 秒，远端说话者的音量提示回调将不再包含该用户；如果所有远端用户调用该方法后 20 秒，
   /// SDK 即不再返回远端说话者的音量提示回调。
   ///
   /// `AudioVolumeCallback` 包含如下参数：
-  /// - [List<AudioVolumeInfo>] `speakers`：每个说话者的用户 ID 和音量信息的数组。
+  /// - [List]<[AudioVolumeInfo]> `speakers`：每个说话者的用户 ID 和音量信息的数组。
   ///
-  /// - 在本地用户的回调中，此数组中包含以下成员:
-  ///   - `uid` = 0;
-  ///   - `volume` 等于 `totalVolume`，报告本地用户混音后的音量;
-  ///   - `vad`，报告本地用户人声状态。
+  ///   - 在本地用户的回调中，此数组中包含以下成员:
+  ///     - `uid` = 0;
+  ///     - `volume` 等于 `totalVolume`，报告本地用户混音后的音量;
+  ///     - `vad`，报告本地用户人声状态。
   ///
-  /// - 在远端用户的回调中，此数组中包含以下成员：
-  ///   - `uid`，表示每位说话者的用户 ID；
-  ///   - `volume`，表示各说话者混音后的音量；
-  ///   - `vad` = 0，人声检测对远端用户无效。
+  ///   - 在远端用户的回调中，此数组中包含以下成员：
+  ///     - `uid`，表示每位说话者的用户 ID；
+  ///     - `volume`，表示各说话者混音后的音量；
+  ///     - `vad` = 0，人声检测对远端用户无效。
   ///
   /// 如果报告的 `speakers` 数组为空，则表示远端此时没有人说话。
   ///
@@ -323,22 +336,19 @@ class RtcEngineEventHandler {
   /// **Deprecated**
   ///
   /// 该回调已废弃。请改用 [RtcEngineEventHandler.remoteVideoStateChanged] 回调中的如下参数实现相同功能：
-  /// - [VideoRemoteState.Stopped](0) 和 [VideoRemoteStateReason.RemoteMuted](5)。
-  /// - [VideoRemoteState.Decoding](2) 和 [VideoRemoteStateReason.RemoteUnmuted](6)。
+  /// - [VideoRemoteState.Stopped] 和 [VideoRemoteStateReason.RemoteMuted]。
+  /// - [VideoRemoteState.Decoding] 和 [VideoRemoteStateReason.RemoteUnmuted]。
   /// 该回调是由远端用户调用 [RtcEngine.muteLocalVideoStream] 方法关闭或开启视频发送触发的。
   ///
   /// **Note**
   ///
   /// 当频道内的用户（通信场景）或主播（直播场景）的人数超过 17 时，Agora 建议你不要使用该回调。
   ///
-  /// **Note**
-  /// - This callback is invalid when the number of users or broadcasters in the channel exceeds 20.// TODO 17 人
-  ///
   /// `VideoFrameCallback` 包含如下参数：
   /// - [int] `uid`：用户 ID，提示是哪个用户的视频流。
   /// - [bool] `muted`：该用户是否暂停发送其视频流：
-  ///   - true: 该用户已暂停发送视频流。
-  ///   - false: 该用户已恢复发送视频流。
+  ///   - `true`: 该用户已暂停发送视频流。
+  ///   - `false`: 该用户已恢复发送视频流。
   @deprecated
   UidWithMutedCallback userMuteVideo;
 
@@ -363,11 +373,12 @@ class RtcEngineEventHandler {
   /// 本地视频状态发生改变回调。
   ///
   /// 本地视频的状态发生改变时，SDK 会触发该回调返回当前的本地视频状态；
-  /// 当状态为 [LocalVideoStreamState.Failed](3) 时，你可以在 `error` 参数中查看返回的错误信息。
+  /// 当状态为 [LocalVideoStreamState.Failed] 时，你可以在 `error` 参数中查看返回的错误信息。
   /// 该接口在本地视频出现故障时，方便你了解当前视频的状态以及出现故障的原因，方便排查问题。
-  /// We recommend maintaining the states reported in this callback, and check the local video state before starting the local camera.
-  /// If the SDK reports [LocalVideoStreamError.CaptureFailure](4), the local camera is occupied by either the system or a third-party app.
-  /// To access the camera, call [RtcEngine.enableLocalVideo] (false) first, and then [RtcEngine.enableLocalVideo] (video).//TODO ？
+  ///
+  /// 该回调报告本地视频的当前状态。在 `RtcEngine` 生命周期内，该状态并非一成不变。因此我们建议记录该回调报告的状态，
+  /// 并在启动相机前， 判断本地视频状态。如果状态为 [LocalVideoStreamError.CaptureFailure]，则说明相机权限被收回，或被抢占未释放。
+  /// 可以通过先调用 [RtcEngine.enableLocalVideo] (`false`)，再调 [RtcEngine.enableLocalVideo] (`true`) 恢复相机。
   ///
   /// `LocalVideoStateCallback` 包含如下参数：
   /// - [LocalVideoStreamState] `localVideoState`：当前的本地视频状态。
@@ -396,7 +407,7 @@ class RtcEngineEventHandler {
   ///
   /// **Note**
   ///
-  ///  当状态为 [AudioLocalState.Failed](3) 时，你可以在 `error` 参数中查看返回的错误信息。
+  ///  当状态为 [AudioLocalState.Failed] 时，你可以在 `error` 参数中查看返回的错误信息。
   ///
   /// `LocalAudioStateCallback` 包含如下参数：
   /// - [AudioLocalState] `state`：当前的本地音频状态。
@@ -405,21 +416,21 @@ class RtcEngineEventHandler {
 
   /// 本地发布流已回退为音频流回调。
   ///
-  /// 如果你调用了设置本地推流回退选项 [RtcEngine.setLocalPublishFallbackOption] 接口并将 `option` 设置为 [StreamFallbackOptions.AudioOnly](2) 时，当上行网络环境不理想、本地发布的媒体流回退为音频流时，
+  /// 如果你调用了设置本地推流回退选项 [RtcEngine.setLocalPublishFallbackOption] 接口并将 `option` 设置为 [StreamFallbackOptions.AudioOnly] 时，当上行网络环境不理想、本地发布的媒体流回退为音频流时，
   /// 或当上行网络改善、媒体流恢复为音视频流时，会触发该回调。
   ///
   /// 如果本地推流已回退为音频流，远端的 App 上会收到 [remoteVideoStateChanged] 的回调。
   ///
   /// `FallbackCallback` 包含如下参数：
   /// - [bool] `isFallbackOrRecover`：本地推流已回退或恢复：
-  ///  - true: 由于网络环境不理想，本地发布的媒体流已回退为音频流。
-  ///  - false: 由于网络环境改善，发布的音频流已恢复为音视频流。
+  ///  - `true`: 由于网络环境不理想，本地发布的媒体流已回退为音频流。
+  ///  - `false`: 由于网络环境改善，发布的音频流已恢复为音视频流。
   FallbackCallback localPublishFallbackToAudioOnly;
 
   /// 远端订阅流已回退为音频流回调或因网络质量改善，恢复为音视频流。
   ///
   /// 如果你调用了设置远端订阅流回退选项 [RtcEngine.setRemoteSubscribeFallbackOption] 接口并
-  /// 将 `option` 设置为 [StreamFallbackOptions.AudioOnly](2) 时，当下行网络环境不理想、仅接收远端音频流时，
+  /// 将 `option` 设置为 [StreamFallbackOptions.AudioOnly] 时，当下行网络环境不理想、仅接收远端音频流时，
   /// 或当下行网络改善、恢复订阅音视频流时，会触发该回调。
   ///
   /// **Note**
@@ -429,8 +440,8 @@ class RtcEngineEventHandler {
   /// `FallbackWithUidCallback` 包含如下参数：
   /// - [int] `uid`：远端用户的 ID。
   /// - [bool] `isFallbackOrRecover`：远端订阅流已回退或恢复：
-  ///  - true: 由于网络环境不理想，远端订阅流已回退为音频流。
-  ///  - false: 由于网络环境改善，订阅的音频流已恢复为音视频流。
+  ///  - `true`: 由于网络环境不理想，远端订阅流已回退为音频流。
+  ///  - `false`: 由于网络环境改善，订阅的音频流已恢复为音视频流。
   FallbackWithUidCallback remoteSubscribeFallbackToAudioOnly;
 
   /// 语音路由已变更回调。
@@ -475,7 +486,7 @@ class RtcEngineEventHandler {
   /// `FacePositionCallback` 包含如下参数：
   /// - [int] `imageWidth`：摄像头采集画面的宽度 (px)。
   /// - [int] `imageHeight`：摄像头采集画面的高度 (px)。
-  /// - [List<FacePositionInfo>] `faces`：检测到的人脸信息，详见 [FacePositionInfo]。
+  /// - [List]<[FacePositionInfo]> `faces`：检测到的人脸信息，详见 [FacePositionInfo]。
   /// 检测到几张人脸，就会报告几个 `FacePositionInfo` 数组。数组长度可以为 0，表示没有检测到摄像头前出现人脸。
   FacePositionCallback facePositionChanged;
 
@@ -588,7 +599,7 @@ class RtcEngineEventHandler {
   /// RTMP 推流状态发生改变回调。该回调返回本地用户调用 [RtcEngine.addPublishStreamUrl]
   /// 或 [RtcEngine.removePublishStreamUrl] 方法的结果。
   ///
-  /// RTMP 推流状态发生改变时，SDK 会触发该回调，并在回调中明确状态发生改变的 URL 地址及当前推流状态；当推流状态为 [RtmpStreamingState.Failure](4) 时，你可以在 `errCode` 参数中查看返回的错误信息。
+  /// RTMP 推流状态发生改变时，SDK 会触发该回调，并在回调中明确状态发生改变的 URL 地址及当前推流状态；当推流状态为 [RtmpStreamingState.Failure] 时，你可以在 `errCode` 参数中查看返回的错误信息。
   /// 该回调方便推流用户了解当前的推流状态；推流出错时，你可以通过返回的错误码了解出错的原因，方便排查问题。
   ///
   /// `RtmpStreamingStateCallback` 包含如下参数：
@@ -663,7 +674,7 @@ class RtcEngineEventHandler {
   ///
   /// **Deprecated**
   ///
-  /// 该回调已废弃。请改用 [remoteVideoStateChanged] 中的 [VideoRemoteState.Starting](1) 和 [VideoRemoteState.Decoding](2) 代替。
+  /// 该回调已废弃。请改用 [remoteVideoStateChanged] 中的 [VideoRemoteState.Starting] 和 [VideoRemoteState.Decoding] 代替。
   ///
   /// 第一帧远端视频显示在视图上时，触发此调用。App 可在此调用中获知出图时间（elapsed）。
   ///
@@ -679,7 +690,7 @@ class RtcEngineEventHandler {
   ///
   /// **Deprecated**
   ///
-  /// 该回调已废弃。请改用 [remoteAudioStateChanged] 中的 [AudioRemoteState.Starting](1)。
+  /// 该回调已废弃。请改用 [remoteAudioStateChanged] 中的 [AudioRemoteState.Starting]。
   ///
   /// `UidWithElapsedCallback` 包含如下参数：
   /// - [int] `uid`：新加入频道的远端用户/主播 ID。
@@ -691,7 +702,7 @@ class RtcEngineEventHandler {
   ///
   /// **Deprecated**
   ///
-  /// 该回调已废弃，请改用 [remoteAudioStateChanged] 中的 [VideoRemoteState.Decoding](2)。
+  /// 该回调已废弃，请改用 [remoteAudioStateChanged] 中的 [VideoRemoteState.Decoding]。
   ///
   /// SDK 完成远端音频首帧解码，并发送给音频模块用以播放时，会触发此回调。有两种情况：
   /// - 远端用户首次上线后发送音频。
@@ -712,8 +723,8 @@ class RtcEngineEventHandler {
   /// **Deprecated**
   ///
   /// 该回调已废弃，请改用 [remoteAudioStateChanged] 回调中的如下参数实现相同功能：
-  /// - [VideoRemoteState.Stopped](0) 和 [VideoRemoteStateReason.RemoteMuted](5)
-  /// - [VideoRemoteState.Decoding](2) 和 [VideoRemoteStateReason.RemoteUnmuted](6)
+  /// - [VideoRemoteState.Stopped] 和 [VideoRemoteStateReason.RemoteMuted]
+  /// - [VideoRemoteState.Decoding] 和 [VideoRemoteStateReason.RemoteUnmuted]
   ///
   /// 提示有其他用户将他的音频流静音/取消静音。
   ///
@@ -721,13 +732,13 @@ class RtcEngineEventHandler {
   ///
   /// **Note**
   ///
-  /// 当频道内的用户（通信场景）或主播（直播场景）的人数超过 17 时，Agora 建议你不要使用该回调。// TODO 英文改成 17 人？
+  /// 当频道内的用户（通信场景）或主播（直播场景）的人数超过 17 时，Agora 建议你不要使用该回调。
   ///
   /// `UidWithMutedCallback` 包含如下参数：
   /// - [int] `uid`：用户 ID，提示是哪个用户的视频流。
   /// - [bool] `muted`：该用户是否暂停发送其视频流：
-  ///   - true: 该用户已暂停发送视频流。
-  ///   - false: 该用户已恢复发送视频流。
+  ///   - `true`: 该用户已暂停发送视频流。
+  ///   - `false`: 该用户已恢复发送视频流。
   @deprecated
   UidWithMutedCallback userMuteAudio;
 
@@ -802,8 +813,8 @@ class RtcEngineEventHandler {
   /// **Deprecated**
   ///
   /// 该回调已废弃。请改用 [RtcEngineEventHandler.remoteVideoStateChanged] 回调中的如下参数：
-  /// - [VideoRemoteState.Stopped](0) 和 [VideoRemoteStateReason.RemoteMuted](5)
-  /// - [VideoRemoteState.Decoding](2) 和 [VideoRemoteStateReason.RemoteUnmuted](6)
+  /// - [VideoRemoteState.Stopped] 和 [VideoRemoteStateReason.RemoteMuted]
+  /// - [VideoRemoteState.Decoding] 和 [VideoRemoteStateReason.RemoteUnmuted]
   ///
   /// 提示有其他用户启用/关闭了视频功能。
   ///
@@ -811,13 +822,13 @@ class RtcEngineEventHandler {
   ///
   /// **Note**
   ///
-  /// 当频道内的用户（通信场景）或主播（直播场景）的人数超过 17 时，Agora 建议你不要使用该回调。// TODO 17 人？
+  /// 当频道内的用户（通信场景）或主播（直播场景）的人数超过 17 时，Agora 建议你不要使用该回调。
   ///
   /// `UidWithEnabledCallback` 包含如下参数：
   /// - [int] `uid`：用户 ID，提示是哪个用户的视频流。
   /// - [bool] `enabled`：是否启用视频功能：
-  ///  - true: 该用户已启用视频功能。启用后，该用户可以进行视频通话或直播。
-  ///  - false: 该用户已关闭视频功能。关闭后，该用户只能进行语音通话或直播，不能显示、发送自己的视频，也不能接收、显示别人的视频。
+  ///  - `true`: 该用户已启用视频功能。启用后，该用户可以进行视频通话或直播。
+  ///  - `false`: 该用户已关闭视频功能。关闭后，该用户只能进行语音通话或直播，不能显示、发送自己的视频，也不能接收、显示别人的视频。
   @deprecated
   UidWithEnabledCallback userEnableVideo;
 
@@ -826,8 +837,8 @@ class RtcEngineEventHandler {
   /// **Deprecated**
   ///
   /// 该回调已废弃。请改用 [RtcEngineEventHandler.remoteVideoStateChanged] 回调中的如下参数：
-  /// - [VideoRemoteState.Stopped](0) 和 [VideoRemoteStateReason.RemoteMuted](5)
-  /// - [VideoRemoteState.Decoding](2) 和 [VideoRemoteStateReason.RemoteUnmuted](6)
+  /// - [VideoRemoteState.Stopped] 和 [VideoRemoteStateReason.RemoteMuted]
+  /// - [VideoRemoteState.Decoding] 和 [VideoRemoteStateReason.RemoteUnmuted]
   ///
   /// 提示有其他用户启用/关闭了本地视频功能。
   ///
@@ -836,8 +847,8 @@ class RtcEngineEventHandler {
   /// `UidWithEnabledCallback` 包含如下参数：
   /// - [int] `uid`：用户 ID，提示是哪个用户的视频流。
   /// - [bool] `enabled`：是否启用视频功能：
-  ///  - true: 该用户已启用视频功能。启用后，该用户可以进行视频通话或直播。
-  ///  - false: 该用户已关闭视频功能。关闭后，该用户只能进行语音通话或直播，不能显示、发送自己的视频，也不能接收、显示别人的视频。
+  ///  - `true`: 该用户已启用视频功能。启用后，该用户可以进行视频通话或直播。
+  ///  - `false`: 该用户已关闭视频功能。关闭后，该用户只能进行语音通话或直播，不能显示、发送自己的视频，也不能接收、显示别人的视频。
   @deprecated
   UidWithEnabledCallback userEnableLocalVideo;
 
@@ -845,7 +856,7 @@ class RtcEngineEventHandler {
   ///
   /// **Deprecated**
   ///
-  /// 该回调已废弃。请改用 [RtcEngineEventHandler.remoteVideoStateChanged] 回调中的 [VideoRemoteState.Starting](1) 或 [VideoRemoteState.Decoding](2)。
+  /// 该回调已废弃。请改用 [RtcEngineEventHandler.remoteVideoStateChanged] 回调中的 [VideoRemoteState.Starting] 或 [VideoRemoteState.Decoding]。
   ///
   /// 本地收到远端第一个视频帧并解码成功后，会触发该回调。有两种情况：
   ///
@@ -871,14 +882,14 @@ class RtcEngineEventHandler {
   ///
   /// **Deprecated**
   ///
-  /// 该回调已废弃。请改用 [RtcEngineEventHandler.localAudioStateChanged] 回调中的 [AudioLocalState.Stopped](0) 或 [AudioLocalState.Recording](1)。
+  /// 该回调已废弃。请改用 [RtcEngineEventHandler.localAudioStateChanged] 回调中的 [AudioLocalState.Stopped] 或 [AudioLocalState.Recording]。
   ///
   /// 该回调由本地用户调用 [RtcEngine.enableLocalAudio] 方法开启或关闭本地音频采集触发的。
   ///
   /// `EnabledCallback` 包含如下参数：
   /// - [bool] `enabled`：是否启用麦克风：
-  ///  - true：麦克风已启用。
-  ///  - false：麦克风已禁用。
+  ///  - `true`：麦克风已启用。
+  ///  - `false`：麦克风已禁用。
   @deprecated
   EnabledCallback microphoneEnabled;
 
@@ -928,7 +939,7 @@ class RtcEngineEventHandler {
   ///
   /// **Deprecated**
   ///
-  /// 该回调已废弃。请改用 [RtcEngineEventHandler.localVideoStateChanged] 回调中的 [LocalVideoStreamState.Capturing](1)。
+  /// 该回调已废弃。请改用 [RtcEngineEventHandler.localVideoStateChanged] 回调中的 [LocalVideoStreamState.Capturing]。
   /// 提示已成功打开摄像头，可以开始捕获视频。如果摄像头打开失败，可在 [`Error`]{@link Error} 中处理相应错误。
   @deprecated
   EmptyCallback cameraReady;
@@ -937,7 +948,7 @@ class RtcEngineEventHandler {
   ///
   /// **Deprecated**
   ///
-  /// 该回调已废弃。请改用 [RtcEngineEventHandler.localVideoStateChanged] 回调中的 [LocalVideoStreamState.Stopped](0)。
+  /// 该回调已废弃。请改用 [RtcEngineEventHandler.localVideoStateChanged] 回调中的 [LocalVideoStreamState.Stopped]。
   /// 提示视频功能已停止。 App 如需在停止视频后对 view 做其他处理（例如显示其他画面），可以在这个回调中进行。
   @deprecated
   EmptyCallback videoStopped;
@@ -949,6 +960,82 @@ class RtcEngineEventHandler {
   /// - [int] `uid`：发送该 Metadata 的远端用户的 ID。
   /// - [int] `timeStampMs`：接收到的 Metadata 的时间戳，单位为毫秒 。
   MetadataCallback metadataReceived;
+
+  /// 已发布本地音频首帧回调。
+  ///
+  /// @since v3.1.2。
+  ///
+  /// SDK 会在以下三种时机触发该回调：
+  /// - 开启本地音频的情况下，调用 [RtcEngine.joinChannel] 成功加入频道后。
+  /// - 调用 [RtcEngine.muteLocalAudioStream] (`true`)，再调用 [RtcEngine.muteLocalAudioStream] (`false`) 后。
+  /// - 调用 [RtcEngine.disableAudio]，再调用 [RtcEngine.enableAudio] 后。
+  ///
+  /// `ElapsedCallback` 包含如下参数：
+  /// - [int] `elapsed`：从本地用户调用 [RtcEngine.joinChannel] 方法直至该回调被触发的延迟（毫秒）。
+  ElapsedCallback firstLocalAudioFramePublished;
+
+  /// 已发布本地视频首帧回调。
+  ///
+  /// @since v3.1.2。
+  ///
+  /// SDK 会在以下三种时机触发该回调：
+  /// - 开启本地视频的情况下，调用 [RtcEngine.joinChannel] 成功加入频道后。
+  /// - 调用 [RtcEngine.muteLocalVideoStream] (`true`)，再调用[RtcEngine.muteLocalVideoStream] (`false`) 后。
+  /// - 调用 [RtcEngine.disableVideo]，再调用 [RtcEngine.enableVideo] 后。
+  ElapsedCallback firstLocalVideoFramePublished;
+
+  /// 音频发布状态改变回调。
+  ///
+  /// @since v3.1.2。
+  ///
+  /// `StreamPublishStateCallback` 包含如下参数：
+  /// - [String] `channel` 频道名。
+  /// - [StreamPublishState] `oldState` 之前的发布状态。
+  /// - [StreamPublishState] `newState` 当前的发布状态。
+  /// - [int] `elapseSinceLastState` 两次状态变化时间间隔（毫秒）。
+  StreamPublishStateCallback audioPublishStateChanged;
+
+  /// 视频发布状态改变回调。
+  ///
+  /// @since v3.1.2。
+  ///
+  /// `StreamPublishStateCallback` 包含如下参数：
+  /// - [String] `channel` 频道名。
+  /// - [StreamPublishState] `oldState` 之前的发布状态。
+  /// - [StreamPublishState] `newState` 当前的发布状态。
+  /// - [int] `elapseSinceLastState` 两次状态变化时间间隔（毫秒）。
+  StreamPublishStateCallback videoPublishStateChanged;
+
+  /// 音频订阅状态发生改变回调。
+  ///
+  /// @since v3.1.2。
+  ///
+  /// `StreamSubscribeStateCallback` 包含如下参数：
+  /// - [String] `channel` 频道名。
+  /// - [StreamSubscribeState] `oldState` 之前的订阅状态。
+  /// - [StreamSubscribeState] `newState` 当前的订阅状态。
+  /// - [int] `elapseSinceLastState` 两次状态变化时间间隔（毫秒）。
+  StreamSubscribeStateCallback audioSubscribeStateChanged;
+
+  /// 视频订阅状态发生改变回调。
+  ///
+  /// @since v3.1.2。
+  ///
+  /// `StreamSubscribeStateCallback` 包含如下参数：
+  /// - [String] `channel` 频道名。
+  /// - [StreamSubscribeState] `oldState` 之前的订阅状态。
+  /// - [StreamSubscribeState] `newState` 当前的订阅状态。
+  /// - [int] `elapseSinceLastState` 两次状态变化时间间隔（毫秒）。
+  StreamSubscribeStateCallback videoSubscribeStateChanged;
+
+  /// RTMP 推流事件回调。
+  ///
+  /// @since v3.1.2。
+  ///
+  /// `RtmpStreamingEventCallback` 包含如下参数：
+  /// - [String] `url` RTMP 推流 URL。
+  /// - [RtmpStreamingEvent] `eventCode` RTMP 推流事件码。
+  RtmpStreamingEventCallback rtmpStreamingEvent;
 
   /// Constructs a [RtcEngineEventHandler]
   RtcEngineEventHandler({this.warning,
@@ -1020,26 +1107,27 @@ class RtcEngineEventHandler {
     this.audioQuality,
     this.cameraReady,
     this.videoStopped,
-    this.metadataReceived});
+    this.metadataReceived,
+    this.firstLocalAudioFramePublished,
+    this.firstLocalVideoFramePublished,
+    this.audioPublishStateChanged,
+    this.videoPublishStateChanged,
+    this.audioSubscribeStateChanged,
+    this.videoSubscribeStateChanged,
+    this.rtmpStreamingEvent});
 
   // ignore: public_member_api_docs
   void process(String methodName, List<dynamic> data) {
     switch (methodName) {
       case 'Warning':
-        warning?.call(WarningCodeConverter
-            .fromValue(data[0])
-            .e);
+        warning?.call(WarningCodeConverter.fromValue(data[0]).e);
         break;
       case 'Error':
-        error?.call(ErrorCodeConverter
-            .fromValue(data[0])
-            .e);
+        error?.call(ErrorCodeConverter.fromValue(data[0]).e);
         break;
       case 'ApiCallExecuted':
         apiCallExecuted?.call(
-            ErrorCodeConverter
-                .fromValue(data[0])
-                .e, data[1], data[2]);
+            ErrorCodeConverter.fromValue(data[0]).e, data[1], data[2]);
         break;
       case 'JoinChannelSuccess':
         joinChannelSuccess?.call(data[0], data[1], data[2]);
@@ -1060,35 +1148,23 @@ class RtcEngineEventHandler {
             data[0], UserInfo.fromJson(Map<String, dynamic>.from(data[1])));
         break;
       case 'ClientRoleChanged':
-        clientRoleChanged?.call(ClientRoleConverter
-            .fromValue(data[0])
-            .e,
-            ClientRoleConverter
-                .fromValue(data[1])
-                .e);
+        clientRoleChanged?.call(ClientRoleConverter.fromValue(data[0]).e,
+            ClientRoleConverter.fromValue(data[1]).e);
         break;
       case 'UserJoined':
         userJoined?.call(data[0], data[1]);
         break;
       case 'UserOffline':
         userOffline?.call(
-            data[0], UserOfflineReasonConverter
-            .fromValue(data[1])
-            .e);
+            data[0], UserOfflineReasonConverter.fromValue(data[1]).e);
         break;
       case 'ConnectionStateChanged':
         connectionStateChanged?.call(
-            ConnectionStateTypeConverter
-                .fromValue(data[0])
-                .e,
-            ConnectionChangedReasonConverter
-                .fromValue(data[1])
-                .e);
+            ConnectionStateTypeConverter.fromValue(data[0]).e,
+            ConnectionChangedReasonConverter.fromValue(data[1]).e);
         break;
       case 'NetworkTypeChanged':
-        networkTypeChanged?.call(NetworkTypeConverter
-            .fromValue(data[0])
-            .e);
+        networkTypeChanged?.call(NetworkTypeConverter.fromValue(data[0]).e);
         break;
       case 'ConnectionLost':
         connectionLost?.call();
@@ -1104,8 +1180,7 @@ class RtcEngineEventHandler {
         audioVolumeIndication?.call(
             List.generate(
                 list.length,
-                    (index) =>
-                    AudioVolumeInfo.fromJson(
+                    (index) => AudioVolumeInfo.fromJson(
                         Map<String, dynamic>.from(list[index]))),
             data[1]);
         break;
@@ -1127,12 +1202,8 @@ class RtcEngineEventHandler {
       case 'RemoteVideoStateChanged':
         remoteVideoStateChanged?.call(
             data[0],
-            VideoRemoteStateConverter
-                .fromValue(data[1])
-                .e,
-            VideoRemoteStateReasonConverter
-                .fromValue(data[2])
-                .e,
+            VideoRemoteStateConverter.fromValue(data[1]).e,
+            VideoRemoteStateReasonConverter.fromValue(data[2]).e,
             data[3]);
         break;
       case 'LocalVideoStateChanged':
@@ -1142,12 +1213,8 @@ class RtcEngineEventHandler {
       case 'RemoteAudioStateChanged':
         remoteAudioStateChanged?.call(
             data[0],
-            AudioRemoteStateConverter
-                .fromValue(data[1])
-                .e,
-            AudioRemoteStateReasonConverter
-                .fromValue(data[2])
-                .e,
+            AudioRemoteStateConverter.fromValue(data[1]).e,
+            AudioRemoteStateReasonConverter.fromValue(data[2]).e,
             data[3]);
         break;
       case 'LocalAudioStateChanged':
@@ -1162,9 +1229,7 @@ class RtcEngineEventHandler {
         break;
       case 'AudioRouteChanged':
         audioRouteChanged
-            ?.call(AudioOutputRoutingConverter
-            .fromValue(data[0])
-            .e);
+            ?.call(AudioOutputRoutingConverter.fromValue(data[0]).e);
         break;
       case 'CameraFocusAreaChanged':
         cameraFocusAreaChanged
@@ -1181,27 +1246,20 @@ class RtcEngineEventHandler {
             data[1],
             List.generate(
                 list.length,
-                    (index) =>
-                    FacePositionInfo.fromJson(
+                    (index) => FacePositionInfo.fromJson(
                         Map<String, dynamic>.from(list[index]))));
         break;
       case 'RtcStats':
         rtcStats?.call(RtcStats.fromJson(Map<String, dynamic>.from(data[0])));
         break;
       case 'LastmileQuality':
-        lastmileQuality?.call(NetworkQualityConverter
-            .fromValue(data[0])
-            .e);
+        lastmileQuality?.call(NetworkQualityConverter.fromValue(data[0]).e);
         break;
       case 'NetworkQuality':
         networkQuality?.call(
             data[0],
-            NetworkQualityConverter
-                .fromValue(data[1])
-                .e,
-            NetworkQualityConverter
-                .fromValue(data[2])
-                .e);
+            NetworkQualityConverter.fromValue(data[1]).e,
+            NetworkQualityConverter.fromValue(data[2]).e);
         break;
       case 'LastmileProbeResult':
         lastmileProbeResult?.call(
@@ -1228,12 +1286,8 @@ class RtcEngineEventHandler {
         break;
       case 'AudioMixingStateChanged':
         audioMixingStateChanged?.call(
-          AudioMixingStateCodeConverter
-              .fromValue(data[0])
-              .e,
-          AudioMixingErrorCodeConverter
-              .fromValue(data[1])
-              .e,
+          AudioMixingStateCodeConverter.fromValue(data[0]).e,
+          AudioMixingErrorCodeConverter.fromValue(data[1]).e,
         );
         break;
       case 'AudioEffectFinished':
@@ -1242,12 +1296,8 @@ class RtcEngineEventHandler {
       case 'RtmpStreamingStateChanged':
         rtmpStreamingStateChanged?.call(
           data[0],
-          RtmpStreamingStateConverter
-              .fromValue(data[1])
-              .e,
-          RtmpStreamingErrorCodeConverter
-              .fromValue(data[2])
-              .e,
+          RtmpStreamingStateConverter.fromValue(data[1]).e,
+          RtmpStreamingErrorCodeConverter.fromValue(data[2]).e,
         );
         break;
       case 'TranscodingUpdated':
@@ -1255,18 +1305,14 @@ class RtcEngineEventHandler {
         break;
       case 'StreamInjectedStatus':
         streamInjectedStatus?.call(
-            data[0], data[1], InjectStreamStatusConverter
-            .fromValue(data[2])
-            .e);
+            data[0], data[1], InjectStreamStatusConverter.fromValue(data[2]).e);
         break;
       case 'StreamMessage':
         streamMessage?.call(data[0], data[1], data[2]);
         break;
       case 'StreamMessageError':
         streamMessageError?.call(data[0], data[1],
-            ErrorCodeConverter
-                .fromValue(data[2])
-                .e, data[3], data[4]);
+            ErrorCodeConverter.fromValue(data[2]).e, data[3], data[4]);
         break;
       case 'MediaEngineLoadSuccess':
         mediaEngineLoadSuccess?.call();
@@ -1276,19 +1322,13 @@ class RtcEngineEventHandler {
         break;
       case 'ChannelMediaRelayStateChanged':
         channelMediaRelayStateChanged?.call(
-          ChannelMediaRelayStateConverter
-              .fromValue(data[0])
-              .e,
-          ChannelMediaRelayErrorConverter
-              .fromValue(data[1])
-              .e,
+          ChannelMediaRelayStateConverter.fromValue(data[0]).e,
+          ChannelMediaRelayErrorConverter.fromValue(data[1]).e,
         );
         break;
       case 'ChannelMediaRelayEvent':
         channelMediaRelayEvent
-            ?.call(ChannelMediaRelayEventConverter
-            .fromValue(data[0])
-            .e);
+            ?.call(ChannelMediaRelayEventConverter.fromValue(data[0]).e);
         break;
       case 'FirstRemoteVideoFrame':
         firstRemoteVideoFrame?.call(data[0], data[1], data[2], data[3]);
@@ -1303,9 +1343,7 @@ class RtcEngineEventHandler {
         userMuteAudio?.call(data[0], data[1]);
         break;
       case 'StreamPublished':
-        streamPublished?.call(data[0], ErrorCodeConverter
-            .fromValue(data[1])
-            .e);
+        streamPublished?.call(data[0], ErrorCodeConverter.fromValue(data[1]).e);
         break;
       case 'StreamUnpublished':
         streamUnpublished?.call(data[0]);
@@ -1346,11 +1384,48 @@ class RtcEngineEventHandler {
       case 'MetadataReceived':
         metadataReceived?.call(data[0], data[1], data[2]);
         break;
+        case 'FirstLocalAudioFramePublished':
+        firstLocalAudioFramePublished?.call(data[0]);
+        break;
+      case 'FirstLocalVideoFramePublished':
+        firstLocalVideoFramePublished?.call(data[0]);
+        break;
+      case 'AudioPublishStateChanged':
+        audioPublishStateChanged?.call(
+            data[0],
+            StreamPublishStateConverter.fromValue(data[1]).e,
+            StreamPublishStateConverter.fromValue(data[2]).e,
+            data[3]);
+        break;
+      case 'VideoPublishStateChanged':
+        videoPublishStateChanged?.call(
+            data[0],
+            StreamPublishStateConverter.fromValue(data[1]).e,
+            StreamPublishStateConverter.fromValue(data[2]).e,
+            data[3]);
+        break;
+      case 'AudioSubscribeStateChanged':
+        audioSubscribeStateChanged?.call(
+            data[0],
+            StreamSubscribeStateConverter.fromValue(data[1]).e,
+            StreamSubscribeStateConverter.fromValue(data[2]).e,
+            data[3]);
+        break;
+      case 'VideoSubscribeStateChanged':
+        videoSubscribeStateChanged?.call(
+            data[0],
+            StreamSubscribeStateConverter.fromValue(data[1]).e,
+            StreamSubscribeStateConverter.fromValue(data[2]).e,
+            data[3]);
+        break;
+      case 'RtmpStreamingEvent':
+        rtmpStreamingEvent?.call(data[0], data[1]);
+        break;
     }
   }
 }
 
-/// [RtcChannelEvents] 类。
+/// [RtcChannelEventHandler] 类。
 class RtcChannelEventHandler {
   /// 报告 [RtcChannel] 对象发生的警告码。
   ///
@@ -1380,7 +1455,7 @@ class RtcChannelEventHandler {
   ///
   /// `UidWithElapsedCallback` 包含如下参数：
   /// - [int] `uid`：用户 ID。
-  /// - [int] `elapsed`：从本地用户开始重连到触发该回调的时间（毫秒）。 // TODO UidWithElapsedCallback 回调的解释不完全一样。
+  /// - [int] `elapsed`：从本地用户开始重连到触发该回调的时间（毫秒）。
   UidWithElapsedCallback rejoinChannelSuccess;
 
   /// 离开频道回调。
@@ -1508,7 +1583,7 @@ class RtcChannelEventHandler {
   ///
   /// **Note**
   ///
-  /// 当频道内的用户（通信场景）或主播（直播场景）的人数超过 17 时，该回调可能不准确。// TODO 英文 17 人？
+  /// 当频道内的用户（通信场景）或主播（直播场景）的人数超过 17 时，该回调可能不准确。
   ///
   /// `RemoteAudioStateCallback` 包含如下参数：
   /// - [int] `uid`：发生音频状态改变的远端用户 ID。
@@ -1520,19 +1595,19 @@ class RtcChannelEventHandler {
   /// 本地发布流已回退为音频流回调。
   ///
   /// 如果你调用了设置本地推流回退选项 [RtcEngine.setLocalPublishFallbackOption] 接口并
-  /// 将 `option` 设置为 [StreamFallbackOptions.AudioOnly](2) 时，当上行网络环境不理想、本地发布的媒体流回退为音频流时，
+  /// 将 `option` 设置为 [StreamFallbackOptions.AudioOnly] 时，当上行网络环境不理想、本地发布的媒体流回退为音频流时，
   /// 或当上行网络改善、媒体流恢复为音视频流时，会触发该回调。
   ///
   /// `FallbackCallback` 包含如下参数：
   /// - [bool] `isFallbackOrRecover`：本地推流已回退或恢复：
-  ///  - true: 由于网络环境不理想，本地发布的媒体流已回退为音频流。
-  ///  - false: 由于网络环境改善，发布的音频流已恢复为音视频流。
+  ///  - `true`: 由于网络环境不理想，本地发布的媒体流已回退为音频流。
+  ///  - `false`: 由于网络环境改善，发布的音频流已恢复为音视频流。
   FallbackCallback localPublishFallbackToAudioOnly;
 
   /// 远端订阅流已回退为音频流回调或因网络质量改善，恢复为音视频流。
   ///
   /// 如果你调用了设置远端订阅流回退选项 [RtcEngine.setRemoteSubscribeFallbackOption] 接口并
-  /// 将 `option` 设置为 [StreamFallbackOptions.AudioOnly](2) 时，当下行网络环境不理想、仅接收远端音频流时，
+  /// 将 `option` 设置为 [StreamFallbackOptions.AudioOnly] 时，当下行网络环境不理想、仅接收远端音频流时，
   /// 或当下行网络改善、恢复订阅音视频流时，会触发该回调。
   ///
   /// **Note**
@@ -1542,8 +1617,8 @@ class RtcChannelEventHandler {
   /// `FallbackWithUidCallback` 包含如下参数：
   /// - [int] `uid`：远端用户的 ID。
   /// - [bool] `isFallbackOrRecover`：远端订阅流已回退或恢复：
-  ///  - true: 由于网络环境不理想，远端订阅流已回退为音频流。
-  ///  - false: 由于网络环境改善，订阅的音频流已恢复为音视频流。
+  ///  - `true`: 由于网络环境不理想，远端订阅流已回退为音频流。
+  ///  - `false`: 由于网络环境改善，订阅的音频流已恢复为音视频流。
   FallbackWithUidCallback remoteSubscribeFallbackToAudioOnly;
 
   /// 当前通话统计回调。
@@ -1589,7 +1664,7 @@ class RtcChannelEventHandler {
   /// RTMP 推流状态发生改变回调。该回调返回本地用户调用 [RtcChannel.addPublishStreamUrl]
   /// 或 [RtcChannel.removePublishStreamUrl] 方法的结果。
   ///
-  /// RTMP 推流状态发生改变时，SDK 会触发该回调，并在回调中明确状态发生改变的 URL 地址及当前推流状态；当推流状态为 [RtmpStreamingState.Failure](4) 时，你可以在 `errCode` 参数中查看返回的错误信息。
+  /// RTMP 推流状态发生改变时，SDK 会触发该回调，并在回调中明确状态发生改变的 URL 地址及当前推流状态；当推流状态为 [RtmpStreamingState.Failure] 时，你可以在 `errCode` 参数中查看返回的错误信息。
   /// 该回调方便推流用户了解当前的推流状态；推流出错时，你可以通过返回的错误码了解出错的原因，方便排查问题。
   ///
   /// `RtmpStreamingStateCallback` 包含如下参数：
@@ -1660,8 +1735,62 @@ class RtcChannelEventHandler {
   /// - [int] `timeStampMs`：接收到的 Metadata 的时间戳，单位为毫秒 。
   MetadataCallback metadataReceived;
 
+  /// 音频发布状态改变回调。
+  ///
+  /// @since v3.1.2。
+  ///
+  /// `StreamPublishStateCallback` 包含如下参数：
+  /// - [String] `channel` 频道名。
+  /// - [StreamPublishState] `oldState` 之前的发布状态。
+  /// - [StreamPublishState] `newState` 当前的发布状态。
+  /// - [int] `elapseSinceLastState` 两次状态变化时间间隔（毫秒）。
+  StreamPublishStateCallback audioPublishStateChanged;
+
+  /// 视频发布状态发生改变回调。
+  ///
+  /// @since v3.1.2。
+  ///
+  /// `StreamPublishStateCallback` 包含如下参数：
+  /// - [String] `channel` 频道名。
+  /// - [StreamPublishState] `oldState` 之前的发布状态。
+  /// - [StreamPublishState] `newState` 当前的发布状态。
+  /// - [int] `elapseSinceLastState` 两次状态变化时间间隔（毫秒）。
+  StreamPublishStateCallback videoPublishStateChanged;
+
+  /// 音频订阅状态发生改变回调。
+  ///
+  /// @since v3.1.2。
+  ///
+  /// `StreamSubscribeStateCallback` 包含如下参数：
+  /// - [String] `channel` 频道名。
+  /// - [StreamSubscribeState] `oldState` 之前的订阅状态。
+  /// - [StreamSubscribeState] `newState` 当前的订阅状态。
+  /// - [int] `elapseSinceLastState` 两次状态变化时间间隔（毫秒）。
+  StreamSubscribeStateCallback audioSubscribeStateChanged;
+
+  /// 视频订阅状态发生改变回调。
+  ///
+  /// @since v3.1.2。
+  ///
+  /// `StreamSubscribeStateCallback` 包含如下参数：
+  /// - [String] `channel` 频道名。
+  /// - [StreamSubscribeState] `oldState` 之前的订阅状态。
+  /// - [StreamSubscribeState] `newState` 当前的订阅状态。
+  /// - [int] `elapseSinceLastState` 两次状态变化时间间隔（毫秒）。
+  StreamSubscribeStateCallback videoSubscribeStateChanged;
+
+  /// RTMP 推流事件回调。
+  ///
+  /// @since v3.1.2。
+  ///
+  /// `RtmpStreamingEventCallback` 包含如下参数：
+  /// - [String] `url` RTMP 推流 URL。
+  /// - [RtmpStreamingEvent] `eventCode` RTMP 推流事件码。
+  RtmpStreamingEventCallback rtmpStreamingEvent;
+
   /// Constructs a [RtcChannelEventHandler]
-  RtcChannelEventHandler({this.warning,
+  RtcChannelEventHandler(
+    {this.warning,
     this.error,
     this.joinChannelSuccess,
     this.rejoinChannelSuccess,
@@ -1690,20 +1819,21 @@ class RtcChannelEventHandler {
     this.streamMessageError,
     this.channelMediaRelayStateChanged,
     this.channelMediaRelayEvent,
-    this.metadataReceived});
+    this.metadataReceived,
+    this.audioPublishStateChanged,
+    this.videoPublishStateChanged,
+    this.audioSubscribeStateChanged,
+    this.videoSubscribeStateChanged,
+    this.rtmpStreamingEvent});
 
   // ignore: public_member_api_docs
   void process(String methodName, List<dynamic> data) {
     switch (methodName) {
       case 'Warning':
-        warning?.call(WarningCodeConverter
-            .fromValue(data[0])
-            .e);
+        warning?.call(WarningCodeConverter.fromValue(data[0]).e);
         break;
       case 'Error':
-        error?.call(ErrorCodeConverter
-            .fromValue(data[0])
-            .e);
+        error?.call(ErrorCodeConverter.fromValue(data[0]).e);
         break;
       case 'JoinChannelSuccess':
         joinChannelSuccess?.call(data[0], data[1]);
@@ -1716,30 +1846,20 @@ class RtcChannelEventHandler {
             ?.call(RtcStats.fromJson(Map<String, dynamic>.from(data[0])));
         break;
       case 'ClientRoleChanged':
-        clientRoleChanged?.call(ClientRoleConverter
-            .fromValue(data[0])
-            .e,
-            ClientRoleConverter
-                .fromValue(data[1])
-                .e);
+        clientRoleChanged?.call(ClientRoleConverter.fromValue(data[0]).e,
+            ClientRoleConverter.fromValue(data[1]).e);
         break;
       case 'UserJoined':
         userJoined?.call(data[0], data[1]);
         break;
       case 'UserOffline':
         userOffline?.call(
-            data[0], UserOfflineReasonConverter
-            .fromValue(data[1])
-            .e);
+            data[0], UserOfflineReasonConverter.fromValue(data[1]).e);
         break;
       case 'ConnectionStateChanged':
         connectionStateChanged?.call(
-            ConnectionStateTypeConverter
-                .fromValue(data[0])
-                .e,
-            ConnectionChangedReasonConverter
-                .fromValue(data[1])
-                .e);
+            ConnectionStateTypeConverter.fromValue(data[0]).e,
+            ConnectionChangedReasonConverter.fromValue(data[1]).e);
         break;
       case 'ConnectionLost':
         connectionLost?.call();
@@ -1759,23 +1879,15 @@ class RtcChannelEventHandler {
       case 'RemoteVideoStateChanged':
         remoteVideoStateChanged?.call(
             data[0],
-            VideoRemoteStateConverter
-                .fromValue(data[1])
-                .e,
-            VideoRemoteStateReasonConverter
-                .fromValue(data[2])
-                .e,
+            VideoRemoteStateConverter.fromValue(data[1]).e,
+            VideoRemoteStateReasonConverter.fromValue(data[2]).e,
             data[3]);
         break;
       case 'RemoteAudioStateChanged':
         remoteAudioStateChanged?.call(
             data[0],
-            AudioRemoteStateConverter
-                .fromValue(data[1])
-                .e,
-            AudioRemoteStateReasonConverter
-                .fromValue(data[2])
-                .e,
+            AudioRemoteStateConverter.fromValue(data[1]).e,
+            AudioRemoteStateReasonConverter.fromValue(data[2]).e,
             data[3]);
         break;
       case 'LocalPublishFallbackToAudioOnly':
@@ -1790,12 +1902,8 @@ class RtcChannelEventHandler {
       case 'NetworkQuality':
         networkQuality?.call(
             data[0],
-            NetworkQualityConverter
-                .fromValue(data[1])
-                .e,
-            NetworkQualityConverter
-                .fromValue(data[2])
-                .e);
+            NetworkQualityConverter.fromValue(data[1]).e,
+            NetworkQualityConverter.fromValue(data[2]).e);
         break;
       case 'RemoteVideoStats':
         remoteVideoStats?.call(
@@ -1808,12 +1916,8 @@ class RtcChannelEventHandler {
       case 'RtmpStreamingStateChanged':
         rtmpStreamingStateChanged?.call(
           data[0],
-          RtmpStreamingStateConverter
-              .fromValue(data[1])
-              .e,
-          RtmpStreamingErrorCodeConverter
-              .fromValue(data[2])
-              .e,
+          RtmpStreamingStateConverter.fromValue(data[1]).e,
+          RtmpStreamingErrorCodeConverter.fromValue(data[2]).e,
         );
         break;
       case 'TranscodingUpdated':
@@ -1821,37 +1925,58 @@ class RtcChannelEventHandler {
         break;
       case 'StreamInjectedStatus':
         streamInjectedStatus?.call(
-            data[0], data[1], InjectStreamStatusConverter
-            .fromValue(data[2])
-            .e);
+            data[0], data[1], InjectStreamStatusConverter.fromValue(data[2]).e);
         break;
       case 'StreamMessage':
         streamMessage?.call(data[0], data[1], data[2]);
         break;
       case 'StreamMessageError':
         streamMessageError?.call(data[0], data[1],
-            ErrorCodeConverter
-                .fromValue(data[2])
-                .e, data[3], data[4]);
+            ErrorCodeConverter.fromValue(data[2]).e, data[3], data[4]);
         break;
       case 'ChannelMediaRelayStateChanged':
         channelMediaRelayStateChanged?.call(
-          ChannelMediaRelayStateConverter
-              .fromValue(data[0])
-              .e,
-          ChannelMediaRelayErrorConverter
-              .fromValue(data[1])
-              .e,
+          ChannelMediaRelayStateConverter.fromValue(data[0]).e,
+          ChannelMediaRelayErrorConverter.fromValue(data[1]).e,
         );
         break;
       case 'ChannelMediaRelayEvent':
         channelMediaRelayEvent
-            ?.call(ChannelMediaRelayEventConverter
-            .fromValue(data[0])
-            .e);
+            ?.call(ChannelMediaRelayEventConverter.fromValue(data[0]).e);
         break;
       case 'MetadataReceived':
         metadataReceived?.call(data[0], data[1], data[2]);
+        break;
+        case 'AudioPublishStateChanged':
+        audioPublishStateChanged?.call(
+            data[0],
+            StreamPublishStateConverter.fromValue(data[1]).e,
+            StreamPublishStateConverter.fromValue(data[2]).e,
+            data[3]);
+        break;
+      case 'VideoPublishStateChanged':
+        videoPublishStateChanged?.call(
+            data[0],
+            StreamPublishStateConverter.fromValue(data[1]).e,
+            StreamPublishStateConverter.fromValue(data[2]).e,
+            data[3]);
+        break;
+      case 'AudioSubscribeStateChanged':
+        audioSubscribeStateChanged?.call(
+            data[0],
+            StreamSubscribeStateConverter.fromValue(data[1]).e,
+            StreamSubscribeStateConverter.fromValue(data[2]).e,
+            data[3]);
+        break;
+      case 'VideoSubscribeStateChanged':
+        videoSubscribeStateChanged?.call(
+            data[0],
+            StreamSubscribeStateConverter.fromValue(data[1]).e,
+            StreamSubscribeStateConverter.fromValue(data[2]).e,
+            data[3]);
+        break;
+      case 'RtmpStreamingEvent':
+        rtmpStreamingEvent?.call(data[0], data[1]);
         break;
     }
   }

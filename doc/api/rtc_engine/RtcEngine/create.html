@@ -81,6 +81,7 @@
         <li><a href="../../rtc_engine/RtcEngine/enableAudio.html">enableAudio</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableAudioVolumeIndication.html">enableAudioVolumeIndication</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableDualStreamMode.html">enableDualStreamMode</a></li>
+        <li><a href="../../rtc_engine/RtcEngine/enableEncryption.html">enableEncryption</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableFaceDetection.html">enableFaceDetection</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableInEarMonitoring.html">enableInEarMonitoring</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableLastmileTest.html">enableLastmileTest</a></li>
@@ -163,6 +164,7 @@
         <li><a href="../../rtc_engine/RtcEngine/setLogFileSize.html">setLogFileSize</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setLogFilter.html">setLogFilter</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setMaxMetadataSize.html">setMaxMetadataSize</a></li>
+        <li><a href="../../rtc_engine/RtcEngine/setParameters.html">setParameters</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteDefaultVideoStreamType.html">setRemoteDefaultVideoStreamType</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteSubscribeFallbackOption.html">setRemoteSubscribeFallbackOption</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteUserPriority.html">setRemoteUserPriority</a></li>
@@ -222,9 +224,9 @@
 <li>请确保在调用其他 API 前先调用该方法创建并初始化 <a href="../../rtc_engine/RtcEngine-class.html">RtcEngine</a>。</li>
 <li>You can create an <a href="../../rtc_engine/RtcEngine-class.html">RtcEngine</a> instance either by calling this method or by calling <a href="../../rtc_engine/RtcEngine/createWithAreaCode.html">RtcEngine.createWithAreaCode</a>. The difference between <a href="../../rtc_engine/RtcEngine/createWithAreaCode.html">RtcEngine.createWithAreaCode</a> and this method is that <a href="../../rtc_engine/RtcEngine/createWithAreaCode.html">RtcEngine.createWithAreaCode</a> enables you to specify the connection area.</li>
 <li>调用该方法和 <a href="../../rtc_engine/RtcEngine/createWithAreaCode.html">RtcEngine.createWithAreaCode</a> 均能创建 <a href="../../rtc_engine/RtcEngine-class.html">RtcEngine</a> 实例。</li>
-<li>目前 Agora Flutter SDK 只支持每个 app 创建一个 <a href="../../rtc_engine/RtcEngine-class.html">RtcEngine</a> 实例。//TODO 英文这里是否改成 Flutter SDK?</li>
+<li>目前 Agora Flutter SDK 只支持每个 app 创建一个 <a href="../../rtc_engine/RtcEngine-class.html">RtcEngine</a> 实例。</li>
 </ul>
-<p>Param <code>appId</code> Agora 为 app 开发者签发的 App ID，详见<a href="https://docs.agora.io/cn/Agora%20Platform/token#get-an-app-id">获取 App ID</a>。使用同一个 App ID 的 app 才能进入同一个频道进行通话或直播。一个 App ID 只能用于创建一个 <a href="../../rtc_engine/RtcEngine-class.html">RtcEngine</a>。
+<p><strong>Parameter</strong> <code>appId</code> Agora 为 app 开发者签发的 App ID，详见<a href="https://docs.agora.io/cn/Agora%20Platform/token#get-an-app-id">获取 App ID</a>。使用同一个 App ID 的 app 才能进入同一个频道进行通话或直播。一个 App ID 只能用于创建一个 <a href="../../rtc_engine/RtcEngine-class.html">RtcEngine</a>。
 如需更换 App ID，必须先调用 <a href="../../rtc_engine/RtcEngine/destroy.html">destroy</a> 销毁当前 <a href="../../rtc_engine/RtcEngine-class.html">RtcEngine</a>，再调用 <a href="../../rtc_engine/RtcEngine/create.html">create</a> 重新创建 <a href="../../rtc_engine/RtcEngine-class.html">RtcEngine</a>。</p>
 <p><strong>Returns</strong></p>
 <ul>
@@ -236,7 +238,7 @@
     <section class="summary source-code" id="source">
       <h2><span>Implementation</span></h2>
       <pre class="language-dart"><code class="language-dart">static Future&lt;RtcEngine&gt; create(String appId) async {
-  return createWithAreaCode(appId, IPAreaCode.AREA_GLOBAL);
+  return createWithAreaCode(appId, AreaCode.GLOB);
 }</code></pre>
     </section>
 

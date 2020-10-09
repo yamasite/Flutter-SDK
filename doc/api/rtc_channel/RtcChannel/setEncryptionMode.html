@@ -67,6 +67,7 @@
         <li><a href="../../rtc_channel/RtcChannel/adjustUserPlaybackSignalVolume.html">adjustUserPlaybackSignalVolume</a></li>
         <li><a href="../../rtc_channel/RtcChannel/createDataStream.html">createDataStream</a></li>
         <li><a href="../../rtc_channel/RtcChannel/destroy.html">destroy</a></li>
+        <li><a href="../../rtc_channel/RtcChannel/enableEncryption.html">enableEncryption</a></li>
         <li><a href="../../rtc_channel/RtcChannel/getCallId.html">getCallId</a></li>
         <li><a href="../../rtc_channel/RtcChannel/getConnectionState.html">getConnectionState</a></li>
         <li><a href="../../rtc_channel/RtcChannel/joinChannel.html">joinChannel</a></li>
@@ -133,14 +134,16 @@
     </section>
     <section class="desc markdown">
       <p>设置内置的加密方案。</p>
-<p>Agora SDK 支持内置加密功能，默认使用 <code>AES128XTS</code> 加密方式。如需使用其他加密方式，可以调用该 API 设置。</p>
+<p><strong>Deprecated</strong>
+自 v3.1.2 起废弃。请改用 <a href="../../rtc_channel/RtcChannel/enableEncryption.html">enableEncryption</a>。
+Agora SDK 支持内置加密功能，默认使用 <code>AES128XTS</code> 加密方式。如需使用其他加密方式，可以调用该 API 设置。</p>
 <p>同一频道内的所有用户必须设置相同的加密方式和密码才能进行通话。关于这几种加密方式的区别，请参考 AES 加密算法的相关资料。</p>
 <p><strong>Note</strong></p>
 <ul>
 <li>请勿在转码推流场景中使用该方法。</li>
 <li>该方法需要在 <a href="../../rtc_engine/RtcEngine/setEncryptionSecret.html">RtcEngine.setEncryptionSecret</a> 之后调用。</li>
 </ul>
-<p>Param <code>encryptionMode</code> 加密方式。详见 <a href="../../rtc_engine/EncryptionMode-class.html">EncryptionMode</a>。</p>
+<p><strong>Parameter</strong> <code>encryptionMode</code> 加密方式。详见 <a href="../../rtc_engine/EncryptionMode-class.html">EncryptionMode</a>。</p>
     </section>
     
     <section class="summary source-code" id="source">

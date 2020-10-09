@@ -60,6 +60,7 @@
       <li><a href="../rtc_engine/ChannelMediaOptions-class.html">ChannelMediaOptions</a></li>
       <li><a href="../rtc_engine/ChannelMediaRelayConfiguration-class.html">ChannelMediaRelayConfiguration</a></li>
       <li><a href="../rtc_engine/Color-class.html">Color</a></li>
+      <li><a href="../rtc_engine/EncryptionConfig-class.html">EncryptionConfig</a></li>
       <li><a href="../rtc_engine/FacePositionInfo-class.html">FacePositionInfo</a></li>
       <li><a href="../rtc_engine/JsonSerializable-class.html">JsonSerializable</a></li>
       <li><a href="../rtc_engine/LastmileProbeConfig-class.html">LastmileProbeConfig</a></li>
@@ -88,6 +89,7 @@
     
     
       <li class="section-title"><a href="../rtc_engine/rtc_engine-library.html#enums">Enums</a></li>
+      <li><a href="../rtc_engine/AreaCode-class.html">AreaCode</a></li>
       <li><a href="../rtc_engine/AudioChannel-class.html">AudioChannel</a></li>
       <li><a href="../rtc_engine/AudioCodecProfileType-class.html">AudioCodecProfileType</a></li>
       <li><a href="../rtc_engine/AudioEqualizationBandFrequency-class.html">AudioEqualizationBandFrequency</a></li>
@@ -104,7 +106,6 @@
       <li><a href="../rtc_engine/AudioReverbType-class.html">AudioReverbType</a></li>
       <li><a href="../rtc_engine/AudioSampleRateType-class.html">AudioSampleRateType</a></li>
       <li><a href="../rtc_engine/AudioScenario-class.html">AudioScenario</a></li>
-      <li><a href="../rtc_engine/AudioSessionOperationRestriction-class.html">AudioSessionOperationRestriction</a></li>
       <li><a href="../rtc_engine/AudioVoiceChanger-class.html">AudioVoiceChanger</a></li>
       <li><a href="../rtc_engine/BitRate-class.html">BitRate</a></li>
       <li><a href="../rtc_engine/CameraCaptureOutputPreference-class.html">CameraCaptureOutputPreference</a></li>
@@ -120,20 +121,19 @@
       <li><a href="../rtc_engine/EncryptionMode-class.html">EncryptionMode</a></li>
       <li><a href="../rtc_engine/ErrorCode-class.html">ErrorCode</a></li>
       <li><a href="../rtc_engine/InjectStreamStatus-class.html">InjectStreamStatus</a></li>
-      <li><a href="../rtc_engine/IPAreaCode-class.html">IPAreaCode</a></li>
       <li><a href="../rtc_engine/LastmileProbeResultState-class.html">LastmileProbeResultState</a></li>
       <li><a href="../rtc_engine/LighteningContrastLevel-class.html">LighteningContrastLevel</a></li>
       <li><a href="../rtc_engine/LocalVideoStreamError-class.html">LocalVideoStreamError</a></li>
       <li><a href="../rtc_engine/LocalVideoStreamState-class.html">LocalVideoStreamState</a></li>
       <li><a href="../rtc_engine/LogFilter-class.html">LogFilter</a></li>
-      <li><a href="../rtc_engine/MediaDeviceType-class.html">MediaDeviceType</a></li>
       <li><a href="../rtc_engine/NetworkQuality-class.html">NetworkQuality</a></li>
       <li><a href="../rtc_engine/NetworkType-class.html">NetworkType</a></li>
-      <li><a href="../rtc_engine/RtcDefaultCameraPosition-class.html">RtcDefaultCameraPosition</a></li>
       <li><a href="../rtc_engine/RtmpStreamingErrorCode-class.html">RtmpStreamingErrorCode</a></li>
+      <li><a href="../rtc_engine/RtmpStreamingEvent-class.html">RtmpStreamingEvent</a></li>
       <li><a href="../rtc_engine/RtmpStreamingState-class.html">RtmpStreamingState</a></li>
-      <li><a href="../rtc_engine/RtmpStreamLifeCycle-class.html">RtmpStreamLifeCycle</a></li>
       <li><a href="../rtc_engine/StreamFallbackOptions-class.html">StreamFallbackOptions</a></li>
+      <li><a href="../rtc_engine/StreamPublishState-class.html">StreamPublishState</a></li>
+      <li><a href="../rtc_engine/StreamSubscribeState-class.html">StreamSubscribeState</a></li>
       <li><a href="../rtc_engine/UserOfflineReason-class.html">UserOfflineReason</a></li>
       <li><a href="../rtc_engine/UserPriority-class.html">UserPriority</a></li>
       <li><a href="../rtc_engine/VideoCodecProfileType-class.html">VideoCodecProfileType</a></li>
@@ -203,14 +203,7 @@
         </dt>
         <dd>
           视频编码的码率。单位为 Kbps。你可以根据场景需要，参考下面的视频基准码率参考表，手动设置你想要的码率。
-若设置的视频码率超出合理范围，SDK 会自动按照合理区间处理码率。
-你也可以直接选择如下任意一种模式进行设置：
-- <a href="../rtc_engine/BitRate-class.html">BitRate.Standard</a>：（推荐）标准码率模式。该模式下，视频在通信和直播场景下的码率有所不同：
-       - 通信场景下，码率与基准码率一致。
-       - 直播场景下，码率对照基准码率翻倍。
-    - <a href="../rtc_engine/BitRate-class.html">BitRate.Compatible</a>: 适配码率模式。该模式下，视频在通信和直播场景下的码率均与基准码率一致。直播下如果选择该模式，视频帧率可能会低于设置的值。
-Agora 在通信和直播场景下采用不同的编码方式，以提升不同场景下的用户体验。通信场景保证流畅，而直播场景则更注重画面质量，因此直播场景对码率的需求大于通信场景。所以 Agora 推荐将该参数设置为 <code>0</code> (<a href="../rtc_engine/BitRate-class.html">BitRate.Standard</a>)。Therefore, We recommend setting this parameter as <code>0</code>. //TODO 这里是否要提一下 0 是 standard？
-<strong>视频码率参考表</strong> <a href="../rtc_engine/VideoEncoderConfiguration/bitrate.html">[...]</a>
+若设置的视频码率超出合理范围，SDK 会自动按照合理区间处理码率。 <a href="../rtc_engine/VideoEncoderConfiguration/bitrate.html">[...]</a>
                   <div class="features">@JsonKey(includeIfNull: false), read / write</div>
 </dd>
         <dt id="degradationPrefer" class="property">
@@ -262,7 +255,7 @@ Agora SDK 会根据网络条件进行码率自适应。 该参数强制视频编
           <span class="signature">&#8596; <a href="../rtc_engine/VideoFrameRate-class.html">VideoFrameRate</a></span>         
         </dt>
         <dd>
-          最低视频编码帧率（fps）。默认值为 <a href="../rtc_engine/VideoFrameRate-class.html">VideoFrameRate.Min</a>，表示使用系统默认的最低编码帧率。// TODO 检查一下链接 
+          最低视频编码帧率（fps）。默认值为 <a href="../rtc_engine/VideoFrameRate-class.html">VideoFrameRate.Min</a>，表示使用系统默认的最低编码帧率。 
                   <div class="features">@JsonKey(includeIfNull: false), read / write</div>
 </dd>
         <dt id="mirrorMode" class="property">

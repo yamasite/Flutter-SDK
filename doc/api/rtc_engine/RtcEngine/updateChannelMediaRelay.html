@@ -81,6 +81,7 @@
         <li><a href="../../rtc_engine/RtcEngine/enableAudio.html">enableAudio</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableAudioVolumeIndication.html">enableAudioVolumeIndication</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableDualStreamMode.html">enableDualStreamMode</a></li>
+        <li><a href="../../rtc_engine/RtcEngine/enableEncryption.html">enableEncryption</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableFaceDetection.html">enableFaceDetection</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableInEarMonitoring.html">enableInEarMonitoring</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableLastmileTest.html">enableLastmileTest</a></li>
@@ -163,6 +164,7 @@
         <li><a href="../../rtc_engine/RtcEngine/setLogFileSize.html">setLogFileSize</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setLogFilter.html">setLogFilter</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setMaxMetadataSize.html">setMaxMetadataSize</a></li>
+        <li><a href="../../rtc_engine/RtcEngine/setParameters.html">setParameters</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteDefaultVideoStreamType.html">setRemoteDefaultVideoStreamType</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteSubscribeFallbackOption.html">setRemoteSubscribeFallbackOption</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteUserPriority.html">setRemoteUserPriority</a></li>
@@ -223,14 +225,14 @@
       <p>更新媒体流转发的频道。</p>
 <p>成功开始跨频道转发媒体流后，如果你希望将流转发到多个目标频道，或退出当前的转发频道，可以调用该方法。</p>
 <p>成功调用该方法后，SDK 会触发 <a href="../../rtc_engine/RtcEngineEventHandler/channelMediaRelayEvent.html">RtcEngineEventHandler.channelMediaRelayEvent</a> 回调，
-并在回调中报告状态码 <a href="7">ChannelMediaRelayEvent.updateDestinationChannel</a>。</p>
+并在回调中报告状态码 <a href="../../rtc_engine/ChannelMediaRelayEvent-class.html">ChannelMediaRelayEvent.UpdateDestinationChannel</a>。</p>
 <p><strong>Note</strong></p>
 <ul>
 <li>请在 <a href="../../rtc_engine/RtcEngine/startChannelMediaRelay.html">RtcEngine.startChannelMediaRelay</a> 方法后调用该方法，更新媒体流转发的频道。</li>
 <li>跨频道媒体流转发最多支持 4 个目标频道。如果直播间里已经有 4 个频道了，你可以在调用该方法之前，
 调用 <a href="../../rtc_engine/ChannelMediaRelayConfiguration-class.html">ChannelMediaRelayConfiguration</a> 类中的 <code>destInfos</code> 方法移除不需要的频道。</li>
 </ul>
-<p>Param <code>channelMediaRelayConfiguration</code> 跨频道媒体流转发参数配置。详见 <a href="../../rtc_engine/ChannelMediaRelayConfiguration-class.html">ChannelMediaRelayConfiguration</a>。</p>
+<p><strong>Parameter</strong> <code>channelMediaRelayConfiguration</code> 跨频道媒体流转发参数配置。详见 <a href="../../rtc_engine/ChannelMediaRelayConfiguration-class.html">ChannelMediaRelayConfiguration</a>。</p>
     </section>
     
     <section class="summary source-code" id="source">

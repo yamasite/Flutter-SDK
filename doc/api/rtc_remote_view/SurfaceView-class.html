@@ -69,7 +69,9 @@
       <div><h1><span class="kind-class">SurfaceView</span> class  </h1></div>
 
     <section class="desc markdown">
-      <p>(Android only) SurfaceView. Please use UIView for iOS.</p>
+      <p>（仅适用于 Android）SurfaceView 类。</p>
+<p><strong>Note</strong>
+在 iOS 平台，请使用 <a href="https://developer.apple.com/documentation/uikit/uiview">UIView</a>。</p>
     </section>
     
     <section>
@@ -112,7 +114,7 @@
           <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>         
         </dt>
         <dd class="inherited">
-          The unique channel name for the AgoraRTC session in the string format. The string length must be less than 64 bytes. Supported character scopes are: <a href="../rtc_remote_view/SurfaceView/channelId.html">[...]</a>
+          标识通话的频道名称，长度在 64 字节以内的字符串。以下为支持的字符集范围（共 89 个字符）： <a href="../rtc_remote_view/SurfaceView/channelId.html">[...]</a>
                   <div class="features">final, inherited</div>
 </dd>
         <dt id="gestureRecognizers" class="property inherited">
@@ -120,7 +122,7 @@
           <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/Set-class.html">Set</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/foundation/Factory-class.html">Factory</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/gestures/OneSequenceGestureRecognizer-class.html">OneSequenceGestureRecognizer</a></span>&gt;</span></span>&gt;</span></span>         
         </dt>
         <dd class="inherited">
-          Which gestures should be consumed by the web view. <a href="../rtc_remote_view/SurfaceView/gestureRecognizers.html">[...]</a>
+          指定 Web 视图使用的手势。 <a href="../rtc_remote_view/SurfaceView/gestureRecognizers.html">[...]</a>
                   <div class="features">final, inherited</div>
 </dd>
         <dt id="hashCode" class="property inherited">
@@ -144,7 +146,7 @@
           <span class="signature">&#8594; <a href="../rtc_engine/VideoMirrorMode-class.html">VideoMirrorMode</a></span>         
         </dt>
         <dd class="inherited">
-          The video mirror mode. 
+          视频的镜像模式。 
                   <div class="features">final, inherited</div>
 </dd>
         <dt id="onPlatformViewCreated" class="property inherited">
@@ -152,7 +154,7 @@
           <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/services/PlatformViewCreatedCallback.html">PlatformViewCreatedCallback</a></span>         
         </dt>
         <dd class="inherited">
-          Callback signature for when a platform view was created. <a href="../rtc_remote_view/SurfaceView/onPlatformViewCreated.html">[...]</a>
+          创建平台视图回调。 <a href="../rtc_remote_view/SurfaceView/onPlatformViewCreated.html">[...]</a>
                   <div class="features">final, inherited</div>
 </dd>
         <dt id="renderMode" class="property inherited">
@@ -160,7 +162,7 @@
           <span class="signature">&#8594; <a href="../rtc_engine/VideoRenderMode-class.html">VideoRenderMode</a></span>         
         </dt>
         <dd class="inherited">
-          The rendering mode of the video view. 
+          视频视图的渲染模式。 
                   <div class="features">final, inherited</div>
 </dd>
         <dt id="runtimeType" class="property inherited">
@@ -176,7 +178,7 @@
           <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span>         
         </dt>
         <dd class="inherited">
-          User ID. 
+          用户 ID。 
                   <div class="features">final, inherited</div>
 </dd>
         <dt id="zOrderMediaOverlay" class="property inherited">
@@ -184,7 +186,7 @@
           <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span>         
         </dt>
         <dd class="inherited">
-          Control whether the surface view's surface is placed on top of another regular surface view in the window (but still behind the window itself).
+          是否将 SurfaceView 视图的表层置于窗口中另一个 SurfaceView 的上层 (但依然位于窗口的下层)。
 <a href="https://api.flutter.dev/flutter/foundation/TargetPlatform-class.html">TargetPlatform.android</a> 
                   <div class="features">final, inherited</div>
 </dd>
@@ -193,7 +195,7 @@
           <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span>         
         </dt>
         <dd class="inherited">
-          Control whether the surface view's surface is placed on top of its window.
+          是否将 SurfaceView 视图的表层置于窗口上层。
 <a href="https://api.flutter.dev/flutter/foundation/TargetPlatform-class.html">TargetPlatform.android</a> 
                   <div class="features">final, inherited</div>
 </dd>

@@ -81,6 +81,7 @@
         <li><a href="../../rtc_engine/RtcEngine/enableAudio.html">enableAudio</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableAudioVolumeIndication.html">enableAudioVolumeIndication</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableDualStreamMode.html">enableDualStreamMode</a></li>
+        <li><a href="../../rtc_engine/RtcEngine/enableEncryption.html">enableEncryption</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableFaceDetection.html">enableFaceDetection</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableInEarMonitoring.html">enableInEarMonitoring</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableLastmileTest.html">enableLastmileTest</a></li>
@@ -163,6 +164,7 @@
         <li><a href="../../rtc_engine/RtcEngine/setLogFileSize.html">setLogFileSize</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setLogFilter.html">setLogFilter</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setMaxMetadataSize.html">setMaxMetadataSize</a></li>
+        <li><a href="../../rtc_engine/RtcEngine/setParameters.html">setParameters</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteDefaultVideoStreamType.html">setRemoteDefaultVideoStreamType</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteSubscribeFallbackOption.html">setRemoteSubscribeFallbackOption</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteUserPriority.html">setRemoteUserPriority</a></li>
@@ -222,10 +224,10 @@
       <p>停止跨频道媒体流转发。</p>
 <p>一旦停止，主播会退出所有目标频道。</p>
 <p>成功调用该方法后，SDK 会触发 <a href="../../rtc_engine/RtcEngineEventHandler/channelMediaRelayStateChanged.html">RtcEngineEventHandler.channelMediaRelayStateChanged</a> 回调。
-如果报告 <a href="0">ChannelMediaRelayState.Idle</a> 和 <a href="0">ChannelMediaRelayError.None</a>，则表示已停止转发媒体流。</p>
+如果报告 <a href="../../rtc_engine/ChannelMediaRelayState-class.html">ChannelMediaRelayState.Idle</a> 和 <a href="../../rtc_engine/ChannelMediaRelayError-class.html">ChannelMediaRelayError.None</a>，则表示已停止转发媒体流。</p>
 <p><strong>Note</strong></p>
 <p>如果该方法调用不成功，SDK 会触发 <a href="../../rtc_engine/RtcEngineEventHandler/channelMediaRelayStateChanged.html">RtcEngineEventHandler.channelMediaRelayStateChanged</a> 回调，
-并报告状态码 <a href="2">ChannelMediaRelayError.ServerNoResponse</a> 或 <a href="8">ChannelMediaRelayError.ServerConnectionLost</a>。
+并报告状态码 <a href="../../rtc_engine/ChannelMediaRelayError-class.html">ChannelMediaRelayError.ServerNoResponse</a> 或 <a href="../../rtc_engine/ChannelMediaRelayError-class.html">ChannelMediaRelayError.ServerConnectionLost</a>。
 你可以调用 <a href="../../rtc_engine/RtcEngine/leaveChannel.html">RtcEngine.leaveChannel</a> 方法离开频道，跨频道媒体流转发会自动停止。</p>
     </section>
     

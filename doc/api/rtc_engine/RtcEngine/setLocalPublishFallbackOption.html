@@ -81,6 +81,7 @@
         <li><a href="../../rtc_engine/RtcEngine/enableAudio.html">enableAudio</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableAudioVolumeIndication.html">enableAudioVolumeIndication</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableDualStreamMode.html">enableDualStreamMode</a></li>
+        <li><a href="../../rtc_engine/RtcEngine/enableEncryption.html">enableEncryption</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableFaceDetection.html">enableFaceDetection</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableInEarMonitoring.html">enableInEarMonitoring</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableLastmileTest.html">enableLastmileTest</a></li>
@@ -163,6 +164,7 @@
         <li><a href="../../rtc_engine/RtcEngine/setLogFileSize.html">setLogFileSize</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setLogFilter.html">setLogFilter</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setMaxMetadataSize.html">setMaxMetadataSize</a></li>
+        <li><a href="../../rtc_engine/RtcEngine/setParameters.html">setParameters</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteDefaultVideoStreamType.html">setRemoteDefaultVideoStreamType</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteSubscribeFallbackOption.html">setRemoteSubscribeFallbackOption</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteUserPriority.html">setRemoteUserPriority</a></li>
@@ -221,14 +223,14 @@
     </section>
     <section class="desc markdown">
       <p>设置弱网条件下发布的音视频流回退选项。</p>
-<p>网络不理想的环境下，直播音视频的质量都会下降。使用该接口并将 option 设置为 <a href="2">StreamFallbackOptions.AudioOnly</a> 后，
+<p>网络不理想的环境下，直播音视频的质量都会下降。使用该接口并将 option 设置为 <a href="../../rtc_engine/StreamFallbackOptions-class.html">StreamFallbackOptions.AudioOnly</a> 后，
 SDK 会在上行弱网且音视频质量严重受影响时，自动关断视频流，从而保证或提高音频质量。
 同时 SDK 会持续监控网络质量，并在网络质量改善时恢复音视频流。当本地推流回退为音频流时，或由音频流恢复为音视频流时，
 SDK 会触发本地发布的媒体流已回退为音频流 <a href="../../rtc_engine/RtcEngineEventHandler/localPublishFallbackToAudioOnly.html">RtcEngineEventHandler.localPublishFallbackToAudioOnly</a> 回调。</p>
 <p><strong>Note</strong></p>
-<p>旁路推流场景下，设置本地推流回退为 <a href="2">StreamFallbackOptions.AudioOnly</a> 可能会导致远端的 CDN 用户听到声音的时间有所延迟。
+<p>旁路推流场景下，设置本地推流回退为 <a href="../../rtc_engine/StreamFallbackOptions-class.html">StreamFallbackOptions.AudioOnly</a> 可能会导致远端的 CDN 用户听到声音的时间有所延迟。
 因此在有旁路推流的场景下，Agora 建议不开启该功能。</p>
-<p>Param <code>option</code> 本地推流回退处理选项。详见 <a href="../../rtc_engine/StreamFallbackOptions-class.html">StreamFallbackOptions</a>。</p>
+<p><strong>Parameter</strong> <code>option</code> 本地推流回退处理选项。详见 <a href="../../rtc_engine/StreamFallbackOptions-class.html">StreamFallbackOptions</a>。</p>
     </section>
     
     <section class="summary source-code" id="source">

@@ -81,6 +81,7 @@
         <li><a href="../../rtc_engine/RtcEngine/enableAudio.html">enableAudio</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableAudioVolumeIndication.html">enableAudioVolumeIndication</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableDualStreamMode.html">enableDualStreamMode</a></li>
+        <li><a href="../../rtc_engine/RtcEngine/enableEncryption.html">enableEncryption</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableFaceDetection.html">enableFaceDetection</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableInEarMonitoring.html">enableInEarMonitoring</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableLastmileTest.html">enableLastmileTest</a></li>
@@ -163,6 +164,7 @@
         <li><a href="../../rtc_engine/RtcEngine/setLogFileSize.html">setLogFileSize</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setLogFilter.html">setLogFilter</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setMaxMetadataSize.html">setMaxMetadataSize</a></li>
+        <li><a href="../../rtc_engine/RtcEngine/setParameters.html">setParameters</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteDefaultVideoStreamType.html">setRemoteDefaultVideoStreamType</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteSubscribeFallbackOption.html">setRemoteSubscribeFallbackOption</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteUserPriority.html">setRemoteUserPriority</a></li>
@@ -228,19 +230,14 @@
 </ul>
 <p><strong>Note</strong></p>
 <ul>
-<li>本地预览默认开启镜像功能。</li>
-<li>使用该方法启用了本地视频预览后，如果直接调用 <a href="../../rtc_engine/RtcEngine/leaveChannel.html">RtcEngine.leaveChannel</a> 退出频道，
-并不会关闭预览。如需关闭预览，请调用 <a href="../../rtc_engine/RtcEngine/stopPreview.html">RtcEngine.stopPreview</a>。</li>
-</ul>
-<p>Before calling this method, you must:</p>
+<li>本地预览默认开启镜像功能。
 <ul>
-<li>Create the RtcLocalView.
-<ul>
-<li>(Android only) See <a href="../../rtc_local_view/SurfaceView-class.html">SurfaceView</a>.</li>
-<li>(iOS only) See <a href="../../rtc_local_view/TextureView-class.html">TextureView</a>. // TODO iOS 不支持 TextureView</li>
+<li>（仅 Android）详见 <a href="../../rtc_local_view/TextureView-class.html">TextureView</a> 和 <a href="../../rtc_local_view/SurfaceView-class.html">SurfaceView</a>。</li>
+<li>（仅 iOS）详见 <a href="https://developer.apple.com/documentation/uikit/uiview">UIView</a>.</li>
 </ul>
 </li>
-<li>Call the <a href="../../rtc_engine/RtcEngine/enableVideo.html">RtcEngine.enableVideo</a> method to enable the video.</li>
+<li>使用该方法启用了本地视频预览后，如果直接调用 <a href="../../rtc_engine/RtcEngine/leaveChannel.html">RtcEngine.leaveChannel</a> 退出频道，
+并不会关闭预览。如需关闭预览，请调用 <a href="../../rtc_engine/RtcEngine/stopPreview.html">RtcEngine.stopPreview</a>。</li>
 </ul>
     </section>
     

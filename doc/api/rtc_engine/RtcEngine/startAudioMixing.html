@@ -81,6 +81,7 @@
         <li><a href="../../rtc_engine/RtcEngine/enableAudio.html">enableAudio</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableAudioVolumeIndication.html">enableAudioVolumeIndication</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableDualStreamMode.html">enableDualStreamMode</a></li>
+        <li><a href="../../rtc_engine/RtcEngine/enableEncryption.html">enableEncryption</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableFaceDetection.html">enableFaceDetection</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableInEarMonitoring.html">enableInEarMonitoring</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableLastmileTest.html">enableLastmileTest</a></li>
@@ -163,6 +164,7 @@
         <li><a href="../../rtc_engine/RtcEngine/setLogFileSize.html">setLogFileSize</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setLogFilter.html">setLogFilter</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setMaxMetadataSize.html">setMaxMetadataSize</a></li>
+        <li><a href="../../rtc_engine/RtcEngine/setParameters.html">setParameters</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteDefaultVideoStreamType.html">setRemoteDefaultVideoStreamType</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteSubscribeFallbackOption.html">setRemoteSubscribeFallbackOption</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteUserPriority.html">setRemoteUserPriority</a></li>
@@ -238,22 +240,22 @@
 <li>如果本地音乐文件不存在、文件格式不支持、无法访问在线音乐文件 URL 都会返回警告码 <a href="../../rtc_engine/AudioMixingErrorCode-class.html">AudioMixingErrorCode.CanNotOpen</a> = 701。</li>
 <li>如果在模拟器上使用该 API，暂时只支持存放在 /sdcard/ 中的 mp3 文件。</li>
 </ul>
-<p>Param <code>filePath</code> 指定需要混音的本地或在线音频文件的绝对路径（包含文件名后缀），如 <code>/sdcard/emulated/0/audio.mp4</code>。支持的音频格式包括：mp3、mp4、m4a、aac、3gp、mkv 及 wav。</p>
+<p><strong>Parameter</strong> <code>filePath</code> 指定需要混音的本地或在线音频文件的绝对路径（包含文件名后缀），如 <code>/sdcard/emulated/0/audio.mp4</code>。支持的音频格式包括：mp3、mp4、m4a、aac、3gp、mkv 及 wav。</p>
 <ul>
 <li>如果用户提供的目录以 <code>/assets/</code> 开头，则去 assets 里面查找该文件。</li>
 <li>如果用户提供的目录不是以 <code>/assets/</code> 开头，一律认为是在绝对路径里查找该文件。</li>
 </ul>
-<p>Param <code>loopback</code></p>
+<p><strong>Parameter</strong> <code>loopback</code></p>
 <ul>
-<li>true：只有本地可以听到混音或替换后的音频流。</li>
-<li>false：本地和对方都可以听到混音或替换后的音频流。</li>
+<li><code>true</code>：只有本地可以听到混音或替换后的音频流。</li>
+<li><code>false</code>：本地和对方都可以听到混音或替换后的音频流。</li>
 </ul>
-<p>Param <code>replace</code></p>
+<p><strong>Parameter</strong> <code>replace</code></p>
 <ul>
-<li>true：只推动设置的本地音频文件或者线上音频文件，不传输麦克风收录的音频。</li>
-<li>false：音频文件内容将会和麦克风采集的音频流进行混音。</li>
+<li><code>true</code>：只推动设置的本地音频文件或者线上音频文件，不传输麦克风收录的音频。</li>
+<li><code>false</code>：音频文件内容将会和麦克风采集的音频流进行混音。</li>
 </ul>
-<p>Param <code>cycle</code> 音频文件循环播放的次数：</p>
+<p><strong>Parameter</strong> <code>cycle</code> 音频文件循环播放的次数：</p>
 <ul>
 <li>正整数：循环的次数。</li>
 <li>-1：无限循环。</li>
@@ -263,8 +265,8 @@
     <section class="summary source-code" id="source">
       <h2><span>Implementation</span></h2>
       <pre class="language-dart"><code class="language-dart">@override
-Future&lt;void&gt; startAudioMixing(String filePath, bool loopback, bool replace,
-    int cycle) {
+Future&lt;void&gt; startAudioMixing(
+    String filePath, bool loopback, bool replace, int cycle) {
   return _invokeMethod(&#39;startAudioMixing&#39;, {
     &#39;filePath&#39;: filePath,
     &#39;loopback&#39;: loopback,

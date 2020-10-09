@@ -81,6 +81,7 @@
         <li><a href="../../rtc_engine/RtcEngine/enableAudio.html">enableAudio</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableAudioVolumeIndication.html">enableAudioVolumeIndication</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableDualStreamMode.html">enableDualStreamMode</a></li>
+        <li><a href="../../rtc_engine/RtcEngine/enableEncryption.html">enableEncryption</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableFaceDetection.html">enableFaceDetection</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableInEarMonitoring.html">enableInEarMonitoring</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableLastmileTest.html">enableLastmileTest</a></li>
@@ -163,6 +164,7 @@
         <li><a href="../../rtc_engine/RtcEngine/setLogFileSize.html">setLogFileSize</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setLogFilter.html">setLogFilter</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setMaxMetadataSize.html">setMaxMetadataSize</a></li>
+        <li><a href="../../rtc_engine/RtcEngine/setParameters.html">setParameters</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteDefaultVideoStreamType.html">setRemoteDefaultVideoStreamType</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteSubscribeFallbackOption.html">setRemoteSubscribeFallbackOption</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteUserPriority.html">setRemoteUserPriority</a></li>
@@ -208,6 +210,11 @@
       <div><h1><span class="kind-method">renewToken</span> method </h1></div>
 
     <section class="multi-line-signature">
+      <div>
+        <ol class="annotation-list">
+          <li>@<a href="https://api.flutter.dev/flutter/dart-core/override-constant.html">override</a></li>
+        </ol>
+      </div>
       <span class="returntype"><a href="https://api.flutter.dev/flutter/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">void</span>&gt;</span></span>
             <span class="name ">renewToken</span>
 (<wbr><ol class="parameter-list"><li><span class="parameter" id="renewToken-param-token"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">token</span></span></li>
@@ -220,14 +227,15 @@
 调用 <code>renewToken</code> 更新 Token，否则 SDK 无法和服务器建立连接：</p>
 <ul>
 <li>发生 <a href="../../rtc_engine/RtcEngineEventHandler/tokenPrivilegeWillExpire.html">RtcEngineEventHandler.tokenPrivilegeWillExpire</a> 回调时。</li>
-<li><a href="../../rtc_engine/RtcEngineEventHandler/connectionStateChanged.html">RtcEngineEventHandler.connectionStateChanged</a> 回调报告 <a href="9">ConnectionChangedReason.TokenExpired</a> 时。</li>
+<li><a href="../../rtc_engine/RtcEngineEventHandler/connectionStateChanged.html">RtcEngineEventHandler.connectionStateChanged</a> 回调报告 <a href="../../rtc_engine/ConnectionChangedReason-class.html">ConnectionChangedReason.TokenExpired</a> 时。</li>
 </ul>
-<p>Param <code>token</code> 新的 Token。</p>
+<p><strong>Parameter</strong> <code>token</code> 新的 Token。</p>
     </section>
     
     <section class="summary source-code" id="source">
       <h2><span>Implementation</span></h2>
-      <pre class="language-dart"><code class="language-dart">Future&lt;void&gt; renewToken(String token) {
+      <pre class="language-dart"><code class="language-dart">@override
+Future&lt;void&gt; renewToken(String token) {
   return _invokeMethod(&#39;renewToken&#39;, {&#39;token&#39;: token});
 }</code></pre>
     </section>

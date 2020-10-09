@@ -60,6 +60,7 @@
       <li><a href="../rtc_engine/ChannelMediaOptions-class.html">ChannelMediaOptions</a></li>
       <li><a href="../rtc_engine/ChannelMediaRelayConfiguration-class.html">ChannelMediaRelayConfiguration</a></li>
       <li><a href="../rtc_engine/Color-class.html">Color</a></li>
+      <li><a href="../rtc_engine/EncryptionConfig-class.html">EncryptionConfig</a></li>
       <li><a href="../rtc_engine/FacePositionInfo-class.html">FacePositionInfo</a></li>
       <li><a href="../rtc_engine/JsonSerializable-class.html">JsonSerializable</a></li>
       <li><a href="../rtc_engine/LastmileProbeConfig-class.html">LastmileProbeConfig</a></li>
@@ -88,6 +89,7 @@
     
     
       <li class="section-title"><a href="../rtc_engine/rtc_engine-library.html#enums">Enums</a></li>
+      <li><a href="../rtc_engine/AreaCode-class.html">AreaCode</a></li>
       <li><a href="../rtc_engine/AudioChannel-class.html">AudioChannel</a></li>
       <li><a href="../rtc_engine/AudioCodecProfileType-class.html">AudioCodecProfileType</a></li>
       <li><a href="../rtc_engine/AudioEqualizationBandFrequency-class.html">AudioEqualizationBandFrequency</a></li>
@@ -104,7 +106,6 @@
       <li><a href="../rtc_engine/AudioReverbType-class.html">AudioReverbType</a></li>
       <li><a href="../rtc_engine/AudioSampleRateType-class.html">AudioSampleRateType</a></li>
       <li><a href="../rtc_engine/AudioScenario-class.html">AudioScenario</a></li>
-      <li><a href="../rtc_engine/AudioSessionOperationRestriction-class.html">AudioSessionOperationRestriction</a></li>
       <li><a href="../rtc_engine/AudioVoiceChanger-class.html">AudioVoiceChanger</a></li>
       <li><a href="../rtc_engine/BitRate-class.html">BitRate</a></li>
       <li><a href="../rtc_engine/CameraCaptureOutputPreference-class.html">CameraCaptureOutputPreference</a></li>
@@ -120,20 +121,19 @@
       <li><a href="../rtc_engine/EncryptionMode-class.html">EncryptionMode</a></li>
       <li><a href="../rtc_engine/ErrorCode-class.html">ErrorCode</a></li>
       <li><a href="../rtc_engine/InjectStreamStatus-class.html">InjectStreamStatus</a></li>
-      <li><a href="../rtc_engine/IPAreaCode-class.html">IPAreaCode</a></li>
       <li><a href="../rtc_engine/LastmileProbeResultState-class.html">LastmileProbeResultState</a></li>
       <li><a href="../rtc_engine/LighteningContrastLevel-class.html">LighteningContrastLevel</a></li>
       <li><a href="../rtc_engine/LocalVideoStreamError-class.html">LocalVideoStreamError</a></li>
       <li><a href="../rtc_engine/LocalVideoStreamState-class.html">LocalVideoStreamState</a></li>
       <li><a href="../rtc_engine/LogFilter-class.html">LogFilter</a></li>
-      <li><a href="../rtc_engine/MediaDeviceType-class.html">MediaDeviceType</a></li>
       <li><a href="../rtc_engine/NetworkQuality-class.html">NetworkQuality</a></li>
       <li><a href="../rtc_engine/NetworkType-class.html">NetworkType</a></li>
-      <li><a href="../rtc_engine/RtcDefaultCameraPosition-class.html">RtcDefaultCameraPosition</a></li>
       <li><a href="../rtc_engine/RtmpStreamingErrorCode-class.html">RtmpStreamingErrorCode</a></li>
+      <li><a href="../rtc_engine/RtmpStreamingEvent-class.html">RtmpStreamingEvent</a></li>
       <li><a href="../rtc_engine/RtmpStreamingState-class.html">RtmpStreamingState</a></li>
-      <li><a href="../rtc_engine/RtmpStreamLifeCycle-class.html">RtmpStreamLifeCycle</a></li>
       <li><a href="../rtc_engine/StreamFallbackOptions-class.html">StreamFallbackOptions</a></li>
+      <li><a href="../rtc_engine/StreamPublishState-class.html">StreamPublishState</a></li>
+      <li><a href="../rtc_engine/StreamSubscribeState-class.html">StreamSubscribeState</a></li>
       <li><a href="../rtc_engine/UserOfflineReason-class.html">UserOfflineReason</a></li>
       <li><a href="../rtc_engine/UserPriority-class.html">UserPriority</a></li>
       <li><a href="../rtc_engine/VideoCodecProfileType-class.html">VideoCodecProfileType</a></li>
@@ -156,7 +156,7 @@
       <div><h1><span class="kind-enum">EncryptionMode</span> enum  </h1></div>
 
     <section class="desc markdown">
-      <p>加密模式。// TODO 英文也删一下 @enume string</p>
+      <p>加密模式。</p>
     </section>
     
 
@@ -170,7 +170,7 @@
                   </dt>
         <dd>
           <p>128 位 AES 加密，ECB 模式。</p> 
-                  <div class="features">@JsonValue(&#39;aes-128-ecb&#39;)</div>
+                  <div class="features">@JsonValue(2)</div>
   <div>
             <span class="signature"><code>const EncryptionMode(2)</code></span>
           </div>
@@ -181,9 +181,9 @@
                   </dt>
         <dd>
           <p>（默认）128 位 AES 加密，XTS 模式。</p> 
-                  <div class="features">@JsonValue(&#39;aes-128-xts&#39;)</div>
+                  <div class="features">@JsonValue(1)</div>
   <div>
-            <span class="signature"><code>const EncryptionMode(0)</code></span>
+            <span class="signature"><code>const EncryptionMode(1)</code></span>
           </div>
         </dd>
         <dt id="AES256XTS" class="constant">
@@ -192,9 +192,33 @@
                   </dt>
         <dd>
           <p>256 位 AES 加密，XTS 模式。</p> 
-                  <div class="features">@JsonValue(&#39;aes-256-xts&#39;)</div>
+                  <div class="features">@JsonValue(3)</div>
   <div>
-            <span class="signature"><code>const EncryptionMode(1)</code></span>
+            <span class="signature"><code>const EncryptionMode(3)</code></span>
+          </div>
+        </dd>
+        <dt id="None" class="constant">
+          <span class="name ">None</span>
+          <span class="signature">&#8594; const <a href="../rtc_engine/EncryptionMode-class.html">EncryptionMode</a></span>
+                  </dt>
+        <dd>
+          <p><strong>Deprecated</strong>
+该模式已废弃。</p> 
+                  <div class="features">@JsonValue(0)</div>
+  <div>
+            <span class="signature"><code>const EncryptionMode(0)</code></span>
+          </div>
+        </dd>
+        <dt id="SM4128ECB" class="constant">
+          <span class="name ">SM4128ECB</span>
+          <span class="signature">&#8594; const <a href="../rtc_engine/EncryptionMode-class.html">EncryptionMode</a></span>
+                  </dt>
+        <dd>
+          <p>128 位 SM4 加密，ECB 模式。</p>
+<p>@since v3.1.2。</p> 
+                  <div class="features">@JsonValue(4)</div>
+  <div>
+            <span class="signature"><code>const EncryptionMode(4)</code></span>
           </div>
         </dd>
         <dt id="values" class="constant">
@@ -291,6 +315,8 @@
       <li>AES128ECB</li>
       <li>AES128XTS</li>
       <li>AES256XTS</li>
+      <li>None</li>
+      <li>SM4128ECB</li>
       <li>values</li>
     
     

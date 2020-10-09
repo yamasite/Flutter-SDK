@@ -64,8 +64,9 @@
       <li class="inherited"><a href="../../rtc_remote_view/TextureView/gestureRecognizers.html">gestureRecognizers</a></li>
       <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/Widget/hashCode.html">hashCode</a></li>
       <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/Widget/key.html">key</a></li>
-      <li class="inherited"><a href="../../rtc_remote_view/TextureView/mirror.html">mirror</a></li>
+      <li class="inherited"><a href="../../rtc_remote_view/TextureView/mirrorMode.html">mirrorMode</a></li>
       <li class="inherited"><a href="../../rtc_remote_view/TextureView/onPlatformViewCreated.html">onPlatformViewCreated</a></li>
+      <li class="inherited"><a href="../../rtc_remote_view/TextureView/renderMode.html">renderMode</a></li>
       <li class="inherited"><a href="https://api.flutter.dev/flutter/dart-core/Object/runtimeType.html">runtimeType</a></li>
       <li class="inherited"><a href="../../rtc_remote_view/TextureView/uid.html">uid</a></li>
     
@@ -97,8 +98,9 @@
       
       <span class="name ">TextureView</span>(<wbr><ol class="parameter-list"><li><span class="parameter" id="-param-key">{<span class="type-annotation"><a href="https://api.flutter.dev/flutter/foundation/Key-class.html">Key</a></span> <span class="parameter-name">key</span>, </span></li>
 <li><span class="parameter" id="-param-uid"><span>@<a href="https://api.flutter.dev/flutter/widgets/required-constant.html">required</a></span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">uid</span>, </span></li>
+<li><span class="parameter" id="-param-renderMode"><span class="type-annotation"><a href="../../rtc_engine/VideoRenderMode-class.html">VideoRenderMode</a></span> <span class="parameter-name">renderMode</span>: <span class="default-value">VideoRenderMode.Hidden</span>, </span></li>
 <li><span class="parameter" id="-param-channelId"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">channelId</span>, </span></li>
-<li><span class="parameter" id="-param-mirror"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">mirror</span>: <span class="default-value">false</span>, </span></li>
+<li><span class="parameter" id="-param-mirrorMode"><span class="type-annotation"><a href="../../rtc_engine/VideoMirrorMode-class.html">VideoMirrorMode</a></span> <span class="parameter-name">mirrorMode</span>: <span class="default-value">VideoMirrorMode.Auto</span>, </span></li>
 <li><span class="parameter" id="-param-gestureRecognizers"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/Set-class.html">Set</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/foundation/Factory-class.html">Factory</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/gestures/OneSequenceGestureRecognizer-class.html">OneSequenceGestureRecognizer</a></span>&gt;</span></span>&gt;</span></span> <span class="parameter-name">gestureRecognizers</span>, </span></li>
 <li><span class="parameter" id="-param-onPlatformViewCreated"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/services/PlatformViewCreatedCallback.html">PlatformViewCreatedCallback</a></span> <span class="parameter-name">onPlatformViewCreated</span>}</span></li>
 </ol>)
@@ -113,20 +115,21 @@
       <pre class="language-dart"><code class="language-dart">TextureView({
   Key key,
   @required int uid,
+  VideoRenderMode renderMode = VideoRenderMode.Hidden,
   String channelId,
-  bool mirror = false,
+  VideoMirrorMode mirrorMode = VideoMirrorMode.Auto,
   Set&lt;Factory&lt;OneSequenceGestureRecognizer&gt;&gt; gestureRecognizers,
   PlatformViewCreatedCallback onPlatformViewCreated,
-})
-    : assert(uid != 0),
+})  : assert(uid != 0),
       super(
-      key: key,
-      uid: uid,
-      channelId: channelId,
-      mirror: mirror,
-      gestureRecognizers: gestureRecognizers,
-      onPlatformViewCreated: onPlatformViewCreated,
-    );</code></pre>
+        key: key,
+        uid: uid,
+        renderMode: renderMode,
+        channelId: channelId,
+        mirrorMode: mirrorMode,
+        gestureRecognizers: gestureRecognizers,
+        onPlatformViewCreated: onPlatformViewCreated,
+      );</code></pre>
     </section>
 
   </div> <!-- /.main-content -->

@@ -67,6 +67,7 @@
         <li><a href="../../rtc_channel/RtcChannel/adjustUserPlaybackSignalVolume.html">adjustUserPlaybackSignalVolume</a></li>
         <li><a href="../../rtc_channel/RtcChannel/createDataStream.html">createDataStream</a></li>
         <li><a href="../../rtc_channel/RtcChannel/destroy.html">destroy</a></li>
+        <li><a href="../../rtc_channel/RtcChannel/enableEncryption.html">enableEncryption</a></li>
         <li><a href="../../rtc_channel/RtcChannel/getCallId.html">getCallId</a></li>
         <li><a href="../../rtc_channel/RtcChannel/getConnectionState.html">getConnectionState</a></li>
         <li><a href="../../rtc_channel/RtcChannel/joinChannel.html">joinChannel</a></li>
@@ -120,6 +121,11 @@
       <div><h1><span class="kind-method">joinChannelWithUserAccount</span> method </h1></div>
 
     <section class="multi-line-signature">
+      <div>
+        <ol class="annotation-list">
+          <li>@<a href="https://api.flutter.dev/flutter/dart-core/override-constant.html">override</a></li>
+        </ol>
+      </div>
       <span class="returntype"><a href="https://api.flutter.dev/flutter/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">void</span>&gt;</span></span>
             <span class="name ">joinChannelWithUserAccount</span>
 (<wbr><ol class="parameter-list"><li><span class="parameter" id="joinChannelWithUserAccount-param-token"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">token</span>, </span></li>
@@ -137,12 +143,12 @@
 <li>如果想要从不同的设备同时接入同一个频道，请确保每个设备上使用的 User Account 是不同的。</li>
 <li>请确保用于生成 Token 的 App ID 和创建 RtcEngine 对象时用的 App ID 一致。</li>
 </ul>
-<p>Param <code>token</code> 在 App 服务器端生成的用于鉴权的 Token：</p>
+<p><strong>Parameter</strong> <code>token</code> 在 App 服务器端生成的用于鉴权的 Token：</p>
 <ul>
 <li>安全要求不高：你可以使用控制台生成的临时 Token，详见<a href="https://docs.agora.io/cn/Agora%20Platform/token?platform=All%20Platforms#temptoken">获取临时 Token</a>。</li>
 <li>安全要求高：将值设为你的服务端生成的正式 Token，详见<a href="https://docs.agora.io/cn/Agora%20Platform/token?platform=All%20Platforms#generatetoken">从服务端生成 Token</a>。</li>
 </ul>
-<p>Param <code>userAccount</code> 用户 User Account。该参数为必需，最大不超过 255 字节，不可为 null。请确保加入频道的 User Account 的唯一性。
+<p><strong>Parameter</strong> <code>userAccount</code> 用户 User Account。该参数为必需，最大不超过 255 字节，不可为 null。请确保加入频道的 User Account 的唯一性。
 以下为支持的字符集范围（共 89 个字符）：</p>
 <ul>
 <li>26 个小写英文字母 a-z</li>
@@ -151,13 +157,14 @@
 <li>空格</li>
 <li>"!", "#", "$", "%", "&amp;", "(", ")", "+", "-", ":", ";", "&lt;", "=", ".", "&gt;", "?", "@", "<code>", "</code>", "^", "_", " {", "}", "|", "~", ","</li>
 </ul>
-<p>Param <code>options</code> 频道媒体设置选项。详见 <a href="../../rtc_engine/ChannelMediaOptions-class.html">ChannelMediaOptions</a>。</p>
+<p><strong>Parameter</strong> <code>options</code> 频道媒体设置选项。详见 <a href="../../rtc_engine/ChannelMediaOptions-class.html">ChannelMediaOptions</a>。</p>
     </section>
     
     <section class="summary source-code" id="source">
       <h2><span>Implementation</span></h2>
-      <pre class="language-dart"><code class="language-dart">Future&lt;void&gt; joinChannelWithUserAccount(String token, String userAccount,
-    ChannelMediaOptions options) {
+      <pre class="language-dart"><code class="language-dart">@override
+Future&lt;void&gt; joinChannelWithUserAccount(
+  String token, String userAccount, ChannelMediaOptions options) {
   return _invokeMethod(&#39;joinChannelWithUserAccount&#39;, {
     &#39;token&#39;: token,
     &#39;userAccount&#39;: userAccount,

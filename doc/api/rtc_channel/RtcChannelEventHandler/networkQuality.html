@@ -61,6 +61,8 @@
             <a href="../../rtc_channel/RtcChannelEventHandler-class.html#instance-properties">Properties</a>
         </li>
         <li><a href="../../rtc_channel/RtcChannelEventHandler/activeSpeaker.html">activeSpeaker</a></li>
+        <li><a href="../../rtc_channel/RtcChannelEventHandler/audioPublishStateChanged.html">audioPublishStateChanged</a></li>
+        <li><a href="../../rtc_channel/RtcChannelEventHandler/audioSubscribeStateChanged.html">audioSubscribeStateChanged</a></li>
         <li><a href="../../rtc_channel/RtcChannelEventHandler/channelMediaRelayEvent.html">channelMediaRelayEvent</a></li>
         <li><a href="../../rtc_channel/RtcChannelEventHandler/channelMediaRelayStateChanged.html">channelMediaRelayStateChanged</a></li>
         <li><a href="../../rtc_channel/RtcChannelEventHandler/clientRoleChanged.html">clientRoleChanged</a></li>
@@ -81,6 +83,7 @@
         <li><a href="../../rtc_channel/RtcChannelEventHandler/remoteVideoStats.html">remoteVideoStats</a></li>
         <li><a href="../../rtc_channel/RtcChannelEventHandler/requestToken.html">requestToken</a></li>
         <li><a href="../../rtc_channel/RtcChannelEventHandler/rtcStats.html">rtcStats</a></li>
+        <li><a href="../../rtc_channel/RtcChannelEventHandler/rtmpStreamingEvent.html">rtmpStreamingEvent</a></li>
         <li><a href="../../rtc_channel/RtcChannelEventHandler/rtmpStreamingStateChanged.html">rtmpStreamingStateChanged</a></li>
         <li class="inherited"><a href="https://api.flutter.dev/flutter/dart-core/Object/runtimeType.html">runtimeType</a></li>
         <li><a href="../../rtc_channel/RtcChannelEventHandler/streamInjectedStatus.html">streamInjectedStatus</a></li>
@@ -90,7 +93,9 @@
         <li><a href="../../rtc_channel/RtcChannelEventHandler/transcodingUpdated.html">transcodingUpdated</a></li>
         <li><a href="../../rtc_channel/RtcChannelEventHandler/userJoined.html">userJoined</a></li>
         <li><a href="../../rtc_channel/RtcChannelEventHandler/userOffline.html">userOffline</a></li>
+        <li><a href="../../rtc_channel/RtcChannelEventHandler/videoPublishStateChanged.html">videoPublishStateChanged</a></li>
         <li><a href="../../rtc_channel/RtcChannelEventHandler/videoSizeChanged.html">videoSizeChanged</a></li>
+        <li><a href="../../rtc_channel/RtcChannelEventHandler/videoSubscribeStateChanged.html">videoSubscribeStateChanged</a></li>
         <li><a href="../../rtc_channel/RtcChannelEventHandler/warning.html">warning</a></li>
     
         <li class="section-title"><a href="../../rtc_channel/RtcChannelEventHandler-class.html#instance-methods">Methods</a></li>
@@ -120,6 +125,14 @@
           <p>通话中每个用户的网络上下行 last mile 质量报告回调。</p>
 <p>该回调描述每个用户在通话中的 last mile 网络状态，其中 last mile 是指设备到 Agora 边缘服务器的网络状态。
 该回调每 2 秒触发一次。如果远端有多个用户/主播，该回调每 2 秒会被触发多次。</p>
+<p><code>NetworkQualityWithUidCallback</code> 包含如下参数：</p>
+<ul>
+<li><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a> <code>uid</code>：用户 ID。表示该回调报告的是持有该 ID 的用户的网络质量。当 <code>uid</code> 为 0 时，返回的是本地用户的网络质量。</li>
+<li><a href="../../rtc_engine/NetworkQuality-class.html">NetworkQuality</a> <code>txQuality</code>：该用户的上行网络质量，基于上行视频的发送码率、上行丢包率、平均往返时延和网络抖动计算。
+该值代表当前的上行网络质量，帮助判断是否可以支持当前设置的视频编码属性。假设上行码率是 1000 Kbps，
+那么支持 640 × 480 的分辨率、30 fps 的帧率没有问题，但是支持 1280 x 720 的分辨率就会有困难。</li>
+<li><a href="../../rtc_engine/NetworkQuality-class.html">NetworkQuality</a> <code>rxQuality</code>：该用户的下行网络质量，基于下行网络的丢包率、平均往返延时和网络抖动计算。</li>
+</ul>
         </section>
                 <section class="summary source-code" id="source">
           <h2><span>Implementation</span></h2>

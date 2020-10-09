@@ -81,6 +81,7 @@
         <li><a href="../../rtc_engine/RtcEngine/enableAudio.html">enableAudio</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableAudioVolumeIndication.html">enableAudioVolumeIndication</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableDualStreamMode.html">enableDualStreamMode</a></li>
+        <li><a href="../../rtc_engine/RtcEngine/enableEncryption.html">enableEncryption</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableFaceDetection.html">enableFaceDetection</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableInEarMonitoring.html">enableInEarMonitoring</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableLastmileTest.html">enableLastmileTest</a></li>
@@ -163,6 +164,7 @@
         <li><a href="../../rtc_engine/RtcEngine/setLogFileSize.html">setLogFileSize</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setLogFilter.html">setLogFilter</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setMaxMetadataSize.html">setMaxMetadataSize</a></li>
+        <li><a href="../../rtc_engine/RtcEngine/setParameters.html">setParameters</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteDefaultVideoStreamType.html">setRemoteDefaultVideoStreamType</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteSubscribeFallbackOption.html">setRemoteSubscribeFallbackOption</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteUserPriority.html">setRemoteUserPriority</a></li>
@@ -210,6 +212,7 @@
     <section class="multi-line-signature">
       <div>
         <ol class="annotation-list">
+          <li>@<a href="https://api.flutter.dev/flutter/dart-core/override-constant.html">override</a></li>
           <li>@<a href="https://api.flutter.dev/flutter/dart-core/deprecated-constant.html">deprecated</a></li>
         </ol>
       </div>
@@ -225,16 +228,17 @@
 该方法已废弃。自 v3.0.1 起，SDK 自动开启与 Web SDK 的互通，无需调用该方法开启。</p>
 <p>该方法打开或关闭与 Agora Web SDK 的互通。如果有用户通过 Web SDK 加入频道，请确保调用该方法，否则 Web 端用户看 Native 端的画面会是黑屏。</p>
 <p>该方法仅在直播场景下适用，通信场景下默认互通是打开的。</p>
-<p>Param <code>enabled</code> 是否打开与 Agora Web SDK 的互通：</p>
+<p><strong>Parameter</strong> <code>enabled</code> 是否打开与 Agora Web SDK 的互通：</p>
 <ul>
-<li>true：打开互通。</li>
-<li>false：（默认）关闭互通。</li>
+<li><code>true</code>：打开互通。</li>
+<li><code>false</code>：（默认）关闭互通。</li>
 </ul>
     </section>
     
     <section class="summary source-code" id="source">
       <h2><span>Implementation</span></h2>
-      <pre class="language-dart"><code class="language-dart">@deprecated
+      <pre class="language-dart"><code class="language-dart">@override
+@deprecated
 Future&lt;void&gt; enableWebSdkInteroperability(bool enabled) {
   return _invokeMethod(&#39;enableWebSdkInteroperability&#39;, {&#39;enabled&#39;: enabled});
 }</code></pre>

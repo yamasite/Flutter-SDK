@@ -81,6 +81,7 @@
         <li><a href="../../rtc_engine/RtcEngine/enableAudio.html">enableAudio</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableAudioVolumeIndication.html">enableAudioVolumeIndication</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableDualStreamMode.html">enableDualStreamMode</a></li>
+        <li><a href="../../rtc_engine/RtcEngine/enableEncryption.html">enableEncryption</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableFaceDetection.html">enableFaceDetection</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableInEarMonitoring.html">enableInEarMonitoring</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableLastmileTest.html">enableLastmileTest</a></li>
@@ -163,6 +164,7 @@
         <li><a href="../../rtc_engine/RtcEngine/setLogFileSize.html">setLogFileSize</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setLogFilter.html">setLogFilter</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setMaxMetadataSize.html">setMaxMetadataSize</a></li>
+        <li><a href="../../rtc_engine/RtcEngine/setParameters.html">setParameters</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteDefaultVideoStreamType.html">setRemoteDefaultVideoStreamType</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteSubscribeFallbackOption.html">setRemoteSubscribeFallbackOption</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteUserPriority.html">setRemoteUserPriority</a></li>
@@ -223,14 +225,14 @@
     <section class="desc markdown">
       <p>停止/恢复接收指定视频流。</p>
 <p><strong>Note</strong></p>
-<p>如果之前有调用过 <a href="true">RtcEngine.muteAllRemoteVideoStreams</a> 停止接收所有远端视频流，
-在调用本 API 之前请确保你已调用 <a href="false">RtcEngine.muteAllRemoteVideoStreams</a>。
+<p>如果之前有调用过 <a href="../../rtc_engine/RtcEngine/muteAllRemoteVideoStreams.html">RtcEngine.muteAllRemoteVideoStreams</a> (<code>true</code>) 停止接收所有远端视频流，
+在调用本 API 之前请确保你已调用 <a href="../../rtc_engine/RtcEngine/muteAllRemoteVideoStreams.html">RtcEngine.muteAllRemoteVideoStreams</a> (<code>false</code>)。
 <a href="../../rtc_engine/RtcEngine/muteAllRemoteVideoStreams.html">RtcEngine.muteAllRemoteVideoStreams</a> 是全局控制，<a href="../../rtc_engine/RtcEngine/muteRemoteVideoStream.html">RtcEngine.muteRemoteVideoStream</a> 是精细控制。</p>
-<p>Param <code>uid</code> 指定的用户 ID。</p>
-<p>Param <code>muted</code> 是否停止接收指定用户的视频流：</p>
+<p><strong>Parameter</strong> <code>uid</code> 指定的用户 ID。</p>
+<p><strong>Parameter</strong> <code>muted</code> 是否停止接收指定用户的视频流：</p>
 <ul>
-<li>true：停止接收指定用户的视频流。</li>
-<li>false：（默认）继续接收指定用户的视频流。</li>
+<li><code>true</code>：停止接收指定用户的视频流。</li>
+<li><code>false</code>：（默认）继续接收指定用户的视频流。</li>
 </ul>
     </section>
     

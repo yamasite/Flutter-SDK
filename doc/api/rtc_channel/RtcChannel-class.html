@@ -69,7 +69,7 @@
       <div><h1><span class="kind-class">RtcChannel</span> class  </h1></div>
 
     <section class="desc markdown">
-      <p><code>`RtcChannel`</code> 类。</p>
+      <p><a href="../rtc_channel/RtcChannel-class.html">RtcChannel</a> 类。</p>
     </section>
     
 
@@ -143,6 +143,15 @@
                   </dt>
         <dd>
           销毁当前的 <a href="../rtc_channel/RtcChannel-class.html">RtcChannel</a> 对象。 
+                  
+</dd>
+        <dt id="enableEncryption" class="callable">
+          <span class="name"><a href="../rtc_channel/RtcChannel/enableEncryption.html">enableEncryption</a></span><span class="signature">(<wbr><span class="parameter" id="enableEncryption-param-enabled"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">enabled</span>, </span><span class="parameter" id="enableEncryption-param-config"><span class="type-annotation"><a href="../rtc_engine/EncryptionConfig-class.html">EncryptionConfig</a></span> <span class="parameter-name">config</span></span>)
+            <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">void</span>&gt;</span></span>
+          </span>
+                  </dt>
+        <dd>
+          开启或关闭内置加密。 <a href="../rtc_channel/RtcChannel/enableEncryption.html">[...]</a>
                   
 </dd>
         <dt id="getCallId" class="callable">
@@ -377,7 +386,7 @@
                   </dt>
         <dd>
           设置默认订阅的视频流类型。
-Param <code>streamType</code> 设置视频流大小类型。详见 <a href="../rtc_engine/VideoStreamType-class.html">VideoStreamType</a>。 
+<strong>Parameter</strong> <code>streamType</code> 设置视频流大小类型。详见 <a href="../rtc_engine/VideoStreamType-class.html">VideoStreamType</a>。 
                   
 </dd>
         <dt id="setRemoteUserPriority" class="callable">
@@ -440,7 +449,8 @@ Param <code>streamType</code> 设置视频流大小类型。详见 <a href="../r
           </span>
                   </dt>
         <dd>
-          停止将本地音视频流发布到本频道。 <a href="../rtc_channel/RtcChannel/unpublish.html">[...]</a>
+          请确保你想要停止发布音视频流的频道 <code>channelId</code>，与当前正在 <a href="../rtc_channel/RtcChannel/publish.html">RtcChannel.publish</a> 音视频流的频道 <code>channelId</code> 一致，
+否则 SDK 会返回 <a href="../rtc_engine/ErrorCode-class.html">ErrorCode.Refused</a>。 
                   
 </dd>
         <dt id="unregisterMediaMetadataObserver" class="callable">
@@ -489,7 +499,7 @@ Param <code>streamType</code> 设置视频流大小类型。详见 <a href="../r
           </span>
                   </dt>
         <dd>
-          创建并返回 <code>`RtcChannel`</code>{@link RtcChannel} 对象。 <a href="../rtc_channel/RtcChannel/create.html">[...]</a>
+          创建并返回 <a href="../rtc_channel/RtcChannel-class.html">RtcChannel</a> 对象。 <a href="../rtc_channel/RtcChannel/create.html">[...]</a>
                   
 </dd>
         <dt id="destroyAll" class="callable">
@@ -523,6 +533,7 @@ Param <code>streamType</code> 设置视频流大小类型。详见 <a href="../r
       <li><a href="../rtc_channel/RtcChannel/adjustUserPlaybackSignalVolume.html">adjustUserPlaybackSignalVolume</a></li>
       <li><a href="../rtc_channel/RtcChannel/createDataStream.html">createDataStream</a></li>
       <li><a href="../rtc_channel/RtcChannel/destroy.html">destroy</a></li>
+      <li><a href="../rtc_channel/RtcChannel/enableEncryption.html">enableEncryption</a></li>
       <li><a href="../rtc_channel/RtcChannel/getCallId.html">getCallId</a></li>
       <li><a href="../rtc_channel/RtcChannel/getConnectionState.html">getConnectionState</a></li>
       <li><a href="../rtc_channel/RtcChannel/joinChannel.html">joinChannel</a></li>

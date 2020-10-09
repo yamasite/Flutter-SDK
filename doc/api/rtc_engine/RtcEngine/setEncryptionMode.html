@@ -81,6 +81,7 @@
         <li><a href="../../rtc_engine/RtcEngine/enableAudio.html">enableAudio</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableAudioVolumeIndication.html">enableAudioVolumeIndication</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableDualStreamMode.html">enableDualStreamMode</a></li>
+        <li><a href="../../rtc_engine/RtcEngine/enableEncryption.html">enableEncryption</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableFaceDetection.html">enableFaceDetection</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableInEarMonitoring.html">enableInEarMonitoring</a></li>
         <li><a href="../../rtc_engine/RtcEngine/enableLastmileTest.html">enableLastmileTest</a></li>
@@ -163,6 +164,7 @@
         <li><a href="../../rtc_engine/RtcEngine/setLogFileSize.html">setLogFileSize</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setLogFilter.html">setLogFilter</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setMaxMetadataSize.html">setMaxMetadataSize</a></li>
+        <li><a href="../../rtc_engine/RtcEngine/setParameters.html">setParameters</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteDefaultVideoStreamType.html">setRemoteDefaultVideoStreamType</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteSubscribeFallbackOption.html">setRemoteSubscribeFallbackOption</a></li>
         <li><a href="../../rtc_engine/RtcEngine/setRemoteUserPriority.html">setRemoteUserPriority</a></li>
@@ -221,11 +223,13 @@
     </section>
     <section class="desc markdown">
       <p>设置内置的加密方案。</p>
+<p><strong>Deprecated</strong>
+自 v3.1.2 起废弃。请改用 <code>enableEncryption</code>。</p>
 <p>Agora SDK 支持内置加密功能，默认使用 <code>AES128XTS</code> 加密方式。如需使用其他加密方式，可以调用该 API 设置。
 同一频道内的所有用户必须设置相同的加密方式和密码才能进行通话。关于这几种加密方式的区别，请参考 AES 加密算法的相关资料。</p>
 <p><strong>Note</strong></p>
 <p>在调用本方法前，请先调用 <a href="../../rtc_engine/RtcEngine/setEncryptionSecret.html">RtcEngine.setEncryptionSecret</a> 启用内置加密功能。</p>
-<p>Param <code>encryptionMode</code> 加密方式。详见 <a href="../../rtc_engine/EncryptionMode-class.html">EncryptionMode</a>。</p>
+<p><strong>Parameter</strong> <code>encryptionMode</code> 加密方式。详见 <a href="../../rtc_engine/EncryptionMode-class.html">EncryptionMode</a>。</p>
     </section>
     
     <section class="summary source-code" id="source">

@@ -67,6 +67,7 @@
         <li><a href="../../rtc_channel/RtcChannel/adjustUserPlaybackSignalVolume.html">adjustUserPlaybackSignalVolume</a></li>
         <li><a href="../../rtc_channel/RtcChannel/createDataStream.html">createDataStream</a></li>
         <li><a href="../../rtc_channel/RtcChannel/destroy.html">destroy</a></li>
+        <li><a href="../../rtc_channel/RtcChannel/enableEncryption.html">enableEncryption</a></li>
         <li><a href="../../rtc_channel/RtcChannel/getCallId.html">getCallId</a></li>
         <li><a href="../../rtc_channel/RtcChannel/getConnectionState.html">getConnectionState</a></li>
         <li><a href="../../rtc_channel/RtcChannel/joinChannel.html">joinChannel</a></li>
@@ -137,18 +138,18 @@
 <p>该方法通过在服务端拉取视频流并发送到频道中，将正在播出的视频输入到正在进行的直播中。可主要应用于赛事直播、多人看视频互动等直播场景。</p>
 <p>调用该方法后，SDK 会在本地触发 <a href="../../rtc_channel/RtcChannelEventHandler/streamInjectedStatus.html">RtcChannelEventHandler.streamInjectedStatus</a> 回调，
 报告输入在线媒体流的状态；成功输入媒体流后，该音视频流会出现在频道中，
-频道内所有用户都会收到 <a href="../../rtc_channel/RtcChannelEventHandler/userJoined.html">RtcChannelEventHandler.userJoined</a>(uid: 666)。</p>
+频道内所有用户都会收到 <a href="../../rtc_channel/RtcChannelEventHandler/userJoined.html">RtcChannelEventHandler.userJoined</a> (uid: 666)。</p>
 <p><strong>Note</strong></p>
 <ul>
 <li>调用该方法前，请确保已开通旁路推流的功能，详见进阶功能《推流到 CDN》中的前提条件。</li>
 <li>该方法仅适用于直播场景中的主播用户。</li>
 </ul>
-<p>Param <code>url</code> 添加到直播中的视频流 URL 地址，支持 RTMP， HLS， FLV 协议传输。</p>
+<p><strong>Parameter</strong> <code>url</code> 添加到直播中的视频流 URL 地址，支持 RTMP， HLS， FLV 协议传输。</p>
 <ul>
 <li>支持的 FLV 音频编码格式：AAC。</li>
 <li>支持的 FLV 视频编码格式：H264 (AVC)。</li>
 </ul>
-<p>Param <code>config</code> <a href="../../rtc_engine/LiveInjectStreamConfig-class.html">LiveInjectStreamConfig</a> 类，外部输入的音视频流的配置。</p>
+<p><strong>Parameter</strong> <code>config</code> <a href="../../rtc_engine/LiveInjectStreamConfig-class.html">LiveInjectStreamConfig</a> 类，外部输入的音视频流的配置。</p>
     </section>
     
     <section class="summary source-code" id="source">
