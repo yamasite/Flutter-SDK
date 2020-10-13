@@ -1030,7 +1030,7 @@ mixin RtcEngineInterface
   /// **Note**
   /// 如需调用本方法，请在调用 [RtcEngine.create] 方法初始化 `RtcEngine` 对象后立即调用，否则可能造成输出日志不完整。
   ///
-  /// **Parameter** [filePath] 日志文件的完整路径。该日志文件为 UTF-8 编码。默认路径为 `/storage/emulated/0/Android/data/<package name>="">/files/agorasdk.log`。
+  /// **Parameter** [filePath] 日志文件的完整路径。该日志文件为 UTF-8 编码。Android 平台默认路径为 `/storage/emulated/0/Android/data/<package name>="">/files/agorasdk.log`，iOS 平台默认路径为 `App Sandbox/Library/caches/agorasdk.log`。
   Future<void> setLogFile(String filePath);
 
   /// 设置日志输出等级
