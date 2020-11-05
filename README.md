@@ -13,7 +13,7 @@ Agora Flutter SDK 基于 Android 和 iOS 平台的 Agora RTC SDK 封装，可在
 <th>描述</th>
 </tr>
 <tr>
-<td><a href="rtc_channel/RtcChannel/create.html">create</a></td>
+<td><a href="rtc_engine/RtcEngine/create.html">create</a></td>
 <td>创建 <code>RtcEngine</code> 实例</td>
 </tr>
 <tr>
