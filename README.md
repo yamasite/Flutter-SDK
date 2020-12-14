@@ -21,7 +21,7 @@ Agora Flutter SDK 基于 Android 和 iOS 平台的 Agora RTC SDK 封装，可在
 <td>创建 <code>RtcEngine</code> 实例（指定访问区域）</td>
 </tr>
 <tr>
-<td><a href ="rtc_channel/RtcChannel/destroy.html">destroy</a></td>
+<td><a href ="rtc_engine/RtcEngine/destroy.html">destroy</a></td>
 <td>销毁 <code>RtcEngine</code> 实例</td>
 </tr>
 <tr>
@@ -43,6 +43,10 @@ Agora Flutter SDK 基于 Android 和 iOS 平台的 Agora RTC SDK 封装，可在
 <tr>
 <td><a href ="rtc_channel/RtcChannel/leaveChannel.html">leaveChannel</a></td>
 <td>离开频道</td>
+</tr>
+<tr>
+<td><a href ="rtc_channel/RtcChannel/destroy.html">destroy</a></td>
+<td>销毁 <code>RtcChannel</code> 实例</td>
 </tr>
 <tr>
 <td><a href ="rtc_channel/RtcChannel/renewToken.html">renewToken</a></td>
