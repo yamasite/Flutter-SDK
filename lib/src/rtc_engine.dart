@@ -69,14 +69,14 @@ class RtcEngine with RtcEngineInterface {
   ///
   /// **Parameter** [areaCode] 服务器的访问区域。该功能为高级设置，适用于有访问安全限制的场景。
   ///
-  /// 支持的区域详见 [`IPAreaCode`]{@link IPAreaCode}。
+  /// 支持的区域详见 `AreaCode`。
   /// 指定访问区域后，集成了 Agora SDK 的 app 会连接指定区域内的 Agora 服务器。
   ///
   /// **Returns**
   /// - 方法调用成功，则返回一个 [RtcEngine] 对象。
   /// - 方法调用失败，则返回错误码。
-  static Future<RtcEngine> createWithAreaCode(String appId,
-      IPAreaCode areaCode) async {
+  static Future<RtcEngine> createWithAreaCode(
+      String appId, AreaCode areaCode) async {
     if (_engine != null) return _engine;
     await _methodChannel.invokeMethod('create', {
       'appId': appId,
@@ -1030,7 +1030,13 @@ mixin RtcEngineInterface
   /// **Note**
   /// 如需调用本方法，请在调用 [RtcEngine.create] 方法初始化 `RtcEngine` 对象后立即调用，否则可能造成输出日志不完整。
   ///
+<<<<<<< Updated upstream
   /// **Parameter** [filePath] 日志文件的完整路径。该日志文件为 UTF-8 编码。Android 平台默认路径为 `/storage/emulated/0/Android/data/<package name>="">/files/agorasdk.log`，iOS 平台默认路径为 `App Sandbox/Library/caches/agorasdk.log`。
+=======
+  /// **Parameter** [filePath] 日志文件的完整路径。该日志文件为 UTF-8 编码。
+  /// - Android 平台：默认路径为 `/storage/emulated/0/Android/data/<package name>="">/files/agorasdk.log`。
+  /// - iOS 平台：默认路径为 `App Sandbox/Library/caches/agorasdk.log`.
+>>>>>>> Stashed changes
   Future<void> setLogFile(String filePath);
 
   /// 设置日志输出等级

@@ -226,7 +226,11 @@
 <p>设置 SDK 的输出 log 文件。SDK 运行时产生的所有 log 将写入该文件。 App 必须保证指定的目录存在而且可写。</p>
 <p><strong>Note</strong>
 如需调用本方法，请在调用 <a href="../../rtc_engine/RtcEngine/create.html">RtcEngine.create</a> 方法初始化 <code>RtcEngine</code> 对象后立即调用，否则可能造成输出日志不完整。</p>
-<p><strong>Parameter</strong> <code>filePath</code> 日志文件的完整路径。该日志文件为 UTF-8 编码。默认路径为 <code>/storage/emulated/0/Android/data/&lt;package name&gt;=""&gt;/files/agorasdk.log</code>。</p>
+<p><strong>Parameter</strong> <code>filePath</code> 日志文件的完整路径。该日志文件为 UTF-8 编码。</p>
+<ul>
+<li>Android 平台：默认路径为 <code>/storage/emulated/0/Android/data/&lt;package name&gt;=""&gt;/files/agorasdk.log</code>。</li>
+<li>iOS 平台：默认路径为 <code>App Sandbox/Library/caches/agorasdk.log</code>.</li>
+</ul>
     </section>
     
     <section class="summary source-code" id="source">
