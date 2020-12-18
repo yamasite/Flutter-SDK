@@ -11,55 +11,51 @@ import 'rtc_engine.dart';
 
 final Map<int, MethodChannel> _channels = {};
 
-/// Use SurfaceView in Android.
+/// （仅适用于 Android）SurfaceView 类。
 ///
-/// Use [UIView](https://developer.apple.com/documentation/uikit/uiview) in iOS.
+/// **Note**
+/// 在 iOS 平台，请使用 [UIView](https://developer.apple.com/documentation/uikit/uiview)。
 class RtcSurfaceView extends StatefulWidget {
-  /// User ID.
+  /// 用户 ID。
   final int uid;
 
-  /// The unique channel name for the AgoraRTC session in the string format. The string length must be less than 64 bytes. Supported character scopes are:
-  /// - All lowercase English letters: a to z.
-  /// - All uppercase English letters: A to Z.
-  /// - All numeric characters: 0 to 9.
-  /// - The space character.
-  /// - Punctuation characters and other symbols, including: "!", "#", "$", "%", "&", "(", ")", "+", "-", ":", ";", "<", "=", ".", ">", "?", "@", "[", "]", "^", "_", " {", "}", "|", "~", ",".
+  /// 标识通话的频道名称，长度在 64 字节以内的字符串。以下为支持的字符集范围（共 89 个字符）：
+  /// - 26 个小写英文字母 a-z
+  /// - 26 个大写英文字母 A-Z
+  /// - 10 个数字 0-9
+  /// - 空格
+  /// - "!", "#", "$", "%", "&", "(", ")", "+", "-", ":", ";", "<", "=", ".", ">", "?", "@", "[", "]", "^", "_", " {", "}", "|", "~", ","
   ///
   /// **Note**
-  /// - The default value is the empty string "". Use the default value if the user joins the channel using the [RtcEngine.joinChannel] method in the [RtcEngine] class.
-  /// - If the user joins the channel using the [RtcChannel.joinChannel] method in the [RtcChannel] class, set this parameter as the channelId of the [RtcChannel] object.
+  /// - 该参数的默认值为空字符 ""。如果用户是通过 [RtcEngine] 类的 [RtcEngine.joinChannel] 方法加入频道的， 则将参数设为默认值，表示该用户在频道内的渲染视图。
+  /// - 如果用户是通过 [RtcChannel] 类的 [RtcChannel.joinChannel] 方法加入频道的，则将该参数设为该 [RtcChannel] 类对应的 `channelId`，表示该用户在该 `channelId` 对应频道内的渲染视图。
   final String channelId;
 
-  /// The rendering mode of the video view.
+  /// 视频视图的渲染模式。
   final VideoRenderMode renderMode;
 
-  /// The video mirror mode.
+  /// 视频的镜像模式。
   final VideoMirrorMode mirrorMode;
 
-  /// Control whether the surface view's surface is placed on top of its window.
-  ///
-  /// See [TargetPlatform.android].
+  /// 是否将 SurfaceView 视图的表层置于窗口上层。
+  /// [TargetPlatform.android]
   final bool zOrderOnTop;
 
-  /// Control whether the surface view's surface is placed on top of another regular surface view in the window (but still behind the window itself).
-  ///
-  /// See [TargetPlatform.android].
+  /// 是否将 SurfaceView 视图的表层置于窗口中另一个 SurfaceView 的上层 (但依然位于窗口的下层)。
+  /// [TargetPlatform.android]
   final bool zOrderMediaOverlay;
 
-  /// Callback signature for when a platform view was created.
+  /// 创建平台视图回调。
   ///
-  /// `id` is the platform view's unique identifier.
+  /// `id` 是平台视图的唯一标识。
   final PlatformViewCreatedCallback onPlatformViewCreated;
 
-  /// Which gestures should be consumed by the web view.
+  /// 指定 Web 视图使用的手势。
   ///
-  /// It is possible for other gesture recognizers to be competing with the web view on pointer
-  /// events, e.g if the web view is inside a [ListView] the [ListView] will want to handle
-  /// vertical drags. The web view will claim gestures that are recognized by any of the
-  /// recognizers on this list.
+  /// 如果存在多个手势识别器，其他手势识别器会与 Web 视图竞争指针事件的处权。例如，假设 Web 视图位于 [ListView] 中，
+  /// [ListView] 会争取对垂直方向的拖动手势进行处理。Web 视图将声明已被其他手势识别器识别的手势。
   ///
-  /// When this set is empty or null, the web view will only handle pointer events for gestures that
-  /// were not claimed by any other gesture recognizer.
+  /// 如果该集合为空，Web 视图将仅处理没有被任何手势识别器声明的指针事件。
   final Set<Factory<OneSequenceGestureRecognizer>> gestureRecognizers;
 
   /// Constructs a [RtcSurfaceView]
@@ -202,45 +198,46 @@ class _RtcSurfaceViewState extends State<RtcSurfaceView> {
   }
 }
 
-/// Use TextureView in Android.
-/// Not support for iOS.
+/// （仅适用于 Android） TextureView 类。
+///
+/// **Note**
+/// 在 iOS 平台，请使用 [UIView](https://developer.apple.com/documentation/uikit/uiview)。
+///
 /// [TargetPlatform.android]
 class RtcTextureView extends StatefulWidget {
-  /// User ID.
+  /// 用户 ID。
   final int uid;
 
-  /// The unique channel name for the AgoraRTC session in the string format. The string length must be less than 64 bytes. Supported character scopes are:
-  /// - All lowercase English letters: a to z.
-  /// - All uppercase English letters: A to Z.
-  /// - All numeric characters: 0 to 9.
-  /// - The space character.
-  /// - Punctuation characters and other symbols, including: "!", "#", "$", "%", "&", "(", ")", "+", "-", ":", ";", "<", "=", ".", ">", "?", "@", "[", "]", "^", "_", " {", "}", "|", "~", ",".
+  /// 标识通话的频道名称，长度在 64 字节以内的字符串。以下为支持的字符集范围（共 89 个字符）：
+  /// - 26 个小写英文字母 a-z
+  /// - 26 个大写英文字母 A-Z
+  /// - 10 个数字 0-9
+  /// - 空格
+  /// - "!", "#", "$", "%", "&", "(", ")", "+", "-", ":", ";", "<", "=", ".", ">", "?", "@", "[", "]", "^", "_", " {", "}", "|", "~", ","
   ///
   /// **Note**
-  /// - The default value is the empty string "". Use the default value if the user joins the channel using the [RtcEngine.joinChannel] method in the [RtcEngine] class.
-  /// - If the user joins the channel using the [RtcChannel.joinChannel] method in the [RtcChannel] class, set this parameter as the channelId of the [RtcChannel] object.
+  /// - 该参数的默认值为空字符 ""。如果用户是通过 [RtcEngine] 类的 [RtcEngine.joinChannel] 方法加入频道的， 则将参数设为默认值，表示该用户在频道内的渲染视图。
+  /// - 如果用户是通过 [RtcChannel] 类的 [RtcChannel.joinChannel] 方法加入频道的，则将该参数设为该 [RtcChannel] 类对应的 `channelId`，表示该用户在该 `channelId` 对应频道内的渲染视图。
   final String channelId;
 
-  /// The rendering mode of the video view.
+  /// 视频视图的渲染模式。
   final VideoRenderMode renderMode;
 
-  /// The video mirror mode.
+  /// 视频的镜像模式。
   final VideoMirrorMode mirrorMode;
 
-  /// Callback signature for when a platform view was created.
+  /// 创建平台视图回调。
   ///
-  /// `id` is the platform view's unique identifier.
+  /// `id` 是平台视图的唯一标识。
   final PlatformViewCreatedCallback onPlatformViewCreated;
 
-  /// Which gestures should be consumed by the web view.
+
+  /// 指定 Web 视图使用的手势。
   ///
-  /// It is possible for other gesture recognizers to be competing with the web view on pointer
-  /// events, e.g if the web view is inside a [ListView] the [ListView] will want to handle
-  /// vertical drags. The web view will claim gestures that are recognized by any of the
-  /// recognizers on this list.
+  /// 如果存在多个手势识别器，其他手势识别器会与 Web 视图竞争指针事件的处权。例如，假设 Web 视图位于 [ListView] 中，
+  /// [ListView] 会争取对垂直方向的拖动手势进行处理。Web 视图将声明已被其他手势识别器识别的手势。
   ///
-  /// When this set is empty or null, the web view will only handle pointer events for gestures that
-  /// were not claimed by any other gesture recognizer.
+  /// 如果该集合为空，Web 视图将仅处理没有被任何手势识别器声明的指针事件。
   final Set<Factory<OneSequenceGestureRecognizer>> gestureRecognizers;
 
   /// Constructs a [RtcTextureView]

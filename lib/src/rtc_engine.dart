@@ -1838,7 +1838,7 @@ mixin RtcVoiceChangerInterface {
   ///
   /// 调用该方法可以为本地发流用户设置 SDK 预设的人声美化效果。设置美声效果后，频道内所有用户都能听到该效果。根据不同的场景，你可以为用户设置不同的美声效果， 各美声效果的适用场景可参考《美声与音效》。
   ///
-  /// 为获取更好的人声效果，Agora 推荐你在调用该方法前将 setAudioProfile 的 scenario 设为 AgoraAudioScenarioGameStreaming(3)，并将 profile 设为 AgoraAudioProfileMusicHighQuality(4) 或 AgoraAudioProfileMusicHighQualityStereo(5)。
+  /// 为获取更好的人声效果，Agora 推荐你在调用该方法前将 [RtcEngine.setAudioProfile] 的 `scenario` 设为 `ScenarioGameStreaming(3)`，并将 `profile` 设为 `MusicHighQuality(4)` 或 `MusicHighQualityStereo(5)`。
   ///
   /// **Note**
   /// - 该方法在加入频道前后都能调用。

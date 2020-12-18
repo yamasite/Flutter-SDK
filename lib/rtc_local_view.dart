@@ -6,9 +6,10 @@ import 'package:flutter/widgets.dart';
 import './src/enums.dart';
 import './src/rtc_render_view.dart';
 
-/// (Android only) SurfaceView.
+/// （仅适用于 Android）SurfaceView 类。
 ///
-/// Please use [UIView](https://developer.apple.com/documentation/uikit/uiview) for iOS.
+/// **Note**
+/// 在 iOS 平台，请使用 [UIView](https://developer.apple.com/documentation/uikit/uiview)。
 class SurfaceView extends RtcSurfaceView {
   /// Constructs a [SurfaceView]
   SurfaceView({
@@ -32,7 +33,10 @@ class SurfaceView extends RtcSurfaceView {
             uid: 0);
 }
 
-/// (Android only) TextureView.
+/// 仅适用于 （Android） TextureView 类。
+///
+/// **Note**
+/// 在 iOS 平台，请使用 [UIView](https://developer.apple.com/documentation/uikit/uiview)。
 class TextureView extends RtcTextureView {
   /// Constructs a [TextureView]
   TextureView({

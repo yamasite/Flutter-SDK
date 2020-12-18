@@ -373,7 +373,7 @@ mixin RtcChannelInterface
   ///
   /// **Parameter** [optionalUid] 用户 ID，32 位无符号整数。建议设置范围：1 到 (2<sup>32</sup>-1)，并保证唯一性。
   /// 如果不指定（即设为 0），SDK 会自动分配一个，
-  /// 并在 [`JoinChannelSuccess`]{@link RtcChannelEvents.JoinChannelSuccess} 回调方法中返回，App 层必须记住该返回值并维护，SDK 不对该返回值进行维护。
+  /// 并在 [RtcChannelEvents.JoinChannelSuccess] 回调方法中返回，App 层必须记住该返回值并维护，SDK 不对该返回值进行维护。
   ///
   /// **Parameter** [options] 频道媒体设置选项。详见 [ChannelMediaOptions]。
   Future<void> joinChannel(String token, String optionalInfo, int optionalUid,
@@ -754,11 +754,10 @@ mixin RtcEncryptionInterface {
   /// - `true`: 开启内置加密。
   /// - `false`: 关闭内置加密。
   ///
-  /// **Parameter** [config] 配置内置加密模式和密钥。详见 [`EncryptionConfig`]{@link EncryptionConfig}。
+  /// **Parameter** [config] 配置内置加密模式和密钥。详见 [EncryptionConfig]。
   Future<void> enableEncryption(bool enabled, EncryptionConfig config);
 }
 
-}
 
 mixin RtcInjectStreamInterface {
   /// 输入在线媒体流。

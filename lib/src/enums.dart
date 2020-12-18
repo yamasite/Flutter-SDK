@@ -609,8 +609,7 @@ enum ChannelMediaRelayError {
   @JsonValue(7)
   FailedPacketSentToDestination,
 
-  /// SDK 因网络质量不佳与服务器断开。你可以调用 [`leaveChannel`]{@link RtcEngine.leaveChannel} 方法离开当前频道。
-  /// 详见 [RtcEngine.leaveChannel]。
+  /// SDK 因网络质量不佳与服务器断开。你可以调用 [RtcEngine.leaveChannel] 方法离开当前频道。
   @JsonValue(8)
   ServerConnectionLost,
 
