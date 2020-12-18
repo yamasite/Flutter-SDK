@@ -565,7 +565,7 @@ Agora Flutter SDK 基于 Android 和 iOS 平台的 Agora RTC SDK 封装，可在
 <td>增加旁路推流地址</td>
 </tr>
 <tr>
-<td><a href ="rtc_channel.RtcChannel.removePublishStreamUrl">removePublishStreamUrl</a></td>
+<td><a href ="rtc_channel/RtcChannel/removePublishStreamUrl.html">removePublishStreamUrl</a></td>
 <td>删除旁路推流地址</td>
 </tr>
 </table>
@@ -580,7 +580,7 @@ Agora Flutter SDK 基于 Android 和 iOS 平台的 Agora RTC SDK 封装，可在
 <td>旁路推流状态改变回调</td>
 </tr>
 <tr>
-<td><a href ="rtc_channel.RtcChannelEventHandler.transcodingUpdated">transcodingUpdated</a></td>
+<td><a href ="rtc_channel/RtcChannelEventHandler/transcodingUpdated.html">transcodingUpdated</a></td>
 <td>旁路推流设置已被更新回调</td>
 </tr>
 <tr>
