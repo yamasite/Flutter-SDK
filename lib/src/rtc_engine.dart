@@ -41,8 +41,8 @@ class RtcEngine with RtcEngineInterface {
   ///
   /// **Note**
   /// - 请确保在调用其他 API 前先调用该方法创建并初始化 [RtcEngine]。
-  /// - You can create an [RtcEngine] instance either by calling this method or by calling [RtcEngine.createWithAreaCode]. The difference between [RtcEngine.createWithAreaCode] and this method is that [RtcEngine.createWithAreaCode] enables you to specify the connection area.
   /// - 调用该方法和 [RtcEngine.createWithAreaCode] 均能创建 [RtcEngine] 实例。
+  /// - 该方法与 [RtcEngine.createWithAreaCode] 的区别在于，[RtcEngine.createWithAreaCode] 支持在创建 [RtcEngine] 实例时指定访问区域。
   /// - 目前 Agora Flutter SDK 只支持每个 app 创建一个 [RtcEngine] 实例。
   ///
   /// **Parameter** [appId] Agora 为 app 开发者签发的 App ID，详见[获取 App ID](https://docs.agora.io/cn/Agora%20Platform/token#get-an-app-id)。使用同一个 App ID 的 app 才能进入同一个频道进行通话或直播。一个 App ID 只能用于创建一个 [RtcEngine]。
