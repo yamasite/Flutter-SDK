@@ -15,6 +15,9 @@ class RtcEngine with RtcEngineInterface {
   static const EventChannel _eventChannel =
       EventChannel('agora_rtc_engine/events');
 
+ /// Exposing methodChannel to other files
+  static MethodChannel get methodChannel => _methodChannel;
+
   static RtcEngine _engine;
 
   RtcEngineEventHandler _handler;
@@ -75,6 +78,7 @@ class RtcEngine with RtcEngineInterface {
   /// **Returns**
   /// - 方法调用成功，则返回一个 [RtcEngine] 对象。
   /// - 方法调用失败，则返回错误码。
+  ///   - [ErrorCode.InvalidAppId]
   static Future<RtcEngine> createWithAreaCode(
       String appId, AreaCode areaCode) async {
     if (_engine != null) return _engine;
@@ -90,6 +94,7 @@ class RtcEngine with RtcEngineInterface {
   @override
   Future<void> destroy() {
     RtcChannel.destroyAll();
+    _handler = null;
     _engine = null;
     return _invokeMethod('destroy');
   }
@@ -97,6 +102,7 @@ class RtcEngine with RtcEngineInterface {
   /// 添加 [RtcEngineEventHandler] 回调事件。
   ///
   /// 设置后，你可以通过 [RtcEngineEventHandler] 回调监听对应 [RtcEngine] 对象的事件、获取数据。
+  ///
   /// **Parameter** [handler] [RtcEngineEventHandler] 回调句柄。
   void setEventHandler(RtcEngineEventHandler handler) {
     _handler = handler;
@@ -108,10 +114,12 @@ class RtcEngine with RtcEngineInterface {
         {'profile': ChannelProfileConverter(profile).value()});
   }
 
-  @override
-  Future<void> setClientRole(ClientRole role) {
-    return _invokeMethod(
-        'setClientRole', {'role': ClientRoleConverter(role).value()});
+   @override
+  Future<void> setClientRole(ClientRole role, [ClientRoleOptions options]) {
+    return _invokeMethod('setClientRole', {
+      'role': ClientRoleConverter(role).value(),
+      'options': options?.toJson()
+    });
   }
 
   @override
@@ -196,7 +204,7 @@ class RtcEngine with RtcEngineInterface {
   @override
   Future<UserInfo> getUserInfoByUid(int uid) {
     return _invokeMethod('getUserInfoByUid', {'uid': uid}).then((value) {
-      return UserInfo.fromJson(value);
+      return UserInfo.fromJson(Map<String, dynamic>.from(value));
     });
   }
 
@@ -204,7 +212,7 @@ class RtcEngine with RtcEngineInterface {
   Future<UserInfo> getUserInfoByUserAccount(String userAccount) {
     return _invokeMethod(
         'getUserInfoByUserAccount', {'userAccount': userAccount}).then((value) {
-      return UserInfo.fromJson(value);
+      return UserInfo.fromJson(Map<String, dynamic>.from(value));
     });
   }
 
@@ -618,7 +626,7 @@ class RtcEngine with RtcEngineInterface {
   @override
   Future<void> setDefaultAudioRoutetoSpeakerphone(bool defaultToSpeaker) {
     return _invokeMethod('setDefaultAudioRoutetoSpeakerphone',
-        {'booldefaultToSpeaker': defaultToSpeaker});
+        {'defaultToSpeaker': defaultToSpeaker});
   }
 
   @override
@@ -632,12 +640,14 @@ class RtcEngine with RtcEngineInterface {
   }
 
   @override
+  @deprecated
   Future<void> setEncryptionMode(EncryptionMode encryptionMode) {
     return _invokeMethod('setEncryptionMode',
         {'encryptionMode': EncryptionModeConverter(encryptionMode).value()});
   }
 
   @override
+  @deprecated
   Future<void> setEncryptionSecret(String secret) {
     return _invokeMethod('setEncryptionSecret', {'secret': secret});
   }
@@ -660,6 +670,7 @@ class RtcEngine with RtcEngineInterface {
   }
 
   @override
+   @deprecated
   Future<void> setLocalVoiceChanger(AudioVoiceChanger voiceChanger) {
     return _invokeMethod('setLocalVoiceChanger',
         {'voiceChanger': AudioVoiceChangerConverter(voiceChanger).value()});
@@ -689,6 +700,7 @@ class RtcEngine with RtcEngineInterface {
   }
 
   @override
+  @deprecated
   Future<void> setLocalVoiceReverbPreset(AudioReverbPreset preset) {
     return _invokeMethod('setLocalVoiceReverbPreset',
         {'preset': AudioReverbPresetConverter(preset).value()});
@@ -830,13 +842,63 @@ class RtcEngine with RtcEngineInterface {
   Future<void> setAudioMixingPitch(int pitch) {
     return _invokeMethod('setAudioMixingPitch', {'pitch': pitch});
   }
+
   @override
   Future<void> enableEncryption(bool enabled, EncryptionConfig config) {
     return _invokeMethod(
         'enableEncryption', {'enabled': enabled, 'config': config.toJson()});
   }
+
+  @override
+  Future<void> sendCustomReportMessage(
+      String id, String category, String event, String label, int value) {
+    return _invokeMethod('sendCustomReportMessage', {
+      'id': id,
+      'category': category,
+      'event': event,
+      'label': label,
+      'value': value
+    });
 }
 
+  @override
+  Future<void> setAudioSessionOperationRestriction(
+      AudioSessionOperationRestriction restriction) {
+    return _invokeMethod('setAudioSessionOperationRestriction', {
+      'restriction':
+          AudioSessionOperationRestrictionConverter(restriction).value()
+    });
+  }
+
+  @override
+  Future<int> getNativeHandle() {
+    return _invokeMethod('getNativeHandle');
+  }
+
+  @override
+  Future<void> setAudioEffectParameters(
+      AudioEffectPreset preset, int param1, int param2) {
+    return _invokeMethod('setAudioEffectParameters', {
+      'preset': AudioEffectPresetConverter(preset).value(),
+      'param1': param1,
+      'param2': param2
+    });
+  }
+
+  @override
+  Future<void> setAudioEffectPreset(AudioEffectPreset preset) {
+    return _invokeMethod('setAudioEffectPreset',
+        {'preset': AudioEffectPresetConverter(preset).value()});
+  }
+
+  @override
+  Future<void> setVoiceBeautifierPreset(VoiceBeautifierPreset preset) {
+    return _invokeMethod('setVoiceBeautifierPreset',
+        {'preset': VoiceBeautifierPresetConverter(preset).value()});
+  }
+}
+
+/// @nodoc
 mixin RtcEngineInterface
     implements
         RtcUserInfoInterface,
@@ -1030,13 +1092,9 @@ mixin RtcEngineInterface
   /// **Note**
   /// 如需调用本方法，请在调用 [RtcEngine.create] 方法初始化 `RtcEngine` 对象后立即调用，否则可能造成输出日志不完整。
   ///
-<<<<<<< Updated upstream
-  /// **Parameter** [filePath] 日志文件的完整路径。该日志文件为 UTF-8 编码。Android 平台默认路径为 `/storage/emulated/0/Android/data/<package name>="">/files/agorasdk.log`，iOS 平台默认路径为 `App Sandbox/Library/caches/agorasdk.log`。
-=======
   /// **Parameter** [filePath] 日志文件的完整路径。该日志文件为 UTF-8 编码。
   /// - Android 平台：默认路径为 `/storage/emulated/0/Android/data/<package name>="">/files/agorasdk.log`。
   /// - iOS 平台：默认路径为 `App Sandbox/Library/caches/agorasdk.log`.
->>>>>>> Stashed changes
   Future<void> setLogFile(String filePath);
 
   /// 设置日志输出等级
@@ -1044,7 +1102,6 @@ mixin RtcEngineInterface
   /// 该方法设置 SDK 的日志输出等级。不同的等级可以单独或组合使用。
   ///
   /// 日志级别顺序依次为 `OFF`、`CRITICAL`、`ERROR`、`WARNING`、`INFO` 和 `DEBUG`。选择一个级别，你就可以看到在该级别之前所有级别的日志信息。 例如，你选择 `WARNING` 级别，就可以看到在 `CRITICAL`、`ERROR` 和 `WARNING` 级别上的所有日志信息。
-  ///
   ///
   /// **Parameter** [filter] 日志输出等级。详见 [LogFilter]。
   Future<void> setLogFilter(LogFilter filter);
@@ -1061,10 +1118,15 @@ mixin RtcEngineInterface
   /// JSON 选项默认不公开。声网工程师正在努力寻求以标准化方式公开 JSON 选项。
   ///
   /// **Parameter** [parameters] JSON 字符串形式的参数。
-  /// @nodoc
   Future<void> setParameters(String parameters);
-  }
 
+  /// Gets the native handle of the SDK engine.
+  ///
+  /// This interface is used to retrieve the native C++ handle of the SDK engine used in special scenarios, such as registering the audio and video frame observer.
+  Future<int> getNativeHandle();
+}
+
+/// @nodoc
 mixin RtcUserInfoInterface {
   /// 注册本地用户 User Account。
   ///
@@ -1551,6 +1613,10 @@ mixin RtcAudioMixingInterface {
   /// 获取音乐文件的时长。
   ///
   /// 该方法获取音乐文件时长，单位为毫秒。请在频道内调用该方法。
+  ///
+  /// **Returns**
+  /// - 方法调用成功并返回音乐文件的时长。
+  /// - < 0：方法调用失败。
   Future<int> getAudioMixingDuration();
 
   /// 获取音乐文件的播放进度。
@@ -1681,6 +1747,19 @@ mixin RtcAudioEffectInterface {
 
   /// 恢复播放所有音效文件。
   Future<void> resumeAllEffects();
+
+  /// 设置 SDK 对 Audio Session 的控制权限
+  ///
+  /// 该方法限制 Agora SDK 对 Audio Session 的操作权限。在默认情况下，SDK 和 App 对 Audio Session 都有控制权，但某些场景下，App 会希望限制 Agora SDK 对 Audio Session 的控制权限，而使用其他应用或第三方组件对 Audio Session 进行操控。调用该方法可以实现该功能。
+  ///
+  /// 该接口可以在任意时候调用，可以在任意时候通过该方法把控制权交还给 SDK。
+  ///
+  /// **Note**
+  /// - 一旦调用该方法限制了 Agora SDK 对 Audio Session 的控制权限， SDK 将无法对 Audio Session 进行相关设置，而需要用户自己或第三方组件进行维护。
+  ///
+  /// **Parameter** [restriction] Agora SDK 对 Audio Session 的控制权限，详见 [AudioSessionOperationRestriction].
+  Future<void> setAudioSessionOperationRestriction(
+      AudioSessionOperationRestriction restriction);
 }
 
 mixin RtcVoiceChangerInterface {
@@ -1720,14 +1799,119 @@ mixin RtcVoiceChangerInterface {
   /// 设置本地音效混响。
   ///
   /// **Note**
+  /// - Agora SDK 提供更为简便的接口 [RtcEngine.setLocalVoiceReverbPreset]。 该方法通过一系列内置参数的调整，直接实现流行、R&B、摇滚、嘻哈等预置的混响效果。
   ///
-  /// Agora SDK 提供更为简便的接口 [RtcEngine.setLocalVoiceReverbPreset]，该方法通过一系列内置参数的调整，直接实现流行、R&B、摇滚、嘻哈等预置的混响效果。
-  ///
-  /// **Parameter** [reverbKey] 混响音效 Key。详见 [AudioReverbType]。
+  /// **Parameter** [reverbKey] 混响音效 Key。参考 [AudioReverbType]。
   ///
   /// **Parameter** [value] 各混响音效 Key 所对应的值。
   Future<void> setLocalVoiceReverb(AudioReverbType reverbKey, int value);
+
+  /// 设置 SDK 预设的人声音效。
+  ///
+  /// 自从 v3.2.0
+  ///
+  /// 调用该方法可以为本地发流用户设置 SDK 预设的人声音效，且不会改变原声的性别特征。设置音效后，频道内所有用户都能听到该效果。
+  ///
+  /// 根据不同的场景，你可以为用户设置不同的音效，各音效的适用场景可参考《美声与音效》。
+  ///
+  /// 为获取更好的人声效果，Agora 推荐你在调用该方法前将 [RtcEngine.setAudioProfile] 的 `scenario` 设为 `GameStreaming(3)`。
+  ///
+  ///**Note**
+  /// - 该方法在加入频道前后都能调用。
+  /// - 请勿将 `setAudioProfile` 的 `profile` 参数设置为 `SpeechStandard(1)`，否则该方法会调用失败。
+  /// - 该方法对人声的处理效果最佳，Agora 不推荐调用该方法处理含音乐的音频数据。
+  /// - 如果调用该方法并设置除 `RoomAcoustics3DVoice` 或 `PitchCorrection` 外的枚举，请勿再调用 `setAudioEffectParameters`，否则该方法设置的效果会被覆盖。
+  /// - 调用该方法后，Agora 不推荐调用以下方法，否则该方法设置的效果会被覆盖:
+  ///     - `setVoiceBeautifierPreset`
+  ///     - `setLocalVoiceReverbPreset`
+  ///     - `setLocalVoiceChanger`
+  ///     - `setLocalVoicePitch`
+  ///     - `setLocalVoiceEqualization`
+  ///     - `setLocalVoiceReverb`
+  ///
+  /// **Parameter** [preset] 预设的音效选项: [AudioEffectPreset]。
+  Future<void> setAudioEffectPreset(AudioEffectPreset preset);
+
+  /// 设置 SDK 预设的美声效果。
+  ///
+  /// 自从 v3.2.0
+  ///
+  /// 调用该方法可以为本地发流用户设置 SDK 预设的人声美化效果。设置美声效果后，频道内所有用户都能听到该效果。根据不同的场景，你可以为用户设置不同的美声效果， 各美声效果的适用场景可参考《美声与音效》。
+  ///
+  /// 为获取更好的人声效果，Agora 推荐你在调用该方法前将 setAudioProfile 的 scenario 设为 AgoraAudioScenarioGameStreaming(3)，并将 profile 设为 AgoraAudioProfileMusicHighQuality(4) 或 AgoraAudioProfileMusicHighQualityStereo(5)。
+  ///
+  /// **Note**
+  /// - 该方法在加入频道前后都能调用。
+  /// - 请勿将 `setAudioProfile` 的 `profile` 参数设置为 `SpeechStandard(1)`，否则该方法会调用失败。
+  /// - 该方法对人声的处理效果最佳，Agora 不推荐调用该方法处理含音乐的音频数据。
+  /// - 调用该方法后，Agora 不推荐调用以下方法，否则该方法设置的效果会被覆盖：
+  ///   - `setAudioEffectPreset`
+  ///   - `setAudioEffectParameters`
+  ///   - `setLocalVoiceReverbPreset`
+  ///   - `setLocalVoiceChanger`
+  ///   - `setLocalVoicePitch`
+  ///   - `setLocalVoiceEqualization`
+  ///   - `setLocalVoiceReverb`
+  ///
+  /// **Parameter** [preset] 预设的美声效果选项：[VoiceBeautifierPreset]。
+  Future<void> setVoiceBeautifierPreset(VoiceBeautifierPreset preset);
+
+  /// 设置 SDK 预设人声音效的参数。
+  ///
+  /// 调用该方法可以对本地发流用户进行如下设置：
+  /// - 3D 人声音效：设置 3D 人声音效的环绕周期。
+  /// - 电音音效：设置电音音效的基础调式和主音音高。为方便用户自行调节电音音效，Agora 推荐你将基础调式和主音音高配置选项与应用的 UI 元素绑定。
+  ///
+  /// 设置后，频道内所有用户都能听到该效果。
+  ///
+  /// 该方法可以单独使用，也可以搭配 [RtcEngine.setAudioEffectPreset] 使用。搭配使用时，需要先调用 `setAudioEffectPreset` 并使用 `RoomAcoustics3DVoice` 或 `PitchCorrection` 枚举，再调用该方法使用相同的枚举。否则， 该方法设置的效果会覆盖 `setAudioEffectPreset` 设置的效果。
+  ///
+  /// **Note**
+  /// - 该方法在加入频道前后都能调用。
+  /// - 为获取更好的人声效果，Agora 推荐你在调用该方法前将 `setAudioProfile` 的 `scenario` 设为 `GameStreaming(3)`。
+  /// - 请勿将 `setAudioProfile` 的 `profile` 参数设置为 `SpeechStandard(1)`，否则该方法会调用失败。
+  /// - 该方法对人声的处理效果最佳，Agora 不推荐调用该方法处理含音乐的音频数据。
+  /// - 调用该方法后，Agora 不推荐调用以下方法，否则该方法设置的效果会被覆盖：
+  ///   - `setAudioEffectPreset`
+  ///   - `setVoiceBeautifierPreset`
+  ///   - `setLocalVoiceReverbPreset`
+  ///   - `setLocalVoiceChanger`
+  ///   - `setLocalVoicePitch`
+  ///   - `setLocalVoiceEqualization`
+  ///   - `setLocalVoiceReverb`
+  ///
+  /// **Parameter** [preset] SDK 预设的音效：
+  /// - 3D 人声音效: `RoomAcoustics3DVoice`
+  ///   - 你需要在使用该枚举前将 `setAudioProfile` 的 `profile` 参数设置为 `MusicStandardStereo(3)` 或 `MusicHighQualityStereo(5)`，否则该枚举设置无效。
+  ///   - 启用 3D 人声后，用户需要使用支持双声道的音频播放设备才能听到预期效果。
+  /// - 电音音效 `PitchCorrection`。为获取更好的人声效果，Agora 建议你在使用该枚举前将 `setAudioProfile` 的 `profile` 参数设置为 `MusicHighQuality(4)` 或 `MusicHighQualityStereo(5)`。
+  ///
+  /// **Parameter** [param1]
+  /// - 如果 `preset` 设为 `RoomAcoustics3DVoice`，则 `param1` 表示 3D 人声音效的环绕周期。取值范围为 [1,60]， 单位为秒。默认值为 10，表示人声会 10 秒环绕 360 度。
+  /// - 如果 `preset` 设为 `PitchCorrection`，则 `param1` 表示电音音效的基础调式。可设为如下值：
+  ///   - 1: （默认）自然大调。
+  ///   - 2:  自然小调。
+  ///   - 3: 和风小调。
+  ///
+  /// **Parameter** [param2]
+  /// - 如果 `preset` 设为 `RoomAcoustics3DVoice`，你需要将 `param2` 设为 0。
+  /// - 如果 `preset` 设为 `PitchCorrection`，则 `param2` 表示电音音效的主音音高。可设为如下值：
+  ///   - 1: A 调
+  ///   - 2: A# 调
+  ///   - 3: B 调
+  ///   - 4: (默认) C 调
+  ///   - 5: C# 调
+  ///   - 6: D 调
+  ///   - 7: D# 调
+  ///   - 8: E 调
+  ///   - 9: F 调
+  ///   - 10: F# 调
+  ///   - 11: G 调
+  ///   - 12: G# 调
+  Future<void> setAudioEffectParameters(
+      AudioEffectPreset preset, int param1, int param2);
 }
+
 
 mixin RtcVoicePositionInterface {
   /// 开启/关闭远端用户的语音立体声。

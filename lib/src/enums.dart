@@ -339,7 +339,7 @@ enum AudioReverbPreset {
   @JsonValue(0x00000005)
   VocalConcert,
 
-  /// KTV。// 检查英文里的 enhanced 是否应该去掉？
+  /// KTV。
   @JsonValue(0x00000006)
   KTV,
 
@@ -452,6 +452,16 @@ enum AudioScenario {
   /// 游戏开黑。
   @JsonValue(5)
   ChatRoomGaming,
+
+  /// IoT（物联网）场景，适用于使用低功耗 IoT 设备的场景。
+  @JsonValue(6)
+  IOT,
+
+  /// 会议场景，适用于人声为主的多人会议。
+  ///
+  /// 自从 v3.2.0
+  @JsonValue(8)
+  MEETING,
 }
 
 /// 本地语音变声、美音或语聊美声效果选项。
@@ -2105,7 +2115,16 @@ enum WarningCode {
 
   /// 音频设备模块：音频底层设置被修改。
   @JsonValue(1053)
-  AdmImproperSettings,
+  ApmResidualEcho,
+
+  @JsonValue(1610)
+  SuperResolutionStreamOverLimitation,
+
+  @JsonValue(1611)
+  SuperResolutionUserCountOverLimitation,
+
+  @JsonValue(1612)
+  SuperResolutionDeviceNotSupported,
 }
 
 /// 直播音频所在声道。
@@ -2213,4 +2232,231 @@ enum RtmpStreamingEvent {
   /// RTMP 推流时，添加背景图或水印出错。
   @JsonValue(1)
   FailedLoadImage,
+}
+
+/// 音频会话控制权限
+enum AudioSessionOperationRestriction {
+  /// 没有限制，SDK 可以完全控制 Audio Session 操作。
+  @JsonValue(0)
+  None,
+
+  /// SDK 不能更改 Audio Session 的 category。
+  @JsonValue(1)
+  SetCategory,
+
+  /// SDK 不能更改 Audio Session 的 category，mode，categoryOptions。
+  @JsonValue(1 << 1)
+  ConfigureSession,
+
+  /// 离开某个频道时，SDK 会保持 Audio Session 处于活动状态。
+  @JsonValue(1 << 2)
+  DeactivateSession,
+
+  /// 限制 SDK 对 Audio Session 进行任何操作，SDK 将不能再对 Audio Session 进行任何配置。
+  @JsonValue(1 << 7)
+  All,
+}
+
+/// 预设的音效选项。
+enum AudioEffectPreset {
+  /// 原声，即关闭人声音效。
+  @JsonValue(0x00000000)
+  AudioEffectOff,
+  /// KTV。
+  ///
+  /// **Note**
+  ///
+  /// 为获取更好的人声效果，Agora 建议你在使用该枚举前将 [RtcEngine.setAudioProfile] 的 profile 参数设置为 `MusicHighQuality(4)` 或 `MusicHighQualityStereo(5)`。
+  @JsonValue(0x02010100)
+  RoomAcousticsKTV,
+  /// 演唱会。
+  ///
+  /// **Note**
+  ///
+  /// 为获取更好的人声效果，Agora 建议你在使用该枚举前将 [RtcEngine.setAudioProfile] 的 profile 参数设置为 `MusicHighQuality(4)` 或 `MusicHighQualityStereo(5)`。
+  @JsonValue(0x02010200)
+  RoomAcousticsVocalConcert,
+  /// 录音棚。
+  ///
+  /// **Note**
+  ///
+  /// 为获取更好的人声效果，Agora 建议你在使用该枚举前将 [RtcEngine.setAudioProfile] 的 profile 参数设置为 `MusicHighQuality(4)` 或 `MusicHighQualityStereo(5)`。
+  @JsonValue(0x02010300)
+  RoomAcousticsStudio,
+  /// 留声机。
+  ///
+  /// **Note**
+  ///
+  /// 为获取更好的人声效果，Agora 建议你在使用该枚举前将 [RtcEngine.setAudioProfile] 的 profile 参数设置为 `MusicHighQuality(4)` 或 `MusicHighQualityStereo(5)`。
+  @JsonValue(0x02010400)
+  RoomAcousticsPhonograph,
+  /// 虚拟立体声，即 SDK 将单声道的音频渲染出双声道的音效。
+  ///
+  /// **Note**
+  ///
+  /// 你需要在使用该枚举前将 [RtcEngine.setAudioProfile] 的 `profile` 参数设置为 `MusicStandardStereo(3)` 或 `MusicHighQualityStereo(5)`，否则该枚举设置无效。
+  @JsonValue(0x02010500)
+  RoomAcousticsVirtualStereo,
+  /// 空旷。
+  ///
+  /// **Note**
+  ///
+  /// 为获取更好的人声效果，Agora 建议你在使用该枚举前将 [RtcEngine.setAudioProfile] 的 profile 参数设置为 `MusicHighQuality(4)` 或 `MusicHighQualityStereo(5)`。
+  @JsonValue(0x02010600)
+  RoomAcousticsSpacial,
+  /// 空灵。
+  ///
+  /// **Note**
+  ///
+  /// 为获取更好的人声效果，Agora 建议你在使用该枚举前将 [RtcEngine.setAudioProfile] 的 profile 参数设置为 `MusicHighQuality(4)` 或 `MusicHighQualityStereo(5)`。
+  @JsonValue(0x02010700)
+  RoomAcousticsEthereal,
+  /// 3D 人声，即 SDK 将音频渲染出在用户周围环绕的效果，环绕周期为 10 秒。设置该音效后，你还可以调用 [RtcEngine.setAudioEffectParameters] 修改环绕周期。
+  ///
+  /// **Note**
+  ///
+  /// - 你需要在使用该枚举前将 [RtcEngine.setAudioProfile] 的 `profile` 参数设置为 `MusicStandardStereo(3)` 或 `MusicHighQualityStereo(5)`，否则该枚举设置无效。
+  /// - 启用 3D 人声后，用户需要使用支持双声道的音频播放设备才能听到预期效果。
+  @JsonValue(0x02010800)
+  RoomAcoustics3DVoice,
+  /// 大叔。
+  ///
+  /// **Note**
+  ///
+  /// - 建议用于处理男声，否则无法达到预期效果。
+  /// - 为获取更好的人声效果，Agora 建议你在使用该枚举前将 [RtcEngine.setAudioProfile] 的 profile 参数设置为 `MusicHighQuality(4)` 或 `MusicHighQualityStereo(5)`。
+  @JsonValue(0x02020100)
+  VoiceChangerEffectUncle,
+  /// 老年男性。
+  ///
+  /// **Note**
+  ///
+  /// - 建议用于处理男声，否则无法达到预期效果。
+  /// - 为获取更好的人声效果，Agora 建议你在使用该枚举前将 [RtcEngine.setAudioProfile] 的 profile 参数设置为 `MusicHighQuality(4)` 或 `MusicHighQualityStereo(5)`。
+  @JsonValue(0x02020200)
+  VoiceChangerEffectOldMan,
+  /// 男孩。
+  ///
+  /// **Note**
+  ///
+  /// - 建议用于处理男声，否则无法达到预期效果。
+  /// - 为获取更好的人声效果，Agora 建议你在使用该枚举前将 [RtcEngine.setAudioProfile] 的 profile 参数设置为 `MusicHighQuality(4)` 或 `MusicHighQualityStereo(5)`。
+  @JsonValue(0x02020300)
+  VoiceChangerEffectBoy,
+  /// 少女。
+  ///
+  /// **Note**
+  ///
+  /// - 建议用于处理女声，否则无法达到预期效果。
+  /// - 为获取更好的人声效果，Agora 建议你在使用该枚举前将 [RtcEngine.setAudioProfile] 的 profile 参数设置为 `MusicHighQuality(4)` 或 `MusicHighQualityStereo(5)`。
+  @JsonValue(0x02020400)
+  VoiceChangerEffectSister,
+  /// 女孩。
+  ///
+  /// **Note**
+  ///
+  /// - 建议用于处理女声，否则无法达到预期效果。
+  /// - 为获取更好的人声效果，Agora 建议你在使用该枚举前将 [RtcEngine.setAudioProfile] 的 profile 参数设置为 `MusicHighQuality(4)` 或 `MusicHighQualityStereo(5)`。
+  @JsonValue(0x02020500)
+  VoiceChangerEffectGirl,
+  /// 猪八戒。
+  ///
+  /// **Note**
+  ///
+  /// - 建议用于处理男声，否则无法达到预期效果。
+  /// - 为获取更好的人声效果，Agora 建议你在使用该枚举前将 [RtcEngine.setAudioProfile] 的 profile 参数设置为 `MusicHighQuality(4)` 或 `MusicHighQualityStereo(5)`。
+  @JsonValue(0x02020600)
+  VoiceChangerEffectPigKing,
+  /// 绿巨人。
+  ///
+  /// **Note**
+  ///
+  /// - 建议用于处理男声，否则无法达到预期效果。
+  /// - 为获取更好的人声效果，Agora 建议你在使用该枚举前将 [RtcEngine.setAudioProfile] 的 profile 参数设置为 `MusicHighQuality(4)` 或 `MusicHighQualityStereo(5)`。
+  @JsonValue(0x02020700)
+  VoiceChangerEffectHulk,
+  /// R&B。
+  ///
+  /// **Note**
+  ///
+  /// - 为获取更好的人声效果，Agora 建议你在使用该枚举前将 [RtcEngine.setAudioProfile] 的 profile 参数设置为 `MusicHighQuality(4)` 或 `MusicHighQualityStereo(5)`。
+  @JsonValue(0x02030100)
+  StyleTransformationRnB,
+  /// 流行。
+  ///
+  /// **Note**
+  ///
+  /// - 为获取更好的人声效果，Agora 建议你在使用该枚举前将 [RtcEngine.setAudioProfile] 的 profile 参数设置为 `MusicHighQuality(4)` 或 `MusicHighQualityStereo(5)`。
+  @JsonValue(0x02030200)
+  StyleTransformationPopular,
+  /// 电音，即 SDK 以主音音高为 C 的自然大调为基础修正音频的实际音高。设置该音效后，你还可以调用 [RtcEngine.setAudioEffectParameters] 调整修音的基础调式和主音音高。
+  ///
+  /// **Note**
+  ///
+  /// - 为获取更好的人声效果，Agora 建议你在使用该枚举前将 [RtcEngine.setAudioProfile] 的 profile 参数设置为 `MusicHighQuality(4)` 或 `MusicHighQualityStereo(5)`。
+  @JsonValue(0x02040100)
+  PitchCorrection,
+}
+
+/// 预设的美声效果选项。
+enum VoiceBeautifierPreset {
+  /// 原声，即关闭美声效果。
+  @JsonValue(0x00000000)
+  VoiceBeautifierOff,
+  /// 磁性（男）。
+  ///
+  /// **Note**
+  ///
+  /// 该设置仅对男声有效。请勿用于设置女声，否则音频会失真。
+  @JsonValue(0x01010100)
+  ChatBeautifierMagnetic,
+  /// 清新（女）。
+  ///
+  /// 该设置仅对女声有效。请勿用于设置男声，否则音频会失真。
+  @JsonValue(0x01010200)
+  ChatBeautifierFresh,
+  /// 活力（女）。
+  ///
+  /// 该设置仅对女声有效。请勿用于设置男声，否则音频会失真。
+  @JsonValue(0x01010300)
+  ChatBeautifierVitality,
+  /// 浑厚。
+  @JsonValue(0x01030100)
+  TimbreTransformationVigorous,
+  /// 低沉。
+  @JsonValue(0x01030200)
+  TimbreTransformationDeep,
+  /// 圆润。
+  @JsonValue(0x01030300)
+  TimbreTransformationMellow,
+  /// 假音。
+  @JsonValue(0x01030400)
+  TimbreTransformationFalsetto,
+  /// 饱满。
+  @JsonValue(0x01030500)
+  TimbreTransformationFull,
+  /// 清澈。
+  @JsonValue(0x01030600)
+  TimbreTransformationClear,
+  /// 高亢。
+  @JsonValue(0x01030700)
+  TimbreTransformationResounding,
+  /// 嘹亮。
+  @JsonValue(0x01030800)
+  TimbreTransformationRinging,
+}
+
+/// 直播频道中观众端（用户角色为观众的客户端）的延时级别。
+///
+/// **Note**
+///
+/// 仅在用户角色设为 `Broadcaster` 时才生效。
+enum AudienceLatencyLevelType {
+  /// 1: 低延时。
+  @JsonValue(1)
+  LowLatency,
+
+  /// 2: （默认）超低延时。
+  @JsonValue(2)
+  UltraLowLatency,
 }

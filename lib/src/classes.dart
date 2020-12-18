@@ -1137,3 +1137,20 @@ class FacePositionInfo {
   // @nodoc ignore: public_member_api_docs
   Map<String, dynamic> toJson() => _$FacePositionInfoToJson(this);
 }
+
+/// 用户具体设置。
+@JsonSerializable(explicitToJson: true)
+class ClientRoleOptions {
+  /// 观众端延时级别：
+  AudienceLatencyLevelType audienceLatencyLevel;
+
+  /// Constructs a [ClientRoleOptions]
+  ClientRoleOptions();
+
+  /// @nodoc
+  factory ClientRoleOptions.fromJson(Map<String, dynamic> json) =>
+      _$ClientRoleOptionsFromJson(json);
+
+  /// @nodoc
+  Map<String, dynamic> toJson() => _$ClientRoleOptionsToJson(this);
+}

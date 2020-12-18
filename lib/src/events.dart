@@ -84,1037 +84,960 @@ typedef StreamPublishStateCallback = void Function(
     int elapseSinceLastState);
 typedef StreamSubscribeStateCallback = void Function(
     String channel,
+    int uid,
     StreamSubscribeState oldState,
     StreamSubscribeState newState,
     int elapseSinceLastState);
 typedef RtmpStreamingEventCallback = void Function(
     String url, RtmpStreamingEvent eventCode);
 
-/// 主回调事件。
+/// The SDK uses the [RtcEngineEventHandler] class to send callbacks to the application, and the application inherits the methods of this class to retrieve these callbacks.
 ///
-/// [RtcEngineEventHandler] 接口类用于 SDK 向 App 发送回调事件通知，
-/// App 通过继承该接口类的方法获取 SDK 的事件通知。 接口类的所有方法都有缺省（空）实现，
-/// App 可以根据需要只继承关心的事件。在回调方法中，App 不应该做耗时或者调用可能会引起阻塞的 API（如 SendMessage），否则可能影响 SDK 的运行。
+/// All methods in this class have their (empty) default implementations, and the application can inherit only some of the required events instead of all of them.
+///
+/// In the callbacks, the application should avoid time-consuming tasks or call blocking APIs (such as SendMessage), otherwise, the SDK may not work properly.
 class RtcEngineEventHandler {
-  /// 发生警告回调。
+  /// Reports a warning during SDK runtime.
   ///
-  /// 该回调方法表示 SDK 运行时出现了（网络或媒体相关的）警告。通常情况下，
-  /// SDK 上报的警告信息 App 可以忽略，SDK 会自动恢复。 例如和服务器失去连接时，SDK 可能会
-  /// 上报 [WarningCode.LookupChannelTimeout] 警告，同时自动尝试重连。
+  /// In most cases, the app can ignore the warning reported by the SDK because the SDK can usually fix the issue and resume running.
   ///
-  /// `WarningCallback` 包含如下参数：
-  /// - [WarningCode] `warn`：警告码。详见 [WarningCode]。
+  /// For instance, the SDK may report a [WarningCode.LookupChannelTimeout] warning upon disconnection with the server and tries to reconnect. For detailed warning codes, see [WarningCode].
+  ///
+  /// The `WarningCallback` typedef includes the following parameter:
+  /// - [WarningCode] `warn`: Warning code.
   WarningCallback warning;
 
-  /// 发生错误回调。
+  /// Reports an error during SDK runtime.
   ///
-  /// 表示 SDK 运行时出现了（网络或媒体相关的）错误。通常情况下，SDK 上报的错误意味着 SDK 无法自动恢复，
-  /// 需要 App 干预或提示用户。例如启动通话失败时，SDK 会上报 [ErrorCode.StartCall] 错误。
-  /// App 可以提示用户启动通话失败，并调用 [RtcEngine.leaveChannel] 退出频道。
+  /// In most cases, the SDK cannot fix the issue and resume running. The SDK requires the app to take action or informs the user about the issue.
   ///
-  /// `ErrorCallback` 包含如下参数：
-  /// - [ErrorCode] `err`：错误码。详见 [ErrorCode]。
+  /// For example, the SDK reports an [ErrorCode.StartCall] error when failing to initialize a call. The app informs the user that the call initialization failed and invokes the [RtcEngine.leaveChannel] method to leave the channel. For detailed error codes, see [ErrorCode].
+  ///
+  /// The `ErrorCallback` typedef includes the following parameter:
+  /// - [ErrorCode] `err`: Error code.
   ErrorCallback error;
 
-  /// API 方法已执行回调。
+  /// Occurs when an API method is executed.
   ///
-  /// `ApiCallCallback` 包含如下参数：
-  /// - [ErrorCode] `error`：错误码。如果方法调用失败，会返回错误码 [ErrorCode]。
-  /// - [String] `api`：SDK 所调用的 API。
-  /// - [String] `result`：SDK 调用 API 的调用结果。
-  ///
+  /// The `ApiCallCallback` typedef includes the following parameters:
+  /// - [ErrorCode] `error`: Error code.
+  /// - [String] `api`: The method executed by the SDK.
+  /// - [String] `result`: The result of the method call.
   ApiCallCallback apiCallExecuted;
 
-  /// 加入频道回调。
+  /// Occurs when the local user joins a specified channel.
   ///
-  /// 表示客户端已经登入服务器，且分配了频道 ID 和用户 ID。频道 ID 的分配是
-  /// 根据 [RtcEngine.joinChannel] 方法中指定的频道名称。如果调用 [RtcEngine.joinChannel] 时并未指定用户 ID，服务器就会分配一个。
+  /// The channel name assignment is based on channelName specified in the [RtcEngine.joinChannel] method.
   ///
-  /// `UidWithElapsedAndChannelCallback` 包含如下参数：
-  /// - [String] `channel`：频道名。
-  /// - [int] `uid`：用户 ID。
-  /// - [int] `elapsed`：从 [RtcEngine.joinChannel] 开始到发生此事件过去的时间（毫秒)。
+  /// If the uid is not specified when [RtcEngine.joinChannel] is called, the server automatically assigns a uid.
   ///
+  /// The `UidWithElapsedAndChannelCallback` typedef includes the following parameters:
+  /// - [String] `channel`: Channel name.
+  /// - [int] `uid`: User ID.
+  /// - [int] `elapsed`:Time elapsed (ms) from the user calling [RtcEngine.joinChannel] until this callback is triggered.
   UidWithElapsedAndChannelCallback joinChannelSuccess;
 
-  /// 重新加入频道回调。
+  /// Occurs when a user rejoins the channel after being disconnected due to network problems.
   ///
-  /// 有时候由于网络原因，客户端可能会和服务器失去连接，SDK 会进行自动重连，自动重连成功后触发此回调方法。
+  /// When a user loses connection with the server because of network problems, the SDK automatically tries to reconnect and triggers this callback upon reconnection.
   ///
-  /// `RtcStatsCallback` 包含如下参数：
-  /// - [RtcStats] `stats`：通话相关的统计信息。
-  RtcStatsCallback rejoinChannelSuccess;
+  /// The `RtcStatsCallback` typedef includes the following parameter:
+  /// - [RtcStats] `stats`: Statistics of the call.
+  UidWithElapsedAndChannelCallback rejoinChannelSuccess;
 
-  /// 离开频道回调。
+  /// Occurs when a user leaves the channel.
   ///
-  /// App 调用 [RtcEngine.leaveChannel]  方法时，SDK 提示 App 离开频道成功。
-  /// 在该回调方法中，App 可以得到此次通话的总通话时长、SDK 收发数据的流量等信息。
+  /// When the app calls the [RtcEngine.leaveChannel] method, the SDK uses this callback to notify the app when the user leaves the channel.
   ///
-  /// `RtcStatsCallback` 包含如下参数：
-  /// - [RtcStats] `stats`：通话相关的统计信息。
+  /// With this callback, the application retrieves the channel information, such as the call duration and statistics.
+  ///
+  /// The `RtcStatsCallback` typedef includes the following parameter:
+  /// - [RtcStats] `stats`: Statistics of the call.
   RtcStatsCallback leaveChannel;
 
-  /// 本地用户成功注册 User Account 回调。
+  /// Occurs when the local user registers a user account.
   ///
-  /// 本地用户成功调用 [RtcEngine.registerLocalUserAccount] 方法注册用户 User Account，或调用 [RtcEngine.joinChannelWithUserAccount] 加入频道后，SDK 会触发该回调，
-  /// 并告知本地用户的 UID 和 User Account。
+  /// This callback is triggered when the local user successfully registers a user account by calling the [RtcEngine.registerLocalUserAccount] method, or joins a channel by calling the [RtcEngine.joinChannelWithUserAccount] method. This callback reports the user ID and user account of the local user.
   ///
-  /// `UserAccountCallback` 包含如下参数：
-  /// - [int] `uid`：本地用户的 ID。
-  /// - [String] `userAccount`；本地用户的 User Account。
+  /// The `UserAccountCallback` typedef includes the following parameters:
+  /// - [int] `uid`: The ID of the local user.
+  /// - [String] `userAccount`: The account of the local user.
   UserAccountCallback localUserRegistered;
 
-  /// 远端用户信息已更新回调。
+  /// Occurs when the SDK gets the user ID and user account of the remote user.
   ///
-  /// 远端用户加入频道后， SDK 会获取到该远端用户的 UID 和 User Account，然后缓存一个包含了远端用户 UID 和 User Account 的 Mapping 表，
-  /// 并在本地触发该回调。
+  /// After a remote user joins the channel, the SDK gets the UID and user account of the remote user, caches them in a mapping table object ([UserInfo]), and triggers this callback on the local client.
   ///
-  /// `UserAccountCallback` 包含如下参数：
-  /// - [int] `uid`：远端用户 ID。
-  /// - [UserInfo] `userInfo`；标识用户信息的 `UserInfo` 对象，包含用户 UID 和 User Account。
+  /// The `UserInfoCallback` typedef includes the following parameters:
+  /// - [int] `uid`: The ID of the local user.
+  /// - [UserInfo] `userInfo`: The `UserInfo` object that contains the user ID and user account of the remote user.
   UserInfoCallback userInfoUpdated;
 
-  /// 直播场景下用户角色已切换回调。如从观众切换为主播，反之亦然。
+  /// Occurs when the user role switches in a live broadcast. For example, from a host to an audience or from an audience to a host.
   ///
-  /// 该回调由本地用户在加入频道后调用 [RtcEngine.setClientRole] 改变用户角色触发的。
+  /// The SDK triggers this callback when the local user switches the user role by calling the [RtcEngine.setClientRole] method after joining the channel.
   ///
-  /// `ClientRoleCallback` 包含如下参数：
-  /// - [ClientRole] `oldRole`：切换前的角色。
-  /// - [ClientRole] `newRole`：切换后的角色。
+  /// The `ClientRoleCallback` typedef includes the following parameters:
+  /// - [ClientRole] `oldRole`: Role that the user switches from.
+  /// - [ClientRole] `newRole`: Role that the user switches to.
   ClientRoleCallback clientRoleChanged;
 
-  /// 远端用户（通信场景）/主播（直播场景）加入当前频道回调。
+  /// Occurs when a remote user ([ChannelProfile.Communication])/host ([ChannelProfile.LiveBroadcasting]) joins the channel.
+  /// - [ChannelProfile.Communication] profile: This callback notifies the app when another user joins the channel. If other users are already in the channel, the SDK also reports to the app on the existing users.
+  /// - [ChannelProfile.LiveBroadcasting] profile: This callback notifies the app when the host joins the channel. If other hosts are already in the channel, the SDK also reports to the app on the existing hosts. We recommend having at most 17 hosts in a channel.
   ///
-  /// - 通信场景下，该回调提示有远端用户加入了频道，并返回新加入用户的 ID；如果加入之前，已经有其他用户在频道中了，
-  /// 新加入的用户也会收到这些已有用户加入频道的回调。
-  /// - 直播场景下，该回调提示有主播加入了频道，并返回该主播的用户 ID。如果在加入之前，已经有主播在频道中了，
-  /// 新加入的用户也会收到已有主播加入频道的回调。Agora 建议连麦主播不超过 17 人。
-  ///
-  /// 该回调在如下情况下会被触发：
-  ///
-  /// - 远端用户/主播调用 [RtcEngine.joinChannel] 方法加入频道。
-  /// - 远端用户加入频道后调用 [RtcEngine.setClientRole] 将用户角色改变为主播。
-  /// - 远端用户/主播网络中断后重新加入频道。
-  /// - 主播通过调用 [RtcEngine.addInjectStreamUrl] 方法成功输入在线媒体流。
+  /// The SDK triggers this callback under one of the following circumstances:
+  /// - A remote user/host joins the channel by calling the [RtcEngine.joinChannel] method.
+  /// - A remote user switches the user role to the host by calling the [RtcEngine.setClientRole] method after joining the channel.
+  /// - A remote user/host rejoins the channel after a network interruption.
+  /// - The host injects an online media stream into the channel by calling the [RtcEngine.addInjectStreamUrl] method.
   ///
   /// **Note**
+  /// - In the [ChannelProfile.LiveBroadcasting] profile:
+  /// -- The host receives the `userJoined` callback when another host joins the channel.
+  /// -- The audience in the channel receives the `userJoined` callback when a new host joins the channel.
+  /// -- When a web application joins the channel, the `userJoined` callback is triggered as long as the web application publishes streams.
   ///
-  /// 直播场景下：
-  /// - 主播间能相互收到新主播加入频道的回调，并能获得该主播的用户 ID。
-  /// - 观众也能收到新主播加入频道的回调，并能获得该主播的用户 ID。
-  /// - 当 Web 端加入直播频道时，只要 Web 端有推流，SDK 会默认该 Web 端为主播，并触发该回调。
-  ///
-  /// `UidWithElapsedCallback` 包含如下参数：
-  /// - [int] `uid`：新加入频道的远端用户/主播 ID。
-  /// - [int] `elapsed`：从本地用户调用 [RtcEngine.joinChannel] 或 [RtcEngine.setClientRole] 到触发该回调的延迟（毫秒）。
+  /// The `UidWithElapsedCallback` typedef includes the following parameters:
+  /// - [int] `uid`: This parameter has the following definitions in different events:
+  ///   - [userJoined]: ID of the user or host who joins the channel.
+  ///   - [firsRemoteAudioFrame]: User ID of the remote user.
+  ///   - [firstRemoteAudioDecoded]: User ID of the remote user sending the audio stream.
+  ///   - [joinChannelSuccess]: User ID.
+  ///   - [rejoinChannelSuccess]: User ID.
+  /// - [int] `elapsed`:
+  ///   - [userJoined]: Time delay (ms) from the local user calling [RtcEngine.joinChannel] or [RtcEngine.setClientRole] until this callback is triggered.
+  ///   - [firsRemoteAudioFrame]: Time elapsed (ms) from the local user calling [RtcEngine.joinChannel] until this callback is triggered.
+  ///   - [firstRemoteAudioDecoded]: Time elapsed (ms) from the local user calling [RtcEngine.joinChannel] until the SDK triggers this callback.
+  ///   - [joinChannelSuccess]: Time elapsed (ms) from the local user calling [RtcChannel.joinChannel] until this callback is triggered.
+  ///   - [rejoinChannelSuccess]: Time elapsed (ms) from the local user starting to reconnect until this callback is triggered.
   UidWithElapsedCallback userJoined;
 
-  /// 远端用户（通信场景）/主播（直播场景）离开当前频道回调。
+  /// Occurs when a remote user ([ChannelProfile.Communication])/host ([ChannelProfile.LiveBroadcasting]) leaves the channel.
   ///
-  /// 提示有远端用户/主播离开了频道（或掉线）。用户离开频道有两个原因，即正常离开和超时掉线：
-  /// - 正常离开的时候，远端用户/主播会收到类似“再见”的消息，接收此消息后，判断用户离开频道。
-  /// - 超时掉线的依据是，在一定时间内（约 20 秒），用户没有收到对方的任何数据包，则判定为对方掉线。在网络较差的情况下，
-  /// 有可能会误报。Agora 建议使用 Agora 实时消息 SDK 来做可靠的掉线检测。
+  /// There are two reasons for users to become offline:
+  /// - Leave the channel: When the user/host leaves the channel, the user/host sends a goodbye message. When this message is received, the SDK determines that the user/host leaves the channel.
+  /// - Drop offline: When no data packet of the user or host is received for a certain period of time (20 seconds for the [ChannelProfile.Communication] profile, and more for the [ChannelProfile.LiveBroadcasting] profile), the SDK assumes that the user/host drops offline. A poor network connection may lead to false detections, so we recommend using the Agora RTM SDK for reliable offline detection.
   ///
-  /// `UserOfflineCallback` 包含如下参数：
-  /// - [int] `uid`：主播 ID。
-  /// - [UserOfflineReason] `reason`：离线原因。
+  /// The `UserOfflineCallback` typedef includes the following parameters:
+  /// - [int] `uid`: ID of the user or host who leaves the channel or goes offline.
+  /// - [UserOfflineReason] `reason`: Reason why the user goes offline.
   UserOfflineCallback userOffline;
 
-  /// 网络连接状态已改变回调。
+  /// Occurs when the network connection state changes.
   ///
-  /// 该回调在网络连接状态发生改变的时候触发，并告知用户当前的网络连接状态，和引起网络状态改变的原因。
+  /// The Agora SDK returns this callback to report on the current network connection state when it changes, and the reason to such change.
   ///
-  /// `ConnectionStateCallback` 包含如下参数：
-  /// - [ConnectionStateType] `state`：当前的网络连接状态。
-  /// - [ConnectionChangedReason] `reason`：引起当前网络连接状态发生改变的原因。
+  /// The `ConnectionStateCallback` typedef includes the following parameters:
+  /// - [ConnectionStateType] `state`: The current network connection state.
+  /// - [ConnectionChangedReason] `reason`: The reason causing the change of the connection state.
   ConnectionStateCallback connectionStateChanged;
 
-  /// 本地网络类型发生改变回调。
+  /// Occurs when the network type changes.
   ///
-  /// 本地网络连接类型发生改变时，SDK 会触发该回调，并在回调中明确当前的网络连接类型。
-  /// 你可以通过该回调获取正在使用的网络类型；当连接中断时，该回调能辨别引起中断的原因是网络切换还是网络条件不好。
+  /// The SDK returns the current network type in this callback. When the network connection is interrupted, this callback indicates whether the interruption is caused by a network type change or poor network conditions.
   ///
-  /// `NetworkTypeCallback` 包含如下参数：
-  /// - [NetworkType] `type`：网络连接类型。
+  /// The `NetworkTypeCallback` typedef includes the following parameters:
+  /// - [NetworkType] `type`: The network type.
   NetworkTypeCallback networkTypeChanged;
 
-  /// 网络连接中断，且 SDK 无法在 10 秒内连接服务器回调。
+  /// Occurs when the SDK cannot reconnect to Agora's edge server 10 seconds after its connection to the server is interrupted.
   ///
-  /// SDK 在调用 [RtcEngine.joinChannel] 后，无论是否加入成功，只要 10 秒和服务器无法连接就会触发该回调。
+  /// The SDK triggers this callback when it cannot connect to the server 10 seconds after calling [RtcEngine.joinChannel], regardless of whether it is in the channel or not.
+  /// If the SDK fails to rejoin the channel 20 minutes after being disconnected from Agora's edge server, the SDK stops rejoining the channel.
   ///
-  /// 如果 SDK 在断开连接后，20 分钟内还是没能重新加入频道，SDK 会停止尝试重连。
+  /// The `EmptyCallback` typedef does not include any parameter.
   EmptyCallback connectionLost;
 
-  /// Token 服务即将过期回调。
+  /// Occurs when the token expires in 30 seconds.
   ///
-  /// 在调用 [RtcEngine.joinChannel] 时如果指定了 Token，
-  /// 由于 Token 具有一定的时效，在通话过程中如果 Token 即将失效，SDK 会提前 30 秒触发该回调，提醒 App 更新 Token。
-  /// 当收到该回调时，你需要重新在服务端生成新的 Token，然后调用 [RtcEngine.renewToken] 将新生成的 Token 传给 SDK。
+  /// The user becomes offline if the token used when joining the channel expires. This callback is triggered 30 seconds before the token expires to remind the app to get a new token. Upon receiving this callback, you need to generate a new token on the server and call [RtcEngine.renewToken] to pass the new token to the SDK.
   ///
-  /// `TokenCallback` 包含如下参数：
-  /// - [String] `token`：即将服务失效的 Token。
+  /// The `TokenCallback` typedef includes the following parameters:
+  /// - [String] `token`: The token that will expire in 30 seconds.
   TokenCallback tokenPrivilegeWillExpire;
 
-  /// Token 过期回调。
+  /// Occurs when the token has expired.
   ///
-  /// 在调用 [RtcEngine.joinChannel] 时如果指定了 Token，
-  /// 由于 Token 具有一定的时效，在通话过程中 SDK 可能由于网络原因和服务器失去连接，重连时可能需要新的 Token。该回调通知 App 需要生成新的 Token，
-  /// 并需调用 [RtcEngine.joinChannel] 重新加入频道。
+  /// After a token is specified when joining the channel, the token expires after a certain period of time, and a new token is required to reconnect to the server. This callback notifies the app to generate a new token and call [RtcEngine.joinChannel] to rejoin the channel with the new token.
+  ///
+  /// The `EmptyCallback` typedef does not include any parameter.
   EmptyCallback requestToken;
 
-  /// 提示频道内谁正在说话、说话者音量及本地用户是否在说话的回调。
+  /// Reports which users are speaking and the speakers' volume, and whether the local user is speaking.
   ///
-  /// 该回调提示频道内瞬时音量最高的几个用户（最多三个）的用户 ID、他们的音量及本地用户是否在说话。
-  ///
-  /// 该回调默认禁用。可以通过启用说话者音量提示 [RtcEngine.enableAudioVolumeIndication] 方法开启；
-  /// 开启后，无论频道内是否有人说话，都会按方法中设置的时间间隔返回提示音量。
-  ///
-  /// 每次触发，用户会收到两个独立的 `audioVolumeIndication` 回调，其中一个包含本地用户的音量信息，另一个包含远端所有用户的音量信息，详见下方参数描述。
+  /// This callback reports the IDs and volumes of the loudest speakers (at most 3) at the moment in the channel, and whether the local user is speaking.
+  /// By default, this callback is disabled. You can enable it by calling the [RtcEngine.enableAudioVolumeIndication] method. Once enabled, this callback is triggered at the set interval, regardless of whether a user speaks or not.
+  /// The SDK triggers two independent [audioVolumeIndication] callbacks at one time, which separately report the volume information of the local user and all the remote speakers. For more information, see the detailed parameter descriptions.
   ///
   /// **Note**
-  /// - 若需使用该回调 `speakers` 数组中的 `vad` 参数（即本地人声检测功能），请在 [RtcEngine.enableAudioVolumeIndication] 方法中设置 `report_vad` 为 `true`。
-  /// - 用户调用 [RtcEngine.muteLocalAudioStream] 方法会对 SDK 行为产生影响：
-  ///   - 本地用户调用该方法后 SDK 即不再返回本地用户的音量提示回调。
-  ///   - 远端用户调用该方法后 20 秒，远端说话者的音量提示回调将不再包含该用户；如果所有远端用户调用该方法后 20 秒，
-  /// SDK 即不再返回远端说话者的音量提示回调。
+  /// - To enable the voice activity detection of the local user, ensure that you set `report_vad`(true) in the [RtcEngine.enableAudioVolumeIndication] method.
+  /// - Calling the [RtcEngine.muteLocalAudioStream] method affects the SDK's behavior.
+  /// -- If the local user calls the [RtcEngine.muteLocalAudioStream] method, the SDK stops triggering the local user's callback.
+  /// -- 20 seconds after a remote speaker calls the [RtcEngine.muteLocalAudioStream] method, the remote speakers' callback does not include information of this remote user; 20 seconds after all remote users call the the [RtcEngine.muteLocalAudioStream] method, the SDK stops triggering the remote speakers' callback.
   ///
-  /// `AudioVolumeCallback` 包含如下参数：
-  /// - [List]<[AudioVolumeInfo]> `speakers`：每个说话者的用户 ID 和音量信息的数组。
-  ///
-  ///   - 在本地用户的回调中，此数组中包含以下成员:
-  ///     - `uid` = 0;
-  ///     - `volume` 等于 `totalVolume`，报告本地用户混音后的音量;
-  ///     - `vad`，报告本地用户人声状态。
-  ///
-  ///   - 在远端用户的回调中，此数组中包含以下成员：
-  ///     - `uid`，表示每位说话者的用户 ID；
-  ///     - `volume`，表示各说话者混音后的音量；
-  ///     - `vad` = 0，人声检测对远端用户无效。
-  ///
-  /// 如果报告的 `speakers` 数组为空，则表示远端此时没有人说话。
-  ///
-  /// - [int] `totalVolume`：（混音后的）总音量（0~255）。
-  ///   - 在本地用户的回调中，`totalVolume` 为本地用户混音后的音量。
-  ///   - 在远端用户的回调中，`totalVolume` 为所有说话者混音后的总音量。
+  /// The `AudioVolumeCallback` typedef includes the following parameters:
+  /// - [List]<[AudioVolumeInfo]> `speakers`: An array containing the user ID and volume information for each speaker.
+  /// - [int] `totalVolume`: Total volume after audio mixing. The value ranges between 0 (lowest volume) and 255 (highest volume).
   AudioVolumeCallback audioVolumeIndication;
 
-  /// 监测到活跃用户回调。
+  /// Reports which user is the loudest speaker.
   ///
-  /// 该回调获取当前时间段内累积音量最大者。
-  /// 如果该用户开启了 [RtcEngine.enableAudioVolumeIndication] 功能，
-  /// 则当音量检测模块监测到频道内有新的活跃用户说话时，会通过本回调返回该用户的 `uid`。
+  /// This callback reports the speaker with the highest accumulative volume during a certain period. If the user enables the audio volume indication by calling [RtcEngine.enableAudioVolumeIndication], this callback returns the uid of the active speaker whose voice is detected by the audio volume detection module of the SDK.
   ///
   /// **Note**
-  /// - 你需要开启 [RtcEngine.enableAudioVolumeIndication] 方法才能收到该回调。
-  /// - `uid` 返回的是当前时间段内声音最大的用户 ID，而不是瞬时声音最大的用户 ID。
+  /// - To receive this callback, you need to call [RtcEngine.enableAudioVolumeIndication].
+  /// - This callback returns the user ID of the user with the highest voice volume during a period of time, instead of at the moment.
   ///
-  /// `UidCallback` 包含如下参数：
-  /// - [int] `uid`：当前时间段声音最大的用户的 `uid`。如果返回的 `uid` 为 0，则默认为本地用户。
+  /// The `UidCallback` typedef includes the following parameters:
+  /// - [int] `uid`: User ID of the active speaker. A `uid` of 0 represents the local user.
   UidCallback activeSpeaker;
 
-  /// 已发送本地音频首帧回调。
+  /// Occurs when the first local audio frame is sent.
   ///
-  /// `ElapsedCallback` 包含如下参数：
-  /// - [int] `elapsed`：从本地用户调用 [RtcEngine.joinChannel] 方法直至该回调被触发的延迟（毫秒）。
+  /// The `ElapsedCallback` typedef includes the following parameters:
+  /// - [int] `Elapsed`: Time elapsed (ms) from the local user calling the [RtcEngine.joinChannel] until this callback is triggered.
+  @deprecated
   ElapsedCallback firstLocalAudioFrame;
 
-  /// 已显示本地视频首帧回调。
+  /// Occurs when the first local video frame is rendered.
   ///
-  /// 第一帧本地视频显示在本地视图上时，触发此回调。
+  /// This callback is triggered after the first local video frame is rendered on the local video window.
   ///
-  /// `VideoFrameCallback` 包含如下参数：
-  /// - [int] `width`：本地渲染视频的宽（px）。
-  /// - [int] `height`：本地渲染视频的高（px）。
-  /// - [int] `elapsed`：从本地用户调用 [RtcEngine.joinChannel] 方法直至该回调被触发的延迟（毫秒）。
-  ///      如果在 [RtcEngine.joinChannel] 之前
-  ///      调用了 [RtcEngine.startPreview]，则返回的是从调用 [RtcEngine.startPreview] 直至该回调被触发的延迟（毫秒）。
+  /// The `VideoFrameCallback` typedef includes the following parameters:
+  /// - [int] `width`: Width (pixels) of the first local video frame.
+  /// - [int] `height`: Height (pixels) of the first local video frame.
+  /// - [int] `elapsed`: Time elapsed (ms) from the local user calling [RtcEngine.joinChannel] until this callback is triggered. If [RtcEngine.startPreview] is called before [RtcEngine.joinChannel], elapsed is the time elapsed (ms) from the local user calling [RtcEngine.startPreview] until this callback is triggered.
   VideoFrameCallback firstLocalVideoFrame;
 
-  /// 远端用户停止/恢复发送视频流回调。
+  /// Occurs when a remote user stops/resumes sending the video stream.
   ///
-  /// **Deprecated**
+  /// **Deprecated** This callback is deprecated. Use the [RtcEngineEventHandler.remoteVideoStateChanged] callback with the following parameters for the same function:
+  /// - [VideoRemoteState.Stopped] and [VideoRemoteStateReason.RemoteMuted].
+  /// - [VideoRemoteState.Decoding] and [VideoRemoteStateReason.RemoteUnmuted].
   ///
-  /// 该回调已废弃。请改用 [RtcEngineEventHandler.remoteVideoStateChanged] 回调中的如下参数实现相同功能：
-  /// - [VideoRemoteState.Stopped] 和 [VideoRemoteStateReason.RemoteMuted]。
-  /// - [VideoRemoteState.Decoding] 和 [VideoRemoteStateReason.RemoteUnmuted]。
-  /// 该回调是由远端用户调用 [RtcEngine.muteLocalVideoStream] 方法关闭或开启视频发送触发的。
+  /// The SDK triggers this callback when the remote user stops or resumes sending the video stream by calling the [RtcEngine.muteLocalVideoStream] method.
   ///
   /// **Note**
+  /// - This callback is invalid when the number of users or broadcasters in the channel exceeds 17.
   ///
-  /// 当频道内的用户（通信场景）或主播（直播场景）的人数超过 17 时，Agora 建议你不要使用该回调。
-  ///
-  /// `VideoFrameCallback` 包含如下参数：
-  /// - [int] `uid`：用户 ID，提示是哪个用户的视频流。
-  /// - [bool] `muted`：该用户是否暂停发送其视频流：
-  ///   - `true`: 该用户已暂停发送视频流。
-  ///   - `false`: 该用户已恢复发送视频流。
+  /// The `UidWithMutedCallback` typedef includes the following parameters:
+  /// - [int] `uid`: ID of the remote user.
+  /// - [bool] `muted`: Whether the remote user's video stream playback pauses/resumes:
+  ///    - `true`: Pause.
+  ///    - `false`: Resume.
   @deprecated
   UidWithMutedCallback userMuteVideo;
 
-  /// 本地或远端视频大小或旋转信息发生改变回调。
+  /// Occurs when the video size or rotation information of a remote user changes.
   ///
-  /// `VideoSizeCallback` 包含如下参数：
-  /// - [int] `uid`：图像尺寸和旋转信息发生变化的用户 ID。如果返回的 uid 为 0，则表示本地用户。
-  /// - [int] `width`：视频流的宽度（像素）。
-  /// - [int] `height`：视频流的高度（像素）。
-  /// - [int] `rotation`：旋转信息 [0,360)。
+  /// The `VideoSizeCallback` typedef includes the following parameters:
+  /// - [int] `uid`: User ID of the remote user or local user (0) whose video size or rotation changes.
+  /// - [int] `width`: New width (pixels) of the video.
+  /// - [int] `height`: New height (pixels) of the video.
+  /// - [int] `rotation`: New rotation of the video [0 to 360).
   VideoSizeCallback videoSizeChanged;
 
-  /// 远端用户视频状态发生已变化回调。
+  /// Occurs when the remote video state changes.
   ///
-  /// `RemoteVideoStateCallback` 包含如下参数：
-  /// - [int] `uid`：视频状态发生改变的远端用户 ID。
-  /// - [VideoRemoteState] `state`：远端视频流状态。
-  /// - [VideoRemoteStateReason] `reason`：远端视频流状态改变的具体原因。
-  /// - [int] `elapsed`：从本地用户调用 [RtcEngine.joinChannel] 方法到发生本事件经历的时间，单位为 ms。
+  /// The `RemoteVideoStateCallback` typedef includes the following parameters:
+  /// - [int] `uid`: ID of the remote user whose video state changes.
+  /// - [VideoRemoteState] `state`: State of the remote video.
+  /// - [VideoRemoteStateReason] `reason`: The reason of the remote video state change.
+  /// - [int] `elapsed`: Time elapsed (ms) from the local user calling [RtcEngine.joinChannel] until the SDK triggers this callback.
   RemoteVideoStateCallback remoteVideoStateChanged;
 
-  /// 本地视频状态发生改变回调。
+  /// Occurs when the local video state changes.
   ///
-  /// 本地视频的状态发生改变时，SDK 会触发该回调返回当前的本地视频状态；
-  /// 当状态为 [LocalVideoStreamState.Failed] 时，你可以在 `error` 参数中查看返回的错误信息。
-  /// 该接口在本地视频出现故障时，方便你了解当前视频的状态以及出现故障的原因，方便排查问题。
+  /// The SDK returns the current video state in this callback. When the state is [LocalVideoStreamState.Failed], see the error parameter for details.
   ///
-  /// 该回调报告本地视频的当前状态。在 `RtcEngine` 生命周期内，该状态并非一成不变。因此我们建议记录该回调报告的状态，
-  /// 并在启动相机前， 判断本地视频状态。如果状态为 [LocalVideoStreamError.CaptureFailure]，则说明相机权限被收回，或被抢占未释放。
-  /// 可以通过先调用 [RtcEngine.enableLocalVideo] (`false`)，再调 [RtcEngine.enableLocalVideo] (`true`) 恢复相机。
+  /// **Note**
+  /// - This callback reports the current state of the local video, which keeps changing throughout the RtcEngine life cycle. We recommend maintaining the states reported in this callback, and check the local video state before starting the local camera. If the SDK reports [LocalVideoStreamError.CaptureFailure], the local camera is occupied by either the system or a third-party app. To access the camera, call [RtcEngine.enableLocalVideo] (`false`) first, and then [RtcEngine.enableLocalVideo] (`true`).
   ///
-  /// `LocalVideoStateCallback` 包含如下参数：
-  /// - [LocalVideoStreamState] `localVideoState`：当前的本地视频状态。
-  /// - [LocalVideoStreamError] `error`：本地视频出错原因。
+  /// The `LocalVideoStateCallback` typedef includes the following parameters:
+  /// - [LocalVideoStreamState] `localVideoState`: The local video state.
+  /// - [LocalVideoStreamError] `error`: The detailed error information of the local video.
   LocalVideoStateCallback localVideoStateChanged;
 
-  /// 远端音频状态发生改变回调。
+  /// Occurs when the remote audio state changes.
   ///
-  /// 远端用户（通信场景）或主播（直播场景）音频状态发生改变时，SDK 会触发该回调向本地用户报告当前的远端音频流状态。
+  /// This callback indicates the state change of the remote audio stream.
   ///
-  /// **Note**
-  ///
-  /// 当频道内的用户（通信场景）或主播（直播场景）的人数超过 17 时，该回调可能不准确。
-  ///
-  /// `RemoteAudioStateCallback` 包含如下参数：
-  /// - [int] `uid`：发生音频状态改变的远端用户 ID。
-  /// - [AudioRemoteState] `state`：远端音频流状态。
-  /// - [AudioRemoteStateReason] `reason`：远端音频流状态改变的具体原因。
-  /// - [int] `elapsed`：从本地用户调用 [RtcEngine.joinChannel] 方法到发生本事件经历的时间，单位为 ms。
+  /// The `RemoteAudioStateCallback` typedef includes the following parameters:
+  /// - [int] `uid`: ID of the user whose audio state changes.
+  /// - [AudioRemoteState] `state`: State of the remote audio.
+  /// - [AudioRemoteStateReason] `reason`: The reason of the remote audio state change.
+  /// - [int] `elapsed`: Time elapsed (ms) from the local user calling [RtcEngine.joinChannel] until the SDK triggers this callback.
   RemoteAudioStateCallback remoteAudioStateChanged;
 
-  /// 本地音频状态发生改变回调。
+  /// Occurs when the local audio stream state changes.
   ///
-  /// 本地音频的状态发生改变时（包括本地麦克风录制状态和音频编码状态），SDK 会触发该回调报告当前的本地音频状态。
-  /// 在本地音频出现故障时，该回调可以帮助你了解当前音频的状态以及出现故障的原因，方便你排查问题。
+  /// This callback indicates the state change of the local audio stream, including the state of the audio recording and encoding, and allows you to troubleshoot issues when exceptions occur.
   ///
   /// **Note**
+  /// - When the state is [AudioLocalState.Failed], see the error parameter for details.
   ///
-  ///  当状态为 [AudioLocalState.Failed] 时，你可以在 `error` 参数中查看返回的错误信息。
-  ///
-  /// `LocalAudioStateCallback` 包含如下参数：
-  /// - [AudioLocalState] `state`：当前的本地音频状态。
-  /// - [AudioLocalError] `error`：本地音频出错原因。
+  /// The `LocalAudioStateCallback` typedef includes the following parameters:
+  /// - [AudioLocalState] `state`: State of the local audio.
+  /// - [AudioLocalError] `error`: The error information of the local audio.
   LocalAudioStateCallback localAudioStateChanged;
 
-  /// 本地发布流已回退为音频流回调。
+  /// Occurs when the published media stream falls back to an audio-only stream due to poor network conditions or switches back to video stream after the network conditions improve.
   ///
-  /// 如果你调用了设置本地推流回退选项 [RtcEngine.setLocalPublishFallbackOption] 接口并将 `option` 设置为 [StreamFallbackOptions.AudioOnly] 时，当上行网络环境不理想、本地发布的媒体流回退为音频流时，
-  /// 或当上行网络改善、媒体流恢复为音视频流时，会触发该回调。
+  /// If you call [RtcEngine.setLocalPublishFallbackOption] and set option as [StreamFallbackOptions.AudioOnly], this callback is triggered when the locally published stream falls back to audio-only mode due to poor uplink conditions, or when the audio stream switches back to the video after the uplink network condition improves.
   ///
-  /// 如果本地推流已回退为音频流，远端的 App 上会收到 [remoteVideoStateChanged] 的回调。
-  ///
-  /// `FallbackCallback` 包含如下参数：
-  /// - [bool] `isFallbackOrRecover`：本地推流已回退或恢复：
-  ///  - `true`: 由于网络环境不理想，本地发布的媒体流已回退为音频流。
-  ///  - `false`: 由于网络环境改善，发布的音频流已恢复为音视频流。
+  /// The `FallbackCallback` typedef includes the following parameters:
+  /// - [bool] `isFallbackOrRecover`: Whether the published stream fell back to audio-only or switched back to the video:
+  /// -- `true`: The published stream fell back to audio-only due to poor network conditions.
+  /// -- `false`: The published stream switched back to the video after the network conditions improved.
   FallbackCallback localPublishFallbackToAudioOnly;
 
-  /// 远端订阅流已回退为音频流回调或因网络质量改善，恢复为音视频流。
+  /// Occurs when the remote media stream falls back to audio-only stream due to poor network conditions or switches back to video stream after the network conditions improve.
   ///
-  /// 如果你调用了设置远端订阅流回退选项 [RtcEngine.setRemoteSubscribeFallbackOption] 接口并
-  /// 将 `option` 设置为 [StreamFallbackOptions.AudioOnly] 时，当下行网络环境不理想、仅接收远端音频流时，
-  /// 或当下行网络改善、恢复订阅音视频流时，会触发该回调。
+  /// If you call [RtcEngine.setRemoteSubscribeFallbackOption] and set option as [StreamFallbackOptions.AudioOnly], this callback is triggered when the remotely subscribed media stream falls back to audio-only mode due to poor uplink conditions, or when the remotely subscribed media stream switches back to the video after the uplink network condition improves.
   ///
-  /// **Note**
-  ///
-  /// 远端订阅流因弱网环境不能同时满足音视频而回退为小流时，你可以使用 `remoteVideoStats` 来监控远端视频大小流的切换。
-  ///
-  /// `FallbackWithUidCallback` 包含如下参数：
-  /// - [int] `uid`：远端用户的 ID。
-  /// - [bool] `isFallbackOrRecover`：远端订阅流已回退或恢复：
-  ///  - `true`: 由于网络环境不理想，远端订阅流已回退为音频流。
-  ///  - `false`: 由于网络环境改善，订阅的音频流已恢复为音视频流。
+  /// The `FallbackWithUidCallback` typedef includes the following parameters:
+  /// - [int]: `uid`: ID of the remote user sending the stream.
+  /// - [bool] `isFallbackOrRecover`: Whether the published stream fell back to audio-only or switched back to the video:
+  /// -- `true`: The published stream fell back to audio-only due to poor network conditions.
+  /// -- `false`: The published stream switched back to the video after the network conditions improved.
   FallbackWithUidCallback remoteSubscribeFallbackToAudioOnly;
 
-  /// 语音路由已变更回调。
+  /// Occurs when the local audio playback route changes.
   ///
-  /// 该回调返回当前的音频路由已切换至听筒、扬声器、耳机或蓝牙。
-  /// 关于语音路由的定义，详见 [AudioOutputRouting]。
+  /// This callback returns that the audio route switched to an earpiece, speakerphone, headset, or Bluetooth device.
+  /// See [AudioOutputRouting] for the definition of the routing.
   ///
-  /// `AudioRouteCallback` 包含如下参数：
-  /// - [AudioOutputRouting] `routing`：音频输出路由。
+  /// The `AudioRouteCallback` typedef includes the following parameter:
+  /// - [AudioOutputRouting] `routing`: Audio output routing.
   AudioRouteCallback audioRouteChanged;
 
-  /// 摄像头对焦区域已改变回调。
+  /// Occurs when the camera focus area is changed.
   ///
-  /// 该回调是由本地用户调用 [RtcEngine.setCameraFocusPositionInPreview] 方法改变对焦位置触发的。
+  /// The SDK triggers this callback when the local user changes the camera focus position by calling the [RtcEngine.setCameraFocusPositionInPreview] method.
   ///
-  /// `RectCallback` 包含如下参数：
-  /// - [Rect] `rect`：镜头内表示对焦的区域。
+  /// The `RectCallback` typedef includes the following parameter:
+  /// - [Rect] `rect`: Rectangular area in the camera zoom specifying the focus area.
   RectCallback cameraFocusAreaChanged;
 
-  /// 摄像头曝光区域已改变回调。
+  /// The camera exposure area has changed.
   ///
-  /// 该回调是由本地用户调用 [RtcEngine.setCameraExposurePosition] 方法改变曝光位置触发的。
+  /// The SDK triggers this callback when the local user changes the camera exposure position by calling the [RtcEngine.setCameraExposurePosition] method.
   ///
-  /// `RectCallback` 包含如下参数：
-  /// - [Rect] `rect`：镜头内表示曝光的区域。
+  /// The `RectCallback` typedef includes the following parameter:
+  /// - [Rect] `rect`: Rectangular area in the camera zoom specifying the focus area.
   RectCallback cameraExposureAreaChanged;
 
-  /// 报告本地人脸检测结果。
+  /// Reports the face detection result of the local user.
   ///
-  /// 调用 [RtcEngine.enableFaceDetection] 开启本地人脸检测后，你可以通过该回调实时获取以下人脸检测的信息：
-  /// - 摄像头采集的画面大小。
-  /// - 人脸在画面中的位置。
-  /// - 人脸距设备屏幕的距离。
-  ///
-  /// 其中，人脸距设备屏幕的距离由 SDK 通过摄像头采集的画面大小和人脸在画面中的位置拟合计算得出。
+  /// Once you enable face detection by calling [RtcEngine.enableFaceDetection], you can get the following information on the local user in real time:
+  /// - The width and height of the local video.
+  /// - The position of the human face in the local video.
+  /// - The distance between the human face and the device screen. This value is based on the fitting calculation of the local video size and the position of the human face.
   ///
   /// **Note**
-  /// - 当检测到摄像头前没有人脸时，该回调触发频率会降低，以节省设备耗能。
-  /// - 当人脸距离设备屏幕过近时，SDK 不会触发该回调。
-  /// - Android 平台上，人脸距设备屏幕的距离（`distance`）值有一定误差，请不要用它进行精确计算。
+  /// - If the SDK does not detect a face, it reduces the frequency of this callback to reduce power consumption on the local device.
+  /// - The SDK stops triggering this callback when a human face is in close proximity to the screen.
+  /// - On Android, the distance value reported in this callback may be slightly different from the actual distance. Therefore, Agora does not recommend using it for accurate calculation.
   ///
-  /// `FacePositionCallback` 包含如下参数：
-  /// - [int] `imageWidth`：摄像头采集画面的宽度 (px)。
-  /// - [int] `imageHeight`：摄像头采集画面的高度 (px)。
-  /// - [List]<[FacePositionInfo]> `faces`：检测到的人脸信息，详见 [FacePositionInfo]。
-  /// 检测到几张人脸，就会报告几个 `FacePositionInfo` 数组。数组长度可以为 0，表示没有检测到摄像头前出现人脸。
+  /// `The FacePositionCallback` typedef includes the following parameters:
+  /// - [int] `imageWidth`: The width (px) of the local video.
+  /// - [int] `imageHeight`: The height (px) of the local video.
+  /// - [List]<[FacePositionInfo]> `faces`: The information of the detected human face. For details, see [FacePositionInfo]. The number of the `FacePositionInfo` array depends on the number of human faces detected. If the array length is 0, it means that no human face is detected.
   FacePositionCallback facePositionChanged;
 
+  /// Reports the statistics of the [RtcEngine] once every two seconds.
   ///
-  /// 当前通话统计回调。
-  /// 该回调在通话中每两秒触发一次。
-  ///
-  /// `RtcStatsCallback` 包含如下参数：
-  /// - [RtcStats] `stats`：通话相关的统计信息。
+  /// The `RtcStatsCallback` typedef includes the following parameter:
+  /// - [RtcStats] `stats`: Statistics of the call.
   RtcStatsCallback rtcStats;
 
-  /// 通话前网络上下行 last mile 质量报告回调。
+  /// Reports the last mile network quality of the local user once every two seconds before the user joins the channel. Last mile refers to the connection between the local device and Agora's edge server. After the application calls the [RtcEngine.enableLastmileTest] method, this callback reports once every two seconds the uplink and downlink last mile network conditions of the local user before the user joins the channel.
   ///
-  /// 该回调描述本地用户在加入频道前的 last mile 网络探测的结果，其中 last mile 是指设备到 Agora 边缘服务器的网络状态。
-  /// 在 [RtcEngine.enableLastmileTest] 之后，该回调函数每 2 秒触发一次。
-  ///
-  /// `NetworkQualityCallback` 包含如下参数：
-  /// - [NetworkQuality] `quality`：网络上下行质量，基于上下行网络的丢包率和抖动计算，探测结果主要反映上行网络的状态。
+  /// The `NetworkQualityCallback` typedef includes the following parameter:
+  /// - [NetworkQuality] `quality`: The last mile network quality based on the uplink and downlink packet loss rate and jitter.
   NetworkQualityCallback lastmileQuality;
 
-  /// 通话中每个用户的网络上下行 last mile 质量报告回调。
+  /// Reports the last mile network quality of each user in the channel once every two seconds.
   ///
-  /// 该回调描述每个用户在通话中的 last mile 网络状态，其中 last mile 是指设备到 Agora 边缘服务器的网络状态。
-  /// 该回调每 2 秒触发一次。如果远端有多个用户/主播，该回调每 2 秒会被触发多次。
+  /// Last mile refers to the connection between the local device and Agora's edge server. This callback reports once every two seconds the last mile network conditions of each user in the channel. If a channel includes multiple users, then this callback will be triggered as many times.
   ///
-  /// `NetworkQualityWithUidCallback` 包含如下参数：
-  /// - [int] `uid`：用户 ID。表示该回调报告的是持有该 ID 的用户的网络质量。当 `uid` 为 0 时，返回的是本地用户的网络质量。
-  /// - [NetworkQuality] `txQuality`：该用户的上行网络质量，基于上行视频的发送码率、上行丢包率、平均往返时延和网络抖动计算。
-  /// 该值代表当前的上行网络质量，帮助判断是否可以支持当前设置的视频编码属性。假设上行码率是 1000 Kbps，
-  /// 那么支持 640 &times; 480 的分辨率、30 fps 的帧率没有问题，但是支持 1280 x 720 的分辨率就会有困难。
-  /// - [NetworkQuality] `rxQuality`：该用户的下行网络质量，基于下行网络的丢包率、平均往返延时和网络抖动计算。
+  /// The `NetworkQualityWithUidCallback` typedef includes the following parameters:
+  /// - [int] `uid`：User ID. The network quality of the user with this uid is reported. If `uid` is 0, the local network quality is reported.
+  /// - [NetworkQuality] `txQuality`: Uplink transmission quality of the user in terms of the transmission bitrate, packet loss rate, average RTT (Round-Trip Time)and jitter of the uplink network. `txQuality` is a quality rating helping you understand how well the current uplink network conditions can support the selected [VideoEncoderConfiguration]. For example, a 1000 Kbps uplink network may be adequate for video frames with a resolution of 680 × 480 and a frame rate of 30 fps, but may be inadequate for resolutions higher than 1280 × 720.
+  /// - [NetworkQuality] `rxQuality`: Downlink network quality rating of the user in terms of packet loss rate, average RTT, and jitter of the downlink network.
   NetworkQualityWithUidCallback networkQuality;
 
-  /// 通话前网络上下行 Last mile 质量探测报告回调。
+  /// Reports the last-mile network probe result.
   ///
-  /// 在调用 [RtcEngine.startLastmileProbeTest] 之后，SDK 会在约 30 秒内返回该回调。
+  /// The SDK triggers this callback within 30 seconds after the app calls the [RtcEngine.startLastmileProbeTest] method.
   ///
-  /// `LastmileProbeCallback` 包含如下参数：
-  /// - [LastmileProbeResult] `result`：上下行 Last mile 质量探测结果。
-  ///
-  /// (result: LastmileProbeResult)
+  /// The `LastmileProbeCallback` typedef includes the following parameter:
+  /// - [LastmileProbeResult] `result`: The uplink and downlink last-mile network probe test result.
   LastmileProbeCallback lastmileProbeResult;
 
-  /// 通话中本地视频流的统计信息回调。
+  /// Reports the statistics of the local video streams.
   ///
-  /// 该回调描述本地设备发送视频流的统计信息，每 2 秒触发一次。
+  /// The SDK triggers this callback once every two seconds for each user/host. If there are multiple users/hosts in the channel, the SDK triggers this callback as many times.
   ///
-  /// `LocalVideoStatsCallback` 包含如下参数：
-  /// - [LocalVideoStats] `stats`：本地视频统计数据。
+  /// The `LocalVideoStatsCallback` typedef includes the following parameter:
+  /// - [LocalVideoStats] `stats`: The statistics of the local video stream.
   LocalVideoStatsCallback localVideoStats;
 
-  /// 通话中本地音频流的统计信息回调。
+  /// Reports the statistics of the local audio stream.
   ///
-  /// 该回调描述本地设备发送音频流的统计信息。SDK 每 2 秒触发该回调一次。
-  /// `LocalAudioStatsCallback` 包含如下参数：
-  /// - [LocalAudioStats] `stats`：本地音频统计数据。
+  /// The `LocalAudioStats` typedef includes the following parameter:
+  /// - [LocalAudioStats] `stats`: The statistics of the local audio stream.
   LocalAudioStatsCallback localAudioStats;
 
-  /// 通话中远端视频流的统计信息回调。
+  /// Reports the statistics of the video stream from each remote user/host. The SDK triggers this callback once every two seconds for each remote user/host. If a channel includes multiple remote users, the SDK triggers this callback as many times.
   ///
-  /// 该回调描述远端用户在通话中端到端的视频流状态，针对每个远端用户/主播每 2 秒触发一次。
-  /// 如果远端同时存在多个用户/主播，该回调每 2 秒会被触发多次。
-  ///
-  /// `RemoteVideoStatsCallback` 包含如下参数：
-  /// - [RemoteVideoStats] `stats`：远端视频统计数据。
+  /// The `RemoteVideoStatsCallback` typedef includes the following parameter:
+  /// - [RemoteVideoStats] `stats`: Statistics of the received remote video streams.
   RemoteVideoStatsCallback remoteVideoStats;
 
-  /// 通话中远端音频流的统计信息回调。
+  /// Reports the statistics of the audio stream from each remote user/host.
   ///
-  /// 该回调描述远端用户在通话中端到端的音频流统计信息，针对每个远端用户/主播每 2 秒触发一次。
-  /// 如果远端同时存在多个用户/主播，该回调每 2 秒会被触发多次。
+  /// The SDK triggers this callback once every two seconds for each remote user/host. If a channel includes multiple remote users, the SDK triggers this callback as many times.
   ///
-  /// 当网络发生丢包时，因 FEC（Forward Error Correction，向前纠错码）或重传恢复，最终的音频丢帧率不高，则可以认为整个质量较好。
+  /// Schemes such as FEC (Forward Error Correction) or retransmission counter the frame loss rate. Hence, users may find the overall audio quality acceptable even when the packet loss rate is high.
   ///
-  /// `RemoteAudioStatsCallback` 包含如下参数：
-  /// - [RemoteAudioStats] `stats`：接收到的远端音频统计数据。
+  /// The `RemoteAudioStatsCallback` typedef includes the following parameter:
+  /// - [RemoteAudioStats] `stats`: Statistics of the received remote audio streams.
   RemoteAudioStatsCallback remoteAudioStats;
 
-  /// 本地音乐文件播放已结束回调。
+  /// Occurs when the audio mixing file playback finishes.
   ///
-  /// **Deprecated**
-  /// 该回调已废弃。我们建议你使用 [RtcEngineEventHandler.audioMixingStateChanged]。
+  /// **Deprecated** This callback is deprecated. Use [RtcEngineEventHandler.audioMixingStateChanged] instead.
   ///
-  /// 当调用 [RtcEngine.startAudioMixing] 播放伴奏音乐结束后，会触发该回调。
+  /// You can start an audio mixing file playback by calling the [RtcEngine.startAudioMixing] method. This callback is triggered when the audio mixing file playback finishes.
   ///
-  /// 如果该方法调用失败，会在 [warning] 回调里，返回警告码 [WarningCode.AudioMixingOpenError]。
+  /// If the [RtcEngine.startAudioMixing] method call fails, an [WarningCode.AudioMixingOpenError] warning returns in the [warning] callback.
+  /// The `EmptyCallback` typedef does not include any parameter.
   @deprecated
   EmptyCallback audioMixingFinished;
 
-  /// 本地用户的音乐文件播放状态改变。
-  /// 调用 [RtcEngine.startAudioMixing] 播放混音音乐文件后，当音乐文件的播放状态发生改变时，会触发该回调。
+  /// Occurs when the state of the local user's audio mixing file changes.
   ///
-  ///    - 如果正常播放、暂停或停止播放音乐文件，会返回状态码 `710`、`711` 或 `713`，`errorCode` 返回 `0`。
-  ///    - 如果播放出错，则返回状态码 `714`，`errorCode` 返回相应的出错原因。
-  ///    - 如果本地音乐文件不存在、文件格式不支持、无法访问在线音乐文件 URL 都会返回警告码 [WarningCode.AudioMixingOpenError] = 701。
+  /// When you call the [RtcEngine.startAudioMixing] method and the state of audio mixing file changes, the Agora SDK triggers this callback.
+  /// - When the audio mixing file plays, pauses playing, or stops playing, this callback returns 710, 711, or 713 in state, and 0 in the `errorCode` parameter.
+  /// - When exceptions occur during playback, this callback returns 714 in state and an error in the `errorCode` parameter.
+  /// - If the local audio mixing file does not exist, or if the SDK does not support the file format or cannot access the music file URL, the SDK returns [WarningCode.AudioMixingOpenError] = 701.
   ///
-  /// `AudioMixingStateCallback` 包含如下参数：
-  /// - [AudioMixingStateCode] `state`：状态码。
-  /// - [AudioMixingErrorCode] `errorCode`：错误码。
+  /// The `AudioMixingStateCallback` typedef includes the following parameters:
+  /// - [AudioMixingStateCode] `state`: The state code.
+  /// - [AudioMixingErrorCode] `errorCode`: The error code.
   AudioMixingStateCallback audioMixingStateChanged;
 
-  /// 本地音效文件播放已结束回调。
+  /// Occurs when the audio effect file playback finishes.
   ///
-  /// 当调用 [RtcEngine.playEffect] 播放音效结束后，会触发该回调。
+  /// You can start a local audio effect playback by calling the [RtcEngine.playEffect] method. This callback is triggered when the local audio effect file playback finishes.
   ///
-  /// `SoundIdCallback` 包含如下参数：
-  /// - [int] `soundId`：指定音效的 ID。每个音效均有唯一的 ID。
+  /// The `SoundIdCallback` typedef includes the following parameter:
+  /// - [int] `soundId`: ID of the local audio effect. Each local audio effect has a unique ID.
   SoundIdCallback audioEffectFinished;
 
-  /// RTMP 推流状态发生改变回调。该回调返回本地用户调用 [RtcEngine.addPublishStreamUrl]
-  /// 或 [RtcEngine.removePublishStreamUrl] 方法的结果。
+  /// Occurs when the state of the RTMP streaming changes.
   ///
-  /// RTMP 推流状态发生改变时，SDK 会触发该回调，并在回调中明确状态发生改变的 URL 地址及当前推流状态；当推流状态为 [RtmpStreamingState.Failure] 时，你可以在 `errCode` 参数中查看返回的错误信息。
-  /// 该回调方便推流用户了解当前的推流状态；推流出错时，你可以通过返回的错误码了解出错的原因，方便排查问题。
+  /// The SDK triggers this callback to report the result of the local user calling the [RtcEngine.addPublishStreamUrl] or [RtcEngine.removePublishStreamUrl] method. This callback returns the URL and its current streaming state. When the streaming state is [RtmpStreamingState.Failure], see the `errCode` parameter for details.
   ///
-  /// `RtmpStreamingStateCallback` 包含如下参数：
-  /// - [String] `url`：推流状态发生改变的 URL 地址。
-  /// - [RtmpStreamingState] `state`：当前的推流状态。
-  /// - [RtmpStreamingErrorCode] `errCode`：详细的推流错误信息。
+  /// This callback indicates the state of the RTMP streaming. When exceptions occur, you can troubleshoot issues by referring to the detailed error descriptions in the `errCode` parameter.
+  ///
+  /// The `RtmpStreamingStateCallback` typedef includes the following parameters:
+  /// - [String] `url`: The RTMP URL address.
+  /// - [RtmpStreamingState] `state`: The RTMP streaming state.
+  /// - [RtmpStreamingErrorCode] `errCode`: The detailed error information for streaming.
   RtmpStreamingStateCallback rtmpStreamingStateChanged;
 
-  /// 旁路推流设置被更新回调。
+  /// Occurs when the publisher's transcoding settings are updated.
   ///
-  /// [RtcEngine.setLiveTranscoding] 方法中的直播转码参数 `LiveTranscoding` 更新时，该回调会被触发，并向主播报告更新信息。
+  /// When the [LiveTranscoding] class in the [RtcEngine.setLiveTranscoding] method updates, the SDK triggers this callback to report the update information.
   ///
   /// **Note**
-  ///
-  /// 首次调用 [RtcEngine.setLiveTranscoding] 方法设置转码参数时，不会触发该回调。
+  /// - If you call the [RtcEngine.setLiveTranscoding] method to set the [LiveTranscoding] class for the first time, the SDK does not trigger this callback.
+  /// The `EmptyCallback` typedef does not include any parameter.
   EmptyCallback transcodingUpdated;
 
-  /// 输入在线媒体流状态回调。该回调表明向直播输入的外部视频流的状态。
+  /// Reports the status of injecting the online media stream.
   ///
-  /// `StreamInjectedStatusCallback` 包含如下参数：
-  /// - [String] `url`：推流状态发生改变的 URL 地址。
-  /// - [int] `uid`：用户 ID。
-  /// - [InjectStreamStatus] `status`：输入的外部视频源状态。
+  /// The `StreamInjectedStatusCallback` typedef includes the following parameters:
+  /// - [String] `url`: The URL address of the externally injected stream.
+  /// - [int] `uid`: User ID.
+  /// - [InjectStreamStatus] `status`: State of the externally injected stream.
   StreamInjectedStatusCallback streamInjectedStatus;
 
-  /// 接收到对方数据流消息的回调。
+  /// Occurs when the local user receives a remote data stream.
   ///
-  /// 该回调表示本地用户收到了远端用户调用 [RtcEngine.sendStreamMessage] 方法发送的流消息。
+  /// The SDK triggers this callback when the local user receives the stream message that the remote user sends by calling the [RtcEngine.sendStreamMessage] method.
   ///
-  /// `StreamMessageCallback` 包含如下参数：
-  /// - [int] `uid`：用户 ID。
-  /// - [int] `streamId`：数据流。
-  /// - [String] `data`：接收到的数据。
+  /// The `StreamMessageCallback` typedef includes the following parameters:
+  /// - [int] `uid`: User ID of the remote user sending the data stream.
+  /// - [int] `streamId`: Stream ID.
+  /// - [String] `data`: Data received by the local user.
   StreamMessageCallback streamMessage;
 
-  /// 接收对方数据流消息发生错误的回调。
+  /// Occurs when the local user fails to receive a remote data stream.
   ///
-  /// 该回调表示本地用户未收到远端用户调用 [RtcEngine.sendStreamMessage] 方法发送的流消息。
+  /// The SDK triggers this callback when the local user fails to receive the stream message that the remote user sends by calling the [RtcEngine.sendStreamMessage] method.
   ///
-  /// `StreamMessageErrorCallback` 包含如下参数：
-  /// - [int] `uid`：用户 ID。
-  /// - [int] `streamId`：数据流。
-  /// - [ErrorCode] `error`：接收到的数据。
-  /// - [int] `missed`：丢失的消息数量。
-  /// - [int] `cached`：数据流中断时，后面缓存的消息数量。
+  /// The `StreamMessageErrorCallback` callback includes the following parameters:
+  /// - [int] `uid`: User ID of the remote user sending the data stream.
+  /// - [int] `streamId`: Stream ID.
+  /// - [ErrorCode] `error`: Error code.
+  /// - [int] `missed`: The number of lost messages.
+  /// - [int] `cached`: The number of incoming cached messages when the data stream is interrupted.
   StreamMessageErrorCallback streamMessageError;
 
-  /// 媒体引擎成功加载的回调。
+  /// Occurs when the media engine is loaded.
+  ///
+  /// The `EmptyCallback` typedef does not include any parameter.
   EmptyCallback mediaEngineLoadSuccess;
 
-  /// 媒体引擎成功启动的回调。
+  /// Occurs when the media engine starts.
+  ///
+  /// The `EmptyCallback` typedef does not include any parameter.
   EmptyCallback mediaEngineStartCallSuccess;
 
-  /// 跨频道媒体流转发状态发生改变回调。
+  /// Occurs when the state of the media stream relay changes.
   ///
-  /// 当跨频道媒体流转发状态发生改变时，SDK 会触发该回调，并报告当前的转发状态以及相关的错误信息。
+  /// The SDK reports the state of the current media relay and possible error messages in this callback.
   ///
-  /// `MediaRelayStateCallback` 包含如下参数：
-  /// - [ChannelMediaRelayState] `state`：跨频道媒体流转发状态。
-  /// - [ChannelMediaRelayError] `code`：跨频道媒体流转发出错的错误码。
+  /// The `MediaRelayStateCallback` typedef includes the following parameters:
+  /// - [ChannelMediaRelayState] `state`: The state code.
+  /// - [ChannelMediaRelayError] `code`: The error code.
   MediaRelayStateCallback channelMediaRelayStateChanged;
 
-  /// 跨频道媒体流转发事件回调。
+  /// Reports events during the media stream relay.
   ///
-  /// 该回调报告跨频道媒体流转发过程中发生的事件。
-  ///
-  /// `MediaRelayEventCallback` 包含如下参数：
-  /// - [ChannelMediaRelayEvent] `code`：跨频道媒体流转发事件码。
+  /// The `MediaRelayEventCallback` typedef includes the following parameter:
+  /// - [ChannelMediaRelayEvent] `code`: The event code for media stream relay.
   MediaRelayEventCallback channelMediaRelayEvent;
 
-  /// 已显示远端视频首帧回调。
+  /// Occurs when the first remote video frame is rendered.
   ///
-  /// **Deprecated**
+  /// **Deprecated** Use [VideoRemoteState.Starting] or [VideoRemoteState.Decoding] in the [remoteVideoStateChanged] callback instead.
   ///
-  /// 该回调已废弃。请改用 [remoteVideoStateChanged] 中的 [VideoRemoteState.Starting] 和 [VideoRemoteState.Decoding] 代替。
+  /// This callback is triggered after the first frame of the remote video is rendered on the video window. The application can retrieve the data of the time elapsed from the user joining the channel until the first video frame is displayed.
   ///
-  /// 第一帧远端视频显示在视图上时，触发此调用。App 可在此调用中获知出图时间（elapsed）。
-  ///
-  /// `VideoFrameWithUidCallback` 包含如下参数：
-  /// - [int] `uid`：用户 ID，指定是哪个用户的视频流。
-  /// - [int] `width`：视频流宽（像素）。
-  /// - [int] `height`：视频流高（像素）。
-  /// - [int] `elapsed`：从本地用户调用 [RtcEngine.joinChannel] 加入频道开始到发生此事件过去的时间（毫秒）。
+  /// The `VideoFrameWithUidCallback` typedef includes the following parameters:
+  /// - [int] `uid`: User ID of the remote user sending the video streams.
+  /// - [int] `width`: Width (pixels) of the video stream.
+  /// - [int] `height`: Height (pixels) of the video stream.
+  /// - [int] `elapsed`: Time elapsed (ms) from the local user calling [RtcEngine.joinChannel] until this callback is triggered.
   @deprecated
   VideoFrameWithUidCallback firstRemoteVideoFrame;
 
-  /// 已接收远端音频首帧回调。
+  /// Occurs when the first remote audio frame is received.
   ///
-  /// **Deprecated**
+  /// **Deprecated** Use [AudioRemoteState.Starting] in [remoteAudioStateChanged] instead.
   ///
-  /// 该回调已废弃。请改用 [remoteAudioStateChanged] 中的 [AudioRemoteState.Starting]。
-  ///
-  /// `UidWithElapsedCallback` 包含如下参数：
-  /// - [int] `uid`：新加入频道的远端用户/主播 ID。
-  /// - [int] `elapsed`：从本地用户调用 [RtcEngine.joinChannel] 或 [RtcEngine.setClientRole] 到触发该回调的延迟（毫秒）。
+  /// The `UidWithElapsedCallback` typedef includes the following parameters:
+  /// - [int] `uid`: This parameter has the following definitions in different events:
+  ///   - [userJoined]: ID of the user or host who joins the channel.
+  ///   - [firsRemoteAudioFrame]: User ID of the remote user.
+  ///   - [firstRemoteAudioDecoded]: User ID of the remote user sending the audio stream.
+  ///   - [joinChannelSuccess]: User ID.
+  ///   - [rejoinChannelSuccess]: User ID.
+  /// - [int] `elapsed`:
+  ///   - [userJoined]: Time delay (ms) from the local user calling [RtcEngine.joinChannel] or [RtcEngine.setClientRole] until this callback is triggered.
+  ///   - [firsRemoteAudioFrame]: Time elapsed (ms) from the local user calling [RtcEngine.joinChannel] until this callback is triggered.
+  ///   - [firstRemoteAudioDecoded]: Time elapsed (ms) from the local user calling [RtcEngine.joinChannel] until the SDK triggers this callback.
+  ///   - [joinChannelSuccess]: Time elapsed (ms) from the local user calling [RtcChannel.joinChannel] until this callback is triggered.
+  ///   - [rejoinChannelSuccess]: Time elapsed (ms) from the local user starting to reconnect until this callback is triggered.
   @deprecated
   UidWithElapsedCallback firstRemoteAudioFrame;
 
-  /// 已解码远端音频首帧回调。
+  /// Occurs when the engine receives the first audio frame from a specified remote user.
   ///
-  /// **Deprecated**
+  /// **Deprecated** Use [VideoRemoteState.Decoding] in [remoteAudioStateChanged] instead.
   ///
-  /// 该回调已废弃，请改用 [remoteAudioStateChanged] 中的 [VideoRemoteState.Decoding]。
+  /// This callback is triggered in either of the following scenarios：
+  /// - The remote user joins the channel and sends the audio stream.
+  /// - The remote user stops sending the audio stream and re-sends it after 15 seconds. Possible reasons include:
+  /// -- The remote user leaves channel.
+  /// -- The remote user drops offline.
+  /// -- The remote user calls the [RtcEngine.muteLocalAudioStream] method.
+  /// -- The remote user calls the [RtcEngine.disableAudio] method.
   ///
-  /// SDK 完成远端音频首帧解码，并发送给音频模块用以播放时，会触发此回调。有两种情况：
-  /// - 远端用户首次上线后发送音频。
-  /// - 远端用户音频离线再上线发送音频。音频离线指本地在 15 秒内没有收到音频包，可能有如下原因：
-  ///   - 远端用户离开频道。
-  ///   - 远端用户掉线。
-  ///   - 远端用户停止发送音频流（调用了 [RtcEngine.muteLocalAudioStream] 方法）。
-  ///   - 远端用户关闭音频（调用了 [RtcEngine.disableAudio] 方法）。
-  ///
-  /// `UidWithElapsedCallback` 包含如下参数：
-  /// - [int] `uid`：新加入频道的远端用户/主播 ID。
-  /// - [int] `elapsed`：从本地用户调用 [RtcEngine.joinChannel] 或 [RtcEngine.setClientRole] 到触发该回调的延迟（毫秒）。
+  /// The `UidWithElapsedCallback` typedef includes the following parameters:
+  /// - [int] `uid`: This parameter has the following definitions in different events:
+  ///   - [userJoined]: ID of the user or host who joins the channel.
+  ///   - [firsRemoteAudioFrame]: User ID of the remote user.
+  ///   - [firstRemoteAudioDecoded]: User ID of the remote user sending the audio stream.
+  ///   - [joinChannelSuccess]: User ID.
+  ///   - [rejoinChannelSuccess]: User ID.
+  /// - [int] `elapsed`:
+  ///   - [userJoined]: Time delay (ms) from the local user calling [RtcEngine.joinChannel] or [RtcEngine.setClientRole] until this callback is triggered.
+  ///   - [firsRemoteAudioFrame]: Time elapsed (ms) from the local user calling [RtcEngine.joinChannel] until this callback is triggered.
+  ///   - [firstRemoteAudioDecoded]: Time elapsed (ms) from the local user calling [RtcEngine.joinChannel] until the SDK triggers this callback.
+  ///   - [joinChannelSuccess]: Time elapsed (ms) from the local user calling [RtcChannel.joinChannel] until this callback is triggered.
+  ///   - [rejoinChannelSuccess]: Time elapsed (ms) from the local user starting to reconnect until this callback is triggered.
   @deprecated
   UidWithElapsedCallback firstRemoteAudioDecoded;
 
-  /// 远端用户停止/恢复发送音频流回调。
+  /// Occurs when a remote user stops/resumes sending the audio stream.
   ///
-  /// **Deprecated**
+  /// **Deprecated** Use the [RtcEngineEventHandler.remoteAudioStateChanged] callback with the following parameters instead:
+  /// - [VideoRemoteState.Stopped] and [VideoRemoteStateReason.RemoteMuted].
+  /// - [VideoRemoteState.Decoding] and [VideoRemoteStateReason.RemoteUnmuted].
   ///
-  /// 该回调已废弃，请改用 [remoteAudioStateChanged] 回调中的如下参数实现相同功能：
-  /// - [VideoRemoteState.Stopped] 和 [VideoRemoteStateReason.RemoteMuted]
-  /// - [VideoRemoteState.Decoding] 和 [VideoRemoteStateReason.RemoteUnmuted]
-  ///
-  /// 提示有其他用户将他的音频流静音/取消静音。
-  ///
-  /// 该回调是由远端用户调用 [RtcEngine.muteLocalAudioStream] 方法关闭或开启音频发送触发的。
+  /// The SDK triggers this callback when the remote user stops or resumes sending the audio stream by calling the [RtcEngine.muteLocalAudioStream] method.
   ///
   /// **Note**
+  /// - This callback is invalid when the number of users or broadcasters in the channel exceeds 17.
   ///
-  /// 当频道内的用户（通信场景）或主播（直播场景）的人数超过 17 时，Agora 建议你不要使用该回调。
-  ///
-  /// `UidWithMutedCallback` 包含如下参数：
-  /// - [int] `uid`：用户 ID，提示是哪个用户的视频流。
-  /// - [bool] `muted`：该用户是否暂停发送其视频流：
-  ///   - `true`: 该用户已暂停发送视频流。
-  ///   - `false`: 该用户已恢复发送视频流。
+  /// The `UidWithMutedCallback` typedef includes the following parameters:
+  /// - [int] `uid`: ID of the remote user.
+  /// - [bool] `muted`: Whether the remote user's video stream playback pauses/resumes:
+  ///    - `true`: Pause.
+  ///    - `false`: Resume.
   @deprecated
   UidWithMutedCallback userMuteAudio;
 
-  /// 开启旁路推流的结果回调。
+  /// Reports the result of calling the [RtcEngine.addPublishStreamUrl] method.
   ///
-  /// **Deprecated**
+  /// **Deprecated** Use [RtcEngineEventHandler.rtmpStreamingStateChanged] instead.
   ///
-  /// 该回调已废弃。请改用 [RtcEngineEventHandler.rtmpStreamingStateChanged]。
+  /// This callback indicates whether you have successfully added an RTMP stream to the CDN.
   ///
-  /// 该回调返回 [RtcEngine.addPublishStreamUrl] 方法的调用结果。
-  /// 用于通知主播是否推流成功。如果不成功，你可以在 `error` 参数中查看详细的错误信息。
-  ///
-  /// `UrlWithErrorCallback` 包含如下参数：
-  /// - [String] `url`：新增的推流地址。
-  /// - [ErrorCode] `error`：详细的错误信息。
+  /// The `UrlWithErrorCallback` includes the following parameters:
+  /// - [String] `url`: The RTMP URL address.
+  /// - [ErrorCode] `error`: The detailed error information.
   @deprecated
   UrlWithErrorCallback streamPublished;
 
-  /// 停止旁路推流的结果回调。
+  /// Reports the result of calling the [RtcEngine.removePublishStreamUrl] method.
   ///
+  /// **Deprecated** Use [RtcEngineEventHandler.rtmpStreamingStateChanged] instead.
   ///
-  /// **Deprecated**
+  /// This callback indicates whether you have successfully removed an RTMP stream from the CDN.
   ///
-  /// 该回调已废弃。请改用 [RtcEngineEventHandler.rtmpStreamingStateChanged]。
-  ///
-  /// 该回调返回 [RtcEngine.removePublishStreamUrl] 方法的调用结果。用于通知主播是否停止推流成功。
-  ///
-  /// `UrlCallback` 包含如下参数：
-  /// - [String] `url`：主播停止推流的 RTMP 地址。
+  /// The `UrlCallback` typedef includes the following parameter:
+  /// - [String] `url`: The RTMP URL address.
   @deprecated
   UrlCallback streamUnpublished;
 
-  /// 通话中远端音频流传输的统计信息回调。
+  /// Reports the transport-layer statistics of each remote audio stream.
   ///
+  /// **Deprecated** This callback is deprecated. Use [RtcEngineEventHandler.remoteAudioStats] instead.
   ///
-  /// **Deprecated**
+  /// This callback reports the transport-layer statistics, such as the packet loss rate and time delay, once every two seconds after the local user receives an audio packet from a remote user.
   ///
-  /// 该回调已废弃。请改用 [RtcEngineEventHandler.remoteAudioStats]。
-  ///
-  /// 该回调描述远端用户通话中端到端的网络统计信息，通过音频包计算，用客观的数据，如丢包、网络延迟等，展示当前网络状态。
-  ///
-  /// 通话中，当用户收到远端用户/主播发送的音频数据包后，会每 2 秒触发一次该回调。
-  ///
-  /// `TransportStatsCallback` 包含如下参数：
-  /// - [int] `uid`：用户 ID，指定是哪个用户/主播的音频包。
-  /// - [int] `delay`：音频包从发送端到接收端的延时（毫秒）。
-  /// - [int] `lost`：音频包从发送端到接收端的丢包率 (%)。
-  /// - [int] `rxKBitRate`：远端音频包的接收码率（Kbps）。
+  /// The `TransportStatsCallback` typedef includes the following parameters:
+  /// - [int] `uid`: User ID of the remote user sending the audio packet.
+  /// - [int] `delay`: Network time delay (ms) from the remote user sending the audio packet to the local user.
+  /// - [int] `lost`: Packet loss rate (%) of the audio packet sent from the remote user.
+  /// - [int] `rxKBitRate`: Received bitrate (Kbps) of the audio packet sent from the remote user.
   @deprecated
   TransportStatsCallback remoteAudioTransportStats;
 
-  /// 通话中远端视频流传输的统计信息回调。
+  /// Reports the transport-layer statistics of each remote video stream.
   ///
-  /// **Deprecated**
+  /// **Deprecated** This callback is deprecated. Use [RtcEngineEventHandler.remoteVideoStats] instead.
   ///
-  /// 该回调已废弃。请改用 [RtcEngineEventHandler.remoteVideoStats]。
+  /// This callback reports the transport-layer statistics, such as the packet loss rate and time delay, once every two seconds after the local user receives the video packet from a remote user.
   ///
-  /// 该回调描述远端用户通话中端到端的网络统计信息，通过视频包计算，用客观的数据，如丢包、网络延迟等 ，展示当前网络状态。
-  ///
-  /// 通话中，当用户收到远端用户/主播发送的视频数据包后，会每 2 秒触发一次该回调。
-  ///
-  /// `TransportStatsCallback` 包含如下参数：
-  /// - [int] `uid`：用户 ID，指定是哪个用户/主播的视频包。
-  /// - [int] `delay`：视频包从发送端到接收端的延时（毫秒）。
-  /// - [int] `lost`：视频包从发送端到接收端的丢包率 (%)。
-  /// - [int] `rxKBitRate`：远端视频包的接收码率（Kbps）。
+  /// The `TransportStatsCallback` typedef includes the following parameters:
+  /// - [int] `uid`: User ID of the remote user sending the audio packet.
+  /// - [int] `delay`: Network time delay (ms) from the remote user sending the audio packet to the local user.
+  /// - [int] `lost`: Packet loss rate (%) of the audio packet sent from the remote user.
+  /// - [int] `rxKBitRate`: Received bitrate (Kbps) of the audio packet sent from the remote user.
   @deprecated
   TransportStatsCallback remoteVideoTransportStats;
 
-  /// 其他用户开/关视频模块回调。
+  /// Occurs when a remote user enables/disables the video module.
   ///
-  /// **Deprecated**
+  /// **Deprecated** This callback is deprecated and replaced by the [RtcEngineEventHandler.remoteVideoStateChanged] callback with the following parameters:
+  /// - [VideoRemoteState.Stopped] and [VideoRemoteStateReason.RemoteMuted].
+  /// - [VideoRemoteState.Decoding] and [VideoRemoteStateReason.RemoteUnmuted].
   ///
-  /// 该回调已废弃。请改用 [RtcEngineEventHandler.remoteVideoStateChanged] 回调中的如下参数：
-  /// - [VideoRemoteState.Stopped] 和 [VideoRemoteStateReason.RemoteMuted]
-  /// - [VideoRemoteState.Decoding] 和 [VideoRemoteStateReason.RemoteUnmuted]
+  /// Once the video module is disabled, the remote user can only use a voice call. The remote user cannot send or receive any video from other users.
   ///
-  /// 提示有其他用户启用/关闭了视频功能。
-  ///
-  /// 该回调是由远端用户调用 [RtcEngine.enableVideo] 或 [RtcEngine.disableVideo][`enableVideo`] 方法开启或关闭视频模块触发的。
+  /// The SDK triggers this callback when the remote user enables or disables the video module by calling the [RtcEngine.enableVideo] or [RtcEngine.disableVideo] method.
   ///
   /// **Note**
+  /// - This callback is invalid when the number of users or broadcasters in the channel exceeds 17.
   ///
-  /// 当频道内的用户（通信场景）或主播（直播场景）的人数超过 17 时，Agora 建议你不要使用该回调。
-  ///
-  /// `UidWithEnabledCallback` 包含如下参数：
-  /// - [int] `uid`：用户 ID，提示是哪个用户的视频流。
-  /// - [bool] `enabled`：是否启用视频功能：
-  ///  - `true`: 该用户已启用视频功能。启用后，该用户可以进行视频通话或直播。
-  ///  - `false`: 该用户已关闭视频功能。关闭后，该用户只能进行语音通话或直播，不能显示、发送自己的视频，也不能接收、显示别人的视频。
+  /// The `UidWithEnabledCallback` typedef includes the followinh parameters:
+  /// - [int] `uid`: User ID of the remote user.
+  /// - [bool] `enabled`: Whether the specific remote user enables/disables the video module:
+  ///   - `true`: Enabled. The remote user can enter a video session.
+  ///   - `false`: Disabled. The remote user can only enter a voice session, and cannot send or receive any video stream.
   @deprecated
   UidWithEnabledCallback userEnableVideo;
 
-  /// 远端用户开/关本地视频采集回调。
+  /// Occurs when a remote user enables/disables the local video capture function.
   ///
-  /// **Deprecated**
+  /// **Deprecated** This callback is deprecated and replaced by the [RtcEngineEventHandler.remoteVideoStateChanged] callback with the following parameters:
+  /// - [VideoRemoteState.Stopped] and [VideoRemoteStateReason.RemoteMuted].
+  /// - [VideoRemoteState.Decoding] and [VideoRemoteStateReason.RemoteUnmuted].
   ///
-  /// 该回调已废弃。请改用 [RtcEngineEventHandler.remoteVideoStateChanged] 回调中的如下参数：
-  /// - [VideoRemoteState.Stopped] 和 [VideoRemoteStateReason.RemoteMuted]
-  /// - [VideoRemoteState.Decoding] 和 [VideoRemoteStateReason.RemoteUnmuted]
+  /// The SDK triggers this callback when the remote user resumes or stops capturing the video stream by calling the [RtcEngine.enableLocalVideo] method.
+  /// This callback is only applicable to the scenario when the remote user only wants to watch the remote video without sending any video stream to the other user.
   ///
-  /// 提示有其他用户启用/关闭了本地视频功能。
-  ///
-  /// 该回调是由远端用户调用 [RtcEngine.enableLocalVideo] 方法开启或关闭视频采集触发的。
-  ///
-  /// `UidWithEnabledCallback` 包含如下参数：
-  /// - [int] `uid`：用户 ID，提示是哪个用户的视频流。
-  /// - [bool] `enabled`：是否启用视频功能：
-  ///  - `true`: 该用户已启用视频功能。启用后，该用户可以进行视频通话或直播。
-  ///  - `false`: 该用户已关闭视频功能。关闭后，该用户只能进行语音通话或直播，不能显示、发送自己的视频，也不能接收、显示别人的视频。
+  /// The `UidWithEnabledCallback` typedef includes the followinh parameters:
+  /// - [int] `uid`: User ID of the remote user.
+  /// - [bool] `enabled`: Whether the specific remote user enables/disables the video module:
+  ///   - `true`: Enabled. The remote user can enter a video session.
+  ///   - `false`: Disabled. The remote user can only enter a voice session, and cannot send or receive any video stream.
   @deprecated
   UidWithEnabledCallback userEnableLocalVideo;
 
-  /// 已完成远端视频首帧解码回调。
+  /// Occurs when the first remote video frame is received and decoded.
   ///
-  /// **Deprecated**
+  /// **Deprecated** This callback is deprecated. Use [VideoRemoteState.Starting] or [VideoRemoteState.Decoding] in the [RtcEngineEventHandler.remoteVideoStateChanged] callback instead.
   ///
-  /// 该回调已废弃。请改用 [RtcEngineEventHandler.remoteVideoStateChanged] 回调中的 [VideoRemoteState.Starting] 或 [VideoRemoteState.Decoding]。
+  /// This callback is triggered in either of the following scenarios:
+  /// - The remote user joins the channel and sends the video stream.
+  /// - The remote user stops sending the video stream and re-sends it after 15 seconds. Possible reasons include:
+  /// -- The remote user leaves channel.
+  /// -- The remote user drops offline.
+  /// -- The remote user calls the [RtcEngine.muteLocalVideoStream] method.
+  /// -- The remote user calls the [RtcEngine.disableVideo] method.
   ///
-  /// 本地收到远端第一个视频帧并解码成功后，会触发该回调。有两种情况：
-  ///
-  /// - 远端用户首次上线后发送视频。
-  /// - 远端用户视频离线再上线后发送视频。
-  ///
-  /// 其中，视频离线与用户离线不同。视频离线指本地在 15 秒内没有收到视频包，可能有如下原因：
-  ///
-  /// - 远端用户离开频道。
-  /// - 远端用户掉线。
-  /// - 远端用户停止发送本地视频流（调用了 [RtcEngine.muteLocalVideoStream]）。
-  /// - 远端用户关闭本地视频模块（调用了 [RtcEngine.disableVideo]）。
-  ///
-  /// `VideoFrameWithUidCallback` 包含如下参数：
-  /// - [int] `uid`：用户 ID，指定是哪个用户的视频流。
-  /// - [int] `width`：视频流宽（像素）。
-  /// - [int] `height`：视频流高（像素）。
-  /// - [int] `elapsed`：从本地用户调用 [RtcEngine.joinChannel] 加入频道开始到发生此事件过去的时间（毫秒）。
+  /// The `VideoFrameWithUidCallback` typedef includes the following parameters:
+  /// - [int] `uid`: User ID of the remote user sending the video streams.
+  /// - [int] `width`: Width (pixels) of the video stream.
+  /// - [int] `height`: Height (pixels) of the video stream.
+  /// - [int] `elapsed`: Time elapsed (ms) from the local user calling [RtcEngine.joinChannel] until this callback is triggered.
   @deprecated
   VideoFrameWithUidCallback firstRemoteVideoDecoded;
 
-  /// 麦克风状态已改变回调。
+  /// Occurs when the microphone is enabled/disabled.
   ///
-  /// **Deprecated**
   ///
-  /// 该回调已废弃。请改用 [RtcEngineEventHandler.localAudioStateChanged] 回调中的 [AudioLocalState.Stopped] 或 [AudioLocalState.Recording]。
+  /// **Deprecated** This callback is deprecated. Use [AudioLocalState.Stopped] (0) or [AudioLocalState.Recording] (1) in the [RtcEngineEventHandler.localAudioStateChanged] callback instead.
+  /// The SDK triggers this callback when the local user resumes or stops capturing the local audio stream by calling the [RtcEngine.enableLocalAudio] method.
   ///
-  /// 该回调由本地用户调用 [RtcEngine.enableLocalAudio] 方法开启或关闭本地音频采集触发的。
-  ///
-  /// `EnabledCallback` 包含如下参数：
-  /// - [bool] `enabled`：是否启用麦克风：
-  ///  - `true`：麦克风已启用。
-  ///  - `false`：麦克风已禁用。
+  /// The `EnabledCallback` includes the following parameter:
+  /// - [bool] `enabled`: Whether the microphone is enabled/disabled:
+  ///   - `true`：Enabled.
+  ///   - `false`：Disabled.
   @deprecated
   EnabledCallback microphoneEnabled;
 
-  /// 网络连接中断回调。
+  /// Occurs when the connection between the SDK and the server is interrupted.
   ///
-  /// **Deprecated**
+  /// **Deprecated** Use [RtcEngineEventHandler.connectionStateChanged] instead.
   ///
-  /// 该回调已经废弃。请改用 [RtcEngineEventHandler.connectionStateChanged] 回调。
+  /// The SDK triggers this callback when it loses connection to the server for more than four seconds after the connection is established. After triggering this callback, the SDK tries to reconnect to the server. You can use this callback to implement pop-up reminders. This callback is different from [RtcEngineEventHandler.connectionLost]:
+  /// - The SDK triggers the [RtcEngineEventHandler.connectionInterrupted] callback when the SDK loses connection with the server for more than four seconds after it joins the channel.
+  /// - The SDK triggers the [RtcEngineEventHandler.connectionLost] callback when it loses connection with the server for more than 10 seconds, regardless of whether it joins the channel or not.
   ///
-  /// SDK 在和服务器建立连接后，失去了网络连接超过 4 秒，会触发该回调。在触发事件后，SDK 会主动重连服务器，所以该事件可以用于 UI 提示。
-  /// 与 [RtcEngineEventHandler.connectionLost] 回调的区别是：
-  ///
-  /// - [RtcEngineEventHandler.connectionInterrupted] 回调一定是发生在 [RtcEngine.joinChannel] 成功后，且 SDK 刚失去和服务器连接超过 4 秒时触发。
-  /// - [RtcEngineEventHandler.connectionLost] 回调是无论之前 [RtcEngine.joinChannel] 是否连接成功，只要 10 秒内和服务器无法建立连接都会触发。
-  ///
-  /// 如果 SDK 在断开连接后，20 分钟内还是没能重新加入频道，SDK 会停止尝试重连。
+  /// If the SDK fails to rejoin the channel 20 minutes after being disconnected from Agora's edge server, the SDK stops rejoining the channel.
+  /// The `EmptyCallback` typedef does not include any parameter.
   @deprecated
   EmptyCallback connectionInterrupted;
 
-  /// 网络连接已被服务器禁止回调。
+  /// Occurs when your connection is banned by the Agora Server.
   ///
-  ///  **Deprecated**
-  ///
-  /// 该回调已废弃。请改用 [RtcEngineEventHandler.connectionStateChanged] 回调。
-  ///
-  /// 当你被服务端禁掉连接的权限时，会触发该回调。
+  /// **Deprecated** Use [RtcEngineEventHandler.connectionStateChanged] instead.
+  /// The `EmptyCallback` typedef does not include any parameter.
   @deprecated
   EmptyCallback connectionBanned;
 
-  /// 远端音频质量回调。
+  /// Reports the statistics of the audio stream from each remote user/host.
   ///
-  /// **Deprecated**
+  /// **Deprecated** Use [RtcEngineEventHandler.remoteAudioStats] instead.
   ///
-  /// 该回调已废弃。请改用 [RtcEngineEventHandler.remoteAudioStats] 方法。
+  /// The SDK triggers this callback once every two seconds to report the audio quality of each remote user/host sending an audio stream. If a channel has multiple remote users/hosts sending audio streams, the SDK trggers this callback as many times.
   ///
-  /// 该回调描述远端用户在通话中的音频质量，针对每个远端用户/主播每 2 秒触发一次。如果远端同时存在多个用户/主播，该回调每 2 秒会被触发多次。
-  ///
-  /// `EnabledCallback` 包含如下参数：
-  /// - [int] `uid`：用户 ID，指定是谁发的音频流。
-  /// - [int] `quality`：语音质量。
-  /// - [int] `delay`：音频包从发送端到接收端的延迟（毫秒）。包括声音采样前处理、网络传输、网络抖动缓冲引起的延迟。
-  /// - [int] `lost`：音频包从发送端到接收端的丢包率 (%)。
+  /// The `AudioQualityCallback` typedef includes the following parameters:
+  /// [int] `uid`: User ID of the speaker.
+  /// [int] `quality`: Audio quality of the user.
+  /// [int] `delay`: Time delay (ms) of the audio packet from the sender to the receiver, including the time delay from audio sampling pre-processing, transmission, and the jitter buffer.
+  /// [int] `lost`: Packet loss rate (%) of the audio packet sent from the sender to the receiver.
   @deprecated
   AudioQualityCallback audioQuality;
 
-  /// 摄像头就绪回调。
+  /// Occurs when the camera is turned on and ready to capture video.
   ///
-  /// **Deprecated**
-  ///
-  /// 该回调已废弃。请改用 [RtcEngineEventHandler.localVideoStateChanged] 回调中的 [LocalVideoStreamState.Capturing]。
-  /// 提示已成功打开摄像头，可以开始捕获视频。如果摄像头打开失败，可在 [`Error`]{@link Error} 中处理相应错误。
+  /// **Deprecated** Use [LocalVideoStreamState.Capturing] in the [RtcEngineEventHandler.localVideoStateChanged] callback instead. If the camera fails to turn on, fix the error reported in the [LocalVideoStreamState.Failed] callback.
+  /// The `EmptyCallback` typedef does not include any parameter.
   @deprecated
   EmptyCallback cameraReady;
 
-  /// 视频功能停止回调。
+  /// Occurs when the video stops playing.
   ///
-  /// **Deprecated**
-  ///
-  /// 该回调已废弃。请改用 [RtcEngineEventHandler.localVideoStateChanged] 回调中的 [LocalVideoStreamState.Stopped]。
-  /// 提示视频功能已停止。 App 如需在停止视频后对 view 做其他处理（例如显示其他画面），可以在这个回调中进行。
+  /// **Deprecated** Use [LocalVideoStreamState.Stopped] in the [RtcEngineEventHandler.localVideoStateChanged] callback instead. The application can use this callback to change the configuration of the view (for example, displaying other pictures in the view) after the video stops playing.
+  /// The `EmptyCallback` typedef does not include any parameter.
   @deprecated
   EmptyCallback videoStopped;
 
-  /// 接收端已接收 Metadata。
+  /// Occurs when the local user receives the metadata.
   ///
-  /// `MetadataCallback` 包含如下参数：
-  /// - [String] `buffer`：接收到的 Metadata 数据 Buffer。
-  /// - [int] `uid`：发送该 Metadata 的远端用户的 ID。
-  /// - [int] `timeStampMs`：接收到的 Metadata 的时间戳，单位为毫秒 。
+  /// The `MetadataCallback` typedef includes the following parameters:
+  /// - [String]: `buffer`: The received metadata.
+  /// - [int]: `uid`: The ID of the user who sent the metadata.
+  /// - [int]: `timeStampMs`: The timestamp (ms) of the received metadata.
   MetadataCallback metadataReceived;
 
-  /// 已发布本地音频首帧回调。
+  /// Occurs when the first audio frame is published.
   ///
-  /// @since v3.1.2。
+  /// @since v3.1.2.
   ///
-  /// SDK 会在以下三种时机触发该回调：
-  /// - 开启本地音频的情况下，调用 [RtcEngine.joinChannel] 成功加入频道后。
-  /// - 调用 [RtcEngine.muteLocalAudioStream] (`true`)，再调用 [RtcEngine.muteLocalAudioStream] (`false`) 后。
-  /// - 调用 [RtcEngine.disableAudio]，再调用 [RtcEngine.enableAudio] 后。
+  /// The SDK triggers this callback under one of the following circumstances:
+  /// - The local client enables the audio module and calls [RtcEngine.joinChannel] successfully.
+  /// - The local client calls [RtcEngine.muteLocalAudioStream] (`true`) and [RtcEngine.muteLocalAudioStream] (`false`) in sequence.
+  /// - The local client calls [RtcEngine.disableAudio] (`true`) and [`enableAudio`] in sequence.
   ///
-  /// `ElapsedCallback` 包含如下参数：
-  /// - [int] `elapsed`：从本地用户调用 [RtcEngine.joinChannel] 方法直至该回调被触发的延迟（毫秒）。
+  /// The `ElapsedCallback` typedef includes the following parameters:
+  /// - [int] `Elapsed`: Time elapsed (ms) from the local user calling the [RtcEngine.joinChannel] until this callback is triggered.
   ElapsedCallback firstLocalAudioFramePublished;
 
-  /// 已发布本地视频首帧回调。
+  /// Occurs when the first video frame is published.
   ///
-  /// @since v3.1.2。
+  /// @since v3.1.2.
   ///
-  /// SDK 会在以下三种时机触发该回调：
-  /// - 开启本地视频的情况下，调用 [RtcEngine.joinChannel] 成功加入频道后。
-  /// - 调用 [RtcEngine.muteLocalVideoStream] (`true`)，再调用[RtcEngine.muteLocalVideoStream] (`false`) 后。
-  /// - 调用 [RtcEngine.disableVideo]，再调用 [RtcEngine.enableVideo] 后。
+  /// The SDK triggers this callback under one of the following circumstances:
+  /// - The local client enables the video module and calls [RtcEngine.joinChannel] successfully.
+  /// - The local client calls [RtcEngine.muteLocalVideoStream] (`true`) and [RtcEngine.muteLocalVideoStream] (`false`) in sequence.
+  /// - The local client calls [RtcEngine.disableVideo] and [RtcEngine.enableVideo] in sequence.
+  ///
+  /// The `ElapsedCallback` typedef includes the following parameters:
+  /// - [int] `Elapsed`: Time elapsed (ms) from the local user calling the [RtcEngine.joinChannel] until this callback is triggered.
   ElapsedCallback firstLocalVideoFramePublished;
 
-  /// 音频发布状态改变回调。
+  /// Occurs when the audio publishing state changes.
   ///
-  /// @since v3.1.2。
+  /// @since v3.1.2.
   ///
-  /// `StreamPublishStateCallback` 包含如下参数：
-  /// - [String] `channel` 频道名。
-  /// - [StreamPublishState] `oldState` 之前的发布状态。
-  /// - [StreamPublishState] `newState` 当前的发布状态。
-  /// - [int] `elapseSinceLastState` 两次状态变化时间间隔（毫秒）。
+  /// This callback indicates the publishing state change of the local audio stream.
+  ///
+  /// The `StreamPublishStateCallback` typedef includes the following parameters:
+  /// - [String] `channel`: The channel name.
+  /// - [StreamPublishState] `oldState`: The previous publishing state. See [StreamPublishState].
+  /// - [StreamPublishState] `newState`: The current publishing state. See [StreamPublishState].
+  /// - [int] `elapseSinceLastState`: The time elapsed (ms) from the previous state to the current state.
   StreamPublishStateCallback audioPublishStateChanged;
 
-  /// 视频发布状态改变回调。
+  /// Occurs when the video publishing state changes.
   ///
-  /// @since v3.1.2。
+  /// @since v3.1.2.
   ///
-  /// `StreamPublishStateCallback` 包含如下参数：
-  /// - [String] `channel` 频道名。
-  /// - [StreamPublishState] `oldState` 之前的发布状态。
-  /// - [StreamPublishState] `newState` 当前的发布状态。
-  /// - [int] `elapseSinceLastState` 两次状态变化时间间隔（毫秒）。
+  /// This callback indicates the publishing state change of the local video stream.
+  ///
+  /// The `StreamPublishStateCallback` typedef includes the following parameters:
+  /// - [String] `channel`: The channel name.
+  /// - [StreamPublishState] `oldState`: The previous publishing state. See [StreamPublishState].
+  /// - [StreamPublishState] `newState`: The current publishing state. See [StreamPublishState].
+  /// - [int] `elapseSinceLastState`: The time elapsed (ms) from the previous state to the current state.
   StreamPublishStateCallback videoPublishStateChanged;
 
-  /// 音频订阅状态发生改变回调。
+  /// Occurs when the audio subscribing state changes.
   ///
-  /// @since v3.1.2。
+  /// @since v3.1.2.
   ///
-  /// `StreamSubscribeStateCallback` 包含如下参数：
-  /// - [String] `channel` 频道名。
-  /// - [StreamSubscribeState] `oldState` 之前的订阅状态。
-  /// - [StreamSubscribeState] `newState` 当前的订阅状态。
-  /// - [int] `elapseSinceLastState` 两次状态变化时间间隔（毫秒）。
+  /// This callback indicates the subscribing state change of a remote audio stream.
+  ///
+  /// The `StreamSubscribeStateCallback` typedef includes the following parameters:
+  /// - [String] `channel`: The channel name.
+  /// - [StreamSubscribeState] `oldState`: The previous publishing state. See [StreamPublishState].
+  /// - [StreamSubscribeState] `newState`: The current publishing state. See [StreamPublishState].
+  /// - [int] `elapseSinceLastState`: The time elapsed (ms) from the previous state to the current state.
   StreamSubscribeStateCallback audioSubscribeStateChanged;
 
-  /// 视频订阅状态发生改变回调。
+  /// Occurs when the video subscribing state changes.
   ///
-  /// @since v3.1.2。
+  /// @since v3.1.2.
   ///
-  /// `StreamSubscribeStateCallback` 包含如下参数：
-  /// - [String] `channel` 频道名。
-  /// - [StreamSubscribeState] `oldState` 之前的订阅状态。
-  /// - [StreamSubscribeState] `newState` 当前的订阅状态。
-  /// - [int] `elapseSinceLastState` 两次状态变化时间间隔（毫秒）。
+  /// This callback indicates the subscribing state change of a remote video stream.
+  ///
+  /// The `StreamSubscribeStateCallback` typedef includes the following parameters:
+  /// - [String] `channel`: The channel name.
+  /// - [StreamSubscribeState] `oldState`: The previous publishing state. See [StreamPublishState].
+  /// - [StreamSubscribeState] `newState`: The current publishing state. See [StreamPublishState].
+  /// - [int] `elapseSinceLastState`: The time elapsed (ms) from the previous state to the current state.
   StreamSubscribeStateCallback videoSubscribeStateChanged;
 
-  /// RTMP 推流事件回调。
+  /// Reports events during the RTMP streaming.
   ///
-  /// @since v3.1.2。
+  /// @since v3.1.2.
   ///
-  /// `RtmpStreamingEventCallback` 包含如下参数：
-  /// - [String] `url` RTMP 推流 URL。
-  /// - [RtmpStreamingEvent] `eventCode` RTMP 推流事件码。
+  /// The `RtmpStreamingEventCallback` typedef includes the following parameters:
+  /// - [String] `url`: The RTMP streaming URL.
+  /// - [RtmpStreamingEvent] `eventCode`: The event code. See [RtmpStreamingEvent].
   RtmpStreamingEventCallback rtmpStreamingEvent;
 
   /// Constructs a [RtcEngineEventHandler]
-  RtcEngineEventHandler({this.warning,
-    this.error,
-    this.apiCallExecuted,
-    this.joinChannelSuccess,
-    this.rejoinChannelSuccess,
-    this.leaveChannel,
-    this.localUserRegistered,
-    this.userInfoUpdated,
-    this.clientRoleChanged,
-    this.userJoined,
-    this.userOffline,
-    this.connectionStateChanged,
-    this.networkTypeChanged,
-    this.connectionLost,
-    this.tokenPrivilegeWillExpire,
-    this.requestToken,
-    this.audioVolumeIndication,
-    this.activeSpeaker,
-    this.firstLocalAudioFrame,
-    this.firstLocalVideoFrame,
-    this.userMuteVideo,
-    this.videoSizeChanged,
-    this.remoteVideoStateChanged,
-    this.localVideoStateChanged,
-    this.remoteAudioStateChanged,
-    this.localAudioStateChanged,
-    this.localPublishFallbackToAudioOnly,
-    this.remoteSubscribeFallbackToAudioOnly,
-    this.audioRouteChanged,
-    this.cameraFocusAreaChanged,
-    this.cameraExposureAreaChanged,
-    this.facePositionChanged,
-    this.rtcStats,
-    this.lastmileQuality,
-    this.networkQuality,
-    this.lastmileProbeResult,
-    this.localVideoStats,
-    this.localAudioStats,
-    this.remoteVideoStats,
-    this.remoteAudioStats,
-    this.audioMixingFinished,
-    this.audioMixingStateChanged,
-    this.audioEffectFinished,
-    this.rtmpStreamingStateChanged,
-    this.transcodingUpdated,
-    this.streamInjectedStatus,
-    this.streamMessage,
-    this.streamMessageError,
-    this.mediaEngineLoadSuccess,
-    this.mediaEngineStartCallSuccess,
-    this.channelMediaRelayStateChanged,
-    this.channelMediaRelayEvent,
-    this.firstRemoteVideoFrame,
-    this.firstRemoteAudioFrame,
-    this.firstRemoteAudioDecoded,
-    this.userMuteAudio,
-    this.streamPublished,
-    this.streamUnpublished,
-    this.remoteAudioTransportStats,
-    this.remoteVideoTransportStats,
-    this.userEnableVideo,
-    this.userEnableLocalVideo,
-    this.firstRemoteVideoDecoded,
-    this.microphoneEnabled,
-    this.connectionInterrupted,
-    this.connectionBanned,
-    this.audioQuality,
-    this.cameraReady,
-    this.videoStopped,
-    this.metadataReceived,
-    this.firstLocalAudioFramePublished,
-    this.firstLocalVideoFramePublished,
-    this.audioPublishStateChanged,
-    this.videoPublishStateChanged,
-    this.audioSubscribeStateChanged,
-    this.videoSubscribeStateChanged,
-    this.rtmpStreamingEvent});
+  RtcEngineEventHandler(
+      {this.warning,
+      this.error,
+      this.apiCallExecuted,
+      this.joinChannelSuccess,
+      this.rejoinChannelSuccess,
+      this.leaveChannel,
+      this.localUserRegistered,
+      this.userInfoUpdated,
+      this.clientRoleChanged,
+      this.userJoined,
+      this.userOffline,
+      this.connectionStateChanged,
+      this.networkTypeChanged,
+      this.connectionLost,
+      this.tokenPrivilegeWillExpire,
+      this.requestToken,
+      this.audioVolumeIndication,
+      this.activeSpeaker,
+      this.firstLocalAudioFrame,
+      this.firstLocalVideoFrame,
+      this.userMuteVideo,
+      this.videoSizeChanged,
+      this.remoteVideoStateChanged,
+      this.localVideoStateChanged,
+      this.remoteAudioStateChanged,
+      this.localAudioStateChanged,
+      this.localPublishFallbackToAudioOnly,
+      this.remoteSubscribeFallbackToAudioOnly,
+      this.audioRouteChanged,
+      this.cameraFocusAreaChanged,
+      this.cameraExposureAreaChanged,
+      this.facePositionChanged,
+      this.rtcStats,
+      this.lastmileQuality,
+      this.networkQuality,
+      this.lastmileProbeResult,
+      this.localVideoStats,
+      this.localAudioStats,
+      this.remoteVideoStats,
+      this.remoteAudioStats,
+      this.audioMixingFinished,
+      this.audioMixingStateChanged,
+      this.audioEffectFinished,
+      this.rtmpStreamingStateChanged,
+      this.transcodingUpdated,
+      this.streamInjectedStatus,
+      this.streamMessage,
+      this.streamMessageError,
+      this.mediaEngineLoadSuccess,
+      this.mediaEngineStartCallSuccess,
+      this.channelMediaRelayStateChanged,
+      this.channelMediaRelayEvent,
+      this.firstRemoteVideoFrame,
+      this.firstRemoteAudioFrame,
+      this.firstRemoteAudioDecoded,
+      this.userMuteAudio,
+      this.streamPublished,
+      this.streamUnpublished,
+      this.remoteAudioTransportStats,
+      this.remoteVideoTransportStats,
+      this.userEnableVideo,
+      this.userEnableLocalVideo,
+      this.firstRemoteVideoDecoded,
+      this.microphoneEnabled,
+      this.connectionInterrupted,
+      this.connectionBanned,
+      this.audioQuality,
+      this.cameraReady,
+      this.videoStopped,
+      this.metadataReceived,
+      this.firstLocalAudioFramePublished,
+      this.firstLocalVideoFramePublished,
+      this.audioPublishStateChanged,
+      this.videoPublishStateChanged,
+      this.audioSubscribeStateChanged,
+      this.videoSubscribeStateChanged,
+      this.rtmpStreamingEvent});
 
   // ignore: public_member_api_docs
   void process(String methodName, List<dynamic> data) {
@@ -1133,8 +1056,7 @@ class RtcEngineEventHandler {
         joinChannelSuccess?.call(data[0], data[1], data[2]);
         break;
       case 'RejoinChannelSuccess':
-        rejoinChannelSuccess
-            ?.call(RtcStats.fromJson(Map<String, dynamic>.from(data[0])));
+        rejoinChannelSuccess?.call(data[0], data[1], data[2]);
         break;
       case 'LeaveChannel':
         leaveChannel
@@ -1180,8 +1102,8 @@ class RtcEngineEventHandler {
         audioVolumeIndication?.call(
             List.generate(
                 list.length,
-                    (index) => AudioVolumeInfo.fromJson(
-                        Map<String, dynamic>.from(list[index]))),
+                (index) => AudioVolumeInfo.fromJson(
+                    Map<String, dynamic>.from(list[index]))),
             data[1]);
         break;
       case 'ActiveSpeaker':
@@ -1207,8 +1129,9 @@ class RtcEngineEventHandler {
             data[3]);
         break;
       case 'LocalVideoStateChanged':
-        localVideoStateChanged?.call(LocalVideoStreamStateConverter(data[0]).e,
-            LocalVideoStreamErrorConverter(data[1]).e);
+        localVideoStateChanged?.call(
+            LocalVideoStreamStateConverter.fromValue(data[0]).e,
+            LocalVideoStreamErrorConverter.fromValue(data[1]).e);
         break;
       case 'RemoteAudioStateChanged':
         remoteAudioStateChanged?.call(
@@ -1218,8 +1141,9 @@ class RtcEngineEventHandler {
             data[3]);
         break;
       case 'LocalAudioStateChanged':
-        localAudioStateChanged?.call(AudioLocalStateConverter(data[0]).e,
-            AudioLocalErrorConverter(data[1]).e);
+        localAudioStateChanged?.call(
+            AudioLocalStateConverter.fromValue(data[0]).e,
+            AudioLocalErrorConverter.fromValue(data[1]).e);
         break;
       case 'LocalPublishFallbackToAudioOnly':
         localPublishFallbackToAudioOnly?.call(data[0]);
@@ -1246,8 +1170,8 @@ class RtcEngineEventHandler {
             data[1],
             List.generate(
                 list.length,
-                    (index) => FacePositionInfo.fromJson(
-                        Map<String, dynamic>.from(list[index]))));
+                (index) => FacePositionInfo.fromJson(
+                    Map<String, dynamic>.from(list[index]))));
         break;
       case 'RtcStats':
         rtcStats?.call(RtcStats.fromJson(Map<String, dynamic>.from(data[0])));
@@ -1384,7 +1308,7 @@ class RtcEngineEventHandler {
       case 'MetadataReceived':
         metadataReceived?.call(data[0], data[1], data[2]);
         break;
-        case 'FirstLocalAudioFramePublished':
+      case 'FirstLocalAudioFramePublished':
         firstLocalAudioFramePublished?.call(data[0]);
         break;
       case 'FirstLocalVideoFramePublished':
@@ -1407,16 +1331,18 @@ class RtcEngineEventHandler {
       case 'AudioSubscribeStateChanged':
         audioSubscribeStateChanged?.call(
             data[0],
-            StreamSubscribeStateConverter.fromValue(data[1]).e,
+            data[1],
             StreamSubscribeStateConverter.fromValue(data[2]).e,
-            data[3]);
+            StreamSubscribeStateConverter.fromValue(data[3]).e,
+            data[4]);
         break;
       case 'VideoSubscribeStateChanged':
         videoSubscribeStateChanged?.call(
             data[0],
-            StreamSubscribeStateConverter.fromValue(data[1]).e,
+            data[1],
             StreamSubscribeStateConverter.fromValue(data[2]).e,
-            data[3]);
+            StreamSubscribeStateConverter.fromValue(data[3]).e,
+            data[4]);
         break;
       case 'RtmpStreamingEvent':
         rtmpStreamingEvent?.call(data[0], data[1]);
@@ -1425,406 +1351,416 @@ class RtcEngineEventHandler {
   }
 }
 
-/// [RtcChannelEventHandler] 类。
+/// The RtcChannelEvents interface.
 class RtcChannelEventHandler {
-  /// 报告 [RtcChannel] 对象发生的警告码。
+  /// Reports the warning code of the [RtcChannel] instance.
   ///
-  /// `WarningCallback` 包含如下参数：
-  /// - [WarningCode] `warn`：警告码。详见 [WarningCode]。
+  /// The `WarningCallback` typedef includes the following parameter:
+  /// - [WarningCode] `warn`: Warning code.
   WarningCallback warning;
 
-  /// 报告 [RtcChannel] 对象发生的错误码。
+  /// Reports the error code of the [RtcChannel] instance.
   ///
-  /// `ErrorCallback` 包含如下参数：
-  /// - [ErrorCode] `err`：错误码。详见 [ErrorCode]。
+  /// The `ErrorCallback` typedef includes the following parameter:
+  /// - [ErrorCode] `err`: Error code.
   ErrorCallback error;
 
-  /// 加入频道回调。
+  /// Occurs when the local user joins a specified channel.
   ///
-  /// 表示客户端已经登入服务器，且分配了频道 ID 和用户 ID。频道 ID 的分配是
-  /// 根据 [RtcChannel.joinChannel] 方法中指定的频道名称。如果调用 [RtcChannel.joinChannel] 时并未指定用户 ID，服务器就会分配一个。
+  /// If the uid is not specified when calling [RtcChannel.joinChannel], the server automatically assigns a uid.
   ///
-  /// `UidWithElapsedCallback` 包含如下参数：
-  /// - [int] `uid`：用户 ID。
-  /// - [int] `elapsed`：从本地用户调用 `joinChannel` 到触发该回调的时间（毫秒）。
-  UidWithElapsedCallback joinChannelSuccess;
+  /// The `UidWithElapsedCallback` typedef includes the following parameters:
+  /// - [int] `uid`: This parameter has the following definitions in different events:
+  ///   - [userJoined]: ID of the user or host who joins the channel.
+  ///   - [firsRemoteAudioFrame]: User ID of the remote user.
+  ///   - [firstRemoteAudioDecoded]: User ID of the remote user sending the audio stream.
+  ///   - [joinChannelSuccess]: User ID.
+  ///   - [rejoinChannelSuccess]: User ID.
+  /// - [int] `elapsed`:
+  ///   - [userJoined]: Time delay (ms) from the local user calling [RtcEngine.joinChannel] or [RtcEngine.setClientRole] until this callback is triggered.
+  ///   - [firsRemoteAudioFrame]: Time elapsed (ms) from the local user calling [RtcEngine.joinChannel] until this callback is triggered.
+  ///   - [firstRemoteAudioDecoded]: Time elapsed (ms) from the local user calling [RtcEngine.joinChannel] until the SDK triggers this callback.
+  ///   - [joinChannelSuccess]: Time elapsed (ms) from the local user calling [RtcChannel.joinChannel] until this callback is triggered.
+  ///   - [rejoinChannelSuccess]: Time elapsed (ms) from the local user starting to reconnect until this callback is triggered.
+  UidWithElapsedAndChannelCallback joinChannelSuccess;
 
-  /// 重新加入频道回调。
+  /// Occurs when a user rejoins the channel after being disconnected due to network problems.
   ///
-  /// 有时候由于网络原因，客户端可能会和服务器失去连接，SDK 会进行自动重连，自动重连成功后触发此回调方法。
+  /// When a user loses connection with the server because of network problems, the SDK automatically tries to reconnect and triggers this callback upon reconnection.
   ///
-  /// `UidWithElapsedCallback` 包含如下参数：
-  /// - [int] `uid`：用户 ID。
-  /// - [int] `elapsed`：从本地用户开始重连到触发该回调的时间（毫秒）。
-  UidWithElapsedCallback rejoinChannelSuccess;
+  /// The `UidWithElapsedCallback` typedef includes the following parameters:
+  /// - [int] `uid`: This parameter has the following definitions in different events:
+  ///   - [userJoined]: ID of the user or host who joins the channel.
+  ///   - [firsRemoteAudioFrame]: User ID of the remote user.
+  ///   - [firstRemoteAudioDecoded]: User ID of the remote user sending the audio stream.
+  ///   - [joinChannelSuccess]: User ID.
+  ///   - [rejoinChannelSuccess]: User ID.
+  /// - [int] `elapsed`:
+  ///   - [userJoined]: Time delay (ms) from the local user calling [RtcEngine.joinChannel] or [RtcEngine.setClientRole] until this callback is triggered.
+  ///   - [firsRemoteAudioFrame]: Time elapsed (ms) from the local user calling [RtcEngine.joinChannel] until this callback is triggered.
+  ///   - [firstRemoteAudioDecoded]: Time elapsed (ms) from the local user calling [RtcEngine.joinChannel] until the SDK triggers this callback.
+  ///   - [joinChannelSuccess]: Time elapsed (ms) from the local user calling [RtcChannel.joinChannel] until this callback is triggered.
+  ///   - [rejoinChannelSuccess]: Time elapsed (ms) from the local user starting to reconnect until this callback is triggered.
+  UidWithElapsedAndChannelCallback rejoinChannelSuccess;
 
-  /// 离开频道回调。
+  /// Occurs when a user leaves the channel.
   ///
-  /// App 调用 [RtcChannel.leaveChannel] 方法时，SDK 提示 App 离开频道成功。
+  /// When a user leaves the channel by using the [RtcChannel.leaveChannel] method, the SDK uses this callback to notify the app when the user leaves the channel.
   ///
-  /// 在该回调方法中，App 可以得到此次通话的总通话时长、SDK 收发数据的流量等信息。
-  ///
-  /// `RtcStatsCallback` 包含如下参数：
-  /// - [RtcStats] `stats`：通话相关的统计信息。
+  /// With this callback, the app retrieves the channel information, such as the call duration and statistics.
+  /// The `RtcStatsCallback` typedef includes the following parameter:
+  /// - [RtcStats] `stats`: Statistics of the call.
   RtcStatsCallback leaveChannel;
 
-  /// 直播场景下用户角色已切换回调。如从观众切换为主播，反之亦然。
+  /// Occurs when the user role switches in a [ChannelProfile.LiveBroadcasting] channel. For example, from broadcaster to audience or vice versa.
   ///
-  /// 该回调由本地用户在加入频道后调用 [RtcChannel.setClientRole] 改变用户角色触发的。
+  /// The SDK triggers this callback when the local user switches the user role by calling the setClientRole method after joining the channel.
+  /// See [RtcChannel.setClientRole].
   ///
-  /// `ClientRoleCallback` 包含如下参数：
-  /// - [ClientRole] `oldRole`：切换前的角色。
-  /// - [ClientRole] `newRole`：切换后的角色。
+  /// The `ClientRoleCallback` typedef includes the following parameters:
+  /// - [ClientRole] `oldRole`: Role that the user switches from.
+  /// - [ClientRole] `newRole`: Role that the user switches to.
   ClientRoleCallback clientRoleChanged;
 
-  /// 远端用户（通信场景）/主播（直播场景）加入当前频道回调。
-  ///
-  /// - 通信场景下，该回调提示有远端用户加入了频道，并返回新加入用户的 ID；如果加入之前，已经有其他用户在频道中了，新加入的用户也会收到这些已有用户加入频道的回调
-  /// - 直播场景下，该回调提示有主播加入了频道，并返回该主播的用户 ID。如果在加入之前，已经有主播在频道中了，新加入的用户也会收到已有主播加入频道的回调。Agora 建议连麦主播不超过 17 人
-  ///
-  /// 该回调在如下情况下会被触发：
-  ///
-  /// - 远端用户/主播调用 [RtcChannel.joinChannel] 方法加入频道。
-  /// - 远端用户加入频道后调用 [RtcChannel.setClientRole] 将用户角色改变为主播。
-  /// - 远端用户/主播网络中断后重新加入频道。
-  /// - 主播通过调用 [RtcChannel.addInjectStreamUrl] 方法成功输入在线媒体流。
+  /// Occurs when a remote user (Communication) or a broadcaster ([ChannelProfile.LiveBroadcasting]) joins the channel.
+  /// - [ChannelProfile.Communication] profile: This callback notifies the app when another user joins the channel. If other users are already in the channel, the SDK also reports to the app on the existing users.
+  /// - [ChannelProfile.LiveBroadcasting] profile: This callback notifies the app when the host joins the channel. If other hosts are already in the channel, the SDK also reports to the app on the existing hosts. We recommend having at most 17 hosts in a channel.
   ///
   /// **Note**
-  /// 直播场景下：
-  /// - 主播间能相互收到新主播加入频道的回调，并能获得该主播的用户 ID。
-  /// - 观众也能收到新主播加入频道的回调，并能获得该主播的用户 ID。
-  /// - 当 Web 端加入直播频道时，只要 Web 端有推流，SDK 会默认该 Web 端为主播，并触发该回调。
+  /// - In the [ChannelProfile.LiveBroadcasting] profile:
+  /// -- The host receives this callback when another host joins the channel.
+  /// -- The audience in the channel receives this callback when a new host joins the channel.
+  /// -- When a web app joins the channel, this callback is triggered as long as the web app publishes streams.
   ///
-  /// `UidWithElapsedCallback` 包含如下参数：
-  /// - [int] `uid`：新加入频道的远端用户/主播 ID。
-  /// - [int] `elapsed`：从本地用户调用 [RtcEngine.joinChannel] 或 [RtcEngine.setClientRole] 到触发该回调的延迟（毫秒）。
+  /// The `UidWithElapsedCallback` typedef includes the following parameters:
+  /// - [int] `uid`: This parameter has the following definitions in different events:
+  ///   - [userJoined]: ID of the user or host who joins the channel.
+  ///   - [firsRemoteAudioFrame]: User ID of the remote user.
+  ///   - [firstRemoteAudioDecoded]: User ID of the remote user sending the audio stream.
+  ///   - [joinChannelSuccess]: User ID.
+  ///   - [rejoinChannelSuccess]: User ID.
+  /// - [int] `elapsed`:
+  ///   - [userJoined]: Time delay (ms) from the local user calling [RtcEngine.joinChannel] or [RtcEngine.setClientRole] until this callback is triggered.
+  ///   - [firsRemoteAudioFrame]: Time elapsed (ms) from the local user calling [RtcEngine.joinChannel] until this callback is triggered.
+  ///   - [firstRemoteAudioDecoded]: Time elapsed (ms) from the local user calling [RtcEngine.joinChannel] until the SDK triggers this callback.
+  ///   - [joinChannelSuccess]: Time elapsed (ms) from the local user calling [RtcChannel.joinChannel] until this callback is triggered.
+  ///   - [rejoinChannelSuccess]: Time elapsed (ms) from the local user starting to reconnect until this callback is triggered.
   UidWithElapsedCallback userJoined;
 
-  /// 远端用户（通信场景）/主播（直播场景）离开当前频道回调。
+  /// Occurs when a remote user ([ChannelProfile.Communication]) or a broadcaster ([ChannelProfile.LiveBroadcasting]) leaves the channel.
   ///
-  /// 提示有远端用户/主播离开了频道（或掉线）。用户离开频道有两个原因，即正常离开和超时掉线：
-  /// - 正常离开的时候，远端用户/主播会收到类似“再见”的消息，接收此消息后，判断用户离开频道。
-  /// - 超时掉线的依据是，在一定时间内（约 20 秒），用户没有收到对方的任何数据包，则判定为对方掉线。在网络较差的情况下，
-  /// 有可能会误报。Agora 建议使用 Agora 实时消息 SDK 来做可靠的掉线检测。
+  /// There are two reasons for users to become offline:
+  /// - Leave the channel: When the user/broadcaster leaves the channel, the user/broadcaster sends a goodbye message. When this message is received, the SDK determines that the user/host leaves the channel.
+  /// - Go offline: When no data packet of the user or broadcaster is received for a certain period of time (around 20 seconds), the SDK assumes that the user/broadcaster drops offline. A poor network connection may lead to false detections, so we recommend using the Agora RTM SDK for reliable offline detection.
   ///
-  /// `UserOfflineCallback` 包含如下参数：
-  /// - [int] `uid`：主播 ID。
-  /// - [UserOfflineReason] `reason`：离线原因。
+  /// The `UserOfflineCallback` typedef includes the following parameters:
+  /// - [int] `uid`: ID of the user or host who leaves the channel or goes offline.
+  /// - [UserOfflineReason] `reason`: Reason why the user goes offline.
   UserOfflineCallback userOffline;
 
-  /// 网络连接状态已改变回调。
+  /// Occurs when the network connection state changes.
   ///
-  /// 该回调在网络连接状态发生改变的时候触发，并告知用户当前的网络连接状态，和引起网络状态改变的原因。
+  /// The Agora SDK triggers this callback to report on the current network connection state when it changes, and the reason to such change.
   ///
-  /// `ConnectionStateCallback` 包含如下参数：
-  /// - [ConnectionStateType] `state`：当前的网络连接状态。
-  /// - [ConnectionChangedReason] `reason`：引起当前网络连接状态发生改变的原因。
+  /// The `ConnectionStateCallback` typedef includes the following parameters:
+  /// - [ConnectionStateType] `state`: The current network connection state.
+  /// - [ConnectionChangedReason] `reason`: The reason causing the change of the connection state.
   ConnectionStateCallback connectionStateChanged;
 
-  /// 网络连接中断，且 SDK 无法在 10 秒内连接服务器回调。
+  /// Occurs when the SDK cannot reconnect to Agora's edge server 10 seconds after its connection to the server is interrupted.
   ///
-  /// SDK 在调用 [RtcChannel.joinChannel] 后，无论是否加入成功，只要 10 秒和服务器无法连接就会触发该回调。
-  ///
-  /// 如果 SDK 在断开连接后，20 分钟内还是没能重新加入频道，SDK 会停止尝试重连。
+  /// The SDK also triggers this callback when it cannot connect to the server 10 seconds after calling [RtcChannel.joinChannel], regardless of whether it is in the channel or not.
+  /// If the SDK fails to rejoin the channel 20 minutes after being disconnected from Agora's edge server, the SDK stops rejoining the channel.
+  /// The `EmptyCallback` typedef does not include any parameter.
   EmptyCallback connectionLost;
 
-  /// Token 服务即将过期回调。
+  /// Occurs when the token expires in 30 seconds.
   ///
-  /// 在调用 [RtcChannel.joinChannel] 时如果指定了 Token，
-  /// 由于 Token 具有一定的时效，在通话过程中如果 Token 即将失效，SDK 会提前 30 秒触发该回调，提醒 App 更新 Token。
-  /// 当收到该回调时，你需要重新在服务端生成新的 Token，然后调用 [RtcChannel.renewToken] 将新生成的 Token 传给 SDK。
+  /// The user becomes offline if the token used when joining the channel expires. This callback is triggered 30 seconds before the token expires, to remind the app to get a new token. Upon receiving this callback, you need to generate a new token on the server and call [RtcChannel.renewToken] to pass the new token to the SDK.
   ///
-  /// `TokenCallback` 包含如下参数：
-  /// - [String] `token`：即将服务失效的 Token。
+  /// The `TokenCallback` typedef includes the following parameters:
+  /// - [String] `token`: The token that will expire in 30 seconds.
   TokenCallback tokenPrivilegeWillExpire;
 
-  /// Token 过期回调。
+  /// Occurs when the token has expired.
   ///
-  /// 在调用 [RtcChannel.joinChannel] 时如果指定了 Token，
-  /// 由于 Token 具有一定的时效，在通话过程中 SDK 可能由于网络原因和服务器失去连接，重连时可能需要新的 Token。该回调通知 App 需要生成新的 Token，
-  /// 并需调用 [RtcChannel.joinChannel] 重新加入频道。
+  /// After a token is specified when joining the channel, the token expires after a certain period of time, and a new token is required to reconnect to the server. This callback notifies the app to generate a new token and call [RtcChannel.renewToken] to renew the token.
+  /// The `EmptyCallback` typedef does not include any parameter.
   EmptyCallback requestToken;
 
-  /// 监测到活跃用户回调。
+  /// Reports which user is the loudest speaker.
   ///
-  /// 该回调获取当前时间段内累积音量最大者。
-  /// 如果该用户开启了 [RtcEngine.enableAudioVolumeIndication] 功能，
-  /// 则当音量检测模块监测到频道内有新的活跃用户说话时，会通过本回调返回该用户的 uid。
+  /// This callback reports the speaker with the highest accumulative volume during a certain period. If the user enables the audio volume indication by calling [RtcEngine.enableAudioVolumeIndication], this callback returns the uid of the active speaker whose voice is detected by the audio volume detection module of the SDK.
   ///
   /// **Note**
-  /// - 你需要开启 [RtcEngine.enableAudioVolumeIndication] 方法才能收到该回调。
-  /// - `uid` 返回的是当前时间段内声音最大的用户 ID，而不是瞬时声音最大的用户 ID。
+  /// - To receive this callback, you need to call [RtcEngine.enableAudioVolumeIndication].
+  /// - This callback reports the ID of the user with the highest voice volume during a period of time, instead of at the moment.
   ///
-  /// `UidCallback` 包含如下参数：
-  /// - [int] `uid`：当前时间段声音最大的用户的 `uid`。如果返回的 `uid` 为 0，则默认为本地用户。
+  /// The `UidCallback` typedef includes the following parameters:
+  /// - [int] `uid`: User ID of the active speaker. A `uid` of 0 represents the local user.
   UidCallback activeSpeaker;
 
-  /// 本地或远端视频大小或旋转信息发生改变回调。
+  /// Occurs when the video size or rotation information of a remote user changes.
   ///
-  /// `VideoSizeCallback` 包含如下参数：
-  /// - [int] `uid`：图像尺寸和旋转信息发生变化的用户 ID。如果返回的 uid 为 0，则表示本地用户。
-  /// - [int] `width`：视频流的宽度（像素）。
-  /// - [int] `height`：视频流的高度（像素）。
-  /// - [int] `rotation`：旋转信息 [0,360)。
+  /// The `VideoSizeCallback` typedef includes the following parameters:
+  /// - [int] `uid`: User ID of the remote user or local user (0) whose video size or rotation changes.
+  /// - [int] `width`: New width (pixels) of the video.
+  /// - [int] `height`: New height (pixels) of the video.
+  /// - [int] `rotation`: New rotation of the video [0 to 360).
   VideoSizeCallback videoSizeChanged;
 
-  /// 远端用户视频状态发生已变化回调。
+  /// Occurs when the remote video state changes.
   ///
-  /// `RemoteVideoStateCallback` 包含如下参数：
-  /// - [int] `uid`：视频状态发生改变的远端用户 ID。
-  /// - [VideoRemoteState] `state`：远端视频流状态。
-  /// - [VideoRemoteStateReason] `reason`：远端视频流状态改变的具体原因。
-  /// - [int] `elapsed`：从本地用户调用 [RtcEngine.joinChannel] 方法到发生本事件经历的时间，单位为 ms。
+  /// The `RemoteVideoStateCallback` typedef includes the following parameters:
+  /// - [int] `uid`: ID of the remote user whose video state changes.
+  /// - [VideoRemoteState] `state`: State of the remote video.
+  /// - [VideoRemoteStateReason] `reason`: The reason of the remote video state change.
+  /// - [int] `elapsed`: Time elapsed (ms) from the local user calling [RtcEngine.joinChannel] until the SDK triggers this callback.
   RemoteVideoStateCallback remoteVideoStateChanged;
 
-  /// 远端音频状态发生改变回调。
+  /// Occurs when the remote audio state changes.
   ///
-  /// 远端用户（通信场景）或主播（直播场景）音频状态发生改变时，SDK 会触发该回调向本地用户报告当前的远端音频流状态。
+  /// This callback indicates the state change of the remote audio stream.
   ///
-  /// **Note**
+  /// This callback does not work properly when the number of users (in the `Communication` profile) or hosts (in the `LiveBroadcasting` profile) in the channel exceeds 17.
   ///
-  /// 当频道内的用户（通信场景）或主播（直播场景）的人数超过 17 时，该回调可能不准确。
-  ///
-  /// `RemoteAudioStateCallback` 包含如下参数：
-  /// - [int] `uid`：发生音频状态改变的远端用户 ID。
-  /// - [AudioRemoteState] `state`：远端音频流状态。
-  /// - [AudioRemoteStateReason] `reason`：远端音频流状态改变的具体原因。
-  /// - [int] `elapsed`：从本地用户调用 [RtcEngine.joinChannel] 方法到发生本事件经历的时间，单位为 ms。
+  /// The `RemoteAudioStateCallback` typedef includes the following parameters:
+  /// - [int] `uid`: ID of the user whose audio state changes.
+  /// - [AudioRemoteState] `state`: State of the remote audio.
+  /// - [AudioRemoteStateReason] `reason`: The reason of the remote audio state change.
+  /// - [int] `elapsed`: Time elapsed (ms) from the local user calling [RtcEngine.joinChannel] until the SDK triggers this callback.
   RemoteAudioStateCallback remoteAudioStateChanged;
 
-  /// 本地发布流已回退为音频流回调。
+  /// Occurs when the published media stream falls back to an audio-only stream due to poor network conditions or switches back to video stream after the network conditions improve.
   ///
-  /// 如果你调用了设置本地推流回退选项 [RtcEngine.setLocalPublishFallbackOption] 接口并
-  /// 将 `option` 设置为 [StreamFallbackOptions.AudioOnly] 时，当上行网络环境不理想、本地发布的媒体流回退为音频流时，
-  /// 或当上行网络改善、媒体流恢复为音视频流时，会触发该回调。
+  /// If you call [RtcEngine.setLocalPublishFallbackOption] and set option as [StreamFallbackOptions.AudioOnly], this callback is triggered when the locally published stream falls back to audio-only mode due to poor uplink conditions, or when the audio stream switches back to the video after the uplink network condition improves.
   ///
-  /// `FallbackCallback` 包含如下参数：
-  /// - [bool] `isFallbackOrRecover`：本地推流已回退或恢复：
-  ///  - `true`: 由于网络环境不理想，本地发布的媒体流已回退为音频流。
-  ///  - `false`: 由于网络环境改善，发布的音频流已恢复为音视频流。
+  /// The `FallbackCallback` typedef includes the following parameters:
+  /// - [bool] `isFallbackOrRecover`: Whether the published stream fell back to audio-only or switched back to the video:
+  /// -- `true`: The published stream fell back to audio-only due to poor network conditions.
+  /// -- `false`: The published stream switched back to the video after the network conditions improved.
   FallbackCallback localPublishFallbackToAudioOnly;
 
-  /// 远端订阅流已回退为音频流回调或因网络质量改善，恢复为音视频流。
+  /// Occurs when the remote media stream falls back to audio-only stream due to poor network conditions or switches back to video stream after the network conditions improve.
   ///
-  /// 如果你调用了设置远端订阅流回退选项 [RtcEngine.setRemoteSubscribeFallbackOption] 接口并
-  /// 将 `option` 设置为 [StreamFallbackOptions.AudioOnly] 时，当下行网络环境不理想、仅接收远端音频流时，
-  /// 或当下行网络改善、恢复订阅音视频流时，会触发该回调。
+  /// If you call [RtcEngine.setRemoteSubscribeFallbackOption] and set option as [StreamFallbackOptions.AudioOnly], this callback is triggered when the remote media stream falls back to audio-only mode due to poor uplink conditions, or when the remote media stream switches back to the video after the uplink network condition improves.
   ///
   /// **Note**
+  /// - Once the remote media stream is switched to the low stream due to poor network conditions, you can monitor the stream switch between a high and low stream in the [RtcEngineEventHandler.remoteVideoStats] callback.
   ///
-  /// 远端订阅流因弱网环境不能同时满足音视频而回退为小流时，你可以使用 [RtcEngineEventHandler.remoteVideoStats] 方法来监控远端视频大小流的切换。
-  ///
-  /// `FallbackWithUidCallback` 包含如下参数：
-  /// - [int] `uid`：远端用户的 ID。
-  /// - [bool] `isFallbackOrRecover`：远端订阅流已回退或恢复：
-  ///  - `true`: 由于网络环境不理想，远端订阅流已回退为音频流。
-  ///  - `false`: 由于网络环境改善，订阅的音频流已恢复为音视频流。
+  /// The `FallbackWithUidCallback` typedef includes the following parameters:
+  /// - [int]: `uid`: ID of the remote user sending the stream.
+  /// - [bool] `isFallbackOrRecover`: Whether the published stream fell back to audio-only or switched back to the video:
+  /// -- `true`: The published stream fell back to audio-only due to poor network conditions.
+  /// -- `false`: The published stream switched back to the video after the network conditions improved.
   FallbackWithUidCallback remoteSubscribeFallbackToAudioOnly;
 
-  /// 当前通话统计回调。
-  /// 该回调在通话中每两秒触发一次。
-  ///
-  /// `RtcStatsCallback` 包含如下参数：
-  /// - [RtcStats] `stats`：通话相关的统计信息。
+  /// Reports the statistics of the [RtcEngine] once every two seconds.
+  /// The `RtcStatsCallback` typedef includes the following parameter:
+  /// - [RtcStats] `stats`: Statistics of the call.
   RtcStatsCallback rtcStats;
 
-  /// 通话中每个用户的网络上下行 last mile 质量报告回调。
+  /// Reports the last mile network quality of each user in the channel once every two seconds.
   ///
-  /// 该回调描述每个用户在通话中的 last mile 网络状态，其中 last mile 是指设备到 Agora 边缘服务器的网络状态。
-  /// 该回调每 2 秒触发一次。如果远端有多个用户/主播，该回调每 2 秒会被触发多次。
+  /// Last mile refers to the connection between the local device and Agora's edge server. This callback reports once every two seconds the last mile network conditions of each user in the channel. If a channel includes multiple users, then this callback will be triggered as many times.
   ///
-  /// `NetworkQualityWithUidCallback` 包含如下参数：
-  /// - [int] `uid`：用户 ID。表示该回调报告的是持有该 ID 的用户的网络质量。当 `uid` 为 0 时，返回的是本地用户的网络质量。
-  /// - [NetworkQuality] `txQuality`：该用户的上行网络质量，基于上行视频的发送码率、上行丢包率、平均往返时延和网络抖动计算。
-  /// 该值代表当前的上行网络质量，帮助判断是否可以支持当前设置的视频编码属性。假设上行码率是 1000 Kbps，
-  /// 那么支持 640 &times; 480 的分辨率、30 fps 的帧率没有问题，但是支持 1280 x 720 的分辨率就会有困难。
-  /// - [NetworkQuality] `rxQuality`：该用户的下行网络质量，基于下行网络的丢包率、平均往返延时和网络抖动计算。
+  /// The `NetworkQualityWithUidCallback` typedef includes the following parameters:
+  /// - [int] `uid`：User ID. The network quality of the user with this uid is reported. If `uid` is 0, the local network quality is reported.
+  /// - [NetworkQuality] `txQuality`: Uplink transmission quality of the user in terms of the transmission bitrate, packet loss rate, average RTT (Round-Trip Time)and jitter of the uplink network. `txQuality` is a quality rating helping you understand how well the current uplink network conditions can support the selected [VideoEncoderConfiguration]. For example, a 1000 Kbps uplink network may be adequate for video frames with a resolution of 680 × 480 and a frame rate of 30 fps, but may be inadequate for resolutions higher than 1280 × 720.
+  /// - [NetworkQuality] `rxQuality`: Downlink network quality rating of the user in terms of packet loss rate, average RTT, and jitter of the downlink network.
   NetworkQualityWithUidCallback networkQuality;
 
-  /// 通话中远端视频流的统计信息回调。
+  /// Reports the statistics of the video stream from each remote user/broadcaster. The SDK triggers this callback once every two seconds for each remote user/broadcaster. If a channel includes multiple remote users, the SDK triggers this callback as many times.
   ///
-  /// 该回调描述远端用户在通话中端到端的视频流状态，针对每个远端用户/主播每 2 秒触发一次。
-  /// 如果远端同时存在多个用户/主播，该回调每 2 秒会被触发多次。
-  ///
-  /// `RemoteVideoStatsCallback` 包含如下参数：
-  /// - [RemoteVideoStats] `stats`：远端视频统计数据。
+  /// The `RemoteVideoStatsCallback` typedef includes the following parameter:
+  /// - [RemoteVideoStats] `stats`: Statistics of the received remote video streams.
   RemoteVideoStatsCallback remoteVideoStats;
 
-  /// 通话中远端音频流的统计信息回调。
+  /// Reports the statistics of the audio stream from each remote user/broadcaster.
   ///
-  /// 该回调描述远端用户在通话中端到端的音频流统计信息，针对每个远端用户/主播每 2 秒触发一次。
-  /// 如果远端同时存在多个用户/主播，该回调每 2 秒会被触发多次。
+  /// The SDK triggers this callback once every two seconds for each remote user/broadcaster. If a channel includes multiple remote users, the SDK triggers this callback as many times.
   ///
-  /// 当网络发生丢包时，因 FEC（Forward Error Correction，向前纠错码）或重传恢复，最终的音频丢帧率不高，则可以认为整个质量较好。
+  /// Schemes such as FEC (Forward Error Correction) or retransmission counter the frame loss rate. Hence, users may find the overall audio quality acceptable even when the packet loss rate is high.
   ///
-  /// `RemoteAudioStatsCallback` 包含如下参数：
-  /// - [RemoteAudioStats] `stats`：接收到的远端音频统计数据。
+  /// The `RemoteAudioStatsCallback` typedef includes the following parameter:
+  /// - [RemoteAudioStats] `stats`: Statistics of the received remote audio streams.
   RemoteAudioStatsCallback remoteAudioStats;
 
-  /// RTMP 推流状态发生改变回调。该回调返回本地用户调用 [RtcChannel.addPublishStreamUrl]
-  /// 或 [RtcChannel.removePublishStreamUrl] 方法的结果。
+  /// Occurs when the state of the RTMP streaming changes.
   ///
-  /// RTMP 推流状态发生改变时，SDK 会触发该回调，并在回调中明确状态发生改变的 URL 地址及当前推流状态；当推流状态为 [RtmpStreamingState.Failure] 时，你可以在 `errCode` 参数中查看返回的错误信息。
-  /// 该回调方便推流用户了解当前的推流状态；推流出错时，你可以通过返回的错误码了解出错的原因，方便排查问题。
+  /// The SDK triggers this callback to report the result of the local user calling the [RtcChannel.addPublishStreamUrl] or [RtcChannel.removePublishStreamUrl] method. This callback returns the URL and its current streaming state. When the streaming state is [RtmpStreamingState.Failure], see the `errCode` parameter for details.
   ///
-  /// `RtmpStreamingStateCallback` 包含如下参数：
-  /// - [String] `url`：推流状态发生改变的 URL 地址。
-  /// - [RtmpStreamingState] `state`：当前的推流状态。
-  /// - [RtmpStreamingErrorCode] `errCode`：详细的推流错误信息。
+  /// This callback indicates the state of the RTMP streaming. When exceptions occur, you can troubleshoot issues by referring to the detailed error descriptions in the `errCode` parameter.
+  ///
+  /// The `RtmpStreamingStateCallback` typedef includes the following parameters:
+  /// - [String] `url`: The RTMP URL address.
+  /// - [RtmpStreamingState] `state`: The RTMP streaming state.
+  /// - [RtmpStreamingErrorCode] `errCode`: The detailed error information for streaming.
   RtmpStreamingStateCallback rtmpStreamingStateChanged;
 
-  /// 旁路推流设置被更新回调。
+  /// Occurs when the publisher's transcoding settings are updated.
   ///
-  /// [RtcChannel.setLiveTranscoding] 方法中的直播转码参数 `LiveTranscoding` 更新时，该回调会被触发， 并向主播报告更新信息。
+  /// When the [LiveTranscoding] class in the [RtcChannel.setLiveTranscoding] method updates, the SDK triggers this callback to report the update information.
   ///
   /// **Note**
-  ///
-  /// 首次调用 [RtcChannel.setLiveTranscoding] 方法设置转码参数时，不会触发该回调。
+  /// - If you call the [RtcChannel.setLiveTranscoding] method to set the [LiveTranscoding] class for the first time, the SDK does not trigger this callback.
+  /// The `EmptyCallback` typedef does not include any parameter.
   EmptyCallback transcodingUpdated;
 
-  /// 输入在线媒体流状态回调。该回调表明向直播输入的外部视频流的状态。
+  /// Reports the status of injecting the online media stream.
   ///
-  /// `StreamInjectedStatusCallback` 包含如下参数：
-  /// - [String] `url`：推流状态发生改变的 URL 地址。
-  /// - [int] `uid`：用户 ID。
-  /// - [InjectStreamStatus] `status`：输入的外部视频源状态。
+  /// The `StreamInjectedStatusCallback` typedef includes the following parameters:
+  /// - [String] `url`: The URL address of the externally injected stream.
+  /// - [int] `uid`: User ID.
+  /// - [InjectStreamStatus] `status`: State of the externally injected stream.
   StreamInjectedStatusCallback streamInjectedStatus;
 
-  /// 接收到对方数据流消息的回调。
+  /// Occurs when the local user receives a remote data stream.
   ///
-  /// 该回调表示本地用户收到了远端用户调用 [RtcChannel.sendStreamMessage] 方法发送的流消息。
+  /// The SDK triggers this callback when the local user receives the stream message that the remote user sends by calling the [RtcChannel.sendStreamMessage] method.
   ///
-  /// `StreamMessageCallback` 包含如下参数：
-  /// - [int] `uid`：用户 ID。
-  /// - [int] `streamId`：数据流。
-  /// - [String] `data`：接收到的数据。
+  /// The `StreamMessageCallback` typedef includes the following parameters:
+  /// - [int] `uid`: User ID of the remote user sending the data stream.
+  /// - [int] `streamId`: Stream ID.
+  /// - [String] `data`: Data received by the local user.
   StreamMessageCallback streamMessage;
 
-  /// 接收对方数据流消息发生错误的回调。
+  /// Occurs when the local user fails to receive a remote data stream.
   ///
-  /// 该回调表示本地用户未收到远端用户调用 [RtcChannel.sendStreamMessage] 方法发送的流消息。
+  /// The SDK triggers this callback when the local user fails to receive the stream message that the remote user sends by calling the [RtcChannel.sendStreamMessage] method.
   ///
-  /// `StreamMessageErrorCallback` 包含如下参数：
-  /// - [int] `uid`：用户 ID。
-  /// - [int] `streamId`：数据流。
-  /// - [ErrorCode] `error`：接收到的数据。
-  /// - [int] `missed`：丢失的消息数量。
-  /// - [int] `cached`：数据流中断时，后面缓存的消息数量。
+  /// The `StreamMessageErrorCallback` callback includes the following parameters:
+  /// - [int] `uid`: User ID of the remote user sending the data stream.
+  /// - [int] `streamId`: Stream ID.
+  /// - [ErrorCode] `error`: Error code.
+  /// - [int] `missed`: The number of lost messages.
+  /// - [int] `cached`: The number of incoming cached messages when the data stream is interrupted.
   StreamMessageErrorCallback streamMessageError;
 
-  /// 跨频道媒体流转发状态发生改变回调。
+  /// Occurs when the state of the media stream relay changes.
   ///
-  /// 当跨频道媒体流转发状态发生改变时，SDK 会触发该回调，并报告当前的转发状态以及相关的错误信息。
+  /// The SDK reports the state of the current media relay and possible error messages in this callback.
   ///
-  /// `MediaRelayStateCallback` 包含如下参数：
-  /// - [ChannelMediaRelayState] `state`：跨频道媒体流转发状态。
-  /// - [ChannelMediaRelayError] `code`：跨频道媒体流转发出错的错误码。
+  /// The `MediaRelayStateCallback` typedef includes the following parameters:
+  /// - [ChannelMediaRelayState] `state`: The state code.
+  /// - [ChannelMediaRelayError] `code`: The error code.
   MediaRelayStateCallback channelMediaRelayStateChanged;
 
-  /// 跨频道媒体流转发事件回调。该回调报告跨频道媒体流转发过程中发生的事件。
+  /// Reports events during the media stream relay.
   ///
-  /// `MediaRelayEventCallback` 包含如下参数：
-  /// - [ChannelMediaRelayEvent] `code`：跨频道媒体流转发事件码。
+  /// The `MediaRelayEventCallback` typedef includes the following parameter:
+  /// - [ChannelMediaRelayEvent] `code`: The event code for media stream relay.
   MediaRelayEventCallback channelMediaRelayEvent;
 
-  /// 接收端已接收 Metadata。
+  /// Occurs when the local user receives the metadata, including the following parameters:
+  /// - `buffer`: The sent or received metadata.
+  /// - `uid`: ID of the user who sends the metadata.
+  /// - `timeStampMs`: The timestamp of the metadata.
   ///
-  /// `MetadataCallback` 包含如下参数：
-  /// - [String] `buffer`：接收到的 Metadata 数据 Buffer。
-  /// - [int] `uid`：发送该 Metadata 的远端用户的 ID。
-  /// - [int] `timeStampMs`：接收到的 Metadata 的时间戳，单位为毫秒 。
+  /// The `MetadataCallback` typedef includes the following parameters:
+  /// - [String]: `buffer`: The received metadata.
+  /// - [int]: `uid`: The ID of the user who sent the metadata.
+  /// - [int]: `timeStampMs`: The timestamp (ms) of the received metadata.
   MetadataCallback metadataReceived;
 
-  /// 音频发布状态改变回调。
+  /// Occurs when the audio publishing state changes.
   ///
-  /// @since v3.1.2。
+  /// @since v3.1.2.
   ///
-  /// `StreamPublishStateCallback` 包含如下参数：
-  /// - [String] `channel` 频道名。
-  /// - [StreamPublishState] `oldState` 之前的发布状态。
-  /// - [StreamPublishState] `newState` 当前的发布状态。
-  /// - [int] `elapseSinceLastState` 两次状态变化时间间隔（毫秒）。
+  /// This callback indicates the publishing state change of the local audio stream.
+  ///
+  /// The `StreamPublishStateCallback` typedef includes the following parameters:
+  /// - [String] `channel`: The channel name.
+  /// - [StreamPublishState] `oldState`: The previous publishing state. See [StreamPublishState].
+  /// - [StreamPublishState] `newState`: The current publishing state. See [StreamPublishState].
+  /// - [int] `elapseSinceLastState`: The time elapsed (ms) from the previous state to the current state.
   StreamPublishStateCallback audioPublishStateChanged;
 
-  /// 视频发布状态发生改变回调。
+  /// Occurs when the video publishing state changes.
   ///
-  /// @since v3.1.2。
+  /// @since v3.1.2.
   ///
-  /// `StreamPublishStateCallback` 包含如下参数：
-  /// - [String] `channel` 频道名。
-  /// - [StreamPublishState] `oldState` 之前的发布状态。
-  /// - [StreamPublishState] `newState` 当前的发布状态。
-  /// - [int] `elapseSinceLastState` 两次状态变化时间间隔（毫秒）。
+  /// This callback indicates the publishing state change of the local video stream.
+  ///
+  /// The `StreamPublishStateCallback` typedef includes the following parameters:
+  /// - [String] `channel`: The channel name.
+  /// - [StreamPublishState] `oldState`: The previous publishing state. See [StreamPublishState].
+  /// - [StreamPublishState] `newState`: The current publishing state. See [StreamPublishState].
+  /// - [int] `elapseSinceLastState`: The time elapsed (ms) from the previous state to the current state.
   StreamPublishStateCallback videoPublishStateChanged;
 
-  /// 音频订阅状态发生改变回调。
+  /// Occurs when the audio subscribing state changes.
   ///
-  /// @since v3.1.2。
+  /// @since v3.1.2.
   ///
-  /// `StreamSubscribeStateCallback` 包含如下参数：
-  /// - [String] `channel` 频道名。
-  /// - [StreamSubscribeState] `oldState` 之前的订阅状态。
-  /// - [StreamSubscribeState] `newState` 当前的订阅状态。
-  /// - [int] `elapseSinceLastState` 两次状态变化时间间隔（毫秒）。
+  /// This callback indicates the subscribing state change of a remote audio stream.
+  ///
+  /// The `StreamSubscribeStateCallback` typedef includes the following parameters:
+  /// - [String] `channel`: The channel name.
+  /// - [StreamSubscribeState] `oldState`: The previous publishing state. See [StreamPublishState].
+  /// - [StreamSubscribeState] `newState`: The current publishing state. See [StreamPublishState].
+  /// - [int] `elapseSinceLastState`: The time elapsed (ms) from the previous state to the current state.
   StreamSubscribeStateCallback audioSubscribeStateChanged;
 
-  /// 视频订阅状态发生改变回调。
+  /// Occurs when the video subscribing state changes.
   ///
-  /// @since v3.1.2。
+  /// @since v3.1.2.
   ///
-  /// `StreamSubscribeStateCallback` 包含如下参数：
-  /// - [String] `channel` 频道名。
-  /// - [StreamSubscribeState] `oldState` 之前的订阅状态。
-  /// - [StreamSubscribeState] `newState` 当前的订阅状态。
-  /// - [int] `elapseSinceLastState` 两次状态变化时间间隔（毫秒）。
+  /// This callback indicates the subscribing state change of a remote video stream.
+  ///
+  /// The `StreamSubscribeStateCallback` typedef includes the following parameters:
+  /// - [String] `channel`: The channel name.
+  /// - [StreamSubscribeState] `oldState`: The previous publishing state. See [StreamPublishState].
+  /// - [StreamSubscribeState] `newState`: The current publishing state. See [StreamPublishState].
+  /// - [int] `elapseSinceLastState`: The time elapsed (ms) from the previous state to the current state.
   StreamSubscribeStateCallback videoSubscribeStateChanged;
 
-  /// RTMP 推流事件回调。
+  /// Reports events during the RTMP streaming.
   ///
-  /// @since v3.1.2。
+  /// @since v3.1.2.
   ///
-  /// `RtmpStreamingEventCallback` 包含如下参数：
-  /// - [String] `url` RTMP 推流 URL。
-  /// - [RtmpStreamingEvent] `eventCode` RTMP 推流事件码。
+  /// The `RtmpStreamingEventCallback` typedef includes the following parameters:
+  /// - [String] `url`: The RTMP streaming URL.
+  /// - [RtmpStreamingEvent] `eventCode`: The event code. See [RtmpStreamingEvent].
   RtmpStreamingEventCallback rtmpStreamingEvent;
 
   /// Constructs a [RtcChannelEventHandler]
   RtcChannelEventHandler(
-    {this.warning,
-    this.error,
-    this.joinChannelSuccess,
-    this.rejoinChannelSuccess,
-    this.leaveChannel,
-    this.clientRoleChanged,
-    this.userJoined,
-    this.userOffline,
-    this.connectionStateChanged,
-    this.connectionLost,
-    this.tokenPrivilegeWillExpire,
-    this.requestToken,
-    this.activeSpeaker,
-    this.videoSizeChanged,
-    this.remoteVideoStateChanged,
-    this.remoteAudioStateChanged,
-    this.localPublishFallbackToAudioOnly,
-    this.remoteSubscribeFallbackToAudioOnly,
-    this.rtcStats,
-    this.networkQuality,
-    this.remoteVideoStats,
-    this.remoteAudioStats,
-    this.rtmpStreamingStateChanged,
-    this.transcodingUpdated,
-    this.streamInjectedStatus,
-    this.streamMessage,
-    this.streamMessageError,
-    this.channelMediaRelayStateChanged,
-    this.channelMediaRelayEvent,
-    this.metadataReceived,
-    this.audioPublishStateChanged,
-    this.videoPublishStateChanged,
-    this.audioSubscribeStateChanged,
-    this.videoSubscribeStateChanged,
-    this.rtmpStreamingEvent});
+      {this.warning,
+      this.error,
+      this.joinChannelSuccess,
+      this.rejoinChannelSuccess,
+      this.leaveChannel,
+      this.clientRoleChanged,
+      this.userJoined,
+      this.userOffline,
+      this.connectionStateChanged,
+      this.connectionLost,
+      this.tokenPrivilegeWillExpire,
+      this.requestToken,
+      this.activeSpeaker,
+      this.videoSizeChanged,
+      this.remoteVideoStateChanged,
+      this.remoteAudioStateChanged,
+      this.localPublishFallbackToAudioOnly,
+      this.remoteSubscribeFallbackToAudioOnly,
+      this.rtcStats,
+      this.networkQuality,
+      this.remoteVideoStats,
+      this.remoteAudioStats,
+      this.rtmpStreamingStateChanged,
+      this.transcodingUpdated,
+      this.streamInjectedStatus,
+      this.streamMessage,
+      this.streamMessageError,
+      this.channelMediaRelayStateChanged,
+      this.channelMediaRelayEvent,
+      this.metadataReceived,
+      this.audioPublishStateChanged,
+      this.videoPublishStateChanged,
+      this.audioSubscribeStateChanged,
+      this.videoSubscribeStateChanged,
+      this.rtmpStreamingEvent});
 
   // ignore: public_member_api_docs
   void process(String methodName, List<dynamic> data) {
@@ -1836,10 +1772,10 @@ class RtcChannelEventHandler {
         error?.call(ErrorCodeConverter.fromValue(data[0]).e);
         break;
       case 'JoinChannelSuccess':
-        joinChannelSuccess?.call(data[0], data[1]);
+        joinChannelSuccess?.call(data[0], data[1], data[2]);
         break;
       case 'RejoinChannelSuccess':
-        rejoinChannelSuccess?.call(data[0], data[1]);
+        rejoinChannelSuccess?.call(data[0], data[1], data[2]);
         break;
       case 'LeaveChannel':
         leaveChannel
@@ -1947,7 +1883,7 @@ class RtcChannelEventHandler {
       case 'MetadataReceived':
         metadataReceived?.call(data[0], data[1], data[2]);
         break;
-        case 'AudioPublishStateChanged':
+      case 'AudioPublishStateChanged':
         audioPublishStateChanged?.call(
             data[0],
             StreamPublishStateConverter.fromValue(data[1]).e,
@@ -1964,16 +1900,18 @@ class RtcChannelEventHandler {
       case 'AudioSubscribeStateChanged':
         audioSubscribeStateChanged?.call(
             data[0],
-            StreamSubscribeStateConverter.fromValue(data[1]).e,
+            data[1],
             StreamSubscribeStateConverter.fromValue(data[2]).e,
-            data[3]);
+            StreamSubscribeStateConverter.fromValue(data[3]).e,
+            data[4]);
         break;
       case 'VideoSubscribeStateChanged':
         videoSubscribeStateChanged?.call(
             data[0],
-            StreamSubscribeStateConverter.fromValue(data[1]).e,
+            data[1],
             StreamSubscribeStateConverter.fromValue(data[2]).e,
-            data[3]);
+            StreamSubscribeStateConverter.fromValue(data[3]).e,
+            data[4]);
         break;
       case 'RtmpStreamingEvent':
         rtmpStreamingEvent?.call(data[0], data[1]);

@@ -19,18 +19,18 @@ class RtcChannel with RtcChannelInterface {
 
   static final Map<String, RtcChannel> _channels = {};
 
-  final String _channelId;
+  final String channelId;
 
   RtcChannelEventHandler _handler;
 
-  RtcChannel._(this._channelId);
+  RtcChannel._(this.channelId);
 
   Future<T> _invokeMethod<T>(String method, [Map<String, dynamic> arguments]) {
     return _methodChannel.invokeMethod(
         method,
         arguments == null
-            ? {'channelId': _channelId}
-            : {'channelId': _channelId, ...arguments});
+            ? {'channelId': channelId}
+            : {'channelId': channelId, ...arguments});
   }
 
   /// 创建并返回 [RtcChannel] 对象。
@@ -64,14 +64,16 @@ class RtcChannel with RtcChannelInterface {
   /// 销毁所有的 [RtcChannel] 对象。
   static void destroyAll() {
     _channels.forEach((key, value) async {
-      await value.destroy();
+      value._handler = null;
+      await value._invokeMethod('destroy');
     });
     _channels.clear();
   }
 
   @override
   Future<void> destroy() {
-    _channels.remove(_channelId);
+    _handler = null;
+    _channels.remove(channelId);
     return _invokeMethod('destroy');
   }
 
@@ -92,9 +94,11 @@ class RtcChannel with RtcChannelInterface {
   }
 
   @override
-  Future<void> setClientRole(ClientRole role) {
-    return _invokeMethod(
-        'setClientRole', {'role': ClientRoleConverter(role).value()});
+  Future<void> setClientRole(ClientRole role, [ClientRoleOptions options]) {
+    return _invokeMethod('setClientRole', {
+      'role': ClientRoleConverter(role).value(),
+      'options': options?.toJson()
+    });
   }
 
   @override
@@ -239,11 +243,13 @@ class RtcChannel with RtcChannelInterface {
   }
 
   @override
+  @deprecated
   Future<void> setEncryptionSecret(String secret) {
     return _invokeMethod('setEncryptionSecret', {'secret': secret});
   }
 
   @override
+  @deprecated
   Future<void> setLiveTranscoding(LiveTranscoding transcoding) {
     return _invokeMethod(
         'setLiveTranscoding', {'transcoding': transcoding.toJson()});
@@ -333,15 +339,23 @@ mixin RtcChannelInterface
 
   /// 设置直播场景下的用户角色。
   ///
-  /// 该方法设置用户角色为观众或主播。
-  /// 直播频道中，只有角色为主播的用户才能调用 [RtcChannel] 类下的 [RtcChannel.publish] 方法。
+  /// 在加入频道前和加入频道后均可调用该方法设置用户角色。
   ///
-  /// 成功调用该方法切换用户角色后，SDK 会触发以下回调：
+  /// 如果你在加入频道后调用该方法成功切换用户角色，SDK 会触发以下回调：
   /// - 本地：[RtcChannelEventHandler.clientRoleChanged]。
   /// - 远端：[RtcChannelEventHandler.userJoined] 或 [RtcChannelEventHandler.userOffline] (`BecomeAudience`)。
   ///
-  /// **Parameter** [role] 用户角色。详见 [ClientRole]。
-  Future<void> setClientRole(ClientRole role);
+  /// **Note**
+  ///
+  /// - 该方法仅在频道场景为直播（`setChannelProfile` 中 `profile` 设为 `LiveBroadcasting`）时生效。
+  /// - 从 v3.2.0 开始，该方法支持设置用户级别。
+  ///   - 用户角色 (role) 确定用户在 SDK 层的权限，包含是否可以发送流、是否可以接收流、是否可以推流到 CDN 等。
+  ///   - 用户级别 (level) 需要与角色结合使用，确定用户在其权限范围内，可以操作和享受到的服务级别。例如对于观众，选择接收低延时还是超低延时的视频流。不同的级别会影响计费。
+  ///
+  /// **Parameter** [role] 直播场景中的用户角色，详见 [ClientRole]。
+  ///
+  /// **Parameter** [options] 用户具体设置，包含用户级别，详见 [ClientRoleOptions]。
+ Future<void> setClientRole(ClientRole role, [ClientRoleOptions options]);
 
   /// 使用 UID 加入频道。
   ///
