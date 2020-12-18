@@ -673,7 +673,7 @@ class ChannelMediaOptions {
 
 /// 内置加密配置。
 ///
-/// @since v3.1.2。
+///
 @JsonSerializable(explicitToJson: true)
 class EncryptionConfig {
   /// 内置加密模式，默认为 `AES128XTS` 加密模式。详见 [EncryptionMode]。
@@ -914,7 +914,7 @@ class LocalAudioStats {
 
   /// 网络对抗前，本地客户端到边缘服务器的丢包率 (%)。
   ///
-  /// @since v3.1.2。
+  ///
   int txPacketLossRate;
 
   /// Constructs a [LocalAudioStats]
@@ -971,12 +971,12 @@ class LocalVideoStats {
 
   /// 弱网对抗前本地客户端到 Agora 边缘服务器的视频丢包率 (%)。
   ///
-  /// @since v3.1.2。
+  ///
   int txPacketLossRate;
 
   /// 本地视频采集帧率 (fps)。
   ///
-  /// @since v3.1.2。
+  ///
   int captureFrameRate;
 
 
@@ -1032,7 +1032,7 @@ class RemoteAudioStats {
 
   /// 远端音频流的累计发布时长（毫秒）。
   ///
-  /// @since v3.1.2。
+  ///
   int publishDuration;
 
 
@@ -1095,7 +1095,7 @@ class RemoteVideoStats {
 
   /// 远端视频流的累计发布时长（毫秒）。
   ///
-  /// @since v3.1.2。
+  ///
   int publishDuration;
 
   /// Constructs a [RemoteVideoStats]

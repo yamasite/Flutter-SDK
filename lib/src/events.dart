@@ -964,7 +964,7 @@ class RtcEngineEventHandler {
 
   /// 已发布本地音频首帧回调。
   ///
-  /// @since v3.1.2。
+  ///
   ///
   /// SDK 会在以下三种时机触发该回调：
   /// - 开启本地音频的情况下，调用 [RtcEngine.joinChannel] 成功加入频道后。
@@ -977,7 +977,7 @@ class RtcEngineEventHandler {
 
   /// 已发布本地视频首帧回调。
   ///
-  /// @since v3.1.2。
+  ///
   ///
   /// SDK 会在以下三种时机触发该回调：
   /// - 开启本地视频的情况下，调用 [RtcEngine.joinChannel] 成功加入频道后。
@@ -987,7 +987,7 @@ class RtcEngineEventHandler {
 
   /// 音频发布状态改变回调。
   ///
-  /// @since v3.1.2。
+  ///
   ///
   /// `StreamPublishStateCallback` 包含如下参数：
   /// - [String] `channel` 频道名。
@@ -998,7 +998,7 @@ class RtcEngineEventHandler {
 
   /// 视频发布状态改变回调。
   ///
-  /// @since v3.1.2。
+  ///
   ///
   /// `StreamPublishStateCallback` 包含如下参数：
   /// - [String] `channel` 频道名。
@@ -1009,7 +1009,7 @@ class RtcEngineEventHandler {
 
   /// 音频订阅状态发生改变回调。
   ///
-  /// @since v3.1.2。
+  ///
   ///
   /// `StreamSubscribeStateCallback` 包含如下参数：
   /// - [String] `channel` 频道名。
@@ -1020,7 +1020,7 @@ class RtcEngineEventHandler {
 
   /// 视频订阅状态发生改变回调。
   ///
-  /// @since v3.1.2。
+  ///
   ///
   /// `StreamSubscribeStateCallback` 包含如下参数：
   /// - [String] `channel` 频道名。
@@ -1031,7 +1031,7 @@ class RtcEngineEventHandler {
 
   /// RTMP 推流事件回调。
   ///
-  /// @since v3.1.2。
+  ///
   ///
   /// `RtmpStreamingEventCallback` 包含如下参数：
   /// - [String] `url` RTMP 推流 URL。
@@ -1742,7 +1742,7 @@ class RtcChannelEventHandler {
 
   /// 音频发布状态改变回调。
   ///
-  /// @since v3.1.2。
+  ///
   ///
   /// `StreamPublishStateCallback` 包含如下参数：
   /// - [String] `channel` 频道名。
@@ -1753,7 +1753,7 @@ class RtcChannelEventHandler {
 
   /// 视频发布状态发生改变回调。
   ///
-  /// @since v3.1.2。
+  ///
   ///
   /// `StreamPublishStateCallback` 包含如下参数：
   /// - [String] `channel` 频道名。
@@ -1764,7 +1764,7 @@ class RtcChannelEventHandler {
 
   /// 音频订阅状态发生改变回调。
   ///
-  /// @since v3.1.2。
+  ///
   ///
   /// `StreamSubscribeStateCallback` 包含如下参数：
   /// - [String] `channel` 频道名。
@@ -1775,7 +1775,7 @@ class RtcChannelEventHandler {
 
   /// 视频订阅状态发生改变回调。
   ///
-  /// @since v3.1.2。
+  ///
   ///
   /// `StreamSubscribeStateCallback` 包含如下参数：
   /// - [String] `channel` 频道名。
@@ -1786,7 +1786,7 @@ class RtcChannelEventHandler {
 
   /// RTMP 推流事件回调。
   ///
-  /// @since v3.1.2。
+  ///
   ///
   /// `RtmpStreamingEventCallback` 包含如下参数：
   /// - [String] `url` RTMP 推流 URL。

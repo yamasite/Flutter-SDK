@@ -739,7 +739,7 @@ mixin RtcEncryptionInterface {
 
   /// 开启或关闭内置加密。
   ///
-  /// @since v3.1.2。
+  ///
   ///
   /// 在安全要求较高的场景下，Agora 建议你在加入频道前，调用 `enableEncryption` 方法开启内置加密。
   ///

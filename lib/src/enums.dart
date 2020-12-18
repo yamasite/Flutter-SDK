@@ -877,7 +877,7 @@ enum EncryptionMode {
 
   /// 128 位 SM4 加密，ECB 模式。
   ///
-  /// @since v3.1.2。
+  ///
   @JsonValue(4)
   SM4128ECB,
 }
@@ -987,7 +987,7 @@ enum ErrorCode {
 
   /// 没有服务器资源，请尝试设置其他区域代码。
   ///
-  /// @since v3.1.2。
+  ///
   @JsonValue(103)
   NoServerResources,
 
@@ -2073,7 +2073,7 @@ enum WarningCode {
   /// 在通话过程中，`AudioSessionCategory` 必须设置成 `AVAudioSessionCategoryPlayAndRecord`。
   /// SDK 会监控这个属性值。如果你将 `AudioSessionCategory` 设为其他值，SDK 会触发该警告，并强制设置回 `AVAudioSessionCategoryPlayAndRecord`。
   ///
-  /// @since v3.1.2。
+  ///
   @JsonValue(1029)
   AdmCategoryNotPlayAndRecord,
 
@@ -2094,13 +2094,13 @@ enum WarningCode {
   /// - 重启 app 运行设备
   /// - 更新声卡驱动
   ///
-  /// @since v3.1.2。
+  ///
   @JsonValue(1040)
   AdmNoDataReadyCallback,
 
   /// 音频设备模块：音频采集设备和播放设备不一致，可能引起回声，建议使用同一设备采集和播放音频。
   ///
-  /// @since v3.1.2。
+  ///
   @JsonValue(1042)
   AdmInconsistentDevices,
 
@@ -2174,7 +2174,7 @@ enum VideoCodecType {
 
 /// 发布状态。
 ///
-/// @since v3.1.2。
+///
 enum StreamPublishState {
   /// 加入频道后的初始发布状态。
   @JsonValue(0)
@@ -2199,7 +2199,7 @@ enum StreamPublishState {
 
 /// 订阅状态。
 ///
-/// @since v3.1.2。
+///
 enum StreamSubscribeState {
   /// 加入频道后的初始订阅状态。
   @JsonValue(0)

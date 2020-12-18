@@ -73,7 +73,7 @@ class RtcEngine with RtcEngineInterface {
   ///
   /// **Parameter** [areaCode] 服务器的访问区域。该功能为高级设置，适用于有访问安全限制的场景。
   ///
-  /// 支持的区域详见 `AreaCode`。
+  /// 支持的区域详见 [AreaCode]。
   /// 指定访问区域后，集成了 Agora SDK 的 app 会连接指定区域内的 Agora 服务器。
   ///
   /// **Returns**
@@ -2339,7 +2339,7 @@ mixin RtcEncryptionInterface {
 
   /// 开启或关闭内置加密。
   ///
-  /// @since v3.1.2。
+  ///
   ///
   /// 在安全要求较高的场景下，Agora 建议你在加入频道前，调用 `enableEncryption` 方法开启内置加密。
   ///
