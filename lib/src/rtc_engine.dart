@@ -51,6 +51,7 @@ class RtcEngine with RtcEngineInterface {
   /// **Returns**
   /// - 方法调用成功，则返回一个 [RtcEngine] 对象。
   /// - 方法调用失败，则返回错误码。
+  ///   - [ErrorCode.InvalidAppId]
   static Future<RtcEngine> create(String appId) async {
     return createWithAreaCode(appId, AreaCode.GLOB);
   }
