@@ -967,6 +967,8 @@ mixin RtcEngineInterface
   /// 在网络状况不理想的情况下，客户端可能会与 Agora 的服务器失去连接；SDK 会自动尝试重连，重连成功后，
   /// 本地会触发 [RtcEngineEventHandler.rejoinChannelSuccess] 回调。
   ///
+  /// 用户成功加入（切换）频道后，默认订阅频道内所有其他用户的音频流和视频流，因此产生用量并影响计费。如果想取消订阅，可以通过调用相应的 `mute` 方法实现。
+  ///
   /// **Note**
   /// - 频道内每个用户的 UID 必须是唯一的。如果将 `uid` 设为 `0`，系统将自动分配一个 UID。
   /// 如果想要从不同的设备同时接入同一个频道，请确保每个设备上使用的 UID 是不同的。
@@ -998,6 +1000,8 @@ mixin RtcEngineInterface
   /// 成功调用该方切换频道后，本地会先收到离开原频道的回调 [RtcEngineEventHandler.leaveChannel]，
   /// 再收到成功加入新频道的回调 [RtcEngineEventHandler.joinChannelSuccess]。
   ///
+  /// 用户成功加入（切换）频道后，默认订阅频道内所有其他用户的音频流和视频流，因此产生用量并影响计费。如果想取消订阅，可以通过调用相应的 `mute` 方法实现。
+  ///
   /// **Note**
   /// - 该方法仅适用直播频道中的观众用户。
   ///
@@ -1027,7 +1031,7 @@ mixin RtcEngineInterface
   ///
   /// **Note**
   /// - 如果你调用了 `leaveChannel` 后立即调用 [RtcEngine.destroy] 方法，SDK 将无法触发 [RtcEngineEventHandler.leaveChannel] 回调。
-  /// - 如果你在旁路推流过程中调用了 `leaveChannel` 方法， SDK 将自动调用 [RtcEngine.removeInjectStreamUrl] 方法。
+  /// - 如果你在旁路推流过程中调用了 `leaveChannel` 方法， SDK 将自动调用 [RtcEngine.removePublishStreamUrl] 方法。
   Future<void> leaveChannel();
 
   /// 更新 Token。
@@ -1214,8 +1218,8 @@ mixin RtcAudioInterface {
   /// 启用音频模块（默认为开启状态）。
   ///
   /// **Note**
-  /// - 该方法设置的是内部引擎为开启状态，在频道内和频道外均可调用，且在 [RtcEngine.leaveChannel] 后仍然有效。
-  /// - 该方法重置整个引擎，响应速度较慢，因此我们建议使用如下方法来控制音频模块：
+  /// - 该方法设置的是音频模块为开启状态，在频道内和频道外均可调用，且在 [RtcEngine.leaveChannel] 后仍然有效。
+  /// - 该方法开启整个音频模块，响应速度较慢，因此 Agora 建议使用如下方法来控制音频模块：
   ///   - [RtcEngine.enableLocalAudio]：是否启动麦克风采集并创建本地音频流。
   ///   - [RtcEngine.muteLocalAudioStream]：是否发布本地音频流。
   ///   - [RtcEngine.muteRemoteAudioStream]：是否接收并播放远端音频流。
@@ -1225,8 +1229,8 @@ mixin RtcAudioInterface {
   /// 关闭音频模块。
   ///
   /// **Note**
-  /// - 该方法设置的是内部引擎为禁用状态，在频道内和频道外均可调用，且在 [RtcEngine.leaveChannel] 后仍然有效。
-  /// - 该方法重置整个引擎，响应速度较慢，因此 Agora 建议使用如下方法来控制音频模块：
+  /// - 该方法设置的是音频模块为禁用状态，在频道内和频道外均可调用，且在 [RtcEngine.leaveChannel] 后仍然有效。
+  /// - 该方法关闭整个音频模块，响应速度较慢，因此 Agora 建议使用如下方法来控制音频模块：
   ///   - [RtcEngine.enableLocalAudio]：是否启动麦克风采集并创建本地音频流。
   ///   - [RtcEngine.muteLocalAudioStream]：是否发布本地音频流。
   ///   - [RtcEngine.muteRemoteAudioStream]：是否接收并播放远端音频流。
@@ -1296,7 +1300,6 @@ mixin RtcAudioInterface {
   /// 并报告 [AudioLocalState.Stopped] 或 [AudioLocalState.Recording]。
   ///
   /// **Note**
-  /// - 调用 `enableLocalAudio(false)` 关闭本地采集后，系统会走媒体音量；调用 `enableLocalAudio(true)` 重新打开本地采集后，系统会恢复为通话音量。
   /// - 该方法与 [RtcEngine.muteLocalAudioStream] 的区别在于：
   ///   - [RtcEngine.enableLocalAudio] 开启或关闭本地语音采集及处理。使用 `enableLocalAudio` 关闭或开启本地采集后，本地听远端播放会有短暂中断。
   ///   - [RtcEngine.muteLocalAudioStream] 停止或继续发送本地音频流。
@@ -1766,6 +1769,10 @@ mixin RtcAudioEffectInterface {
 mixin RtcVoiceChangerInterface {
   /// 设置本地语音变声、美音或语聊美声效果。
   ///
+  /// **Deprecated**
+  ///
+  /// 该方法已废弃。请使用 [RtcEngine.setAudioEffectPreset] 或 [RtcEngine.setAudioEffectParameters]。
+  ///
   /// **Note**
   ///
   /// 该方法不能与 [RtcEngine.setLocalVoiceReverbPreset] 方法一同使用，否则先调的方法会不生效。
@@ -1774,6 +1781,10 @@ mixin RtcVoiceChangerInterface {
   Future<void> setLocalVoiceChanger(AudioVoiceChanger voiceChanger);
 
   /// 设置本地语音混响（含虚拟立体声效果）。
+  ///
+  /// **Deprecated**
+  ///
+  /// 该方法已废弃。请使用 [RtcEngine.setAudioEffectPreset] 或 [RtcEngine.setAudioEffectParameters]。
   ///
   /// **Note**
   /// - 该方法不能与 [RtcEngine.setLocalVoiceReverb] 方法一同使用。
@@ -1955,6 +1966,7 @@ mixin RtcPublishStreamInterface {
   /// - 请确保已开通旁路推流的功能，详见进阶功能《推流到 CDN》中的前提条件。
   /// - 该方法仅适用于直播场景下的主播用户。
   /// - 请确保先调用过该方法，再调用 [RtcEngine.addPublishStreamUrl]。
+  /// - Agora 目前仅支持转码时向 CDN 推送 RTMPS 协议的媒体流。
   ///
   /// **Parameter** [transcoding] 旁路推流布局相关设置。详见 [LiveTranscoding]。
   Future<void> setLiveTranscoding(LiveTranscoding transcoding);
@@ -1969,11 +1981,12 @@ mixin RtcPublishStreamInterface {
   /// - 该方法仅适用直播场景。
   /// - 请确保在成功加入频道后才能调用该接口。
   /// - 该方法每次只能增加一路旁路推流地址。如需推送多路流，则需多次调用该方法。
+  /// - Agora 目前仅支持转码时向 CDN 推送 RTMP 或 RTMPS 协议的媒体流。
   ///
   /// **Parameter** [url] CDN 推流地址，格式为 RTMP。该字符长度不能超过 1024 字节。url 不支持中文等特殊字符。
   ///
   /// **Parameter** [transcodingEnabled] 是否转码。如果设为 `true`，则需要在该方法前先调用 [RtcEngine.setLiveTranscoding] 方法。
-  /// - `true`：转码。[转码](https://docs.agora.io/cn/Agora%20Platform/terms?platform=All%20Platforms#转码)是指在旁路推流时对音视频流进行转码处理后，再推送到其他 RTMP 服务器。多适用于频道内有多个主播，需要进行混流、合图的场景。
+  /// - `true`：转码。[转码](https://docs.agora.io/cn/Agora%20Platform/terms?platform=All%20Platforms#转码)是指在旁路推流时对音视频流进行转码处理后，再推送到其他 CDN 服务器。多适用于频道内有多个主播，需要进行混流、合图的场景。
   /// - `false`：不转码。
   Future<void> addPublishStreamUrl(String url, bool transcodingEnabled);
 

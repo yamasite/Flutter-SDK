@@ -600,7 +600,7 @@ class RtcEngineEventHandler {
   /// RTMP 推流状态发生改变回调。该回调返回本地用户调用 [RtcEngine.addPublishStreamUrl]
   /// 或 [RtcEngine.removePublishStreamUrl] 方法的结果。
   ///
-  /// RTMP 推流状态发生改变时，SDK 会触发该回调，并在回调中明确状态发生改变的 URL 地址及当前推流状态；当推流状态为 [RtmpStreamingState.Failure] 时，你可以在 `errCode` 参数中查看返回的错误信息。
+  /// RTMP/RTMPS 推流状态发生改变时，SDK 会触发该回调，并在回调中明确状态发生改变的 URL 地址及当前推流状态；当推流状态为 [RtmpStreamingState.Failure] 时，你可以在 `errCode` 参数中查看返回的错误信息。
   /// 该回调方便推流用户了解当前的推流状态；推流出错时，你可以通过返回的错误码了解出错的原因，方便排查问题。
   ///
   /// `RtmpStreamingStateCallback` 包含如下参数：

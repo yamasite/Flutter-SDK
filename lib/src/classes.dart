@@ -1005,6 +1005,10 @@ class RemoteAudioStats {
   int networkTransportDelay;
 
   /// 接收端到网络抖动缓冲的网络延迟 (ms)。
+  ///
+  /// **Note**
+  ///
+  /// 当接收端为观众且 [AudienceLatencyLevelType] 为 `1` 时，该参数不生效。
   int jitterBufferDelay;
 
   ///  统计周期内的远端音频流的丢帧率 (%)。

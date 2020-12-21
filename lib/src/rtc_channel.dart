@@ -359,6 +359,21 @@ mixin RtcChannelInterface
 
   /// 使用 UID 加入频道。
   ///
+  /// 该方法与 [RtcEngine] 类下的 [RtcEngine.joinChannel] 方法有以下区别：
+  ///
+  /// - [RtcChannel.joinChannel]
+  ///   - 无 `channelName` 参数。因为创建 `RtcChannel` 对象时已指定了 `channelName`。
+  ///   - 加了 `options` 参数，可在加入频道前通过该参数设置是否订阅该频道的音视频流。
+  ///   - 通过创建多个 `RtcChannel` 对象，并调用相应对象的 `joinChannel` 方法，实现同时加入多个频道。
+  ///   - 通过该方法加入频道后，SDK 默认不发布本地音视频流到本频道，用户需要调用 `publish` 方法进行发布。
+  /// - [RtcEngine.joinChannel]
+  ///   - 需要填入可以标识频道的 `channelName`。
+  ///   - 无 `options` 参数。加入频道即默认订阅频道内的音视频流。
+  ///   - 只允许加入一个频道。
+  ///   - 通过该方法加入频道后，SDK 默认发布音视频流发布到本频道。
+  ///
+  /// 用户成功加入（切换）频道后，默认订阅频道内所有其他用户的音频流和视频流，因此产生用量并影响计费。如果想取消订阅，可以通过调用相应的 `mute` 方法实现。
+  ///
   /// **Note**
   /// - 该方法不支持相同的用户重复加入同一个频道。
   /// - Agora 建议不同频道中使用不同的 UID。
@@ -568,7 +583,7 @@ mixin RtcPublishStreamInterface {
   /// **Parameter** [url] CDN 推流地址，格式为 RTMP。该字符长度不能超过 1024 字节。url 不支持中文等特殊字符。
   ///
   /// **Parameter** [transcodingEnabled] 是否转码。如果设为 `true`，则需要在该方法前先调用 [RtcChannel.setLiveTranscoding] 方法。
-  /// - `true`：转码。转码是指在旁路推流时对音视频流进行转码处理后，再推送到其他 RTMP 服务器。
+  /// - `true`：转码。转码是指在旁路推流时对音视频流进行转码处理后，再推送到其他 CDN 服务器。
   /// 多适用于频道内有多个主播，需要进行混流、合图的场景。
   /// - `false`：不转码。
   Future<void> addPublishStreamUrl(String url, bool transcodingEnabled);

@@ -1488,7 +1488,7 @@ enum RtmpStreamingErrorCode {
   @JsonValue(4)
   InternalServerError,
 
-  /// RTMP 服务器出现错误。
+  /// CDN 服务器出现错误。
   @JsonValue(5)
   RtmpServerError,
 
@@ -1520,7 +1520,7 @@ enum RtmpStreamingState {
   @JsonValue(0)
   Idle,
 
-  /// 正在连接 Agora 推流服务器和 RTMP 服务器。SDK 调用 `addPublishStreamUrl` 方法后，会返回该状态。
+  /// 正在连接 Agora 推流服务器和 CDN 服务器。SDK 调用 `addPublishStreamUrl` 方法后，会返回该状态。
   /// 详见 [RtcEngine.addPublishStreamUrl]。
   @JsonValue(1)
   Connecting,
@@ -2265,28 +2265,28 @@ enum AudioEffectPreset {
   ///
   /// **Note**
   ///
-  /// 为获取更好的人声效果，Agora 建议你在使用该枚举前将 [RtcEngine.setAudioProfile] 的 profile 参数设置为 `MusicHighQuality(4)` 或 `MusicHighQualityStereo(5)`。
+  /// 为获取更好的人声效果，Agora 建议你在使用该枚举前将 [RtcEngine.setAudioProfile] 的 `profile` 参数设置为 `MusicHighQuality(4)` 或 `MusicHighQualityStereo(5)`。
   @JsonValue(0x02010100)
   RoomAcousticsKTV,
   /// 演唱会。
   ///
   /// **Note**
   ///
-  /// 为获取更好的人声效果，Agora 建议你在使用该枚举前将 [RtcEngine.setAudioProfile] 的 profile 参数设置为 `MusicHighQuality(4)` 或 `MusicHighQualityStereo(5)`。
+  /// 为获取更好的人声效果，Agora 建议你在使用该枚举前将 [RtcEngine.setAudioProfile] 的 `profile` 参数设置为 `MusicHighQuality(4)` 或 `MusicHighQualityStereo(5)`。
   @JsonValue(0x02010200)
   RoomAcousticsVocalConcert,
   /// 录音棚。
   ///
   /// **Note**
   ///
-  /// 为获取更好的人声效果，Agora 建议你在使用该枚举前将 [RtcEngine.setAudioProfile] 的 profile 参数设置为 `MusicHighQuality(4)` 或 `MusicHighQualityStereo(5)`。
+  /// 为获取更好的人声效果，Agora 建议你在使用该枚举前将 [RtcEngine.setAudioProfile] 的 `profile` 参数设置为 `MusicHighQuality(4)` 或 `MusicHighQualityStereo(5)`。
   @JsonValue(0x02010300)
   RoomAcousticsStudio,
   /// 留声机。
   ///
   /// **Note**
   ///
-  /// 为获取更好的人声效果，Agora 建议你在使用该枚举前将 [RtcEngine.setAudioProfile] 的 profile 参数设置为 `MusicHighQuality(4)` 或 `MusicHighQualityStereo(5)`。
+  /// 为获取更好的人声效果，Agora 建议你在使用该枚举前将 [RtcEngine.setAudioProfile] 的 `profile` 参数设置为 `MusicHighQuality(4)` 或 `MusicHighQualityStereo(5)`。
   @JsonValue(0x02010400)
   RoomAcousticsPhonograph,
   /// 虚拟立体声，即 SDK 将单声道的音频渲染出双声道的音效。
@@ -2300,14 +2300,14 @@ enum AudioEffectPreset {
   ///
   /// **Note**
   ///
-  /// 为获取更好的人声效果，Agora 建议你在使用该枚举前将 [RtcEngine.setAudioProfile] 的 profile 参数设置为 `MusicHighQuality(4)` 或 `MusicHighQualityStereo(5)`。
+  /// 为获取更好的人声效果，Agora 建议你在使用该枚举前将 [RtcEngine.setAudioProfile] 的 `profile` 参数设置为 `MusicHighQuality(4)` 或 `MusicHighQualityStereo(5)`。
   @JsonValue(0x02010600)
   RoomAcousticsSpacial,
   /// 空灵。
   ///
   /// **Note**
   ///
-  /// 为获取更好的人声效果，Agora 建议你在使用该枚举前将 [RtcEngine.setAudioProfile] 的 profile 参数设置为 `MusicHighQuality(4)` 或 `MusicHighQualityStereo(5)`。
+  /// 为获取更好的人声效果，Agora 建议你在使用该枚举前将 [RtcEngine.setAudioProfile] 的 `profile` 参数设置为 `MusicHighQuality(4)` 或 `MusicHighQualityStereo(5)`。
   @JsonValue(0x02010700)
   RoomAcousticsEthereal,
   /// 3D 人声，即 SDK 将音频渲染出在用户周围环绕的效果，环绕周期为 10 秒。设置该音效后，你还可以调用 [RtcEngine.setAudioEffectParameters] 修改环绕周期。
@@ -2323,7 +2323,7 @@ enum AudioEffectPreset {
   /// **Note**
   ///
   /// - 建议用于处理男声，否则无法达到预期效果。
-  /// - 为获取更好的人声效果，Agora 建议你在使用该枚举前将 [RtcEngine.setAudioProfile] 的 profile 参数设置为 `MusicHighQuality(4)` 或 `MusicHighQualityStereo(5)`。
+  /// - 为获取更好的人声效果，Agora 建议你在使用该枚举前将 [RtcEngine.setAudioProfile] 的 `profile` 参数设置为 `MusicHighQuality(4)` 或 `MusicHighQualityStereo(5)`。
   @JsonValue(0x02020100)
   VoiceChangerEffectUncle,
   /// 老年男性。
@@ -2331,7 +2331,7 @@ enum AudioEffectPreset {
   /// **Note**
   ///
   /// - 建议用于处理男声，否则无法达到预期效果。
-  /// - 为获取更好的人声效果，Agora 建议你在使用该枚举前将 [RtcEngine.setAudioProfile] 的 profile 参数设置为 `MusicHighQuality(4)` 或 `MusicHighQualityStereo(5)`。
+  /// - 为获取更好的人声效果，Agora 建议你在使用该枚举前将 [RtcEngine.setAudioProfile] 的 `profile` 参数设置为 `MusicHighQuality(4)` 或 `MusicHighQualityStereo(5)`。
   @JsonValue(0x02020200)
   VoiceChangerEffectOldMan,
   /// 男孩。
@@ -2339,7 +2339,7 @@ enum AudioEffectPreset {
   /// **Note**
   ///
   /// - 建议用于处理男声，否则无法达到预期效果。
-  /// - 为获取更好的人声效果，Agora 建议你在使用该枚举前将 [RtcEngine.setAudioProfile] 的 profile 参数设置为 `MusicHighQuality(4)` 或 `MusicHighQualityStereo(5)`。
+  /// - 为获取更好的人声效果，Agora 建议你在使用该枚举前将 [RtcEngine.setAudioProfile] 的 `profile` 参数设置为 `MusicHighQuality(4)` 或 `MusicHighQualityStereo(5)`。
   @JsonValue(0x02020300)
   VoiceChangerEffectBoy,
   /// 少女。
@@ -2347,7 +2347,7 @@ enum AudioEffectPreset {
   /// **Note**
   ///
   /// - 建议用于处理女声，否则无法达到预期效果。
-  /// - 为获取更好的人声效果，Agora 建议你在使用该枚举前将 [RtcEngine.setAudioProfile] 的 profile 参数设置为 `MusicHighQuality(4)` 或 `MusicHighQualityStereo(5)`。
+  /// - 为获取更好的人声效果，Agora 建议你在使用该枚举前将 [RtcEngine.setAudioProfile] 的 `profile` 参数设置为 `MusicHighQuality(4)` 或 `MusicHighQualityStereo(5)`。
   @JsonValue(0x02020400)
   VoiceChangerEffectSister,
   /// 女孩。
@@ -2355,44 +2355,42 @@ enum AudioEffectPreset {
   /// **Note**
   ///
   /// - 建议用于处理女声，否则无法达到预期效果。
-  /// - 为获取更好的人声效果，Agora 建议你在使用该枚举前将 [RtcEngine.setAudioProfile] 的 profile 参数设置为 `MusicHighQuality(4)` 或 `MusicHighQualityStereo(5)`。
+  /// - 为获取更好的人声效果，Agora 建议你在使用该枚举前将 [RtcEngine.setAudioProfile] 的 `profile` 参数设置为 `MusicHighQuality(4)` 或 `MusicHighQualityStereo(5)`。
   @JsonValue(0x02020500)
   VoiceChangerEffectGirl,
   /// 猪八戒。
   ///
   /// **Note**
   ///
-  /// - 建议用于处理男声，否则无法达到预期效果。
-  /// - 为获取更好的人声效果，Agora 建议你在使用该枚举前将 [RtcEngine.setAudioProfile] 的 profile 参数设置为 `MusicHighQuality(4)` 或 `MusicHighQualityStereo(5)`。
+  /// - 为获取更好的人声效果，Agora 建议你在使用该枚举前将 [RtcEngine.setAudioProfile] 的 `profile` 参数设置为 `MusicHighQuality(4)` 或 `MusicHighQualityStereo(5)`。
   @JsonValue(0x02020600)
   VoiceChangerEffectPigKing,
   /// 绿巨人。
   ///
   /// **Note**
   ///
-  /// - 建议用于处理男声，否则无法达到预期效果。
-  /// - 为获取更好的人声效果，Agora 建议你在使用该枚举前将 [RtcEngine.setAudioProfile] 的 profile 参数设置为 `MusicHighQuality(4)` 或 `MusicHighQualityStereo(5)`。
+  /// - 为获取更好的人声效果，Agora 建议你在使用该枚举前将 [RtcEngine.setAudioProfile] 的 `profile` 参数设置为 `MusicHighQuality(4)` 或 `MusicHighQualityStereo(5)`。
   @JsonValue(0x02020700)
   VoiceChangerEffectHulk,
   /// R&B。
   ///
   /// **Note**
   ///
-  /// - 为获取更好的人声效果，Agora 建议你在使用该枚举前将 [RtcEngine.setAudioProfile] 的 profile 参数设置为 `MusicHighQuality(4)` 或 `MusicHighQualityStereo(5)`。
+  /// - 为获取更好的人声效果，Agora 建议你在使用该枚举前将 [RtcEngine.setAudioProfile] 的 `profile` 参数设置为 `MusicHighQuality(4)` 或 `MusicHighQualityStereo(5)`。
   @JsonValue(0x02030100)
   StyleTransformationRnB,
   /// 流行。
   ///
   /// **Note**
   ///
-  /// - 为获取更好的人声效果，Agora 建议你在使用该枚举前将 [RtcEngine.setAudioProfile] 的 profile 参数设置为 `MusicHighQuality(4)` 或 `MusicHighQualityStereo(5)`。
+  /// - 为获取更好的人声效果，Agora 建议你在使用该枚举前将 [RtcEngine.setAudioProfile] 的 `profile` 参数设置为 `MusicHighQuality(4)` 或 `MusicHighQualityStereo(5)`。
   @JsonValue(0x02030200)
   StyleTransformationPopular,
   /// 电音，即 SDK 以主音音高为 C 的自然大调为基础修正音频的实际音高。设置该音效后，你还可以调用 [RtcEngine.setAudioEffectParameters] 调整修音的基础调式和主音音高。
   ///
   /// **Note**
   ///
-  /// - 为获取更好的人声效果，Agora 建议你在使用该枚举前将 [RtcEngine.setAudioProfile] 的 profile 参数设置为 `MusicHighQuality(4)` 或 `MusicHighQualityStereo(5)`。
+  /// - 为获取更好的人声效果，Agora 建议你在使用该枚举前将 [RtcEngine.setAudioProfile] 的 `profile` 参数设置为 `MusicHighQuality(4)` 或 `MusicHighQualityStereo(5)`。
   @JsonValue(0x02040100)
   PitchCorrection,
 }
