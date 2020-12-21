@@ -577,7 +577,7 @@ Agora Flutter SDK 基于 Android 和 iOS 平台的 Agora RTC SDK 封装，可在
 </tr>
 <tr>
 <td><a href ="rtc_channel/RtcChannelEventHandler/rtmpStreamingEvent.html">rtmpStreamingEvent</a></td>
-<td>RTMP 推流事件回调 </td>
+<td>RTMP/RTMPS 推流事件回调 </td>
 </tr>
 </table>
 
