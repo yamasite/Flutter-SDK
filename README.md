@@ -433,11 +433,11 @@ Agora Flutter SDK 基于 Android 和 iOS 平台的 Agora RTC SDK 封装，可在
 <td>获取播放音效文件音量</td>
 </tr>
 <tr>
-<td><a href ="rtc_engine/RtcEngine/setEffectsVolume.html">SetEffectsVolume</a></td>
+<td><a href ="rtc_engine/RtcEngine/setEffectsVolume.html">setEffectsVolume</a></td>
 <td>设置播放音效文件音量</td>
 </tr>
 <tr>
-<td><a href ="rtc_engine/RtcEngine/setVolumeOfEffect.html">SetVolumeOfEffect</a></td>
+<td><a href ="rtc_engine/RtcEngine/setVolumeOfEffect.html">setVolumeOfEffect</a></td>
 <td>实时调整播放音效文件音量</td>
 </tr>
 <tr>
