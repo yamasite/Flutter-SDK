@@ -379,12 +379,8 @@ enum AudioReverbPreset {
   @JsonValue(0x00100008)
   FX_PHONOGRAPH,
 
-
   /// 虚拟立体声。虚拟立体声是指将单声道的音轨渲染出立体声的效果，使频道内所有用户听到有空间感的声音效果。为达到更好的虚拟立体声效果，
-  /// Agora 推荐在调用该方法前将 `setAudioProfile` 的 `profile` 参数设置为 `MusicHighQualityStereo`(5)。
-  /// 详见 [RtcEngine.setAudioProfile]。
-  ///
-  /// 详见 [AudioProfile.MusicHighQualityStereo]。
+  /// Agora 推荐在调用该方法前将 [RtcEngine.setAudioProfile] 的 `profile` 参数设置为 [AudioProfile.MusicHighQualityStereo](5)。
   @JsonValue(0x00200001)
   VIRTUAL_STEREO,
 }
@@ -558,9 +554,9 @@ enum CameraCaptureOutputPreference {
   @JsonValue(2)
   Preview,
 
-  /// 仅内部使用。
+  /// 允许用户设置本地摄像头采集的视频宽高。
   @JsonValue(3)
-  Unkown,
+  Manual,
 }
 
 /// 设置摄像头方向。
@@ -762,8 +758,7 @@ enum ConnectionChangedReason {
 
   /// 生成的 Token 无效。一般有以下原因：
   /// - 在控制台上启用了 App Certificate，但加入频道未使用 Token。当启用了 App Certificate，必须使用 Token。
-  /// - 在调用 `joinChannel` 加入频道时指定的 uid 与生成 Token 时传入的 uid 不一致。
-  /// 详见 [RtcEngine.joinChannel]。
+  /// - 在调用 [RtcEngine.joinChannel] 加入频道时指定的 uid 与生成 Token 时传入的 uid 不一致。
   @JsonValue(8)
   InvalidToken,
 
@@ -796,47 +791,36 @@ enum ConnectionChangedReason {
 /// 网络连接状态。
 enum ConnectionStateType {
   /// 网络连接断开。该状态表示 SDK 处于：
-  /// - 调用 `joinChannel` 加入频道前的初始化阶段。
-  ///  详见 [RtcEngine.joinChannel]。
-  /// - 调用 `leaveChannel` 后的离开频道阶段。
-  ///  详见 [RtcEngine.leaveChannel]。
+  /// - 调用 [RtcEngine.joinChannel] 加入频道前的初始化阶段。
+  /// - 调用 [RtcEngine.leaveChannel] 后的离开频道阶段。
   @JsonValue(1)
   Disconnected,
 
   /// 建立网络连接中。
-  /// - 该状态表示 SDK 在调用 `joinChannel` 后正在与指定的频道建立连接。
-  /// 详见 [RtcEngine.joinChannel]。
-  /// - 如果成功加入频道，App 会收到 `connectionStateChanged` 回调，通知当前网络状态变成 `Connected`。
-  /// 详见 [RtcEngineEventHandler.connectionStateChanged] 和 [ConnectionStateType.Connected]。
-  /// - 建立连接后，SDK 还会处理媒体初始化，一切就绪后会回调 `joinChannelSuccess`。
-  /// 详见 [RtcEngineEventHandler.joinChannelSuccess]。
+  /// - 该状态表示 SDK 在调用 [RtcEngine.joinChannel] 后正在与指定的频道建立连接。
+  /// - 如果成功加入频道，App 会收到 [RtcEngineEventHandler.connectionStateChanged] 回调，通知当前网络状态变成 [ConnectionStateType.Connected]。
+  /// - 建立连接后，SDK 还会处理媒体初始化，一切就绪后会回调 [RtcEngineEventHandler.joinChannelSuccess]。
   @JsonValue(2)
   Connecting,
 
   /// 网络已连接。该状态表示用户已经加入频道，可以在频道内发布或订阅媒体流。如果因网络断开或切换而导致 SDK 与频道的连接中断，SDK 会自动重连，此时 App 会收到：
-  /// - `connectionStateChanged` 回调，通知当前网络状态变成 `Reconnecting`。
-  /// 详见 [RtcEngineEventHandler.connectionStateChanged]。
-  /// 详见 [ConnectionStateType.Reconnecting]。
+  /// - [RtcEngineEventHandler.connectionStateChanged] 回调，通知当前网络状态变成 [ConnectionStateType.Reconnecting]。
   @JsonValue(3)
   Connected,
 
   /// 重新建立网络连接中。
   ///
   /// 该状态表示 SDK 之前曾加入过频道，但因网络等原因连接中断了，此时 SDK 会自动尝试重新接入频道。
-  /// - 如果 SDK 无法在 10 秒内重新加入频道，则 `connectionLost` 会被触发，SDK 会一直保持在 `Reconnecting` 的状态，并不断尝试重新加入频道。
-  /// 详见 [RtcEngineEventHandler.connectionLost]。
-  /// - 如果 SDK 在断开连接后，20 分钟内还是没能重新加入频道，App 会收到 `connectionStateChanged` 回调，通知当前网络状态进入 `Failed`，SDK 停止尝试重连。
-  /// 详见 [RtcEngineEventHandler.connectionStateChanged] 和 [ConnectionStateType.Failed]。
+  /// - 如果 SDK 无法在 10 秒内重新加入频道，则 [RtcEngineEventHandler.connectionLost] 会被触发，SDK 会一直保持在 `Reconnecting` 的状态，并不断尝试重新加入频道。
+  /// - 如果 SDK 在断开连接后，20 分钟内还是没能重新加入频道，App 会收到 [RtcEngineEventHandler.connectionStateChanged] 回调，通知当前网络状态进入 `Failed`，SDK 停止尝试重连。
   @JsonValue(4)
   Reconnecting,
 
   /// 网络连接失败。
   ///
-  /// 该状态表示 SDK 已不再尝试重新加入频道，用户必须要调用 `leaveChannel` 离开频道。
-  /// 详见 [RtcEngine.leaveChannel]。
+  /// 该状态表示 SDK 已不再尝试重新加入频道，用户必须要调用 [RtcEngine.leaveChannel] 离开频道。
   ///
-  /// 如果 SDK 因服务器端使用 RESTful API 禁止加入频道，则 App 会收到 `connectionStateChanged` 回调。
-  /// 详见 [RtcEngineEventHandler.connectionStateChanged]。
+  /// 如果 SDK 因服务器端使用 RESTful API 禁止加入频道，则 App 会收到 [RtcEngineEventHandler.connectionStateChanged] 回调。
   @JsonValue(5)
   Failed,
 }
@@ -875,11 +859,17 @@ enum EncryptionMode {
   @JsonValue(3)
   AES256XTS,
 
-  /// 128 位 SM4 加密，ECB 模式。
-  ///
-  ///
+  /// @nodoc 128 位 SM4 加密，ECB 模式。
   @JsonValue(4)
   SM4128ECB,
+
+  /// 128 位 AES 加密, GCM 模式。
+  @JsonValue(5)
+  AES128GCM,
+
+  /// 256 位 AES 加密, GCM 模式。
+  @JsonValue(6)
+  AES256GCM,
 }
 
 /// 错误代码。SDK 上报的错误意味着 SDK 无法自动恢复，需要 App 干预或提示用户。
@@ -1016,7 +1006,6 @@ enum ErrorCode {
   /// 一般有以下原因：
   /// - 用户在控制台上启用了 App Certificate，但仍旧在代码里仅使用了 App ID。当启用了 App Certificate，必须使用 Token。
   /// - 字段 `uid` 为生成 Token 的必须字段，用户在调用 `joinChannel` 加入频道时必须设置相同的 `uid`。
-  /// 详见 [RtcEngine.joinChannel]。
   @deprecated
   @JsonValue(110)
   InvalidToken,
@@ -1029,23 +1018,19 @@ enum ErrorCode {
   @JsonValue(112)
   ConnectionLost,
 
-  /// 调用 `sendStreamMessage` 或 `getUserInfoByUserAccount` 方法时，用户不在频道内。
-  /// 详见 [RtcEngine.sendStreamMessage] 和 [RtcEngine.getUserInfoByUserAccount]。
+  /// 调用 [RtcEngine.sendStreamMessage] 或 [RtcEngine.getUserInfoByUserAccount] 方法时，用户不在频道内。
   @JsonValue(113)
   NotInChannel,
 
-  /// 在调用 `sendStreamMessage` 时，当发送的数据长度大于 1024 个字节时，会发生该错误。
-  /// 详见 [RtcEngine.sendStreamMessage]。
+  /// 在调用 [RtcEngine.sendStreamMessage] 时，当发送的数据长度大于 1024 个字节时，会发生该错误。
   @JsonValue(114)
   SizeTooLarge,
 
-  /// 在调用 `sendStreamMessage` 时，当发送的数据码率超过限制（6 KB/s）时，会发生该错误。
-  /// 详见 [RtcEngine.sendStreamMessage]。
+  /// 在调用 [RtcEngine.sendStreamMessage] 时，当发送的数据码率超过限制（6 KB/s）时，会发生该错误。
   @JsonValue(115)
   BitrateLimit,
 
-  /// 在调用 `createDataStream` 时，如果创建的数据通道过多（超过 5 个通道），会发生该错误。
-  /// 详见 [RtcEngine.createDataStream]。
+  /// 在调用 [RtcEngine.createDataStream] 时，如果创建的数据通道过多（超过 5 个通道），会发生该错误。
   @JsonValue(116)
   TooManyDataStreams,
 
@@ -1089,8 +1074,7 @@ enum ErrorCode {
   @JsonValue(134)
   InvalidUserAccount,
 
-  /// CDN 相关错误。请调用 `removePublishStreamUrl` 方法删除原来的推流地址，然后调用 `addPublishStreamUrl` 方法重新推流到新地址。
-  /// 详见 [RtcEngine.removePublishStreamUrl] 和 [RtcEngine.addPublishStreamUrl]。
+  /// CDN 相关错误。请调用 [RtcEngine.removePublishStreamUrl] 方法删除原来的推流地址，然后调用 [RtcEngine.addPublishStreamUrl] 方法重新推流到新地址。
   @JsonValue(151)
   PublishStreamCDNError,
 
@@ -1102,8 +1086,7 @@ enum ErrorCode {
   @JsonValue(153)
   PublishStreamNotAuthorized,
 
-  /// 推流服务器出现错误。请调用 `addPublishStreamUrl` 重新推流。
-  /// 详见 [RtcEngine.addPublishStreamUrl]。
+  /// 推流服务器出现错误。请调用 [RtcEngine.addPublishStreamUrl] 重新推流。
   @JsonValue(154)
   PublishStreamInternalServerError,
 
@@ -1343,10 +1326,17 @@ enum LocalVideoStreamError {
   /// 本地视频编码失败。
   @JsonValue(5)
   EncodeFailure,
+
+  /// （仅适用于 iOS）应用处于后台。
+  @JsonValue(6)
+  CaptureInBackground,
+
+  /// (仅支持 iOS) 应用窗口处于侧拉、分屏、画中画模式。
+  @JsonValue(7)
+  CaptureMultipleForegroundApps
 }
 
 /// 本地视频状态。
-
 enum LocalVideoStreamState {
   /// 本地视频默认初始状态。
   @JsonValue(0)
@@ -1468,9 +1458,8 @@ enum RtmpStreamingErrorCode {
   @JsonValue(0)
   OK,
 
-  /// 参数无效。比如说如果你在调用 `addPublishStreamUrl` 前没有调用 `setLiveTranscoding` 设置转码参数，SDK 会返回该错误。
+  /// 参数无效。比如说如果你在调用 [RtcEngine.addPublishStreamUrl] 前没有调用 [RtcEngine.setLiveTranscoding] 设置转码参数，SDK 会返回该错误。
   /// 请检查输入参数是否正确。
-  /// 详见 [RtcEngine.setLiveTranscoding] 和 [RtcEngine.addPublishStreamUrl]。
   @JsonValue(1)
   InvalidParameters,
 
@@ -1478,13 +1467,11 @@ enum RtmpStreamingErrorCode {
   @JsonValue(2)
   EncryptedStreamNotAllowed,
 
-  /// 推流超时未成功。可调用 `addPublishStreamUrl` 重新推流。
-  /// 详见 [RtcEngine.addPublishStreamUrl]。
+  /// 推流超时未成功。可调用 [RtcEngine.addPublishStreamUrl] 重新推流。
   @JsonValue(3)
   ConnectionTimeout,
 
-  /// 推流服务器出现错误。请调用 `addPublishStreamUrl` 重新推流。
-  /// 详见 [RtcEngine.addPublishStreamUrl]。
+  /// 推流服务器出现错误。请调用 [RtcEngine.addPublishStreamUrl] 重新推流。
   @JsonValue(4)
   InternalServerError,
 
@@ -1515,13 +1502,11 @@ enum RtmpStreamingErrorCode {
 
 /// RTMP 推流状态。
 enum RtmpStreamingState {
-  /// 推流未开始或已结束。成功调用 `removePublishStreamUrl` 方法删除推流地址后，也会返回该状态。
-  /// 详见 [RtcEngine.removePublishStreamUrl]。
+  /// 推流未开始或已结束。成功调用 [RtcEngine.removePublishStreamUrl] 方法删除推流地址后，也会返回该状态。
   @JsonValue(0)
   Idle,
 
-  /// 正在连接 Agora 推流服务器和 CDN 服务器。SDK 调用 `addPublishStreamUrl` 方法后，会返回该状态。
-  /// 详见 [RtcEngine.addPublishStreamUrl]。
+  /// 正在连接 Agora 推流服务器和 CDN 服务器。SDK 调用 [RtcEngine.addPublishStreamUrl] 方法后，会返回该状态。
   @JsonValue(1)
   Connecting,
 
@@ -1532,14 +1517,12 @@ enum RtmpStreamingState {
   /// 正在恢复推流。当 CDN 出现异常，或推流短暂中断时，SDK 会自动尝试恢复推流，并返回该状态。
   /// - 如成功恢复推流，则进入状态 `Running`。详见 [RtmpStreamingState.Running]。
   /// - 如服务器出错或 60 秒内未成功恢复，则进入状态 `Failure`。详见 [RtmpStreamingState.Failure]。
-  /// - 如果觉得 60 秒太长，也可以主动调用 `removePublishStreamUrl` 和 `addPublishStreamUrl` 方法尝试重连。
-  /// 详见 [RtcEngine.removePublishStreamUrl] 和 [RtcEngine.addPublishStreamUrl]。
+  /// - 如果觉得 60 秒太长，也可以主动调用 [RtcEngine.removePublishStreamUrl] 和 [RtcEngine.addPublishStreamUrl] 方法尝试重连。
   @JsonValue(3)
   Recovering,
 
   /// 推流失败。失败后，你可以通过返回的错误码排查出错原因；
-  /// 也可以再次调用 `addPublishStreamUrl` 重新尝试推流。
-  /// 详见 [RtcEngine.addPublishStreamUrl]。
+  /// 也可以再次调用 [RtcEngine.addPublishStreamUrl] 重新尝试推流。
   @JsonValue(4)
   Failure,
 }
@@ -1552,8 +1535,7 @@ enum StreamFallbackOptions {
 
   /// 下行网络较弱时只接收视频小流。
   ///
-  /// 该选项只对 `setRemoteSubscribeFallbackOption` 方法有效，对 `setLocalPublishFallbackOption` 方法无效。
-  /// 详见 [RtcEngine.setRemoteSubscribeFallbackOption] 和 [RtcEngine.setLocalPublishFallbackOption]。
+  /// 该选项只对 [RtcEngine.setRemoteSubscribeFallbackOption] 方法有效，对 [RtcEngine.setLocalPublishFallbackOption] 方法无效。
   @JsonValue(1)
   VideoStreamLow,
 
@@ -1981,9 +1963,7 @@ enum VideoStreamType {
 }
 
 /// 警告回调表示 SDK 运行时出现了（网络或媒体相关的）警告。通常情况下，SDK 上报的警告信息 App 可以忽略，
-/// SDK 会自动恢复。比如和服务器失去连接时，SDK 可能会上报 `OpenChannelTimeout 警告，同时自动尝试重连。
-/// 详见 [WarningCode.OpenChannelTimeout]。
-
+/// SDK 会自动恢复。比如和服务器失去连接时，SDK 可能会上报 [WarningCode.OpenChannelTimeout] 警告，同时自动尝试重连。
 enum WarningCode {
   /// 指定的 view 无效，使用视频功能时需要指定 view，如果 view 尚未指定，则返回该警告。
   @JsonValue(8)
@@ -2072,8 +2052,6 @@ enum WarningCode {
 
   /// 在通话过程中，`AudioSessionCategory` 必须设置成 `AVAudioSessionCategoryPlayAndRecord`。
   /// SDK 会监控这个属性值。如果你将 `AudioSessionCategory` 设为其他值，SDK 会触发该警告，并强制设置回 `AVAudioSessionCategoryPlayAndRecord`。
-  ///
-  ///
   @JsonValue(1029)
   AdmCategoryNotPlayAndRecord,
 
@@ -2093,14 +2071,10 @@ enum WarningCode {
   /// - 禁用并重新启用音频设备
   /// - 重启 app 运行设备
   /// - 更新声卡驱动
-  ///
-  ///
   @JsonValue(1040)
   AdmNoDataReadyCallback,
 
   /// 音频设备模块：音频采集设备和播放设备不一致，可能引起回声，建议使用同一设备采集和播放音频。
-  ///
-  ///
   @JsonValue(1042)
   AdmInconsistentDevices,
 
@@ -2116,12 +2090,15 @@ enum WarningCode {
   @JsonValue(1053)
   ApmResidualEcho,
 
+  /// @nodoc
   @JsonValue(1610)
   SuperResolutionStreamOverLimitation,
 
+  /// @nodoc
   @JsonValue(1611)
   SuperResolutionUserCountOverLimitation,
 
+  /// @nodoc
   @JsonValue(1612)
   SuperResolutionDeviceNotSupported,
 }
@@ -2173,8 +2150,6 @@ enum VideoCodecType {
 }
 
 /// 发布状态。
-///
-///
 enum StreamPublishState {
   /// 加入频道后的初始发布状态。
   @JsonValue(0)
@@ -2198,8 +2173,6 @@ enum StreamPublishState {
 }
 
 /// 订阅状态。
-///
-///
 enum StreamSubscribeState {
   /// 加入频道后的初始订阅状态。
   @JsonValue(0)
@@ -2456,4 +2429,140 @@ enum AudienceLatencyLevelType {
   /// 2: （默认）超低延时。
   @JsonValue(2)
   UltraLowLatency,
+}
+
+///  Agora SDK 的日志输出等级。
+enum LogLevel {
+  /// 不输出任何日志。
+  @JsonValue(0x0000)
+  None,
+
+  /// (Default) （默认）输出 `Fatal`、`Error`、`Warn`、`Info` 级别的日志。
+  /// 我们推荐你将日志级别设为该等级。
+  @JsonValue(0x0001)
+  Info,
+
+  /// 输出 `Fatal`、`Error`、`Warn` 级别的日志。
+  @JsonValue(0x0002)
+  Warn,
+
+  /// 输出 `Fatal` 和 `Error` 级别的日志。
+  @JsonValue(0x0004)
+  Error,
+
+  /// 输出 `Fatal` 级别的日志。
+  @JsonValue(0x0008)
+  Fatal,
+}
+
+/// 本地采集的画质亮度级别。
+enum CaptureBrightnessLevelType {
+  ///  SDK 未检测出本地采集的画质亮度级别。
+  /// 请等待几秒，通过下一次回调的 [CaptureBrightnessLevelType] 获取亮度级别。
+  @JsonValue(-1)
+  Invalid,
+  /// 本地采集的画质亮度正常。
+  @JsonValue(0)
+  Normal,
+  /// 本地采集的画质亮度偏亮。
+  @JsonValue(1)
+  Bright,
+  /// 本地采集的画质亮度偏暗。
+  @JsonValue(2)
+  Dark,
+}
+
+/// @nodoc The reason why the super-resolution algorithm is not successfully enabled.
+enum SuperResolutionStateReason {
+  /// 0: The super-resolution algorithm is successfully enabled.
+  @JsonValue(0)
+  Success,
+
+  /// 1: The origin resolution of the remote video is beyond the range where the super-resolution algorithm can be applied.
+  @JsonValue(1)
+  StreamOverLimitation,
+
+  /// 2: Another user is already using the super-resolution algorithm.
+  @JsonValue(2)
+  UserCountOverLimitation,
+
+  /// 3: The device does not support the super-resolution algorithm.
+  @JsonValue(3)
+  DeviceNotSupported,
+}
+
+/// @nodoc
+enum UploadErrorReason {
+  @JsonValue(0)
+  Success,
+
+  @JsonValue(1)
+  NetError,
+
+  @JsonValue(2)
+  ServerError,
+}
+
+/// 云代理类型。
+enum CloudProxyType {
+  /// 不使用云代理。
+  @JsonValue(0)
+  None,
+
+  /// UDP 协议的云代理。
+  @JsonValue(1)
+  UDP,
+
+  /// @nodoc TCP 协议的云代理。
+  @JsonValue(2)
+  TCP,
+}
+
+/// 接收远端音频时，本地用户的主观体验质量。
+enum ExperienceQualityType {
+  /// 主观体验质量较好。
+  @JsonValue(0)
+  Good,
+
+  /// 主观体验质量较差。
+  @JsonValue(1)
+  Bad,
+}
+
+/// 接收远端音频时，本地用户主观体验质量较差的原因。
+enum ExperiencePoorReason {
+  /// 无原因，说明主观体验质量较好。
+  @JsonValue(0)
+  None,
+  /// 远端用户的网络较差。
+  @JsonValue(1)
+  RemoteNetworkQualityPoor,
+  /// 本地用户的网络较差。
+  @JsonValue(2)
+  LocalNetworkQualityPoor,
+  /// 本地用户的 Wi-Fi 或者移动数据网络信号弱。
+  @JsonValue(4)
+  WirelessSignalPoor,
+  /// 本地用户同时开启 Wi-Fi 和蓝牙，二者信号互相干扰，导致音频传输质量下降。
+  @JsonValue(8)
+  WifiBluetoothCoexist,
+}
+
+/// 预设的变声效果选项。
+enum VoiceConversionPreset {
+  /// 原声，即关闭变声效果。
+  @JsonValue(0)
+  Off,
+  /// 中性。为避免音频失真，请确保仅对女声设置该效果。
+  @JsonValue(50397440)
+  Neutral,
+  /// 甜美。为避免音频失真，请确保仅对女声设置该效果。
+  @JsonValue(50397696)
+  Sweet,
+  /// 稳重。为避免音频失真，请确保仅对男声设置该效果。
+  @JsonValue(50397952)
+  Solid,
+  /// 低沉。为避免音频失真，请确保仅对男声设置该效果。
+  @JsonValue(50398208)
+  Bass,
 }

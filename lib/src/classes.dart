@@ -1,3 +1,5 @@
+import 'dart:ui' show Color;
+
 import 'package:json_annotation/json_annotation.dart';
 
 import 'enums.dart';
@@ -28,10 +30,10 @@ class UserInfo {
 @JsonSerializable(explicitToJson: true)
 class VideoDimensions {
   /// 视频帧在横轴上的像素。
-  final int width;
+  int width;
 
   /// 视频帧在纵轴上的像素。
-  final int height;
+  int height;
 
   /// Constructs a [VideoDimensions]
   VideoDimensions(this.width, this.height);
@@ -150,7 +152,8 @@ class VideoEncoderConfiguration {
   VideoMirrorMode mirrorMode;
 
   /// Constructs a [VideoEncoderConfiguration]
-  VideoEncoderConfiguration({this.dimensions,
+  VideoEncoderConfiguration({
+    this.dimensions,
     this.frameRate,
     this.minFrameRate,
     this.bitrate,
@@ -187,7 +190,8 @@ class BeautyOptions {
   double rednessLevel;
 
   /// Constructs a [BeautyOptions]
-  BeautyOptions({this.lighteningContrastLevel,
+  BeautyOptions(
+    {this.lighteningContrastLevel,
     this.lighteningLevel,
     this.smoothnessLevel,
     this.rednessLevel});
@@ -204,19 +208,19 @@ class BeautyOptions {
 @JsonSerializable(explicitToJson: true)
 class AgoraImage {
   /// 直播视频上图片的 HTTP/HTTPS 地址，字符长度不得超过 1024 字节。
-  final String url;
+  String url;
 
   /// 图片左上角在视频帧上的横轴坐标。
-  final int x;
+  int x;
 
   /// 图片左上角在视频帧上的纵轴坐标。
-  final int y;
+  int y;
 
   /// 图片在视频帧上的宽度。
-  final int width;
+  int width;
 
   /// 图片在视频帧上的高度。
-  final int height;
+  int height;
 
   /// Constructs a [AgoraImage]
   AgoraImage(this.url, this.x, this.y, this.width, this.height);
@@ -229,25 +233,24 @@ class AgoraImage {
   Map<String, dynamic> toJson() => _$AgoraImageToJson(this);
 }
 
-class JsonSerializable {
-}
-
 /// TranscodingUser 类用于管理参与旁路直播的音视频转码合图的用户。最多支持 17 人同时参与转码合图。
 @JsonSerializable(explicitToJson: true)
 class TranscodingUser {
   /// 旁路主播的用户 ID。
-  final int uid;
+  int uid;
 
   /// 屏幕里该区域相对左上角的横坐标绝对值 (pixel)。取值范围为转码配置参数定义中设置的 [0,width]。
-  final int x;
+  int x;
 
   /// 屏幕里该区域相对左上角的纵坐标绝对值 (pixel)。取值范围为转码配置参数定义中设置的 [0,height]。
-  final int y;
+  int y;
 
   /// 视频帧宽度 (pixel)。 默认值为 360。
+  @JsonKey(includeIfNull: false)
   int width;
 
   /// 视频帧高度 (pixel)。默认值为 640。
+  @JsonKey(includeIfNull: false)
   int height;
 
   /// 视频帧图层编号。取值范围为 [0,100] 中的整型。支持将 `zOrder` 设置为 `0`。
@@ -256,6 +259,7 @@ class TranscodingUser {
   ///
   /// **Note**
   /// 如果取值小于 0 或大于 100，会返回错误 [ErrorCode.InvalidArgument]。
+  @JsonKey(includeIfNull: false)
   int zOrder;
 
   /// 直播视频上用户视频的透明度。取值范围为 [0.0,100.0]:
@@ -269,12 +273,14 @@ class TranscodingUser {
   ///
   /// **Note**
   /// 选项不为 0 时，需要特殊的播放器支持。
+  @JsonKey(includeIfNull: false)
   AudioChannel audioChannel;
 
   /// Constructs a [TranscodingUser]
-  TranscodingUser(this.uid,
-      this.x,
-      this.y, {
+  TranscodingUser(
+        this.uid,
+        this.x,
+        this.y, {
         this.width,
         this.height,
         this.zOrder,
@@ -288,28 +294,6 @@ class TranscodingUser {
 
   // @nodoc ignore: public_member_api_docs
   Map<String, dynamic> toJson() => _$TranscodingUserToJson(this);
-}
-
-/// 背景色，格式为 RGB 定义下的 Hex 值，不要带 # 号，如 0xFFB6C1 表示浅粉色。默认0x000000，黑色。
-@JsonSerializable(explicitToJson: true)
-class Color {
-  /// 红。
-  final int red;
-
-  /// 绿。
-  final int green;
-
-  /// 蓝。
-  final int blue;
-
-  /// Constructs a [Color]
-  Color(this.red, this.green, this.blue);
-
-  // @nodoc ignore: public_member_api_docs
-  factory Color.fromJson(Map<String, dynamic> json) => _$ColorFromJson(json);
-
-  // @nodoc ignore: public_member_api_docs
-  Map<String, dynamic> toJson() => _$ColorToJson(this);
 }
 
 /// 管理 CDN 直播推流转码的接口。
@@ -384,7 +368,8 @@ class LiveTranscoding {
 
   /// 背景色，格式为 RGB 定义下的 Hex 值，不要带 # 号，如 0xFFB6C1 表示浅粉色。默认0x000000，黑色。// RN 优化
   /// 详见 [Color]。
-  @JsonKey(includeIfNull: false)
+  @JsonKey(
+      includeIfNull: false, fromJson: _$ColorFromJson, toJson: _$ColorToJson)
   Color backgroundColor;
 
   /// 预留参数。 用户自定义的发送到旁路推流客户端的信息，用于填充 H264/H265 视频中 SEI 帧内容。长度限制：4096字节。
@@ -392,10 +377,11 @@ class LiveTranscoding {
   String userConfigExtraInfo;
 
   /// 用于管理参与直播推流的视频转码合图的用户。最多支持 17 人同时参与转码合图。
-  final List<TranscodingUser> transcodingUsers;
+  List<TranscodingUser> transcodingUsers;
 
   /// Constructs a [LiveTranscoding]
-  LiveTranscoding(this.transcodingUsers, {
+  LiveTranscoding(
+    this.transcodingUsers, {
     this.width,
     this.height,
     this.videoBitrate,
@@ -419,6 +405,18 @@ class LiveTranscoding {
 
   // @nodoc ignore: public_member_api_docs
   Map<String, dynamic> toJson() => _$LiveTranscodingToJson(this);
+
+  static Color _$ColorFromJson(Map<String, dynamic> json) {
+    return Color.fromRGBO(
+        json['red'] as int, json['green'] as int, json['blue'] as int, 1.0);
+  }
+
+  static Map<String, dynamic> _$ColorToJson(Color instance) =>
+      <String, dynamic>{
+        'red': instance.red,
+        'green': instance.green,
+        'blue': instance.blue,
+      };
 }
 
 /// `ChannelMediaInfo` 类。
@@ -433,7 +431,7 @@ class ChannelMediaInfo {
   String token;
 
   /// 用户 ID。
-  final int uid;
+  int uid;
 
   /// Constructs a [ChannelMediaInfo]
   ChannelMediaInfo(this.uid, {this.channelName, this.token});
@@ -455,7 +453,7 @@ class ChannelMediaRelayConfiguration {
   /// - `token`：能加入源频道的 Token。由你在 `srcInfo` 中设置的 `channelName` 和 `uid` 生成。
   ///   - 如未启用 App Certificate，可直接将该参数设为默认值 NULL，表示 SDK 填充 App ID。
   ///   - 如已启用 App Certificate，则务必填入使用 `channelName` 和 `uid` 生成的 Token，且其中的 `uid` 必须为 0。
-  final ChannelMediaInfo srcInfo;
+  ChannelMediaInfo srcInfo;
 
   /// 目标频道信息： [ChannelMediaInfo]，包含如下成员：
   ///- `channelName`：目标频道的频道名。
@@ -463,7 +461,7 @@ class ChannelMediaRelayConfiguration {
   ///  - `token`：能加入目标频道的 token。由你在 `destInfo` 中设置的 `channelName` 和 `uid` 生成。
   ///    - 如未启用 App Certificate，可直接将该参数设为默认值 NULL，表示 SDK 填充 App ID。
   ///    - 如已启用 App Certificate，则务必填入使用 `channelName` 和 `uid` 生成的 token，且其中的 `uid` 必须为 0。
-  final List<ChannelMediaInfo> destInfos;
+  List<ChannelMediaInfo> destInfos;
 
   /// Constructs a [ChannelMediaRelayConfiguration]
   ChannelMediaRelayConfiguration(this.srcInfo, this.destInfos);
@@ -480,17 +478,17 @@ class ChannelMediaRelayConfiguration {
 @JsonSerializable(explicitToJson: true)
 class LastmileProbeConfig {
   /// 是否探测上行网络。有些用户，如直播频道中的普通观众，不需要进行网络探测。
-  final bool probeUplink;
+  bool probeUplink;
 
   /// 是否探测下行网络。
-  final bool probeDownlink;
+  bool probeDownlink;
 
   /// 用户期望的最高发送码率，单位为 bps，范围为 [100000,5000000]。
   /// Agora 推荐参考 [RtcEngine.setVideoEncoderConfiguration] 中的码率值设置该参数的值。
-  final int expectedUplinkBitrate;
+  int expectedUplinkBitrate;
 
   /// 用户期望的最高接收码率，单位为 bps，范围为 [100000,5000000]。
-  final int expectedDownlinkBitrate;
+  int expectedDownlinkBitrate;
 
   /// Constructs a [LastmileProbeConfig]
   LastmileProbeConfig(this.probeUplink, this.probeDownlink,
@@ -508,16 +506,16 @@ class LastmileProbeConfig {
 @JsonSerializable(explicitToJson: true)
 class Rectangle {
   /// 左上角的横向偏移。
-  final int x;
+  int x;
 
   /// 左上角的纵向偏移
-  final int y;
+  int y;
 
   /// 水印图片的宽（px）。
-  final int width;
+  int width;
 
   /// 水印图片的高（px)。
-  final int height;
+  int height;
 
   /// Constructs a [Rectangle]
   Rectangle(this.x, this.y, this.width, this.height);
@@ -541,11 +539,11 @@ class WatermarkOptions {
 
   /// 视频编码模式为横屏时的水印坐标。
   /// 详见 [Rectangle]。
-  final Rectangle positionInLandscapeMode;
+  Rectangle positionInLandscapeMode;
 
   /// 视频编码模式为竖屏时的水印坐标。
   /// 详见 [Rectangle]。
-  final Rectangle positionInPortraitMode;
+  Rectangle positionInPortraitMode;
 
   /// Constructs a [WatermarkOptions]
   WatermarkOptions(this.positionInLandscapeMode, this.positionInPortraitMode,
@@ -624,14 +622,23 @@ class LiveInjectStreamConfig {
 class CameraCapturerConfiguration {
   /// 摄像头采集偏好。
   /// 详见 [CameraCaptureOutputPreference]。
-  final CameraCaptureOutputPreference preference;
+  CameraCaptureOutputPreference preference;
+
+  /// 本地采集的视频宽度 (px)。如果你需要自定义本地采集的视频宽度，请先将 [preference] 设为 `Manual(3)` ，再通过 [captureWidth] 设置采集的视频宽度。
+  @JsonKey(includeIfNull: false)
+  int captureWidth;
+
+  /// 本地采集的视频高度 (px)。如果你需要自定义本地采集的视频高度，请先将 [preference] 设为 `Manual(3)` ，再通过 [captureHeight] 设置采集的视频高度。
+  @JsonKey(includeIfNull: false)
+  int captureHeight;
 
   /// 摄像头方向。
   /// 详见 [CameraDirection]。
-  final CameraDirection cameraDirection;
+  CameraDirection cameraDirection;
 
   /// Constructs a [CameraCapturerConfiguration]
-  CameraCapturerConfiguration(this.preference, this.cameraDirection);
+  CameraCapturerConfiguration(this.preference, this.cameraDirection,
+      {this.captureWidth, this.captureHeight});
 
   // @nodoc ignore: public_member_api_docs
   factory CameraCapturerConfiguration.fromJson(Map<String, dynamic> json) =>
@@ -650,7 +657,7 @@ class ChannelMediaOptions {
   ///
   /// 该成员功能与 [RtcEngine.muteAllRemoteAudioStreams] 相同。
   /// 加入频道后，你可以通过 `muteAllRemoteAudioStreams` 方法重新设置是否订阅频道内的远端音频流。
-  final bool autoSubscribeAudio;
+  bool autoSubscribeAudio;
 
   /// 设置加入频道是是否自动订阅视频流：
   /// - `true`：（默认）订阅。
@@ -658,7 +665,7 @@ class ChannelMediaOptions {
   ///
   /// 该成员功能与 [RtcEngine.muteAllRemoteVideoStreams] 相同。
   /// 加入频道后，你可以通过 `muteAllRemoteVideoStreams` 方法重新设置是否订阅频道内的远端视频流。
-  final bool autoSubscribeVideo;
+  bool autoSubscribeVideo;
 
   /// Constructs a [ChannelMediaOptions]
   ChannelMediaOptions(this.autoSubscribeAudio, this.autoSubscribeVideo);
@@ -677,14 +684,14 @@ class ChannelMediaOptions {
 @JsonSerializable(explicitToJson: true)
 class EncryptionConfig {
   /// 内置加密模式，默认为 `AES128XTS` 加密模式。详见 [EncryptionMode]。
-  final EncryptionMode encryptionMode;
+  EncryptionMode encryptionMode;
 
   /// 内置加密密钥，字符串类型。
   ///
   /// **Note**
   ///
   /// 如果未指定该参数或将该参数设置为空，则无法启用内置加密，且 SDK 会返回错误码 `InvalidArgument`。
-  final String encryptionKey;
+  String encryptionKey;
 
   /// Constructs a [EncryptionConfig]
   EncryptionConfig(this.encryptionMode, this.encryptionKey);
@@ -913,8 +920,6 @@ class LocalAudioStats {
   int sentBitrate;
 
   /// 网络对抗前，本地客户端到边缘服务器的丢包率 (%)。
-  ///
-  ///
   int txPacketLossRate;
 
   /// Constructs a [LocalAudioStats]
@@ -970,13 +975,9 @@ class LocalVideoStats {
   VideoCodecType codecType;
 
   /// 弱网对抗前本地客户端到 Agora 边缘服务器的视频丢包率 (%)。
-  ///
-  ///
   int txPacketLossRate;
 
   /// 本地视频采集帧率 (fps)。
-  ///
-  ///
   int captureFrameRate;
 
 
@@ -1035,10 +1036,54 @@ class RemoteAudioStats {
   int totalActiveTime;
 
   /// 远端音频流的累计发布时长（毫秒）。
-  ///
-  ///
   int publishDuration;
 
+  /// 接收远端音频时，本地用户的主观体验质量。详见 [ExperienceQuality]。
+  ExperienceQualityType qoeQuality;
+
+  /// 接收远端音频时，本地用户的主观体验质量较差的原因。详见 [ExperiencePoorReason]。
+  ExperiencePoorReason qualityChangedReason;
+
+  /// 统计周期内，Agora 实时音频 MOS（平均主观意见分）评估方法对接收到的远端音频流的质量评分。
+  /// 返回值范围为 [0,500]。返回值除以 100 即可得到 MOS 分数，范围为 [0,5] 分，分数越高，音频质量越好。
+  ///
+  /// Agora 实时音频 MOS 评分对应的主观音质感受如下:
+  ///
+  /// <table border="1">
+  /// <thead>
+  /// <tr>
+  ///   <th>MOS 分数</th>
+  ///   <th>音质感受</th>
+  /// </tr>
+  /// </thead>
+  /// <tbody>
+  /// <tr>
+  /// <td>大于 4 分</td>
+  /// <td>- 音频质量佳，清晰流畅。</td>
+  /// </tr>
+  /// <tr>
+  /// <td>3.5 - 4 分</td>
+  /// <td>音频质量较好，偶有音质损伤，但依然清晰。</td>
+  /// </tr>
+  /// <tr>
+  /// <td>3 - 3.5 分</td>
+  /// <td>音频质量一般，偶有卡顿，不是非常流畅，需要一点注意力才能听清。</td>
+  /// </tr>
+  /// <tr>
+  /// <td>2.5 - 3 分</td>
+  /// <td>音频质量较差，卡顿频繁，需要集中精力才能听清。</td>
+  /// </tr>
+  /// <tr>
+  /// <td>2 - 2.5 分</td>
+  /// <td>音频质量很差，偶有杂音，部分语义丢失，难以交流。</td>
+  /// </tr>
+  /// <tr>
+  /// <td>小于 2 分</td>
+  /// <td>音频质量非常差，杂音频现，大量语义丢失，完全无法交流。</td>
+  /// </tr>
+  /// </tbody>
+  /// </table>
+  int mosValue;
 
   /// Constructs a [RemoteAudioStats]
   RemoteAudioStats();
@@ -1098,8 +1143,6 @@ class RemoteVideoStats {
   int totalActiveTime;
 
   /// 远端视频流的累计发布时长（毫秒）。
-  ///
-  ///
   int publishDuration;
 
   /// Constructs a [RemoteVideoStats]
@@ -1149,7 +1192,7 @@ class ClientRoleOptions {
   AudienceLatencyLevelType audienceLatencyLevel;
 
   /// Constructs a [ClientRoleOptions]
-  ClientRoleOptions();
+  ClientRoleOptions(this.audienceLatencyLevel);
 
   /// @nodoc
   factory ClientRoleOptions.fromJson(Map<String, dynamic> json) =>
@@ -1157,4 +1200,112 @@ class ClientRoleOptions {
 
   /// @nodoc
   Map<String, dynamic> toJson() => _$ClientRoleOptionsToJson(this);
+}
+
+///  设置 Agora SDK 输出的日志文件。
+@JsonSerializable(explicitToJson: true)
+class LogConfig {
+  /// 日志文件的绝对路径。日志文件的默认地址是 `/storage/emulated/0/Android/data/<package name>/files/agorasdk.log` (Android)； `App Sandbox/Library/caches/agorasdk.log` (iOS).
+  ///
+  /// App 必须保证你指定的目录存在而且可写。你可以使用此参数重命名日志文件。
+  @JsonKey(includeIfNull: false)
+  String filePath;
+
+  /// 单个日志文件的大小，单位为 KB。
+  ///
+  /// 默认值为 1024 KB。如果你将 `fileSize` 设为 1024 KB，SDK 会最多输出总计 5 MB 的日志文件。 如果你将 `fileSize` 设为小于 1024 KB，设置不生效，单个日志文件最大仍为 1024 KB。
+  @JsonKey(includeIfNull: false)
+  int fileSize;
+
+  /// 设置 Agora SDK 的日志输出等级。详见 [LogLevel]。
+  ///
+  /// 例如，如果你选择 `Warn` 级别，就可以看到在 `Fatal`、`Error` 和 `Warn` 级别的所有日志信息。
+  @JsonKey(includeIfNull: false)
+  LogLevel level;
+
+  /// Constructs a [LogConfig]
+  LogConfig({this.filePath, this.fileSize, this.level});
+
+  /// @nodoc
+  factory LogConfig.fromJson(Map<String, dynamic> json) =>
+      _$LogConfigFromJson(json);
+
+  /// @nodoc
+  Map<String, dynamic> toJson() => _$LogConfigToJson(this);
+}
+
+/// 数据流设置。
+///
+/// 下表展示了 [syncWithAudio] 参数和 [ordered] 参数的关系:
+///
+/// | [syncWithAudio] | [ordered] | SDK 行为                                                                                                                                                                                                                                                                                                                                                                                |
+/// |---------------|---------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+/// | `false`       | `false`    | 接收端接收到数据包后，SDK 立刻触发 `streamMessage` 回调。                                                                                                                                                                                                                                                                            |
+/// | `true`        | `false`    | <ul><li>如果数据包的延迟在音频延迟的范围内，SDK 会在播放音频的同时触发与该音频包同步的 <code>streamMessage</code> 回调。</li><li>如果某数据包的延迟超出了音频延迟，SDK 会在接收到该数据包时立刻触发 <code>streamMessage</code> 回调；此情况会造成音频包和数据包的不同步。</li></ul> |
+/// | `false`       | `true`     | <ul><li>如果数据包的延迟在 5 秒以内，SDK 会修正数据包的乱序问题。</li><li>如果数据包的延迟超出 5 秒，SDK 会丢弃该数据包。</li></ul>                                                                                                                                                                                                   |
+/// | `true`        | `true`     | <ul><li>如果数据包的延迟在音频延迟的范围内，SDK 会修正数据包的乱序问题。</li><li>如果数据包的延迟超出音频延迟，SDK 会丢弃该数据包。</li></ul>                                                                 |
+@JsonSerializable(explicitToJson: true)
+class DataStreamConfig {
+  /// 是否与本地发送的音频流同步。
+  ///
+  /// - `true`: 数据流与音频流同步。
+  /// - `false`: 数据流与音频流不同步。
+  ///
+  /// 设置为与音频同步后，如果数据包的延迟在音频延迟的范围内，SDK 会在播放音频的同时 触发与该音频包同步的 `streamMessage` 回调。
+  ///  当需要数据包立刻到达接收端时，不能将该参数设置为 `true`。Agora 建议你仅在需要实现特殊场景，例如歌词同步时，设置为与音频同步。
+  @JsonKey(includeIfNull: false)
+  bool syncWithAudio;
+
+  /// 是否保证接收到的数据按发送的顺序排列。
+  ///
+  /// - `true`: 保证 SDK 按照发送方发送的顺序输出数据包。
+  /// - `false`: 不保证 SDK 按照发送方发送的顺序输出数据包。
+  ///
+  /// 当需要数据包立刻到达接收端时，不能将该参数设置为 `true`。
+  @JsonKey(includeIfNull: false)
+  bool ordered;
+
+  /// Constructs a [DataStreamConfig]
+  DataStreamConfig({this.syncWithAudio, this.ordered});
+
+  /// @nodoc
+  factory DataStreamConfig.fromJson(Map<String, dynamic> json) =>
+      _$DataStreamConfigFromJson(json);
+
+  /// @nodoc
+  Map<String, dynamic> toJson() => _$DataStreamConfigToJson(this);
+}
+
+/// RtcEngineConfig 实例的配置。
+@JsonSerializable(explicitToJson: true)
+class RtcEngineConfig {
+  /// Agora 为 app 开发者签发的 App ID，详见[获取 App ID](https://docs.agora.io/cn/Agora%20Platform/token#get-an-app-id)。
+  /// 使用同一个 App ID 的 app 才能进入同一个频道进行通话或直播。
+  /// 一个 App ID 只能用于创建一个 `RtcEngine` 实例。如需更换 App ID，必须先调用 `destroy` 销毁当前 `RtcEngine` 实例，并在 destroy 成功返回后，
+  /// 再调用 `createWithConfig` 重新创建 `RtcEngine`。
+  String appId;
+
+  /// 服务器的访问区域。该功能为高级设置，适用于有访问安全限制的场景。
+  ///
+  /// 支持的区域详见 [AreaCode]。指定访问区域后，Agora SDK 会连接指定区域内的 Agora 服务器。
+  @JsonKey(includeIfNull: false)
+  AreaCode areaCode;
+
+  /// 设置 Agora SDK 输出的日志文件。详见 [LogConfig]。
+  ///
+  /// 默认情况下，SDK 会生成 `agorasdk.log`、`agorasdk_1.log`、`agorasdk_2.log`、 `agorasdk_3.log`、`agorasdk_4.log` 这 5 个日志文件。
+  /// 每个文件的默认大小为 1024 KB。 日志文件为 UTF-8 编码。
+  /// 最新的日志永远写在 `agorasdk.log` 中。`agorasdk.log` 写满后， SDK 会从 1-4 中删除修改时间最早的一个文件，然后将 `agorasdk.log` 重命名为该文件，并建立 新的 `agorasdk.log` 写入最新的日志。
+  @JsonKey(includeIfNull: false)
+  LogConfig logConfig;
+
+  /// Constructs a [RtcEngineConfig]
+  RtcEngineConfig(this.appId, {this.areaCode, this.logConfig});
+
+  /// @nodoc
+  factory RtcEngineConfig.fromJson(Map<String, dynamic> json) =>
+      _$RtcEngineConfigFromJson(json);
+
+  /// @nodoc
+  Map<String, dynamic> toJson() => _$RtcEngineConfigToJson(this);
 }

@@ -90,6 +90,10 @@ typedef StreamSubscribeStateCallback = void Function(
     int elapseSinceLastState);
 typedef RtmpStreamingEventCallback = void Function(
     String url, RtmpStreamingEvent eventCode);
+typedef UserSuperResolutionEnabledCallback = void Function(
+    int uid, bool enabled, SuperResolutionStateReason reason);
+typedef UploadLogResultCallback = void Function(
+    String requestId, bool success, UploadErrorReason reason);
 
 /// 主回调事件。
 ///
@@ -142,9 +146,11 @@ class RtcEngineEventHandler {
   ///
   /// 有时候由于网络原因，客户端可能会和服务器失去连接，SDK 会进行自动重连，自动重连成功后触发此回调方法。
   ///
-  /// `RtcStatsCallback` 包含如下参数：
-  /// - [RtcStats] `stats`：通话相关的统计信息。
-  RtcStatsCallback rejoinChannelSuccess;
+  /// `UidWithElapsedAndChannelCallback` 包含如下参数：
+  /// - [String] `channel`：频道名。
+  /// - [int] `uid`：用户 ID。
+  /// - [int] `elapsed`：从 [RtcEngine.joinChannel] 开始到发生此事件过去的时间（毫秒)。
+  UidWithElapsedAndChannelCallback rejoinChannelSuccess;
 
   /// 离开频道回调。
   ///
@@ -1116,7 +1122,9 @@ class RtcEngineEventHandler {
       this.videoPublishStateChanged,
       this.audioSubscribeStateChanged,
       this.videoSubscribeStateChanged,
-      this.rtmpStreamingEvent});
+      this.rtmpStreamingEvent,
+      this.userSuperResolutionEnabled,
+      this.uploadLogResult});
 
   // ignore: public_member_api_docs
   void process(String methodName, List<dynamic> data) {
@@ -1425,6 +1433,14 @@ class RtcEngineEventHandler {
         break;
       case 'RtmpStreamingEvent':
         rtmpStreamingEvent?.call(data[0], data[1]);
+        break;
+      case 'UserSuperResolutionEnabled':
+        userSuperResolutionEnabled?.call(data[0], data[1],
+            SuperResolutionStateReasonConverter.fromValue(data[2]).e);
+        break;
+      case 'UploadLogResult':
+        uploadLogResult?.call(
+            data[0], data[1], UploadErrorReasonConverter.fromValue(data[2]).e);
         break;
     }
   }
@@ -1793,6 +1809,9 @@ class RtcChannelEventHandler {
   /// - [RtmpStreamingEvent] `eventCode` RTMP 推流事件码。
   RtmpStreamingEventCallback rtmpStreamingEvent;
 
+  ///  @nodoc
+  UserSuperResolutionEnabledCallback userSuperResolutionEnabled;
+
   /// Constructs a [RtcChannelEventHandler]
      RtcChannelEventHandler(
       {this.warning,
@@ -1829,7 +1848,8 @@ class RtcChannelEventHandler {
       this.videoPublishStateChanged,
       this.audioSubscribeStateChanged,
       this.videoSubscribeStateChanged,
-      this.rtmpStreamingEvent});
+      this.rtmpStreamingEvent,
+      this.userSuperResolutionEnabled});
 
   // ignore: public_member_api_docs
   void process(String methodName, List<dynamic> data) {
@@ -1984,6 +2004,10 @@ class RtcChannelEventHandler {
         break;
       case 'RtmpStreamingEvent':
         rtmpStreamingEvent?.call(data[0], data[1]);
+        break;
+      case 'UserSuperResolutionEnabled':
+        userSuperResolutionEnabled?.call(data[0], data[1],
+            SuperResolutionStateReasonConverter.fromValue(data[2]).e);
         break;
     }
   }

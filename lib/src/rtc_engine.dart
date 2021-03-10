@@ -31,11 +31,47 @@ class RtcEngine with RtcEngineInterface {
     });
   }
 
-  Future<T> _invokeMethod<T>(String method, [Map<String, dynamic> arguments]) {
+  static Future<T> _invokeMethod<T>(String method,
+      [Map<String, dynamic> arguments]) {
     return _methodChannel.invokeMethod(method, arguments);
   }
 
+  ///  Retrieves the SDK version.
+  ///
+  /// Since v3.3.1
+  ///
+  /// This method returns the string of the version number.
+  ///
+  /// **Note**
+  ///
+  /// You can call this method either before or after joining a channel.
+  ///
+  /// **Returns**
+  ///
+  /// The version of the current SDK in the string format. For example, 2.3.0.
+  static Future<String> getSdkVersion() {
+    return _invokeMethod('getSdkVersion');
+  }
+
+  /// Retrieves the description of a warning or error code.
+  ///
+  /// Since v3.3.1
+  ///
+  /// **Parameter** [code] The warning or error code that the `Warning` or `Error` callback returns.
+  ///
+  /// **Returns**
+  ///
+  /// [WarningCode] or [ErrorCode].
+  static Future<String> getErrorDescription(int error) {
+    return _invokeMethod('getErrorDescription', {'error': error});
+  }
+
+
   /// 创建 [RtcEngine] 实例。
+  ///
+  /// **废弃**
+  ///
+  /// 此方法自 v3.3.1 已废弃。
   ///
   /// [RtcEngine] 类的所有接口函数，如无特殊说明，都是异步调用，对接口的调用建议在同一个线程进行。
   ///
@@ -52,11 +88,16 @@ class RtcEngine with RtcEngineInterface {
   /// - 方法调用成功，则返回一个 [RtcEngine] 对象。
   /// - 方法调用失败，则返回错误码。
   ///   - [ErrorCode.InvalidAppId]
-  static Future<RtcEngine> create(String appId) async {
-    return createWithAreaCode(appId, AreaCode.GLOB);
+  @deprecated
+  static Future<RtcEngine> create(String appId) {
+    return createWithConfig(RtcEngineConfig(appId));
   }
 
   /// 创建 [RtcEngine] 实例。
+  ///
+  /// **废弃**
+  ///
+  /// 此方法自 v3.3.1 已废弃。
   ///
   /// [RtcEngine] 类的所有接口函数，如无特殊说明，都是异步调用，对接口的调用建议在同一个线程进行。
   ///
@@ -80,14 +121,32 @@ class RtcEngine with RtcEngineInterface {
   /// - 方法调用成功，则返回一个 [RtcEngine] 对象。
   /// - 方法调用失败，则返回错误码。
   ///   - [ErrorCode.InvalidAppId]
+  @deprecated
   static Future<RtcEngine> createWithAreaCode(
       String appId, AreaCode areaCode) async {
+    return createWithConfig(RtcEngineConfig(appId, areaCode: areaCode));
+  }
+
+  /// 创建 [RtcEngine] 实例。
+  ///
+  /// 自从 v3.3.1
+  ///
+  /// [RtcEngine] 类的所有接口函数，如无特殊说明，都是异步调用，对接口的调用建议在同一个线程进行。
+  ///
+  /// **Note**
+  /// - 请确保在调用其他 API 前先调用该方法创建并初始化 [RtcEngine]。
+  /// - 调用该方法和 [create] 均能创建 [RtcEngine] 实例。
+  /// - 目前 Agora Flutter SDK 只支持每个 app 创建一个 [RtcEngine] 实例。
+  ///
+  /// **Parameter**[config] [RtcEngine] 实例配置。详见 [RtcEngineConfig]。
+  ///
+  /// **Returns**
+  /// - 方法调用成功，则返回一个 [RtcEngine] 对象。
+  /// - 方法调用失败，则返回错误码。
+  ///   - [ErrorCode.InvalidAppId]
+  static Future<RtcEngine> createWithConfig(RtcEngineConfig config) async {
     if (_engine != null) return _engine;
-    await _methodChannel.invokeMethod('create', {
-      'appId': appId,
-      'areaCode': AreaCodeConverter(areaCode).value(),
-      'appType': 4
-    });
+    await _invokeMethod('create', {'config': config.toJson(), 'appType': 4});
     _engine = RtcEngine._();
     return _engine;
   }
@@ -125,19 +184,25 @@ class RtcEngine with RtcEngineInterface {
 
   @override
   Future<void> joinChannel(
-      String token, String channelName, String optionalInfo, int optionalUid) {
+      String token, String channelName, String optionalInfo, int optionalUid,
+      [ChannelMediaOptions options]) {
     return _invokeMethod('joinChannel', {
       'token': token,
       'channelName': channelName,
       'optionalInfo': optionalInfo,
-      'optionalUid': optionalUid
+      'optionalUid': optionalUid,
+      'options': options?.toJson()
     });
   }
 
   @override
-  Future<void> switchChannel(String token, String channelName) {
-    return _invokeMethod(
-        'switchChannel', {'token': token, 'channelName': channelName});
+  Future<void> switchChannel(String token, String channelName,
+      [ChannelMediaOptions options]) {
+    return _invokeMethod('switchChannel', {
+      'token': token,
+      'channelName': channelName,
+      'options': options?.toJson()
+    });
   }
 
   @override
@@ -181,17 +246,20 @@ class RtcEngine with RtcEngineInterface {
   }
 
   @override
+  @deprecated
   Future<void> setLogFile(String filePath) {
     return _invokeMethod('setLogFile', {'filePath': filePath});
   }
 
   @override
+  @deprecated
   Future<void> setLogFilter(LogFilter filter) {
     return _invokeMethod(
         'setLogFilter', {'filter': LogFilterConverter(filter).value()});
   }
 
   @override
+  @deprecated
   Future<void> setLogFileSize(int fileSizeInKBytes) {
     return _invokeMethod(
         'setLogFileSize', {'fileSizeInKBytes': fileSizeInKBytes});
@@ -219,11 +287,13 @@ class RtcEngine with RtcEngineInterface {
 
   @override
   Future<void> joinChannelWithUserAccount(
-      String token, String channelName, String userAccount) {
+      String token, String channelName, String userAccount,
+      [ChannelMediaOptions options]) {
     return _invokeMethod('joinChannelWithUserAccount', {
       'token': token,
       'channelName': channelName,
-      'userAccount': userAccount
+      'userAccount': userAccount,
+      'options': options?.toJson()
     });
   }
 
@@ -295,6 +365,7 @@ class RtcEngine with RtcEngineInterface {
   }
 
   @override
+  @deprecated
   Future<void> setDefaultMuteAllRemoteAudioStreams(bool muted) {
     return _invokeMethod(
         'setDefaultMuteAllRemoteAudioStreams', {'muted': muted});
@@ -337,6 +408,7 @@ class RtcEngine with RtcEngineInterface {
   }
 
   @override
+  @deprecated
   Future<void> setDefaultMuteAllRemoteVideoStreams(bool muted) {
     return _invokeMethod(
         'setDefaultMuteAllRemoteVideoStreams', {'muted': muted});
@@ -897,7 +969,52 @@ class RtcEngine with RtcEngineInterface {
     return _invokeMethod('setVoiceBeautifierPreset',
         {'preset': VoiceBeautifierPresetConverter(preset).value()});
   }
+
+  @override
+  Future<int> createDataStreamWithConfig(DataStreamConfig config) {
+    return _invokeMethod(
+        'createDataStreamWithConfig', {'config': config.toJson()});
+  }
+
+  @override
+  Future<void> enableDeepLearningDenoise(bool enabled) {
+    return _invokeMethod('enableDeepLearningDenoise', {'enabled': enabled});
+  }
+
+  @override
+  Future<void> enableRemoteSuperResolution(int uid, bool enable) {
+    return _invokeMethod(
+        'enableRemoteSuperResolution', {'uid': uid, 'enable': enable});
+  }
+
+  @override
+  Future<void> setCloudProxy(CloudProxyType proxyType) {
+    return _invokeMethod('enableRemoteSuperResolution',
+        {'proxyType': CloudProxyTypeConverter(proxyType).e});
+  }
+
+  @override
+  Future<String> uploadLogFile() {
+    return _invokeMethod('uploadLogFile');
+  }
+
+  @override
+  Future<void> setVoiceBeautifierParameters(
+      VoiceBeautifierPreset preset, int param1, int param2) {
+    return _invokeMethod('setVoiceBeautifierParameters', {
+      'preset': VoiceBeautifierPresetConverter(preset).e,
+      'param1': param1,
+      'param2': param2
+    });
+  }
+
+  @override
+  Future<void> setVoiceConversionPreset(VoiceConversionPreset preset) {
+    return _invokeMethod('setVoiceConversionPreset',
+        {'preset': VoiceConversionPresetConverter(preset).e});
+  }
 }
+
 
 /// @nodoc
 mixin RtcEngineInterface
@@ -953,7 +1070,9 @@ mixin RtcEngineInterface
   /// 远端会触发 [RtcEngineEventHandler.userJoined] 或 [RtcEngineEventHandler.userOffline] (`BecomeAudience`) 回调。
   ///
   /// **Parameter** [role] 用户角色。详见 [ClientRole]。
-  Future<void> setClientRole(ClientRole role);
+  ///
+  /// **Parameter** [options] 用户具体设置，包含用户级别，详见 [ClientRoleOptions]。
+  Future<void> setClientRole(ClientRole role, [ClientRoleOptions options]);
 
   /// 加入频道。
   ///
@@ -990,8 +1109,11 @@ mixin RtcEngineInterface
   ///
   /// **Parameter** [optionalUid] （非必选项）用户 ID，32 位无符号整数。建议设置范围：1 到 (2^32-1)，并保证唯一性。
   /// 如果不指定（即设为 0），SDK 会自动分配一个，并在 [RtcEngineEventHandler.joinChannelSuccess] 回调方法中返回，App 层必须记住该返回值并维护，SDK 不对该返回值进行维护。
+  ///
+  /// **Parameter** [options] 频道媒体设置选项，详见 [ChannelMediaOptions]。
   Future<void> joinChannel(
-      String token, String channelName, String optionalInfo, int optionalUid);
+      String token, String channelName, String optionalInfo, int optionalUid,
+      [ChannelMediaOptions options]);
 
   /// 快速切换直播频道。
   ///
@@ -1015,7 +1137,10 @@ mixin RtcEngineInterface
   /// - 10 个数字 0-9
   /// - 空格
   /// - "!", "#", "$", "%", "&", "(", ")", "+", "-", ":", ";", "<", "=", ".", ">", "?", "@", "[", "]", "^", "_", " {", "}", "|", "~", ","
-  Future<void> switchChannel(String token, String channelName);
+  ///
+  /// **Parameter** [options] 频道媒体设置选项，详见 [ChannelMediaOptions]。
+  Future<void> switchChannel(String token, String channelName,
+      [ChannelMediaOptions options]);
 
   /// 离开频道。
   ///
@@ -1062,6 +1187,10 @@ mixin RtcEngineInterface
   /// 获取当前网络连接状态。
   Future<ConnectionStateType> getConnectionState();
 
+  /// @nodoc This function is in the beta stage with a free trial. The ability provided in its beta test version is reporting a maximum of 10 message pieces within 6 seconds, with each message piece not exceeding 256 bytes and each string not exceeding 100 bytes. To try out this function, contact support@agora.io and discuss the format of customized messages with us.
+  Future<void> sendCustomReportMessage(
+      String id, String category, String event, String label, int value);
+
   /// 获取通话 ID。
   ///
   /// 获取当前的通话 ID。客户端在每次 [RtcEngine.joinChannel] 后会生成一个对应的 `CallId`，
@@ -1094,28 +1223,43 @@ mixin RtcEngineInterface
   ///
   /// 设置 SDK 的输出 log 文件。SDK 运行时产生的所有 log 将写入该文件。 App 必须保证指定的目录存在而且可写。
   ///
+  /// **废弃**
+  ///
+  /// 此方法自 v3.3.1 废弃。
+  ///
   /// **Note**
   /// 如需调用本方法，请在调用 [RtcEngine.create] 方法初始化 `RtcEngine` 对象后立即调用，否则可能造成输出日志不完整。
   ///
   /// **Parameter** [filePath] 日志文件的完整路径。该日志文件为 UTF-8 编码。
   /// - Android 平台：默认路径为 `/storage/emulated/0/Android/data/<package name>="">/files/agorasdk.log`。
   /// - iOS 平台：默认路径为 `App Sandbox/Library/caches/agorasdk.log`.
+  @deprecated
   Future<void> setLogFile(String filePath);
 
-  /// 设置日志输出等级
+  /// 设置日志输出等级。
+  ///
+  /// **废弃**
+  ///
+  /// 此方法自 v3.3.1 废弃。
   ///
   /// 该方法设置 SDK 的日志输出等级。不同的等级可以单独或组合使用。
   ///
   /// 日志级别顺序依次为 `OFF`、`CRITICAL`、`ERROR`、`WARNING`、`INFO` 和 `DEBUG`。选择一个级别，你就可以看到在该级别之前所有级别的日志信息。 例如，你选择 `WARNING` 级别，就可以看到在 `CRITICAL`、`ERROR` 和 `WARNING` 级别上的所有日志信息。
   ///
   /// **Parameter** [filter] 日志输出等级。详见 [LogFilter]。
+  @deprecated
   Future<void> setLogFilter(LogFilter filter);
 
   /// 设置 Agora SDK 输出的单个日志文件大小。
   ///
   /// 默认情况下，SDK 会生成 agorasdk.log、agorasdk_1.log、agorasdk_2.log、agorasdk_3.log、agorasdk_4.log 这 5 个日志文件。每个文件的默认大小为 1024 KB。日志文件为 UTF-8 编码。 最新的日志永远写在 agorasdk.log 中。agorasdk.log 写满后，SDK 会从 1-4 中删除修改时间最早的一个文件，然后将 agorasdk.log 重命名为该文件，并建立新的 agorasdk.log 写入最新的日志。
   ///
+  /// **废弃**
+  ///
+  /// 此方法自 v3.3.1 废弃。
+  ///
   /// **Parameter** [fileSizeInKBytes] 单个日志文件的大小，单位为 KB。默认值为 1024 KB。如果你将 `fileSizeInKBytes` 设为 1024 KB，SDK 会最多输出 5 MB 的日志文件。如果你将 `fileSizeInKBytes` 设为 小于 1024 KB，单个日志文件最大仍为 1024 KB。
+  @deprecated
   Future<void> setLogFileSize(int fileSizeInKBytes);
 
   /// 通过 JSON 配置 SDK 提供技术预览或特别定制功能。
@@ -1125,10 +1269,57 @@ mixin RtcEngineInterface
   /// **Parameter** [parameters] JSON 字符串形式的参数。
   Future<void> setParameters(String parameters);
 
-  /// Gets the native handle of the SDK engine.
+  /// @nodoc Gets the native handle of the SDK engine.
   ///
   /// This interface is used to retrieve the native C++ handle of the SDK engine used in special scenarios, such as registering the audio and video frame observer.
   Future<int> getNativeHandle();
+
+  /// 开启或关闭 AI 降噪模式。
+  ///
+  /// 自从 v3.3.1
+  ///
+  /// SDK 默认开启传统降噪模式，以消除大部分平稳噪声。
+  /// 如果你还需要消除非平稳噪声，Agora 推荐你调用 `enableDeepLearningDenoise(true)` 开启 AI 降噪模式。
+  ///
+  /// AI 降噪模式对设备性能有要求。只有在设备性能良好的情况下，SDK 才会成功开启 AI 降噪模式。
+  ///
+  /// 成功开启 AI 降噪模式后，如果 SDK 检测到当前设备的性能不足，SDK 会自动关闭 AI 降噪模式，并开启传统降噪模式。
+  ///
+  /// 在频道内，如果你调用了 `enableDeepLearningDenoise(true)` 或 SDK 自动关闭了 AI 降噪模式，当你需要重新开启 AI 降噪模式时， 你需要先调用 `leaveChannel`，再调用 `enableDeepLearningDenoise(true)`。
+  ///
+  /// **Parameter** [enabled]	是否开启 AI 降噪模式：
+  /// - true: (默认）开启。
+  /// - false: 关闭。
+  ///
+  /// **Note**
+  ///
+  /// - Agora 推荐在加入频道前调用该方法。
+  /// - 该方法对人声的处理效果最佳，Agora 不推荐调用该方法处理含音乐的音频数据。
+  Future<void> enableDeepLearningDenoise(bool enabled);
+
+  /// 设置 Agora 云代理服务。
+  ///
+  /// 自从 v3.3.1.
+  ///
+  ///
+  /// 当用户防火墙限制 IP 和端口号时，你需要参考《使用云代理》开放相应 IP 和端口号，然后调用该方法开启云代理，并将 [proxyType] 参数设置为 `UDP(1)`，即 UDP 协议的云代理。
+  ///
+  /// 成功连接云代理后，SDK 会触发 `connectionStateChanged(Connecting, SettingProxyServer)` 回调。
+  ///
+  /// 如果你想关闭已设置的云代理，请调用 `setCloudProxy(None)`。 如果你想更改已设置的云代理类型，请先调用 `setCloudProxy(None)` ，再调用 `setCloudProxy` 并传入你期望的 [proxyType]。
+  ///
+  /// **Parameter**
+  ///
+  /// [proxyType]	云代理类型，详见 [CloudProxyType]。 该参数为必填参数，如果你不赋值，SDK 会报错。
+  ///
+  /// **Note**
+  ///
+  /// - Agora 推荐你在频道外调用该方法。
+  /// - 使用 UDP 协议的云代理时，推流到 CDN 和跨频道媒体流转发功能不可用。
+  Future<void> setCloudProxy(CloudProxyType proxyType);
+
+  ///  @nodoc
+  Future<String> uploadLogFile();
 }
 
 /// @nodoc
@@ -1192,8 +1383,10 @@ mixin RtcUserInfoInterface {
   ///  - 空格
   ///  - "!", "#", "$", "%", "&", "(", ")", "+", "-", ":", ";", "<", "=", ".", ">", "?", "@", "[", "]", "^", "_", " {", "}", "|", "~", ","
   ///
+  /// **Parameter** [options] 频道媒体设置选项，详见 [ChannelMediaOptions]。
   Future<void> joinChannelWithUserAccount(
-      String token, String channelName, String userAccount);
+      String token, String channelName, String userAccount,
+      [ChannelMediaOptions options]);
 
   /// 通过 User Account 获取用户信息。
   ///
@@ -1505,6 +1698,11 @@ mixin RtcVideoInterface {
   ///
   /// 该方法在加入频道前后都可调用。如果在加入频道后调用 `setDefaultMuteAllRemoteVideoStreams`(true) 会接收不到后面加入频道的用户的音频流。
   ///
+  /// **废弃**
+  ///
+  /// 该方法自 v3.3.1 废弃。
+  ///
+  ///
   /// **Note**
   ///
   /// 停止接收视频流后，如果想要恢复接收，请调用 [RtcEngine.muteRemoteVideoStream] (`false`)，并指定你想要接收的远端用户的 ID。
@@ -1514,6 +1712,7 @@ mixin RtcVideoInterface {
   /// **Parameter** [muted] 是否默认不接收所有远端视频流：
   /// - `true`：默认不接收所有远端视频流。
   /// - `false`：默认继续接收所有远端视频流（默认）。
+  @deprecated
   Future<void> setDefaultMuteAllRemoteVideoStreams(bool muted);
 
   /// 开启本地美颜功能，并设置美颜效果选项。
@@ -1529,8 +1728,12 @@ mixin RtcVideoInterface {
   ///
   /// **Parameter** [options] 美颜选项。详见 [BeautyOptions]。
   Future<void> setBeautyEffectOptions(bool enabled, BeautyOptions options);
+
+  ///  @nodoc
+  Future<void> enableRemoteSuperResolution(int uid, bool enable);
 }
 
+/// @nodoc
 mixin RtcAudioMixingInterface {
   /// 开始播放音乐文件及混音。
   ///
@@ -1766,31 +1969,34 @@ mixin RtcAudioEffectInterface {
       AudioSessionOperationRestriction restriction);
 }
 
+/// @nodoc
 mixin RtcVoiceChangerInterface {
   /// 设置本地语音变声、美音或语聊美声效果。
   ///
-  /// **Deprecated**
+  /// **废弃**
   ///
-  /// 该方法已废弃。请使用 [RtcEngine.setAudioEffectPreset] 或 [RtcEngine.setAudioEffectParameters]。
+  /// 该方法自 v3.2.0 已废弃。请使用 [RtcEngine.setAudioEffectPreset] 或 [RtcEngine.setAudioEffectParameters]。
   ///
   /// **Note**
   ///
   /// 该方法不能与 [RtcEngine.setLocalVoiceReverbPreset] 方法一同使用，否则先调的方法会不生效。
   ///
   /// **Parameter** [voiceChanger] 本地语音的变声、美音或语聊美声效果选项。详见 [AudioVoiceChanger]。
+  @deprecated
   Future<void> setLocalVoiceChanger(AudioVoiceChanger voiceChanger);
 
   /// 设置本地语音混响（含虚拟立体声效果）。
   ///
-  /// **Deprecated**
+  /// **废弃**
   ///
-  /// 该方法已废弃。请使用 [RtcEngine.setAudioEffectPreset] 或 [RtcEngine.setAudioEffectParameters]。
+  /// 该方法自 v3.2.0 已废弃。请使用 [RtcEngine.setAudioEffectPreset] 或 [RtcEngine.setAudioEffectParameters]。
   ///
   /// **Note**
   /// - 该方法不能与 [RtcEngine.setLocalVoiceReverb] 方法一同使用。
   /// - 该方法不能与 [RtcEngine.setLocalVoiceChanger] 方法一同使用，否则先调的方法会不生效。
   ///
   /// **Parameter** [preset] 本地语音混响选项。详见 [AudioReverbPreset]。
+  @deprecated
   Future<void> setLocalVoiceReverbPreset(AudioReverbPreset preset);
 
   /// 设置本地语音音调。
@@ -1922,9 +2128,49 @@ mixin RtcVoiceChangerInterface {
   ///   - 12: G# 调
   Future<void> setAudioEffectParameters(
       AudioEffectPreset preset, int param1, int param2);
+
+  /// 设置 SDK 预设美声效果的参数。
+  ///
+  /// 自从 v3.3.1
+  ///
+  /// 调用该方法可以设置歌唱美声效果的性别特征和混响效果。该方法对本地发流用户进行设置。设置后，频道内所有用户都能听到该效果。
+  ///
+  ///
+  /// 为获取更好的人声效果，Agora 推荐你在调用该方法前将 [RtcEngine.setAudioProfile] 的 `scenario` 设为 `GameStreaming(3)`，并将 `profile` 设为 `MusicHighQuality(4)` 或 `MusicHighQualityStereo(5)`。
+  ///
+  /// **Parameter** [preset] SDK 预设的音效： [VoiceBeautifierPreset.SingingBeautifier].
+  ///
+  /// **Parameter** [param1] 歌声的性别特征：
+  /// - `1`: 男声。
+  /// - `2`: 女声。
+  ///
+  /// **Parameter** [param2] 歌声的混响效果：
+  /// - `1`: 歌声在小房间的混响效果。
+  /// - `2`: 歌声在大房间的混响效果。
+  /// - `3`: 歌声在大厅的混响效果。
+  ///
+  /// **Note**
+  ///
+  /// - 该方法在加入频道前后都能调用。
+  /// - 请勿将 [RtcEngine.setAudioProfile] 的 `profile` 参数设置为 `SpeechStandard(1)`，否则该方法不生效。
+  /// - 该方法对人声的处理效果最佳，Agora 不推荐调用该方法处理含音乐的音频数据。
+  /// - 调用该方法后，Agora 不推荐调用以下方法，否则该方法设置的效果会被覆盖：
+  ///   - [RtcEngine.setAudioEffectPreset]
+  ///   - [RtcEngine.setAudioEffectParameters]
+  ///   - [RtcEngine.setVoiceBeautifierPreset]
+  ///   - [RtcEngine.setVoiceConversionPreset]
+  ///   - [RtcEngine.setLocalVoiceReverbPreset]
+  ///   - [RtcEngine.setLocalVoiceChanger]
+  ///   - [RtcEngine.setLocalVoicePitch]
+  ///   - [RtcEngine.setLocalVoiceEqualization]
+  ///   - [RtcEngine.setLocalVoiceReverb]
+  Future<void> setVoiceBeautifierParameters(
+      VoiceBeautifierPreset preset, int param1, int param2);
+}
 }
 
 
+/// @nodoc
 mixin RtcVoicePositionInterface {
   /// 开启/关闭远端用户的语音立体声。
   ///
@@ -1956,6 +2202,7 @@ mixin RtcVoicePositionInterface {
   Future<void> setRemoteVoicePosition(int uid, double pan, double gain);
 }
 
+/// @nodoc
 mixin RtcPublishStreamInterface {
   /// 设置直播转码。
   ///
@@ -2095,6 +2342,10 @@ mixin RtcAudioRouteInterface {
   Future<void> setEnableSpeakerphone(bool enabled);
 
   /// 检查扬声器状态启用状态。
+  ///
+  /// **Note**
+  ///
+  /// 你可以在加入频道前或加入频道后调用此方法。
   ///
   /// **Returns**
   /// - `true`：扬声器已开启，语音会输出到扬声器。
@@ -2261,6 +2512,7 @@ mixin RtcTestInterface {
   Future<void> stopLastmileProbeTest();
 }
 
+/// @nodoc
 mixin RtcMediaMetadataInterface {
   /// 注册媒体 Metadata 观测器。
   ///
@@ -2278,7 +2530,7 @@ mixin RtcMediaMetadataInterface {
   /// **Parameter** [size] Metadata 的最大数据大小，单位为 Byte，最大值不超过 1024。
   Future<void> setMaxMetadataSize(int size);
 
-  /// 发送 Mtadata。
+  /// 发送 Metadata。
   ///
   /// **Parameter** [metadata] 想要发送的 Metadata。
   ///
@@ -2287,6 +2539,7 @@ mixin RtcMediaMetadataInterface {
   Future<void> sendMetadata(String metadata);
 }
 
+/// @nodoc
 mixin RtcWatermarkInterface {
   /// 添加本地视频水印。
   ///
@@ -2322,6 +2575,7 @@ mixin RtcEncryptionInterface {
   /// 启用内置加密，并设置数据加密密码。
   ///
   /// **Deprecated**
+  ///
   /// 自 v3.1.2 起废弃。请改用 `enableEncryption`。
   ///
   /// 如果需要启用加密，请在加入频道前调用 [RtcEngine.setEncryptionSecret] 启用
@@ -2333,11 +2587,13 @@ mixin RtcEncryptionInterface {
   /// - 请勿在转码推流场景中使用该方法。
   ///
   /// **Parameter** [secret] 加密密码。
+  @deprecated
   Future<void> setEncryptionSecret(String secret);
 
   /// 设置内置的加密方案。
   ///
   /// **Deprecated**
+  ///
   /// 自 v3.1.2 起废弃。请改用 `enableEncryption`。
   ///
   /// Agora SDK 支持内置加密功能，默认使用 `AES128XTS` 加密方式。如需使用其他加密方式，可以调用该 API 设置。
@@ -2348,6 +2604,7 @@ mixin RtcEncryptionInterface {
   /// 在调用本方法前，请先调用 [RtcEngine.setEncryptionSecret] 启用内置加密功能。
   ///
   /// **Parameter** [encryptionMode] 加密方式。详见 [EncryptionMode]。
+  @deprecated
   Future<void> setEncryptionMode(EncryptionMode encryptionMode);
 
   /// 开启或关闭内置加密。
@@ -2369,6 +2626,7 @@ mixin RtcEncryptionInterface {
   Future<void> enableEncryption(bool enabled, EncryptionConfig config);
 }
 
+/// @nodoc
 mixin RtcAudioRecorderInterface {
   /// 开始客户端录音。
   ///
@@ -2399,6 +2657,7 @@ mixin RtcAudioRecorderInterface {
   Future<void> stopAudioRecording();
 }
 
+// @nodoc
 mixin RtcInjectStreamInterface {
   /// 输入在线媒体流。
   ///
@@ -2570,6 +2829,21 @@ mixin RtcStreamMessageInterface {
   /// - 创建数据流成功则返回数据流 ID。
   /// - < 0：创建数据流失败。如果返回的错误码是负数，对应错误代码和警告代码里的正整数。
   Future<int> createDataStream(bool reliable, bool ordered);
+
+  /// 创建数据流。
+  ///
+  /// 自从 v3.3.1
+  ///
+  /// 该方法用于创建数据流。每个用户在每个频道内最多只能创建 5 个数据流。
+  ///
+  /// 该方法不支持数据可靠，接收方会丢弃超出发送时间 5 秒后的数据包。
+  ///
+  /// **Parameter** [config] 数据流设置: [DataStreamConfig]。
+  ///
+  /// **Returns**
+  /// - 创建数据流成功则返回数据流 ID。
+  /// - < 0: 创建数据流失败。
+  Future<int> createDataStreamWithConfig(DataStreamConfig config);
 
   /// 发送数据流。
   ///

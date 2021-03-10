@@ -171,6 +171,7 @@ class RtcChannel with RtcChannelInterface {
   }
 
   @override
+  @deprecated
   Future<void> setDefaultMuteAllRemoteAudioStreams(bool muted) {
     return _invokeMethod(
         'setDefaultMuteAllRemoteAudioStreams', {'muted': muted});
@@ -187,6 +188,7 @@ class RtcChannel with RtcChannelInterface {
   }
 
   @override
+  @deprecated
   Future<void> setDefaultMuteAllRemoteVideoStreams(bool muted) {
     return _invokeMethod(
         'setDefaultMuteAllRemoteVideoStreams', {'muted': muted});
@@ -205,6 +207,7 @@ class RtcChannel with RtcChannelInterface {
   }
 
   @override
+  @deprecated
   Future<int> createDataStream(bool reliable, bool ordered) {
     return _invokeMethod(
         'createDataStream', {'reliable': reliable, 'ordered': ordered});
@@ -237,6 +240,7 @@ class RtcChannel with RtcChannelInterface {
   }
 
   @override
+  @deprecated
   Future<void> setEncryptionMode(EncryptionMode encryptionMode) {
     return _invokeMethod('setEncryptionMode',
         {'encryptionMode': EncryptionModeConverter(encryptionMode).value()});
@@ -249,7 +253,6 @@ class RtcChannel with RtcChannelInterface {
   }
 
   @override
-  @deprecated
   Future<void> setLiveTranscoding(LiveTranscoding transcoding) {
     return _invokeMethod(
         'setLiveTranscoding', {'transcoding': transcoding.toJson()});
@@ -319,8 +322,21 @@ class RtcChannel with RtcChannelInterface {
     return _invokeMethod(
         'enableEncryption', {'enabled': enabled, 'config': config.toJson()});
   }
+
+  @override
+  Future<int> createDataStreamWithConfig(DataStreamConfig config) {
+    return _invokeMethod(
+        'createDataStreamWithConfig', {'config': config.toJson()});
+  }
+
+  @override
+  Future<void> enableRemoteSuperResolution(int uid, bool enable) {
+    return _invokeMethod(
+        'enableRemoteSuperResolution', {'uid': uid, 'enable': enable});
+  }
 }
 
+/// @nodoc
 mixin RtcChannelInterface
     implements
         RtcAudioInterface,
@@ -498,9 +514,14 @@ mixin RtcAudioInterface {
 
   /// 设置是否默认接收音频流。
   ///
+  /// **废弃**
+  ///
+  /// 此方法自 v3.3.1 起废弃。
+  ///
   /// **Parameter** [muted] 设置是否默认不接收所有远端音频：
   /// - `true`：不接收所有远端音频流。
   /// - `false`：（默认）接收所有远端音频流。
+  @deprecated
   Future<void> setDefaultMuteAllRemoteAudioStreams(bool muted);
 }
 
@@ -523,13 +544,21 @@ mixin RtcVideoInterface {
 
   /// 设置是否默认接收视频流。
   ///
+  /// **废弃**
+  ///
+  /// 此方法自 v3.3.1 起废弃。
   ///
   /// **Parameter** [muted] 设置是否默认不接收所有远端视频：
   /// - `true`：不接收所有远端视频流。
   /// - `false`：（默认）接收所有远端视频流。
+  @deprecated
   Future<void> setDefaultMuteAllRemoteVideoStreams(bool muted);
+
+  ///  @nodoc
+  Future<void> enableRemoteSuperResolution(int uid, bool enable);
 }
 
+/// @nodoc
 mixin RtcVoicePositionInterface {
   /// 设置远端用户声音的空间位置和音量，方便本地用户听声辨位。
   ///
@@ -553,6 +582,7 @@ mixin RtcVoicePositionInterface {
   Future<void> setRemoteVoicePosition(int uid, double pan, double gain);
 }
 
+/// @nodoc
 mixin RtcPublishStreamInterface {
   /// 设置直播转码。
   ///
@@ -674,6 +704,7 @@ mixin RtcDualStreamInterface {
   Future<void> setRemoteDefaultVideoStreamType(VideoStreamType streamType);
 }
 
+/// @nodoc
 mixin RtcFallbackInterface {
   /// 设置用户媒体流优先级。
   ///
@@ -708,7 +739,7 @@ mixin RtcMediaMetadataInterface {
   /// **Parameter** [size] Metadata 的最大数据大小，单位为 Byte，最大值不超过 1024。
   Future<void> setMaxMetadataSize(int size);
 
-  /// 发送 Mtadata。
+  /// 发送 Metadata。
   ///
   /// **Parameter** [metadata] 想要发送的 Metadata。
   ///
@@ -717,6 +748,7 @@ mixin RtcMediaMetadataInterface {
   Future<void> sendMetadata(String metadata);
 }
 
+/// @nodoc
 mixin RtcEncryptionInterface {
   /// 启用内置加密，并设置数据加密密码。
   ///
@@ -729,12 +761,12 @@ mixin RtcEncryptionInterface {
   /// 如果未指定密码或将密码设置为空，则无法激活加密功能。
   ///
   /// **Note**
-  ///
   /// - 为保证最佳传输效果，请确保加密后的数据大小不超过原始数据大小 + 16 字节。
   /// 16 字节是 AES 通用加密模式下最大填充块大小。
   /// - 请勿在转码推流场景中使用该方法。
   ///
   /// **Parameter** [secret] 加密密码。
+  @deprecated
   Future<void> setEncryptionSecret(String secret);
 
   /// 设置内置的加密方案。
@@ -750,6 +782,7 @@ mixin RtcEncryptionInterface {
   /// - 该方法需要在 [RtcChannel.setEncryptionSecret] 之后调用。
   ///
   /// **Parameter** [encryptionMode] 加密方式。详见 [EncryptionMode]。
+  @deprecated
   Future<void> setEncryptionMode(EncryptionMode encryptionMode);
 
   /// 开启或关闭内置加密。
@@ -811,6 +844,10 @@ mixin RtcStreamMessageInterface {
   ///
   /// 该方法用于创建数据流。[RtcChannel] 生命周期内，每个用户最多只能创建 5 个数据流。
   ///
+  /// **废弃**
+  ///
+  /// 此方法自 v3.3.1 起废弃。
+  ///
   /// **Note**
   ///
   /// 请将 `reliable` 和 `ordered` 同时设置为 `true` 或 `false`，暂不支持交叉设置。
@@ -826,7 +863,23 @@ mixin RtcStreamMessageInterface {
   /// **Returns**
   /// - 创建数据流成功则返回数据流 ID。
   /// - < 0：创建数据流失败。如果返回的错误码是负数，对应错误代码和警告代码里的正整数。
+  @deprecated
   Future<int> createDataStream(bool reliable, bool ordered);
+
+  /// 创建数据流。
+  ///
+  /// 自从 v3.3.1.
+  ///
+  /// 该方法用于创建数据流。每个用户在每个频道内最多只能创建 5 个数据流。
+  ///
+  /// 该方法不支持数据可靠，接收方会丢弃超出发送时间 5 秒后的数据包。
+  ///
+  /// **Parameter** [config] 数据流设置: [DataStreamConfig]。
+  ///
+  /// **Returns**
+  /// - 创建数据流成功则返回数据流 ID。
+  /// - < 0: 创建数据流失败。
+  Future<int> createDataStreamWithConfig(DataStreamConfig config);
 
   /// 发送数据流。
   ///
