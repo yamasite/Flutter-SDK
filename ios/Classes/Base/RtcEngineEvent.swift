@@ -87,6 +87,8 @@ class RtcEngineEvents {
     static let AudioSubscribeStateChanged = "AudioSubscribeStateChanged"
     static let VideoSubscribeStateChanged = "VideoSubscribeStateChanged"
     static let RtmpStreamingEvent = "RtmpStreamingEvent"
+    static let UserSuperResolutionEnabled = "UserSuperResolutionEnabled"
+    static let UploadLogResult = "UploadLogResult"
 
     static func toMap() -> Dictionary<String, String> {
         return [
@@ -167,6 +169,8 @@ class RtcEngineEvents {
             "AudioSubscribeStateChanged": AudioSubscribeStateChanged,
             "VideoSubscribeStateChanged": VideoSubscribeStateChanged,
             "RtmpStreamingEvent": RtmpStreamingEvent,
+            "UserSuperResolutionEnabled": UserSuperResolutionEnabled,
+            "UploadLogResult": UploadLogResult
         ]
     }
 }
@@ -469,32 +473,40 @@ extension RtcEngineEventHandler: AgoraRtcEngineDelegate {
     public func rtcEngineVideoDidStop(_ engine: AgoraRtcEngineKit) {
         callback(RtcEngineEvents.VideoStopped)
     }
-    
+
     func rtcEngine(_ engine: AgoraRtcEngineKit, firstLocalAudioFramePublished elapsed: Int) {
         callback(RtcEngineEvents.FirstLocalAudioFramePublished, elapsed)
     }
-    
+
     func rtcEngine(_ engine: AgoraRtcEngineKit, firstLocalVideoFramePublished elapsed: Int) {
         callback(RtcEngineEvents.FirstLocalVideoFramePublished, elapsed)
     }
-    
+
     func rtcEngine(_ engine: AgoraRtcEngineKit, didAudioPublishStateChange channel: String, oldState: AgoraStreamPublishState, newState: AgoraStreamPublishState, elapseSinceLastState: Int) {
         callback(RtcEngineEvents.AudioPublishStateChanged, channel, oldState.rawValue, newState.rawValue, elapseSinceLastState)
     }
-    
+
     func rtcEngine(_ engine: AgoraRtcEngineKit, didVideoPublishStateChange channel: String, oldState: AgoraStreamPublishState, newState: AgoraStreamPublishState, elapseSinceLastState: Int) {
         callback(RtcEngineEvents.VideoPublishStateChanged, channel, oldState.rawValue, newState.rawValue, elapseSinceLastState)
     }
-    
+
     func rtcEngine(_ engine: AgoraRtcEngineKit, didAudioSubscribeStateChange channel: String, withUid uid: UInt, oldState: AgoraStreamSubscribeState, newState: AgoraStreamSubscribeState, elapseSinceLastState: Int) {
         callback(RtcEngineEvents.AudioSubscribeStateChanged, channel, uid, oldState.rawValue, newState.rawValue, elapseSinceLastState)
     }
-    
+
     func rtcEngine(_ engine: AgoraRtcEngineKit, didVideoSubscribeStateChange channel: String, withUid uid: UInt, oldState: AgoraStreamSubscribeState, newState: AgoraStreamSubscribeState, elapseSinceLastState: Int) {
         callback(RtcEngineEvents.VideoSubscribeStateChanged, channel, uid, oldState.rawValue, newState.rawValue, elapseSinceLastState)
     }
-    
+
     func rtcEngine(_ engine: AgoraRtcEngineKit, rtmpStreamingEventWithUrl url: String, eventCode: AgoraRtmpStreamingEvent) {
         callback(RtcEngineEvents.RtmpStreamingEvent, url, eventCode.rawValue)
+    }
+    
+    func rtcEngine(_ engine: AgoraRtcEngineKit, superResolutionEnabledOfUid uid: UInt, enabled: Bool, reason: AgoraSuperResolutionStateReason) {
+        callback(RtcEngineEvents.UserSuperResolutionEnabled, uid, enabled, reason.rawValue)
+    }
+    
+    func rtcEngine(_ engine: AgoraRtcEngineKit, uploadLogResultRequestId requestId: String, success: Bool, reason: AgoraUploadErrorReason) {
+        callback(RtcEngineEvents.UploadLogResult, requestId, success, reason.rawValue)
     }
 }
