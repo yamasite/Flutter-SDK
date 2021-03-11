@@ -455,7 +455,7 @@ enum AudioScenario {
 
   /// 会议场景，适用于人声为主的多人会议。
   ///
-  /// 自从 v3.2.0
+  /// 自从 v3.2.1
   @JsonValue(8)
   MEETING,
 }
