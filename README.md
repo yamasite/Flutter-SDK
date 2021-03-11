@@ -5,7 +5,7 @@ Agora Flutter SDK 基于 Android 和 iOS 平台的 Agora RTC SDK 封装，可在
 - The <a href ="rtc_channel/RtcChannel-class.html">RtcChannel</a> 类在指定频道中实现实时音视频功能。通过创建多个 RtcChannel 对象，用户可以同时加入多个频道。
 - The <a href ="rtc_channel/RtcChannelEventHandler-class.html">RtcChannelEventHandler</a> 类监听和报告指定频道的事件和数据。
 
-### 频道管理
+### 核心方法
 
 <table border="1">
 <tr>
@@ -17,7 +17,7 @@ Agora Flutter SDK 基于 Android 和 iOS 平台的 Agora RTC SDK 封装，可在
 <td>创建 <code>RtcEngine</code> 实例</td>
 </tr>
 <tr>
-<td><a href ="rtc_engine/RtcEngine/createWithAreaCode.html">createWithAreaCode</a></a></td>
+<td><a href ="rtc_engine/RtcEngine/createWithConfig.html">createWithConfig</a></a></td>
 <td>创建 <code>RtcEngine</code> 实例（指定访问区域）</td>
 </tr>
 <tr>
@@ -58,7 +58,7 @@ Agora Flutter SDK 基于 Android 和 iOS 平台的 Agora RTC SDK 封装，可在
 </tr>
 </table>
 
-### 频道事件
+### 核心事件
 
 <table border="1">
 <tr>
@@ -520,6 +520,10 @@ Agora Flutter SDK 基于 Android 和 iOS 平台的 Agora RTC SDK 封装，可在
 <td><a href ="rtc_engine/RtcEngine/setLocalVoiceReverbPreset.html">setLocalVoiceReverb</a></td>
 <td>设置本地音效混响</td>
 </tr>
+<tr>
+<td><a href ="rtc_engine/RtcEngine/setVoiceConversionPreset.html">setVoiceConversionPreset</a></td>
+<td>设置 SDK 预设的变声效果</td>
+</tr>
 </table>
 
 ### 听声辩位
@@ -878,7 +882,7 @@ Agora Flutter SDK 基于 Android 和 iOS 平台的 Agora RTC SDK 封装，可在
 </tr>
 <tr>
 <td><a href ="rtc_engine/RtcEngine/enableEncryption.html">enableEncryption</a></td>
-<td>开启/关闭内置加密 </td>
+<td>开启/关闭内置加密</td>
 </tr>
 </table>
 
@@ -1010,7 +1014,7 @@ Agora Flutter SDK 基于 Android 和 iOS 平台的 Agora RTC SDK 封装，可在
 <th>描述</th>
 </tr>
 <tr>
-<td><a href ="rtc_channel/RtcChannel/createDataStream.html">createDataStream</a></td>
+<td><a href ="rtc_channel/RtcChannel/createDataStreamWithConfig.html">createDataStreamWithConfig</a></td>
 <td>创建数据流</td>
 </tr>
 <tr>
@@ -1056,6 +1060,14 @@ Agora Flutter SDK 基于 Android 和 iOS 平台的 Agora RTC SDK 封装，可在
 <th>描述</th>
 </tr>
 <tr>
+<td><a href ="rtc_engine/RtcEngine/setCloudProxy.html">setCloudProxy</a></td>
+<td>设置 Agora 云代理服务</td>
+</tr>
+<tr>
+<td><a href ="rtc_engine/RtcEngine/enableDeepLearningDenoise.html">enableDeepLearningDenoise</a></td>
+<td>开启或关闭 AI 降噪模式</td>
+</tr>
+<tr>
 <td><a href ="rtc_channel/RtcChannel/getCallId.html">getCallId</a></td>
 <td>获取通话 ID</td>
 </tr>
@@ -1068,16 +1080,12 @@ Agora Flutter SDK 基于 Android 和 iOS 平台的 Agora RTC SDK 封装，可在
 <td>投诉通话质量</td>
 </tr>
 <tr>
-<td><a href ="rtc_engine/RtcEngine/setLogFile.html">setLogFile</a></td>
-<td>设置日志文件</td>
+<td><a href ="rtc_engine/RtcEngine/getSdkVersion.html">getSdkVersion</a></td>
+<td>查询 SDK 版本号</td>
 </tr>
 <tr>
-<td><a href ="rtc_engine/RtcEngine/setLogFilter.html">setLogFilter</a></td>
-<td>设置日志输出等级</td>
-</tr>
-<tr>
-<td><a href ="rtc_engine/RtcEngine/setLogFileSize.html">setLogFileSize</a></td>
-<td>设置日志文件大小</td>
+<td><a href ="rtc_engine/RtcEngine/getErrorDescription.html">getErrorDescription</a></td>
+<td>获取警告或错误描述</td>
 </tr>
 </table>
 

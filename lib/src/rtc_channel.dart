@@ -44,7 +44,7 @@ class RtcChannel with RtcChannelInterface {
   ///  - 26 个大写英文字母 A-Z
   ///  - 10 个数字 0-9
   ///  - 空格
-  ///  - "!", "#", "$", "%", "&", "(", ")", "+", "-", ":", ";", "<", "=", ".", ">", "?", "@", "[", "]", "^", "_", " {", "}", "|", "~", ","
+  ///  - "!", "#", "$", "%", "&", "(", ")", "+", "-", ":", ";", "<", "=", ".", ">", "?", "@", "\[", "\]", "^", "_", " {", "}", "|", "~", ","
   ///
   /// **Note**
   ///  - 该参数没有默认值，请确保对参数设值。
@@ -396,9 +396,7 @@ mixin RtcChannelInterface
   /// - 如果想要从不同的设备同时接入同一个频道，请确保每个设备上使用的 UID 是不同的。
   /// - 请确保用于生成 Token 的 App ID 和创建 [RtcEngine] 对象时用的 App ID 一致。
   ///
-  /// **Parameter** [token] 在 App 服务器端生成的用于鉴权的 Token：
-  /// - 安全要求不高：你可以使用控制台生成的临时 Token，详见[获取临时 Token](https://docs.agora.io/cn/Agora%20Platform/token?platform=All%20Platforms#temptoken)。
-  /// - 安全要求高：将值设为你的服务端生成的正式 Token，详见[从服务端生成 Token](https://docs.agora.io/cn/Agora%20Platform/token?platform=All%20Platforms#generatetoken)。
+  /// **Parameter** [token] 在 App 服务器端生成的用于鉴权的 Token。详见[从服务端生成 Token](https://docs.agora.io/cn/Agora%20Platform/token?platform=All%20Platforms#generatetoken)。
   ///
   /// **Parameter** [optionalInfo] 开发者需加入的任何附加信息。一般可设置为空字符串，或频道相关信息。该信息不会传递给频道内的其他用户。
   ///
@@ -419,9 +417,7 @@ mixin RtcChannelInterface
   /// - 如果想要从不同的设备同时接入同一个频道，请确保每个设备上使用的 User Account 是不同的。
   /// - 请确保用于生成 Token 的 App ID 和创建 RtcEngine 对象时用的 App ID 一致。
   ///
-  /// **Parameter** [token] 在 App 服务器端生成的用于鉴权的 Token：
-  /// - 安全要求不高：你可以使用控制台生成的临时 Token，详见[获取临时 Token](https://docs.agora.io/cn/Agora%20Platform/token?platform=All%20Platforms#temptoken)。
-  /// - 安全要求高：将值设为你的服务端生成的正式 Token，详见[从服务端生成 Token](https://docs.agora.io/cn/Agora%20Platform/token?platform=All%20Platforms#generatetoken)。
+  /// **Parameter** [token] 在 App 服务器端生成的用于鉴权的 Token。详见[从服务端生成 Token](https://docs.agora.io/cn/Agora%20Platform/token?platform=All%20Platforms#generatetoken)。
   ///
   /// **Parameter** [userAccount] 用户 User Account。该参数为必需，最大不超过 255 字节，不可为 null。请确保加入频道的 User Account 的唯一性。
   /// 以下为支持的字符集范围（共 89 个字符）：
@@ -429,7 +425,7 @@ mixin RtcChannelInterface
   /// - 26 个大写英文字母 A-Z
   /// - 10 个数字 0-9
   /// - 空格
-  /// - "!", "#", "$", "%", "&", "(", ")", "+", "-", ":", ";", "<", "=", ".", ">", "?", "@", "[", "]", "^", "_", " {", "}", "|", "~", ","
+  /// - "!", "#", "$", "%", "&", "(", ")", "+", "-", ":", ";", "<", "=", ".", ">", "?", "@", "\[", "\]", "^", "_", " {", "}", "|", "~", ","
   ///
   /// **Parameter** [options] 频道媒体设置选项。详见 [ChannelMediaOptions]。
   Future<void> joinChannelWithUserAccount(
@@ -568,7 +564,7 @@ mixin RtcVoicePositionInterface {
   ///
   /// **Note**
   /// - 使用该方法需要在加入频道前调用 [RtcEngine.enableSoundPositionIndication] 开启远端用户的语音立体声。
-  /// - 为获得最佳听觉体验，我们建议用户佩戴耳机。
+  /// - 为获得最佳听觉体验，我们建议用户佩戴有线耳机。
   ///
   /// **Parameter** [uid] 远端用户的 ID。
   ///
@@ -868,7 +864,7 @@ mixin RtcStreamMessageInterface {
 
   /// 创建数据流。
   ///
-  /// 自从 v3.3.1.
+  /// 自从 v3.3.1
   ///
   /// 该方法用于创建数据流。每个用户在每个频道内最多只能创建 5 个数据流。
   ///

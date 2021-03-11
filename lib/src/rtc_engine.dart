@@ -1093,9 +1093,7 @@ mixin RtcEngineInterface
   /// 如果想要从不同的设备同时接入同一个频道，请确保每个设备上使用的 UID 是不同的。
   /// - 请确保用于生成 Token 的 App ID 和 `create` 方法创建 [RtcEngine] 对象时用的 App ID 一致。
   ///
-  /// **Parameter** [token] 在 App 服务器端生成的用于鉴权的 Token：
-  /// - 安全要求不高：你可以使用控制台生成的临时 Token，详见[获取临时 Token](https://docs.agora.io/cn/Agora%20Platform/token?platform=All%20Platforms#temptoken)。
-  /// - 安全要求高：将值设为你的服务端生成的正式 Token，详见[从服务端生成 Token](https://docs.agora.io/cn/Agora%20Platform/token?platform=All%20Platforms#generatetoken)。
+  /// **Parameter** [token] 在 App 服务器端生成的用于鉴权的 Token。详见[从服务端生成 Token](https://docs.agora.io/cn/Agora%20Platform/token?platform=All%20Platforms#generatetoken)。
   ///
   /// **Parameter** [channelName] 标识通话的频道名称，长度在 64 字节以内的字符串。以下为支持的字符集范围（共 89 个字符）：
   ///
@@ -1103,7 +1101,7 @@ mixin RtcEngineInterface
   ///  - 26 个大写英文字母 A-Z
   ///  - 10 个数字 0-9
   ///  - 空格
-  ///  - "!", "#", "$", "%", "&", "(", ")", "+", "-", ":", ";", "<", "=", ".", ">", "?", "@", "[", "]", "^", "_", " {", "}", "|", "~", ","
+  ///  - "!", "#", "$", "%", "&", "(", ")", "+", "-", ":", ";", "<", "=", ".", ">", "?", "@", "\[", "\]", "^", "_", " {", "}", "|", "~", ","
   ///
   /// **Parameter** [optionalInfo] （非必选项）开发者需加入的任何附加信息。一般可设置为空字符串，或频道相关信息。该信息不会传递给频道内的其他用户。
   ///
@@ -1127,16 +1125,14 @@ mixin RtcEngineInterface
   /// **Note**
   /// - 该方法仅适用直播频道中的观众用户。
   ///
-  /// **Parameter** [token] 在服务器端生成的用于鉴权的 Token：
-  /// - 安全要求不高：你可以使用控制台生成的临时 Token，详见[获取临时 Token](https://docs.agora.io/cn/Agora%20Platform/token?platform=All%20Platforms#temptoken)。
-  /// - 安全要求高：将值设为你的服务端生成的正式 Token，详见[从服务端生成 Token](https://docs.agora.io/cn/Agora%20Platform/token?platform=All%20Platforms#generatetoken)。
+  /// **Parameter** [token] 在 App 服务器端生成的用于鉴权的 Token。详见[从服务端生成 Token](https://docs.agora.io/cn/Agora%20Platform/token?platform=All%20Platforms#generatetoken)。
   ///
   /// **Parameter** [channelName] 标识频道的频道名，最大不超过 64 字节。以下为支持的字符集范围（共 89 个字符）：
   /// - 26 个小写英文字母 a-z
   /// - 26 个大写英文字母 A-Z
   /// - 10 个数字 0-9
   /// - 空格
-  /// - "!", "#", "$", "%", "&", "(", ")", "+", "-", ":", ";", "<", "=", ".", ">", "?", "@", "[", "]", "^", "_", " {", "}", "|", "~", ","
+  /// - "!", "#", "$", "%", "&", "(", ")", "+", "-", ":", ";", "<", "=", ".", ">", "?", "@", "\[", "\]", "^", "_", " {", "}", "|", "~", ","
   ///
   /// **Parameter** [options] 频道媒体设置选项，详见 [ChannelMediaOptions]。
   Future<void> switchChannel(String token, String channelName,
@@ -1299,7 +1295,7 @@ mixin RtcEngineInterface
 
   /// 设置 Agora 云代理服务。
   ///
-  /// 自从 v3.3.1.
+  /// 自从 v3.3.1
   ///
   ///
   /// 当用户防火墙限制 IP 和端口号时，你需要参考《使用云代理》开放相应 IP 和端口号，然后调用该方法开启云代理，并将 [proxyType] 参数设置为 `UDP(1)`，即 UDP 协议的云代理。
@@ -1351,7 +1347,7 @@ mixin RtcUserInfoInterface {
   /// - 26 个大写英文字母 A-Z
   /// - 10 个数字 0-9
   /// - 空格
-  /// - "!", "#", "$", "%", "&", "(", ")", "+", "-", ":", ";", "<", "=", ".", ">", "?", "@", "[", "]", "^", "_", " {", "}", "|", "~", ","
+  /// - "!", "#", "$", "%", "&", "(", ")", "+", "-", ":", ";", "<", "=", ".", ">", "?", "@", "\[", "\]", "^", "_", " {", "}", "|", "~", ","
   Future<void> registerLocalUserAccount(String appId, String userAccount);
 
   /// 使用 User Account 加入频道。
@@ -1365,23 +1361,21 @@ mixin RtcUserInfoInterface {
   /// 为保证通信质量，请确保频道内使用同一类型的数据标识用户身份。即同一频道内需要统一使用 UID 或 User Account。
   /// 如果有用户通过 Agora Web SDK 加入频道，请确保 Web 加入的用户也是同样类型。
   ///
-  /// **Parameter** [token] 在服务器端生成的用于鉴权的 Token。
-  ///  - 安全要求不高：你可以使用控制台生成的临时 Token，详见[获取临时 Token](https://docs.agora.io/cn/Agora%20Platform/token?platform=All%20Platforms#temptoken)。
-  ///  - 安全要求高：将值设为你的服务端生成的正式 Token，详见[从服务端生成 Token](https://docs.agora.io/cn/Agora%20Platform/token?platform=All%20Platforms#generatetoken)。
+  /// **Parameter** [token] 在 App 服务器端生成的用于鉴权的 Token。详见[从服务端生成 Token](https://docs.agora.io/cn/Agora%20Platform/token?platform=All%20Platforms#generatetoken)。
   ///
   /// **Parameter** [channelName] 标识频道的频道名，最大不超过 64 字节。以下为支持的字符集范围（共 89 个字符）：
   ///  - 26 个小写英文字母 a-z
   ///  - 26 个大写英文字母 A-Z
   ///  - 10 个数字 0-9
   ///  - 空格
-  ///  - "!", "#", "$", "%", "&", "(", ")", "+", "-", ":", ";", "<", "=", ".", ">", "?", "@", "[", "]", "^", "_", " {", "}", "|", "~", ","
+  ///  - "!", "#", "$", "%", "&", "(", ")", "+", "-", ":", ";", "<", "=", ".", ">", "?", "@", "\[", "\]", "^", "_", " {", "}", "|", "~", ","
   ///
   /// **Parameter** [userAccount] 用户 User Account。该参数为必需，最大不超过 255 字节，不可为 null。请确保加入频道的 User Account 的唯一性。以下为支持的字符集范围（共 89 个字符）：
   ///  - 26 个小写英文字母 a-z
   ///  - 26 个大写英文字母 A-Z
   ///  - 10 个数字 0-9
   ///  - 空格
-  ///  - "!", "#", "$", "%", "&", "(", ")", "+", "-", ":", ";", "<", "=", ".", ">", "?", "@", "[", "]", "^", "_", " {", "}", "|", "~", ","
+  ///  - "!", "#", "$", "%", "&", "(", ")", "+", "-", ":", ";", "<", "=", ".", ">", "?", "@", "\[", "\]", "^", "_", " {", "}", "|", "~", ","
   ///
   /// **Parameter** [options] 频道媒体设置选项，详见 [ChannelMediaOptions]。
   Future<void> joinChannelWithUserAccount(
@@ -1519,10 +1513,9 @@ mixin RtcAudioInterface {
 
   /// 停止/恢复接收指定音频流。
   ///
-  /// 如果之前有调用过 [RtcEngine.muteAllRemoteAudioStreams] (`true`) 停止接收
-  /// 所有远端音频流，在调用本 API 之前请确保你已调用 [RtcEngine.muteAllRemoteAudioStreams] (`false`)。
-  /// [RtcEngine.muteAllRemoteAudioStreams] 是全局控制，
-  /// [RtcEngine.muteRemoteAudioStream] 是精细控制。
+  /// **Note**
+  /// - 该方法需要在加入频道后调用。
+  /// - 该方法的推荐设置详见《设置订阅状态》。
   ///
   /// **Parameter** [uid] 指定的用户 ID。
   ///
@@ -1532,6 +1525,10 @@ mixin RtcAudioInterface {
   Future<void> muteRemoteAudioStream(int uid, bool muted);
 
   /// 停止/恢复接收所有音频流。
+  ///
+  /// **Note**
+  /// - 该方法需要在加入频道后调用。
+  /// - 该方法的推荐设置详见《设置订阅状态》。
   ///
   /// **Parameter** [muted] 是否停止接收所有音频流：
   /// - `true`：停止接收所有远端音频流。
@@ -1635,6 +1632,8 @@ mixin RtcVideoInterface {
   Future<void> startPreview();
 
   /// 停止视频预览。
+  ///
+  /// 该方法需要在加入频道前调用。
   Future<void> stopPreview();
 
   /// 开启/关闭本地视频采集。
@@ -1786,6 +1785,8 @@ mixin RtcAudioMixingInterface {
 
   /// 调节音乐文件的播放音量。
   ///
+  /// 你需要在调用 [startAudioMixing] 并收到 `audioMixingStateChanged(Playing)` 回调后调用该方法。
+  ///
   /// **Note**
   /// - 该方法调节混音里伴奏在本端和远端播放的音量大小。请在频道内调用该方法。
   /// - 调用该方法不影响调用 [RtcEngine.playEffect] 播放音效文件的音量。
@@ -1795,12 +1796,16 @@ mixin RtcAudioMixingInterface {
 
   /// 调节音乐文件的本地播放音量。
   ///
+  /// 你需要在调用 [startAudioMixing] 并收到 `audioMixingStateChanged(Playing)` 回调后调用该方法。
+  ///
   /// 该方法调节混音里音乐文件在本端播放的音量大小。请在频道内调用该方法。
   ///
   /// **Parameter** [volume] 伴奏音量范围为 [0,100]。默认 100 为原始文件音量。
   Future<void> adjustAudioMixingPlayoutVolume(int volume);
 
   /// 调节音乐文件的远端播放音量。
+  ///
+  /// 你需要在调用 [startAudioMixing] 并收到 `audioMixingStateChanged(Playing)` 回调后调用该方法。
   ///
   /// 该方法调节混音里音乐文件在远端播放的音量大小。请在频道内调用该方法。
   ///
@@ -1814,10 +1819,14 @@ mixin RtcAudioMixingInterface {
 
   /// 获取音乐文件的远端播放音量。
   ///
+  /// 你需要在调用 [startAudioMixing] 并收到 `audioMixingStateChanged(Playing)` 回调后调用该方法。
+  ///
   /// 该方法获取音乐文件的远端播放音量。该接口可以方便开发者排查音量相关问题。
   Future<int> getAudioMixingPublishVolume();
 
   /// 获取音乐文件的时长。
+  ///
+  /// 你需要在调用 [startAudioMixing] 并收到 `audioMixingStateChanged(Playing)` 回调后调用该方法。
   ///
   /// 该方法获取音乐文件时长，单位为毫秒。请在频道内调用该方法。
   ///
@@ -1828,6 +1837,8 @@ mixin RtcAudioMixingInterface {
 
   /// 获取音乐文件的播放进度。
   ///
+  /// 你需要在调用 [startAudioMixing] 并收到 `audioMixingStateChanged(Playing)` 回调后调用该方法。
+  ///
   /// 该方法获取当前伴奏播放进度，单位为毫秒。请在频道内调用该方法。
   ///
   /// **Returns**
@@ -1837,10 +1848,14 @@ mixin RtcAudioMixingInterface {
 
   /// 设置音乐文件的播放位置。
   ///
+  /// 你需要在调用 [startAudioMixing] 并收到 `audioMixingStateChanged(Playing)` 回调后调用该方法。
+  ///
   /// **Parameter** [pos] 整数。进度条位置，单位为毫秒。
   Future<void> setAudioMixingPosition(int pos);
 
   /// 调整本地播放的音乐文件的音调。
+  ///
+  /// 你需要在调用 [startAudioMixing] 并收到 `audioMixingStateChanged(Playing)` 回调后调用该方法。
   ///
   /// 本地人声和播放的音乐文件混音时，调用该方法可以仅调节音乐文件的音调。
   ///
@@ -2040,12 +2055,12 @@ mixin RtcVoiceChangerInterface {
   /// - 该方法对人声的处理效果最佳，Agora 不推荐调用该方法处理含音乐的音频数据。
   /// - 如果调用该方法并设置除 `RoomAcoustics3DVoice` 或 `PitchCorrection` 外的枚举，请勿再调用 `setAudioEffectParameters`，否则该方法设置的效果会被覆盖。
   /// - 调用该方法后，Agora 不推荐调用以下方法，否则该方法设置的效果会被覆盖:
-  ///     - `setVoiceBeautifierPreset`
-  ///     - `setLocalVoiceReverbPreset`
-  ///     - `setLocalVoiceChanger`
-  ///     - `setLocalVoicePitch`
-  ///     - `setLocalVoiceEqualization`
-  ///     - `setLocalVoiceReverb`
+  ///     - [RtcEngine.setVoiceBeautifierPreset]
+  ///     - [RtcEngine.setLocalVoiceReverbPreset]
+  ///     - [RtcEngine.setLocalVoiceChanger]
+  ///     - [RtcEngine.setLocalVoicePitch]
+  ///     - [RtcEngine.setLocalVoiceEqualization]
+  ///     - [RtcEngine.setLocalVoiceReverb]
   ///
   /// **Parameter** [preset] 预设的音效选项: [AudioEffectPreset]。
   Future<void> setAudioEffectPreset(AudioEffectPreset preset);
@@ -2063,13 +2078,13 @@ mixin RtcVoiceChangerInterface {
   /// - 请勿将 `setAudioProfile` 的 `profile` 参数设置为 `SpeechStandard(1)`，否则该方法会调用失败。
   /// - 该方法对人声的处理效果最佳，Agora 不推荐调用该方法处理含音乐的音频数据。
   /// - 调用该方法后，Agora 不推荐调用以下方法，否则该方法设置的效果会被覆盖：
-  ///   - `setAudioEffectPreset`
-  ///   - `setAudioEffectParameters`
-  ///   - `setLocalVoiceReverbPreset`
-  ///   - `setLocalVoiceChanger`
-  ///   - `setLocalVoicePitch`
-  ///   - `setLocalVoiceEqualization`
-  ///   - `setLocalVoiceReverb`
+  ///   - [RtcEngine.setAudioEffectPreset]
+  ///   - [RtcEngine.setAudioEffectParameters]
+  ///   - [RtcEngine.setLocalVoiceReverbPreset]
+  ///   - [RtcEngine.setLocalVoiceChanger]
+  ///   - [RtcEngine.setLocalVoicePitch]
+  ///   - [RtcEngine.setLocalVoiceEqualization]
+  ///   - [RtcEngine.setLocalVoiceReverb]
   ///
   /// **Parameter** [preset] 预设的美声效果选项：[VoiceBeautifierPreset]。
   Future<void> setVoiceBeautifierPreset(VoiceBeautifierPreset preset);
@@ -2082,7 +2097,6 @@ mixin RtcVoiceChangerInterface {
   ///
   /// 设置后，频道内所有用户都能听到该效果。
   ///
-  /// 该方法可以单独使用，也可以搭配 [RtcEngine.setAudioEffectPreset] 使用。搭配使用时，需要先调用 `setAudioEffectPreset` 并使用 `RoomAcoustics3DVoice` 或 `PitchCorrection` 枚举，再调用该方法使用相同的枚举。否则， 该方法设置的效果会覆盖 `setAudioEffectPreset` 设置的效果。
   ///
   /// **Note**
   /// - 该方法在加入频道前后都能调用。
@@ -2090,13 +2104,13 @@ mixin RtcVoiceChangerInterface {
   /// - 请勿将 `setAudioProfile` 的 `profile` 参数设置为 `SpeechStandard(1)`，否则该方法会调用失败。
   /// - 该方法对人声的处理效果最佳，Agora 不推荐调用该方法处理含音乐的音频数据。
   /// - 调用该方法后，Agora 不推荐调用以下方法，否则该方法设置的效果会被覆盖：
-  ///   - `setAudioEffectPreset`
-  ///   - `setVoiceBeautifierPreset`
-  ///   - `setLocalVoiceReverbPreset`
-  ///   - `setLocalVoiceChanger`
-  ///   - `setLocalVoicePitch`
-  ///   - `setLocalVoiceEqualization`
-  ///   - `setLocalVoiceReverb`
+  ///   - [RtcEngine.setAudioEffectPreset]
+  ///   - [RtcEngine.setVoiceBeautifierPreset]
+  ///   - [RtcEngine.setLocalVoiceReverbPreset]
+  ///   - [RtcEngine.setLocalVoiceChanger]
+  ///   - [RtcEngine.setLocalVoicePitch]
+  ///   - [RtcEngine.setLocalVoiceEqualization]
+  ///   - [RtcEngine.setLocalVoiceReverb]
   ///
   /// **Parameter** [preset] SDK 预设的音效：
   /// - 3D 人声音效: `RoomAcoustics3DVoice`
@@ -2189,7 +2203,7 @@ mixin RtcVoicePositionInterface {
   ///
   /// **Note**
   /// - 使用该方法需要在加入频道前调用 [RtcEngine.enableSoundPositionIndication] 开启远端用户的语音立体声。
-  /// - 为获得最佳听觉体验，我们建议用户佩戴耳机。
+  /// - 为获得最佳听觉体验，我们建议用户佩戴有线耳机。
   ///
   /// **Parameter** [uid] 远端用户的 ID。
   ///
@@ -2380,6 +2394,8 @@ mixin RtcDualStreamInterface {
 
   /// 设置订阅的视频流类型。
   ///
+  /// 该方法在加入频道前后都能调用。
+  ///
   /// 在网络条件受限的情况下，如果发送端没有调用 [RtcEngine.enableDualStreamMode] (`false`) 关闭双流模式，
   /// 接收端可以选择接收大流还是小流。其中，大流可以接为高分辨率高码率的视频流，
   /// 小流则是低分辨率低码率的视频流。
@@ -2397,6 +2413,8 @@ mixin RtcDualStreamInterface {
   Future<void> setRemoteVideoStreamType(int uid, VideoStreamType streamType);
 
   /// 设置默认订阅的视频流类型。
+  ///
+  /// 该方法在加入频道前后都能调用。
   ///
   /// **Parameter** [streamType] 视频流类型。详见 [VideoStreamType]。
   Future<void> setRemoteDefaultVideoStreamType(VideoStreamType streamType);

@@ -545,7 +545,7 @@ enum CameraCaptureOutputPreference {
   @JsonValue(0)
   Auto,
 
-  /// 优先保证设备性能。SDK 根据用户在 `setVideoEncoderConfiguration` 中设置编码器的分辨率和帧率，选择最接近的摄像头输出参数，从而保证设备性能。在这种情况下，预览质量接近于编码器的输出质量。
+  /// 优先保证设备性能。SDK 根据你在 `setVideoEncoderConfiguration` 中设置编码器的分辨率和帧率，选择最接近的摄像头输出参数，从而保证设备性能。在这种情况下，预览质量接近于编码器的输出质量。
   /// 详见 [RtcEngine.setVideoEncoderConfiguration]。
   @JsonValue(1)
   Performance,
@@ -554,7 +554,7 @@ enum CameraCaptureOutputPreference {
   @JsonValue(2)
   Preview,
 
-  /// 允许用户设置本地摄像头采集的视频宽高。
+  /// 允许你设置本地摄像头采集的视频宽高。
   @JsonValue(3)
   Manual,
 }

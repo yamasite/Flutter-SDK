@@ -763,9 +763,13 @@ class RtcStats {
   int rxPacketLossRate;
 
   /// 当前系统的 CPU 使用率 (%)。
+  ///
+  /// `leaveChannel` 回调中报告的 `cpuTotalUsage` 恒为 0。
   double cpuTotalUsage;
 
   /// 当前 App 的 CPU 使用率 (%)。
+  ///
+  /// `leaveChannel` 回调中报告的 `cpuAppUsage` 恒为 0。
   double cpuAppUsage;
 
   /// 客户端到本地路由器的往返时延 (ms)。
