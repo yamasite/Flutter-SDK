@@ -505,6 +505,10 @@ Agora Flutter SDK 基于 Android 和 iOS 平台的 Agora RTC SDK 封装，可在
 <td>设置 SDK 预设的美声效果</td>
 </tr>
 <tr>
+<td><a href ="rtc_engine/RtcEngine/setVoiceBeautifierParameters.html">setVoiceBeautifierParameters</a></td>
+<td>设置 SDK 预设美声效果的参数</td>
+</tr>
+<tr>
 <td><a href ="rtc_engine/RtcEngine/setAudioEffectParameters.html">setAudioEffectParameters</a></td>
 <td>设置 SDK 预设人声音效的参数</td>
 </tr>
