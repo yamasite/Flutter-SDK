@@ -2754,9 +2754,11 @@ mixin RtcCameraInterface {
   /// **Parameter** [factor] 相机缩放比例，有效范围从 1.0 到最大缩放。
   Future<void> setCameraZoomFactor(double factor);
 
-  /// 获取摄像头支持最大缩放比例。
+  /// (仅支持 iOS) 获取摄像头支持最大缩放比例。
   ///
-  /// **Returns** 该相机支持的最大缩放比例。
+  /// **Returns**
+  ///
+  /// 该相机支持的最大缩放比例。
   Future<double> getCameraMaxZoomFactor();
 
   /// 设置手动对焦位置，并触发对焦。
