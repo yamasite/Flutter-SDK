@@ -907,35 +907,6 @@ Agora Flutter SDK 基于 Android 和 iOS 平台的 Agora RTC SDK 封装，可在
 </tr>
 </table>
 
-### 直播输入在线媒体流
-
-该组方法仅适用于互动直播。
-
-<table border="1">
-<tr>
-<th>方法</th>
-<th>描述</th>
-</tr>
-<tr>
-<td><a href ="rtc_channel/RtcChannel/addInjectStreamUrl.html">addInjectStreamUrl</a></td>
-<td>输入在线媒体流</td>
-</tr>
-<tr>
-<td><a href ="rtc_channel/RtcChannel/removeInjectStreamUrl.html">removeInjectStreamUrl</a></td>
-<td>删除输入的在线媒体流</td>
-</tr>
-</table>
-
-<table border="1">
-<tr>
-<th>事件</th>
-<th>描述</th>
-</tr>
-<tr>
-<td><a href ="rtc_channel/RtcChannelEventHandler/streamInjectedStatus.html">streamInjectedStatus</a></td>
-<td>输入在线媒体流状态回调</td>
-</tr>
-</table>
 
 ### 摄像头控制
 
