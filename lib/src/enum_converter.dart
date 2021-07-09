@@ -11,12 +11,10 @@ abstract class EnumConverter<E, T> {
 
   EnumConverter(this.e);
 
-  EnumConverter.fromValue(Map<E, T> map, T t) {
-    e = _$enumDecodeNullable(map, t);
-  }
+  EnumConverter.fromValue(Map<E, T> map, T t) : e = _$enumDecode(map, t);
 
   T toValue(Map<E, T> map) {
-    return map[e];
+    return map[e] as T;
   }
 }
 
@@ -84,15 +82,14 @@ class AudioLocalStateConverter extends EnumConverter<AudioLocalState, int> {
 }
 
 @JsonSerializable()
-class AudioMixingErrorCodeConverter
-    extends EnumConverter<AudioMixingErrorCode, int> {
-  AudioMixingErrorCodeConverter(AudioMixingErrorCode e) : super(e);
+class AudioMixingReasonConverter extends EnumConverter<AudioMixingReason, int> {
+  AudioMixingReasonConverter(AudioMixingReason e) : super(e);
 
-  AudioMixingErrorCodeConverter.fromValue(int value)
-      : super.fromValue(_$AudioMixingErrorCodeEnumMap, value);
+  AudioMixingReasonConverter.fromValue(int value)
+      : super.fromValue(_$AudioMixingReasonEnumMap, value);
 
   int value() {
-    return super.toValue(_$AudioMixingErrorCodeEnumMap);
+    return super.toValue(_$AudioMixingReasonEnumMap);
   }
 }
 
@@ -144,6 +141,19 @@ class AudioRecordingQualityConverter
 
   int value() {
     return super.toValue(_$AudioRecordingQualityEnumMap);
+  }
+}
+
+@JsonSerializable()
+class AudioRecordingPositionConverter
+    extends EnumConverter<AudioRecordingPosition, int> {
+  AudioRecordingPositionConverter(AudioRecordingPosition e) : super(e);
+
+  AudioRecordingPositionConverter.fromValue(int value)
+      : super.fromValue(_$AudioRecordingPositionEnumMap, value);
+
+  int value() {
+    return super.toValue(_$AudioRecordingPositionEnumMap);
   }
 }
 
@@ -798,5 +808,106 @@ class AudienceLatencyLevelTypeConverter
 
   int value() {
     return super.toValue(_$AudienceLatencyLevelTypeEnumMap);
+  }
+}
+
+@JsonSerializable()
+class LogLevelConverter extends EnumConverter<LogLevel, int> {
+  LogLevelConverter(LogLevel e) : super(e);
+
+  LogLevelConverter.fromValue(int value)
+      : super.fromValue(_$LogLevelEnumMap, value);
+
+  int value() {
+    return super.toValue(_$LogLevelEnumMap);
+  }
+}
+
+@JsonSerializable()
+class CaptureBrightnessLevelTypeConverter
+    extends EnumConverter<CaptureBrightnessLevelType, int> {
+  CaptureBrightnessLevelTypeConverter(CaptureBrightnessLevelType e) : super(e);
+
+  CaptureBrightnessLevelTypeConverter.fromValue(int value)
+      : super.fromValue(_$CaptureBrightnessLevelTypeEnumMap, value);
+
+  int value() {
+    return super.toValue(_$CaptureBrightnessLevelTypeEnumMap);
+  }
+}
+
+@JsonSerializable()
+class SuperResolutionStateReasonConverter
+    extends EnumConverter<SuperResolutionStateReason, int> {
+  SuperResolutionStateReasonConverter(SuperResolutionStateReason e) : super(e);
+
+  SuperResolutionStateReasonConverter.fromValue(int value)
+      : super.fromValue(_$SuperResolutionStateReasonEnumMap, value);
+
+  int value() {
+    return super.toValue(_$SuperResolutionStateReasonEnumMap);
+  }
+}
+
+@JsonSerializable()
+class UploadErrorReasonConverter extends EnumConverter<UploadErrorReason, int> {
+  UploadErrorReasonConverter(UploadErrorReason e) : super(e);
+
+  UploadErrorReasonConverter.fromValue(int value)
+      : super.fromValue(_$UploadErrorReasonEnumMap, value);
+
+  int value() {
+    return super.toValue(_$UploadErrorReasonEnumMap);
+  }
+}
+
+@JsonSerializable()
+class CloudProxyTypeConverter extends EnumConverter<CloudProxyType, int> {
+  CloudProxyTypeConverter(CloudProxyType e) : super(e);
+
+  CloudProxyTypeConverter.fromValue(int value)
+      : super.fromValue(_$CloudProxyTypeEnumMap, value);
+
+  int value() {
+    return super.toValue(_$CloudProxyTypeEnumMap);
+  }
+}
+
+@JsonSerializable()
+class ExperienceQualityTypeConverter
+    extends EnumConverter<ExperienceQualityType, int> {
+  ExperienceQualityTypeConverter(ExperienceQualityType e) : super(e);
+
+  ExperienceQualityTypeConverter.fromValue(int value)
+      : super.fromValue(_$ExperienceQualityTypeEnumMap, value);
+
+  int value() {
+    return super.toValue(_$ExperienceQualityTypeEnumMap);
+  }
+}
+
+@JsonSerializable()
+class ExperiencePoorReasonConverter
+    extends EnumConverter<ExperiencePoorReason, int> {
+  ExperiencePoorReasonConverter(ExperiencePoorReason e) : super(e);
+
+  ExperiencePoorReasonConverter.fromValue(int value)
+      : super.fromValue(_$ExperiencePoorReasonEnumMap, value);
+
+  int value() {
+    return super.toValue(_$ExperiencePoorReasonEnumMap);
+  }
+}
+
+@JsonSerializable()
+class VoiceConversionPresetConverter
+    extends EnumConverter<VoiceConversionPreset, int> {
+  VoiceConversionPresetConverter(VoiceConversionPreset e) : super(e);
+
+  VoiceConversionPresetConverter.fromValue(int value)
+      : super.fromValue(_$VoiceConversionPresetEnumMap, value);
+
+  int value() {
+    return super.toValue(_$VoiceConversionPresetEnumMap);
   }
 }

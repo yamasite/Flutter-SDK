@@ -1,5 +1,6 @@
 import 'dart:ui' show Color;
 
+import 'package:agora_rtc_engine/src/enum_converter.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import 'enums.dart';
@@ -16,7 +17,10 @@ class UserInfo {
   String userAccount;
 
   /// Constructs a [UserInfo]
-  UserInfo();
+  UserInfo(
+    this.uid,
+    this.userAccount,
+  );
 
   // @nodoc ignore: public_member_api_docs
   factory UserInfo.fromJson(Map<String, dynamic> json) =>
@@ -30,13 +34,18 @@ class UserInfo {
 @JsonSerializable(explicitToJson: true)
 class VideoDimensions {
   /// 视频帧在横轴上的像素。
-  int width;
+  @JsonKey(includeIfNull: false)
+  int? width;
 
   /// 视频帧在纵轴上的像素。
-  int height;
+  @JsonKey(includeIfNull: false)
+  int? height;
 
   /// Constructs a [VideoDimensions]
-  VideoDimensions(this.width, this.height);
+  VideoDimensions({
+    this.width,
+    this.height,
+  });
 
   // @nodoc ignore: public_member_api_docs
   factory VideoDimensions.fromJson(Map<String, dynamic> json) =>
@@ -73,15 +82,15 @@ class VideoEncoderConfiguration {
   /// - 该值不代表最终视频输出的方向。请查阅 [VideoOutputOrientationMode] 了解设置视频方向。
   /// - 视频能否达到 720P 的分辨率取决于设备的性能，在性能配备较低的设备上有可能无法实现。如果采用 720P 分辨率而设备性能跟不上，则有可能出现帧率过低的情况。
   @JsonKey(includeIfNull: false)
-  VideoDimensions dimensions;
+  VideoDimensions? dimensions;
 
   /// 视频编码的帧率（fps），默认值为 15。用户可以自行设置帧率，也可以在 [VideoFrameRate] 直接选择想要的帧率。建议不要超过 30 帧。
   @JsonKey(includeIfNull: false)
-  VideoFrameRate frameRate;
+  VideoFrameRate? frameRate;
 
   /// 最低视频编码帧率（fps）。默认值为 [VideoFrameRate.Min]，表示使用系统默认的最低编码帧率。
   @JsonKey(includeIfNull: false)
-  VideoFrameRate minFrameRate;
+  VideoFrameRate? minFrameRate;
 
   /// 视频编码的码率。单位为 Kbps。你可以根据场景需要，参考下面的视频基准码率参考表，手动设置你想要的码率。
   /// 若设置的视频码率超出合理范围，SDK 会自动按照合理区间处理码率。
@@ -128,28 +137,28 @@ class VideoEncoderConfiguration {
   /// 该表中的基准码率适用于通信场景。直播场景下通常需要较大码率来提升视频质量。
   /// Agora 推荐通过设置 `0`来实现。你也可以直接将码率值设为基准码率值 x 2。
   @JsonKey(includeIfNull: false)
-  int bitrate;
+  int? bitrate;
 
   /// 最低视频编码码率。单位为 Kbps。
   /// Agora SDK 会根据网络条件进行码率自适应。 该参数强制视频编码器输出高质量图片。如果将参数设为高于默认值，
   /// 在网络状况不佳情况下可能会导致网络丢包，并影响视频播放的流畅度。因此如非对画质有特殊需求，Agora 建议不要修改该参数的值。
   @JsonKey(includeIfNull: false)
-  int minBitrate;
+  int? minBitrate;
 
   /// 视频编码的方向模式。
   /// 详见 [VideoOutputOrientationMode]。
   @JsonKey(includeIfNull: false)
-  VideoOutputOrientationMode orientationMode;
+  VideoOutputOrientationMode? orientationMode;
 
   /// 带宽受限时，视频编码降级偏好。
   /// 详见 [DegradationPreference]。
   @JsonKey(includeIfNull: false)
-  DegradationPreference degradationPrefer;
+  DegradationPreference? degradationPrefer;
 
   /// 本地发送视频的镜像模式，只影响远端用户看到的视频画面。
   /// 详见 [VideoMirrorMode]。
-  @JsonKey(includeIfNull: false)
-  VideoMirrorMode mirrorMode;
+   @JsonKey(includeIfNull: false)
+  VideoMirrorMode? mirrorMode;
 
   /// Constructs a [VideoEncoderConfiguration]
   VideoEncoderConfiguration({
@@ -160,7 +169,8 @@ class VideoEncoderConfiguration {
     this.minBitrate,
     this.orientationMode,
     this.degradationPrefer,
-    this.mirrorMode});
+    this.mirrorMode,
+  });
 
   // @nodoc ignore: public_member_api_docs
   factory VideoEncoderConfiguration.fromJson(Map<String, dynamic> json) =>
@@ -175,26 +185,27 @@ class VideoEncoderConfiguration {
 class BeautyOptions {
   /// 亮度明暗对比度。与 [lighteningLevel] 参数搭配使用。// 检查一下 RN 为什么没有？
   @JsonKey(includeIfNull: false)
-  LighteningContrastLevel lighteningContrastLevel;
+  LighteningContrastLevel? lighteningContrastLevel;
 
   /// 亮度，取值范围为 [0.0,1.0]，其中 0.0 表示原始亮度，默认值为 0.7。可用来实现美白等视觉效果。
   @JsonKey(includeIfNull: false)
-  double lighteningLevel;
+  double? lighteningLevel;
 
   /// 平滑度，取值范围为 [0.0,1.0]，其中 0.0 表示原始平滑等级，默认值为 0.5。可用来实现祛痘、磨皮等视觉效果。
   @JsonKey(includeIfNull: false)
-  double smoothnessLevel;
+  double? smoothnessLevel;
 
   /// 红色度，取值范围为 [0.0,1.0]，其中 0.0 表示原始红色度，默认值为 0.1。可用来实现红润肤色等视觉效果。
   @JsonKey(includeIfNull: false)
-  double rednessLevel;
+  double? rednessLevel;
 
   /// Constructs a [BeautyOptions]
-  BeautyOptions(
-    {this.lighteningContrastLevel,
+  BeautyOptions({
+    this.lighteningContrastLevel,
     this.lighteningLevel,
     this.smoothnessLevel,
-    this.rednessLevel});
+    this.rednessLevel,
+  });
 
   // @nodoc ignore: public_member_api_docs
   factory BeautyOptions.fromJson(Map<String, dynamic> json) =>
@@ -211,19 +222,27 @@ class AgoraImage {
   String url;
 
   /// 图片左上角在视频帧上的横轴坐标。
-  int x;
+  @JsonKey(includeIfNull: false)
+  int? x;
 
   /// 图片左上角在视频帧上的纵轴坐标。
-  int y;
+  @JsonKey(includeIfNull: false)
+  int? y;
 
   /// 图片在视频帧上的宽度。
-  int width;
+  int? width;
 
   /// 图片在视频帧上的高度。
-  int height;
+   int? height;
 
   /// Constructs a [AgoraImage]
-  AgoraImage(this.url, this.x, this.y, this.width, this.height);
+  AgoraImage(
+    this.url, {
+    this.x,
+    this.y,
+    this.width,
+    this.height,
+  });
 
   // @nodoc ignore: public_member_api_docs
   factory AgoraImage.fromJson(Map<String, dynamic> json) =>
@@ -240,18 +259,20 @@ class TranscodingUser {
   int uid;
 
   /// 屏幕里该区域相对左上角的横坐标绝对值 (pixel)。取值范围为转码配置参数定义中设置的 [0,width]。
-  int x;
+  @JsonKey(includeIfNull: false)
+  int? x;
 
   /// 屏幕里该区域相对左上角的纵坐标绝对值 (pixel)。取值范围为转码配置参数定义中设置的 [0,height]。
-  int y;
+  @JsonKey(includeIfNull: false)
+  int? y;
 
   /// 视频帧宽度 (pixel)。 默认值为 360。
   @JsonKey(includeIfNull: false)
-  int width;
+  int? width;
 
   /// 视频帧高度 (pixel)。默认值为 640。
   @JsonKey(includeIfNull: false)
-  int height;
+  int? height;
 
   /// 视频帧图层编号。取值范围为 [0,100] 中的整型。支持将 `zOrder` 设置为 `0`。
   /// - 0: （默认）表示该区域图像位于最下层。
@@ -260,13 +281,13 @@ class TranscodingUser {
   /// **Note**
   /// 如果取值小于 0 或大于 100，会返回错误 [ErrorCode.InvalidArgument]。
   @JsonKey(includeIfNull: false)
-  int zOrder;
+  int? zOrder;
 
   /// 直播视频上用户视频的透明度。取值范围为 [0.0,100.0]:
   /// - 0.0: 该区域图像完全透明。
   /// - 1.0:（默认）该区域图像完全不透明。
   @JsonKey(includeIfNull: false)
-  double alpha;
+  double? alpha;
 
   /// 直播音频所在声道。取值范围为 [0,5]，默认值为 0。
   /// 详见 [AudioChannel]。
@@ -274,19 +295,19 @@ class TranscodingUser {
   /// **Note**
   /// 选项不为 0 时，需要特殊的播放器支持。
   @JsonKey(includeIfNull: false)
-  AudioChannel audioChannel;
+  AudioChannel? audioChannel;
 
   /// Constructs a [TranscodingUser]
   TranscodingUser(
-        this.uid,
-        this.x,
-        this.y, {
-        this.width,
-        this.height,
-        this.zOrder,
-        this.alpha,
-        this.audioChannel,
-      });
+    this.uid, {
+    this.x,
+    this.y,
+    this.width,
+    this.height,
+    this.zOrder,
+    this.alpha,
+    this.audioChannel,
+  });
 
   // @nodoc ignore: public_member_api_docs
   factory TranscodingUser.fromJson(Map<String, dynamic> json) =>
@@ -303,50 +324,50 @@ class LiveTranscoding {
   /// - 如果推视频流，`width` 值不得低于 64，否则 Agora 会调整为 64。
   /// - 如果推音频流，请将 `width` 和 `height` 设为 0。
   @JsonKey(includeIfNull: false)
-  int width;
+  int? width;
 
   /// 推流视频的总高度，默认值 640，单位为像素。
   /// - 如果推视频流，`height` 值不得低于 64，否则 Agora 会调整为 64。
   /// - 如果推音频流，请将 `width` 和 `height` 设为 0。
   @JsonKey(includeIfNull: false)
-  int height;
+  int? height;
 
   /// 用于旁路推流的输出视频的码率。 单位为 Kbps。 400 Kbps 为默认值。用户可以根据 [VideoEncoderConfiguration.bitrate]（码率参考表）参考表中的码率值进行设置；
   @JsonKey(includeIfNull: false)
-  int videoBitrate;
+  int? videoBitrate;
 
   /// 用于旁路推流的输出视频的帧率。取值范围是 (0,30]，单位为 fps。默认值为 15 fps。
   @JsonKey(includeIfNull: false)
-  VideoFrameRate videoFramerate;
+  VideoFrameRate? videoFramerate;
 
   /// **Deprecated** 已废弃。Agora 不推荐使用。
   /// - `true`： 低延时，不保证画质。
   /// - `false`：（默认值）高延时，保证画质。
   @deprecated
   @JsonKey(includeIfNull: false)
-  bool lowLatency;
+  bool? lowLatency;
 
   /// 用于旁路直播的输出视频的 GOP。单位为帧。默认值为 30 fps。
   @JsonKey(includeIfNull: false)
-  int videoGop;
+  int? videoGop;
 
   /// 用于旁路直播的输出视频上的水印图片。添加后所有旁路直播的观众都可以看到水印。必须为 PNG 格式。
   /// 详见 [AgoraImage]。
   @JsonKey(includeIfNull: false)
-  AgoraImage watermark;
+  AgoraImage? watermark;
 
   /// 用于旁路直播的输出视频上的背景图片。添加后所有旁路直播的观众都可以看到背景图片。
   /// 详见 [AgoraImage]。
   @JsonKey(includeIfNull: false)
-  AgoraImage backgroundImage;
+  AgoraImage? backgroundImage;
 
   /// 自定义音频采样率。详见 [AudioSampleRateType]。
   @JsonKey(includeIfNull: false)
-  AudioSampleRateType audioSampleRate;
+  AudioSampleRateType? audioSampleRate;
 
   /// 用于旁路推流的输出音频的码率。单位为 Kbps，默认值为 48，最大值为 128。
   @JsonKey(includeIfNull: false)
-  int audioBitrate;
+  int? audioBitrate;
 
   /// 用于旁路推流的输出音频的声道数，取值范围为 [1,5] 中的整型，默认值为 1。建议取 1 或 2，如果取值为 3、4或5，需要特殊播放器支持：
   /// - 1：单声道
@@ -355,26 +376,26 @@ class LiveTranscoding {
   /// - 4：四声道
   /// - 5：五声道
   @JsonKey(includeIfNull: false)
-  AudioChannel audioChannels;
+  AudioChannel? audioChannels;
 
   /// 用于旁路推流的输出音频的编码规格。详见 [AudioCodecProfileType]。 可以设置为 `LCAAC` 或 `HEAAC`。默认为 `LCAAC`。
   @JsonKey(includeIfNull: false)
-  AudioCodecProfileType audioCodecProfile;
+  AudioCodecProfileType? audioCodecProfile;
 
   /// 用于旁路直播的输出视频的编码规格。详见 [VideoCodecProfileType]。
   /// 可以设置为 `BASELINE`、`MAIN` 或 `HIGH` （默认值）级别。如果设置其他值，Agora 服务器会统一设为默认值 `HIGH`。
   @JsonKey(includeIfNull: false)
-  VideoCodecProfileType videoCodecProfile;
+  VideoCodecProfileType? videoCodecProfile;
 
   /// 背景色，格式为 RGB 定义下的 Hex 值，不要带 # 号，如 0xFFB6C1 表示浅粉色。默认0x000000，黑色。// RN 优化
   /// 详见 [Color]。
   @JsonKey(
       includeIfNull: false, fromJson: _$ColorFromJson, toJson: _$ColorToJson)
-  Color backgroundColor;
+  Color? backgroundColor;
 
   /// 预留参数。 用户自定义的发送到旁路推流客户端的信息，用于填充 H264/H265 视频中 SEI 帧内容。长度限制：4096字节。
   @JsonKey(includeIfNull: false)
-  String userConfigExtraInfo;
+  String? userConfigExtraInfo;
 
   /// 用于管理参与直播推流的视频转码合图的用户。最多支持 17 人同时参与转码合图。
   List<TranscodingUser> transcodingUsers;
@@ -406,17 +427,17 @@ class LiveTranscoding {
   // @nodoc ignore: public_member_api_docs
   Map<String, dynamic> toJson() => _$LiveTranscodingToJson(this);
 
-  static Color _$ColorFromJson(Map<String, dynamic> json) {
-    return Color.fromRGBO(
-        json['red'] as int, json['green'] as int, json['blue'] as int, 1.0);
-  }
+  static Color _$ColorFromJson(Map<String, dynamic> json) => Color.fromRGBO(
+      json['red'] as int, json['green'] as int, json['blue'] as int, 1.0);
 
-  static Map<String, dynamic> _$ColorToJson(Color instance) =>
-      <String, dynamic>{
-        'red': instance.red,
-        'green': instance.green,
-        'blue': instance.blue,
-      };
+  static Map<String, dynamic>? _$ColorToJson(Color? instance) =>
+      instance != null
+          ? <String, dynamic>{
+              'red': instance.red,
+              'green': instance.green,
+              'blue': instance.blue,
+            }
+          : null;
 }
 
 /// `ChannelMediaInfo` 类。
@@ -428,13 +449,17 @@ class ChannelMediaInfo {
 
   /// 能加入频道的 Token。
   @JsonKey(includeIfNull: false)
-  String token;
+  String? token;
 
   /// 用户 ID。
   int uid;
 
   /// Constructs a [ChannelMediaInfo]
-  ChannelMediaInfo(this.uid, {this.channelName, this.token});
+  ChannelMediaInfo(
+    this.channelName,
+    this.uid, {
+    this.token,
+  });
 
   // @nodoc ignore: public_member_api_docs
   factory ChannelMediaInfo.fromJson(Map<String, dynamic> json) =>
@@ -464,7 +489,10 @@ class ChannelMediaRelayConfiguration {
   List<ChannelMediaInfo> destInfos;
 
   /// Constructs a [ChannelMediaRelayConfiguration]
-  ChannelMediaRelayConfiguration(this.srcInfo, this.destInfos);
+  ChannelMediaRelayConfiguration(
+    this.srcInfo,
+    this.destInfos,
+  );
 
   // @nodoc ignore: public_member_api_docs
   factory ChannelMediaRelayConfiguration.fromJson(Map<String, dynamic> json) =>
@@ -491,9 +519,12 @@ class LastmileProbeConfig {
   int expectedDownlinkBitrate;
 
   /// Constructs a [LastmileProbeConfig]
-  LastmileProbeConfig(this.probeUplink, this.probeDownlink,
-      this.expectedUplinkBitrate, this.expectedDownlinkBitrate);
-
+  LastmileProbeConfig(
+    this.probeUplink,
+    this.probeDownlink,
+    this.expectedUplinkBitrate,
+    this.expectedDownlinkBitrate,
+  );
   // @nodoc ignore: public_member_api_docs
   factory LastmileProbeConfig.fromJson(Map<String, dynamic> json) =>
       _$LastmileProbeConfigFromJson(json);
@@ -506,19 +537,28 @@ class LastmileProbeConfig {
 @JsonSerializable(explicitToJson: true)
 class Rectangle {
   /// 左上角的横向偏移。
-  int x;
+  @JsonKey(includeIfNull: false)
+  int? x;
 
   /// 左上角的纵向偏移
-  int y;
+  @JsonKey(includeIfNull: false)
+  int? y;
 
   /// 水印图片的宽（px）。
-  int width;
+  @JsonKey(includeIfNull: false)
+  int? width;
 
   /// 水印图片的高（px)。
-  int height;
+  @JsonKey(includeIfNull: false)
+  int? height;
 
   /// Constructs a [Rectangle]
-  Rectangle(this.x, this.y, this.width, this.height);
+  Rectangle({
+    this.x,
+    this.y,
+    this.width,
+    this.height,
+  });
 
   // @nodoc ignore: public_member_api_docs
   factory Rectangle.fromJson(Map<String, dynamic> json) =>
@@ -535,19 +575,24 @@ class WatermarkOptions {
   /// - `true`：(默认) 预览时水印本地可见。
   /// - `false`：预览时水印本地不可见。
   @JsonKey(includeIfNull: false)
-  bool visibleInPreview;
+  bool? visibleInPreview;
 
   /// 视频编码模式为横屏时的水印坐标。
   /// 详见 [Rectangle]。
-  Rectangle positionInLandscapeMode;
+  @JsonKey(includeIfNull: false)
+  Rectangle? positionInLandscapeMode;
 
   /// 视频编码模式为竖屏时的水印坐标。
   /// 详见 [Rectangle]。
-  Rectangle positionInPortraitMode;
+  @JsonKey(includeIfNull: false)
+  Rectangle? positionInPortraitMode;
 
   /// Constructs a [WatermarkOptions]
-  WatermarkOptions(this.positionInLandscapeMode, this.positionInPortraitMode,
-      {this.visibleInPreview});
+  WatermarkOptions({
+    this.visibleInPreview,
+    this.positionInLandscapeMode,
+    this.positionInPortraitMode,
+  });
 
   // @nodoc ignore: public_member_api_docs
   factory WatermarkOptions.fromJson(Map<String, dynamic> json) =>
@@ -561,53 +606,56 @@ class WatermarkOptions {
 @JsonSerializable(explicitToJson: true)
 class LiveInjectStreamConfig {
   /// 添加进入直播的外部视频源宽度，单位为像素。默认值为 0，即保留视频源原始宽度。
-  int width;
+  @JsonKey(includeIfNull: false)
+  int? width;
 
   /// 添加进入直播的外部视频源高度，单位为像素。默认值为 0，即保留视频源原始高度。
-  int height;
+  @JsonKey(includeIfNull: false)
+  int? height;
 
   /// 添加进入直播的外部视频源 GOP。默认值为 30 帧。
   @JsonKey(includeIfNull: false)
-  int videoGop;
+  int? videoGop;
 
   /// 添加进入直播的外部视频源帧率。默认值为 15 fps。
   @JsonKey(includeIfNull: false)
-  VideoFrameRate videoFramerate;
+  VideoFrameRate? videoFramerate;
 
   /// 添加进入直播的外部视频源码率。默认设置为 400 Kbps。
   @JsonKey(includeIfNull: false)
-  int videoBitrate;
+  int? videoBitrate;
 
   /// 添加进入直播的外部音频采样率。默认值为 44100，详见 [AudioSampleRateType]。
   ///
   /// **Note**
   /// 声网建议目前采用默认值，不要自行设置。
   @JsonKey(includeIfNull: false)
-  AudioSampleRateType audioSampleRate;
+  AudioSampleRateType? audioSampleRate;
 
   /// 添加进入直播的外部音频码率。单位为 Kbps，默认值为 48。
   ///
   /// **Note**
   /// 声网建议目前采用默认值，不要自行设置。
   @JsonKey(includeIfNull: false)
-  int audioBitrate;
+  int? audioBitrate;
 
   /// 添加进入直播的外部音频频道数。取值范围为 1 或 2，默认值为 1。
   ///
   /// **Note** 声网建议目前采用默认值，不要自行设置。
   @JsonKey(includeIfNull: false)
-  AudioChannel audioChannels;
+  AudioChannel? audioChannels;
 
   /// Constructs a [LiveInjectStreamConfig]
-  LiveInjectStreamConfig(
-    {this.width,
+  LiveInjectStreamConfig({
+    this.width,
     this.height,
     this.videoGop,
     this.videoFramerate,
     this.videoBitrate,
     this.audioSampleRate,
     this.audioBitrate,
-    this.audioChannels});
+    this.audioChannels,
+  });
 
   // @nodoc ignore: public_member_api_docs
   factory LiveInjectStreamConfig.fromJson(Map<String, dynamic> json) =>
@@ -622,23 +670,29 @@ class LiveInjectStreamConfig {
 class CameraCapturerConfiguration {
   /// 摄像头采集偏好。
   /// 详见 [CameraCaptureOutputPreference]。
-  CameraCaptureOutputPreference preference;
+  @JsonKey(includeIfNull: false)
+  CameraCaptureOutputPreference? preference;
 
   /// 本地采集的视频宽度 (px)。如果你需要自定义本地采集的视频宽度，请先将 [preference] 设为 `Manual(3)` ，再通过 [captureWidth] 设置采集的视频宽度。
   @JsonKey(includeIfNull: false)
-  int captureWidth;
+  int? captureWidth;
 
   /// 本地采集的视频高度 (px)。如果你需要自定义本地采集的视频高度，请先将 [preference] 设为 `Manual(3)` ，再通过 [captureHeight] 设置采集的视频高度。
   @JsonKey(includeIfNull: false)
-  int captureHeight;
+  int? captureHeight;
 
   /// 摄像头方向。
   /// 详见 [CameraDirection]。
-  CameraDirection cameraDirection;
+  @JsonKey(includeIfNull: false)
+  CameraDirection? cameraDirection;
 
   /// Constructs a [CameraCapturerConfiguration]
-  CameraCapturerConfiguration(this.preference, this.cameraDirection,
-      {this.captureWidth, this.captureHeight});
+  CameraCapturerConfiguration({
+    this.preference,
+    this.captureWidth,
+    this.captureHeight,
+    this.cameraDirection,
+  });
 
   // @nodoc ignore: public_member_api_docs
   factory CameraCapturerConfiguration.fromJson(Map<String, dynamic> json) =>
@@ -657,7 +711,7 @@ class ChannelMediaOptions {
   ///
   /// 该成员功能与 [RtcEngine.muteAllRemoteAudioStreams] 相同。
   /// 加入频道后，你可以通过 `muteAllRemoteAudioStreams` 方法重新设置是否订阅频道内的远端音频流。
-  bool autoSubscribeAudio;
+  bool? autoSubscribeAudio;
 
   /// 设置加入频道是是否自动订阅视频流：
   /// - `true`：（默认）订阅。
@@ -665,10 +719,30 @@ class ChannelMediaOptions {
   ///
   /// 该成员功能与 [RtcEngine.muteAllRemoteVideoStreams] 相同。
   /// 加入频道后，你可以通过 `muteAllRemoteVideoStreams` 方法重新设置是否订阅频道内的远端视频流。
-  bool autoSubscribeVideo;
+ @JsonKey(includeIfNull: false)
+  bool? autoSubscribeVideo;
+
+  /// 设置是否在频道内发布本地音频流：
+  /// - `true`：（默认）发布。
+  /// - `false`：不发布。
+  /// 该成员功能与 [RtcEngine.muteLocalAudioStream] 相同。加入频道后，你可以通过 [RtcEngine.muteLocalAudioStream] 方法重新设置是否在频道内发布本地音频流。
+  @JsonKey(includeIfNull: false)
+  bool? publishLocalAudio;
+
+  /// 设置是否在频道内发布本地视频流：
+  /// - `true`：（默认）发布。
+  /// - `false`：不发布。
+  /// 该成员功能与 [RtcEngine.muteLocalVideoStream] 相同。加入频道后，你可以通过 [RtcEngine.muteLocalVideoStream] 方法重新设置是否在频道内发布本地视频流。
+  @JsonKey(includeIfNull: false)
+  bool? publishLocalVideo;
 
   /// Constructs a [ChannelMediaOptions]
-  ChannelMediaOptions(this.autoSubscribeAudio, this.autoSubscribeVideo);
+  ChannelMediaOptions({
+    this.autoSubscribeAudio,
+    this.autoSubscribeVideo,
+    this.publishLocalAudio,
+    this.publishLocalVideo,
+  });
 
   // @nodoc ignore: public_member_api_docs
   factory ChannelMediaOptions.fromJson(Map<String, dynamic> json) =>
@@ -684,17 +758,29 @@ class ChannelMediaOptions {
 @JsonSerializable(explicitToJson: true)
 class EncryptionConfig {
   /// 内置加密模式，默认为 `AES128XTS` 加密模式。详见 [EncryptionMode]。
-  EncryptionMode encryptionMode;
+  @JsonKey(includeIfNull: false)
+  EncryptionMode? encryptionMode;
 
   /// 内置加密密钥，字符串类型。
   ///
   /// **Note**
   ///
   /// 如果未指定该参数或将该参数设置为空，则无法启用内置加密，且 SDK 会返回错误码 `InvalidArgument`。
-  String encryptionKey;
+  @JsonKey(includeIfNull: false)
+  String? encryptionKey;
+
+  /// 盐。Agora 推荐你在服务端使用 OpenSSL 生成盐。
+  ///
+  /// 只有在 `AES128GCM2` 或 `AES256GCM2` 加密模式下，该参数才生效。此时，需确保填入该参数的值不全为 0。
+  @JsonKey(includeIfNull: false)
+  List<int>? encryptionKdfSalt;
 
   /// Constructs a [EncryptionConfig]
-  EncryptionConfig(this.encryptionMode, this.encryptionKey);
+   EncryptionConfig({
+    this.encryptionMode,
+    this.encryptionKey,
+    this.encryptionKdfSalt,
+  });
 
   /// @nodoc
   factory EncryptionConfig.fromJson(Map<String, dynamic> json) =>
@@ -708,7 +794,7 @@ class EncryptionConfig {
 @JsonSerializable(explicitToJson: true)
 class RtcStats {
   /// 通话时长，单位为秒，累计值。
-  int totalDuration;
+  int duration;
 
   /// 发送字节数（bytes），累计值。
   int txBytes;
@@ -751,7 +837,7 @@ class RtcStats {
   /// - 直播场景下：
   ///   - 如果本地用户为观众，则返回频道内的主播数 + 1。
   ///   - 如果本地用户为主播，则返回频道内的总主播数。
-  int users;
+  int userCount;
 
   /// 客户端到服务器的延迟（毫秒)。
   int lastmileDelay;
@@ -791,7 +877,31 @@ class RtcStats {
   int memoryAppUsageInKbytes;
 
   /// Constructs a [RtcStats]
-  RtcStats();
+  RtcStats(
+    this.duration,
+    this.txBytes,
+    this.rxBytes,
+    this.txAudioBytes,
+    this.txVideoBytes,
+    this.rxAudioBytes,
+    this.rxVideoBytes,
+    this.txKBitRate,
+    this.rxKBitRate,
+    this.txAudioKBitRate,
+    this.rxAudioKBitRate,
+    this.txVideoKBitRate,
+    this.rxVideoKBitRate,
+    this.userCount,
+    this.lastmileDelay,
+    this.txPacketLossRate,
+    this.rxPacketLossRate,
+    this.cpuTotalUsage,
+    this.cpuAppUsage,
+    this.gatewayRtt,
+    this.memoryAppUsageRatio,
+    this.memoryTotalUsageRatio,
+    this.memoryAppUsageInKbytes,
+  );
 
   // @nodoc ignore: public_member_api_docs
   factory RtcStats.fromJson(Map<String, dynamic> json) =>
@@ -824,7 +934,12 @@ class AudioVolumeInfo {
   String channelId;
 
   /// Constructs a [AudioVolumeInfo]
-  AudioVolumeInfo();
+  AudioVolumeInfo(
+    this.uid,
+    this.volume,
+    this.vad,
+    this.channelId,
+  );
 
   // @nodoc ignore: public_member_api_docs
   factory AudioVolumeInfo.fromJson(Map<String, dynamic> json) =>
@@ -838,19 +953,28 @@ class AudioVolumeInfo {
 @JsonSerializable(explicitToJson: true)
 class Rect {
   /// 长方形区域的左边所对应的横坐标。
-  int left;
+  @JsonKey(includeIfNull: false)
+  int? left;
 
   /// 长方形区域的上边所对应的纵坐标。
-  int top;
+  @JsonKey(includeIfNull: false)
+  int? top;
 
   /// 长方形区域的右边所对应的横坐标。
-  int right;
+  @JsonKey(includeIfNull: false)
+  int? right;
 
   /// 长方形区域的底边所对应的纵坐标。
-  int bottom;
+  @JsonKey(includeIfNull: false)
+  int? bottom;
 
   /// Constructs a [Rect]
-  Rect();
+  Rect({
+    this.left,
+    this.top,
+    this.right,
+    this.bottom,
+  });
 
   // @nodoc ignore: public_member_api_docs
   factory Rect.fromJson(Map<String, dynamic> json) => _$RectFromJson(json);
@@ -872,7 +996,11 @@ class LastmileProbeOneWayResult {
   int availableBandwidth;
 
   /// Constructs a [LastmileProbeOneWayResult]
-  LastmileProbeOneWayResult();
+  LastmileProbeOneWayResult(
+    this.packetLossRate,
+    this.jitter,
+    this.availableBandwidth,
+  );
 
   // @nodoc ignore: public_member_api_docs
   factory LastmileProbeOneWayResult.fromJson(Map<String, dynamic> json) =>
@@ -901,7 +1029,12 @@ class LastmileProbeResult {
   LastmileProbeOneWayResult downlinkReport;
 
   /// Constructs a [LastmileProbeResult]
-  LastmileProbeResult();
+  LastmileProbeResult(
+    this.state,
+    this.rtt,
+    this.uplinkReport,
+    this.downlinkReport,
+  );
 
   // @nodoc ignore: public_member_api_docs
   factory LastmileProbeResult.fromJson(Map<String, dynamic> json) =>
@@ -927,7 +1060,12 @@ class LocalAudioStats {
   int txPacketLossRate;
 
   /// Constructs a [LocalAudioStats]
-  LocalAudioStats();
+  LocalAudioStats(
+    this.numChannels,
+    this.sentSampleRate,
+    this.sentBitrate,
+    this.txPacketLossRate,
+  );
 
   // @nodoc ignore: public_member_api_docs
   factory LocalAudioStats.fromJson(Map<String, dynamic> json) =>
@@ -984,9 +1122,27 @@ class LocalVideoStats {
   /// 本地视频采集帧率 (fps)。
   int captureFrameRate;
 
+  /// 采集亮度。
+  CaptureBrightnessLevelType captureBrightnessLevel;
 
   /// Constructs a [LocalVideoStats]
-  LocalVideoStats();
+  LocalVideoStats(
+    this.sentBitrate,
+    this.sentFrameRate,
+    this.encoderOutputFrameRate,
+    this.rendererOutputFrameRate,
+    this.targetBitrate,
+    this.targetFrameRate,
+    this.qualityAdaptIndication,
+    this.encodedBitrate,
+    this.encodedFrameWidth,
+    this.encodedFrameHeight,
+    this.encodedFrameCount,
+    this.codecType,
+    this.txPacketLossRate,
+    this.captureFrameRate,
+    this.captureBrightnessLevel,
+  );
 
   // @nodoc ignore: public_member_api_docs
   factory LocalVideoStats.fromJson(Map<String, dynamic> json) =>
@@ -1090,7 +1246,23 @@ class RemoteAudioStats {
   int mosValue;
 
   /// Constructs a [RemoteAudioStats]
-  RemoteAudioStats();
+  RemoteAudioStats(
+    this.uid,
+    this.quality,
+    this.networkTransportDelay,
+    this.jitterBufferDelay,
+    this.audioLossRate,
+    this.numChannels,
+    this.receivedSampleRate,
+    this.receivedBitrate,
+    this.totalFrozenTime,
+    this.frozenRate,
+    this.totalActiveTime,
+    this.publishDuration,
+    this.qoeQuality,
+    this.qualityChangedReason,
+    this.mosValue,
+  );
 
   // @nodoc ignore: public_member_api_docs
   factory RemoteAudioStats.fromJson(Map<String, dynamic> json) =>
@@ -1150,7 +1322,21 @@ class RemoteVideoStats {
   int publishDuration;
 
   /// Constructs a [RemoteVideoStats]
-  RemoteVideoStats();
+  RemoteVideoStats(
+    this.uid,
+    this.delay,
+    this.width,
+    this.height,
+    this.receivedBitrate,
+    this.decoderOutputFrameRate,
+    this.rendererOutputFrameRate,
+    this.packetLossRate,
+    this.rxStreamType,
+    this.totalFrozenTime,
+    this.frozenRate,
+    this.totalActiveTime,
+    this.publishDuration,
+  );
 
   // @nodoc ignore: public_member_api_docs
   factory RemoteVideoStats.fromJson(Map<String, dynamic> json) =>
@@ -1179,7 +1365,13 @@ class FacePositionInfo {
   int distance;
 
   /// Constructs a [FacePositionInfo]
-  FacePositionInfo();
+  FacePositionInfo(
+    this.x,
+    this.y,
+    this.width,
+    this.height,
+    this.distance,
+  );
 
   // @nodoc ignore: public_member_api_docs
   factory FacePositionInfo.fromJson(Map<String, dynamic> json) =>
@@ -1193,10 +1385,12 @@ class FacePositionInfo {
 @JsonSerializable(explicitToJson: true)
 class ClientRoleOptions {
   /// 观众端延时级别：
-  AudienceLatencyLevelType audienceLatencyLevel;
+  AudienceLatencyLevelType? audienceLatencyLevel;
 
   /// Constructs a [ClientRoleOptions]
-  ClientRoleOptions(this.audienceLatencyLevel);
+  ClientRoleOptions({
+    this.audienceLatencyLevel,
+  });
 
   /// @nodoc
   factory ClientRoleOptions.fromJson(Map<String, dynamic> json) =>
@@ -1213,22 +1407,26 @@ class LogConfig {
   ///
   /// App 必须保证你指定的目录存在而且可写。你可以使用此参数重命名日志文件。
   @JsonKey(includeIfNull: false)
-  String filePath;
+  String? filePath;
 
   /// 单个日志文件的大小，单位为 KB。
   ///
   /// 默认值为 1024 KB。如果你将 `fileSize` 设为 1024 KB，SDK 会最多输出总计 5 MB 的日志文件。 如果你将 `fileSize` 设为小于 1024 KB，设置不生效，单个日志文件最大仍为 1024 KB。
   @JsonKey(includeIfNull: false)
-  int fileSize;
+  int? fileSize;
 
   /// 设置 Agora SDK 的日志输出等级。详见 [LogLevel]。
   ///
   /// 例如，如果你选择 `Warn` 级别，就可以看到在 `Fatal`、`Error` 和 `Warn` 级别的所有日志信息。
   @JsonKey(includeIfNull: false)
-  LogLevel level;
+  LogLevel? level;
 
   /// Constructs a [LogConfig]
-  LogConfig({this.filePath, this.fileSize, this.level});
+  LogConfig({
+    this.filePath,
+    this.fileSize,
+    this.level,
+  });
 
   /// @nodoc
   factory LogConfig.fromJson(Map<String, dynamic> json) =>
@@ -1257,7 +1455,6 @@ class DataStreamConfig {
   ///
   /// 设置为与音频同步后，如果数据包的延迟在音频延迟的范围内，SDK 会在播放音频的同时 触发与该音频包同步的 `streamMessage` 回调。
   ///  当需要数据包立刻到达接收端时，不能将该参数设置为 `true`。Agora 建议你仅在需要实现特殊场景，例如歌词同步时，设置为与音频同步。
-  @JsonKey(includeIfNull: false)
   bool syncWithAudio;
 
   /// 是否保证接收到的数据按发送的顺序排列。
@@ -1266,11 +1463,13 @@ class DataStreamConfig {
   /// - `false`: 不保证 SDK 按照发送方发送的顺序输出数据包。
   ///
   /// 当需要数据包立刻到达接收端时，不能将该参数设置为 `true`。
-  @JsonKey(includeIfNull: false)
   bool ordered;
 
   /// Constructs a [DataStreamConfig]
-  DataStreamConfig({this.syncWithAudio, this.ordered});
+  DataStreamConfig(
+    this.syncWithAudio,
+    this.ordered,
+  );
 
   /// @nodoc
   factory DataStreamConfig.fromJson(Map<String, dynamic> json) =>
@@ -1282,7 +1481,17 @@ class DataStreamConfig {
 
 /// RtcEngineConfig 实例的配置。
 @JsonSerializable(explicitToJson: true)
-class RtcEngineConfig {
+@deprecated
+class RtcEngineConfig extends RtcEngineContext {
+  /// Constructs a [RtcEngineConfig]
+  RtcEngineConfig(String appId,
+      {List<AreaCode>? areaCode, LogConfig? logConfig})
+      : super(appId, areaCode: areaCode, logConfig: logConfig);
+}
+
+/// RtcEngineConfig 实例的配置。
+@JsonSerializable(explicitToJson: true)
+class RtcEngineContext {
   /// Agora 为 app 开发者签发的 App ID，详见[获取 App ID](https://docs.agora.io/cn/Agora%20Platform/token#get-an-app-id)。
   /// 使用同一个 App ID 的 app 才能进入同一个频道进行通话或直播。
   /// 一个 App ID 只能用于创建一个 `RtcEngine` 实例。如需更换 App ID，必须先调用 `destroy` 销毁当前 `RtcEngine` 实例，并在 destroy 成功返回后，
@@ -1292,8 +1501,11 @@ class RtcEngineConfig {
   /// 服务器的访问区域。该功能为高级设置，适用于有访问安全限制的场景。
   ///
   /// 支持的区域详见 [AreaCode]。指定访问区域后，Agora SDK 会连接指定区域内的 Agora 服务器。
-  @JsonKey(includeIfNull: false)
-  AreaCode areaCode;
+  @JsonKey(includeIfNull: false, toJson: _$AreaCodeListToJson)
+  List<AreaCode>? areaCode;
+
+
+
 
   /// 设置 Agora SDK 输出的日志文件。详见 [LogConfig]。
   ///
@@ -1301,15 +1513,101 @@ class RtcEngineConfig {
   /// 每个文件的默认大小为 1024 KB。 日志文件为 UTF-8 编码。
   /// 最新的日志永远写在 `agorasdk.log` 中。`agorasdk.log` 写满后， SDK 会从 1-4 中删除修改时间最早的一个文件，然后将 `agorasdk.log` 重命名为该文件，并建立 新的 `agorasdk.log` 写入最新的日志。
   @JsonKey(includeIfNull: false)
-  LogConfig logConfig;
+  LogConfig? logConfig;
 
   /// Constructs a [RtcEngineConfig]
-  RtcEngineConfig(this.appId, {this.areaCode, this.logConfig});
+  RtcEngineContext(
+    this.appId, {
+    this.areaCode,
+    this.logConfig,
+  });
 
   /// @nodoc
-  factory RtcEngineConfig.fromJson(Map<String, dynamic> json) =>
-      _$RtcEngineConfigFromJson(json);
+  factory RtcEngineContext.fromJson(Map<String, dynamic> json) =>
+      _$RtcEngineContextFromJson(json);
 
   /// @nodoc
-  Map<String, dynamic> toJson() => _$RtcEngineConfigToJson(this);
+  Map<String, dynamic> toJson() => _$RtcEngineContextToJson(this);
+
+  static int? _$AreaCodeListToJson(List<AreaCode>? instance) {
+    if (instance == null) return null;
+    var areaCode = 0;
+    instance.forEach((element) {
+      areaCode |= AreaCodeConverter(element).value();
+    });
+    return areaCode;
+  }
+}
+
+/// 节拍器配置。在 [RtcEngine.startRhythmPlayer] 或 [RtcEngine.configRhythmPlayer] 中设置。
+@JsonSerializable(explicitToJson: true)
+class RhythmPlayerConfig {
+  /// 每小节的拍数，取值范围为 [1,9]。默认值为 4，即每小节包含 1 个强拍和 3 个弱拍。
+  @JsonKey(includeIfNull: false)
+  int? beatsPerMeasure;
+
+  /// 节拍速度（拍/分钟），取值范围为 [60,360]。默认值为 60，即 1 分钟有 60 拍。
+  @JsonKey(includeIfNull: false)
+  int? beatsPerMinute;
+
+  /// 是否将节拍器的声音发布至远端：
+  /// - `true`: （默认）发布。本地用户和远端用户都能听到节拍器。
+  /// - `false`: 不发布。只有本地用户能听到节拍器。
+  @JsonKey(includeIfNull: false)
+  bool? publish;
+
+  /// Constructs a [RhythmPlayerConfig]
+  RhythmPlayerConfig({
+    this.beatsPerMeasure,
+    this.beatsPerMinute,
+    this.publish,
+  });
+
+  /// @nodoc
+  factory RhythmPlayerConfig.fromJson(Map<String, dynamic> json) =>
+      _$RhythmPlayerConfigFromJson(json);
+
+  /// @nodoc
+  Map<String, dynamic> toJson() => _$RhythmPlayerConfigToJson(this);
+}
+
+/// 录音配置，在 [RtcEngine.setAudioRecording] 中配置。
+@JsonSerializable(explicitToJson: true)
+class AudioRecordingConfiguration {
+  /// 录音文件在本地保存的绝对路径，需精确到文件名及格式。例如： `/sdcard/emulated/0/audio.mp4` (Android) 或 `/var/mobile/Containers/Data/audio.mp4` (iOS)。 请确保你指定的路径存在并且可写。
+  String filePath;
+
+  /// 录音音质。详见 [AudioRecordingQuality]。 该参数仅适用于 AAC 文件。
+  @JsonKey(includeIfNull: false)
+  AudioRecordingQuality? recordingQuality;
+
+  /// 录音内容。详见 [AudioRecordingPosition]。
+  @JsonKey(includeIfNull: false)
+  AudioRecordingPosition? recordingPosition;
+
+  /// 录音采样率（Hz）。
+  /// - 16000
+  /// - (默认) 32000
+  /// - 44100
+  /// - 48000
+  ///
+  /// **Note**
+  /// - 如果把该参数设为 44100 或 48000, 为保证录音效果，Agora 推荐录制 WAV 文件或 `recordingQuality` 为 `Medium` 或 `High` 的 AAC 文件。
+  @JsonKey(includeIfNull: false)
+  AudioSampleRateType? recordingSampleRate;
+
+  /// Constructs a [AudioRecordingConfiguration]
+  AudioRecordingConfiguration(
+    this.filePath, {
+    this.recordingQuality,
+    this.recordingPosition,
+    this.recordingSampleRate,
+  });
+
+  /// @nodoc
+  factory AudioRecordingConfiguration.fromJson(Map<String, dynamic> json) =>
+      _$AudioRecordingConfigurationFromJson(json);
+
+  /// @nodoc
+  Map<String, dynamic> toJson() => _$AudioRecordingConfigurationToJson(this);
 }

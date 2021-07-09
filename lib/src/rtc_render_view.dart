@@ -6,8 +6,6 @@ import 'package:flutter/widgets.dart';
 
 import 'enum_converter.dart';
 import 'enums.dart';
-import 'rtc_channel.dart';
-import 'rtc_engine.dart';
 
 final Map<int, MethodChannel> _channels = {};
 
@@ -29,7 +27,7 @@ class RtcSurfaceView extends StatefulWidget {
   /// **Note**
   /// - 该参数的默认值为空字符 ""。如果用户是通过 [RtcEngine] 类的 [RtcEngine.joinChannel] 方法加入频道的， 则将参数设为默认值，表示该用户在频道内的渲染视图。
   /// - 如果用户是通过 [RtcChannel] 类的 [RtcChannel.joinChannel] 方法加入频道的，则将该参数设为该 [RtcChannel] 类对应的 `channelId`，表示该用户在该 `channelId` 对应频道内的渲染视图。
-  final String channelId;
+  final String? channelId;
 
   /// 视频视图的渲染模式。
   final VideoRenderMode renderMode;
@@ -48,7 +46,7 @@ class RtcSurfaceView extends StatefulWidget {
   /// 创建平台视图回调。
   ///
   /// `id` 是平台视图的唯一标识。
-  final PlatformViewCreatedCallback onPlatformViewCreated;
+  final PlatformViewCreatedCallback? onPlatformViewCreated;
 
   /// 指定 Web 视图使用的手势。
   ///
@@ -56,12 +54,12 @@ class RtcSurfaceView extends StatefulWidget {
   /// [ListView] 会争取对垂直方向的拖动手势进行处理。Web 视图将声明已被其他手势识别器识别的手势。
   ///
   /// 如果该集合为空，Web 视图将仅处理没有被任何手势识别器声明的指针事件。
-  final Set<Factory<OneSequenceGestureRecognizer>> gestureRecognizers;
+  final Set<Factory<OneSequenceGestureRecognizer>>? gestureRecognizers;
 
   /// Constructs a [RtcSurfaceView]
   RtcSurfaceView({
-    Key key,
-    @required this.uid,
+    Key? key,
+    required this.uid,
     this.channelId,
     this.renderMode = VideoRenderMode.Hidden,
     this.mirrorMode = VideoMirrorMode.Auto,
@@ -78,9 +76,9 @@ class RtcSurfaceView extends StatefulWidget {
 }
 
 class _RtcSurfaceViewState extends State<RtcSurfaceView> {
-  int _id;
-  int _renderMode;
-  int _mirrorMode;
+  int? _id;
+  int? _renderMode;
+  int? _mirrorMode;
 
   @override
   Widget build(BuildContext context) {
@@ -159,34 +157,37 @@ class _RtcSurfaceViewState extends State<RtcSurfaceView> {
   }
 
   void setData() {
-    if (widget.uid == null) return;
     _channels[_id]?.invokeMethod('setData', {
-      'data': {'uid': widget.uid, 'channelId': widget.channelId}
+      'data': {
+        'uid': widget.uid,
+        'channelId': widget.channelId,
+      },
+    });
+  }
+  void setRenderMode() {
+    _renderMode = VideoRenderModeConverter(widget.renderMode).value();
+    _channels[_id]?.invokeMethod('setRenderMode', {
+      'renderMode': _renderMode,
     });
   }
 
-  void setRenderMode() {
-    if (widget.renderMode == null) return;
-    _renderMode = VideoRenderModeConverter(widget.renderMode).value();
-    _channels[_id]?.invokeMethod('setRenderMode', {'renderMode': _renderMode});
-  }
-
   void setMirrorMode() {
-    if (widget.mirrorMode == null) return;
     _mirrorMode = VideoMirrorModeConverter(widget.mirrorMode).value();
-    _channels[_id]?.invokeMethod('setMirrorMode', {'mirrorMode': _mirrorMode});
+    _channels[_id]?.invokeMethod('setMirrorMode', {
+      'mirrorMode': _mirrorMode,
+    });
   }
 
   void setZOrderOnTop() {
-    if (widget.zOrderOnTop == null) return;
-    _channels[_id]
-        ?.invokeMethod('setZOrderOnTop', {'onTop': widget.zOrderOnTop});
+    _channels[_id]?.invokeMethod('setZOrderOnTop', {
+      'onTop': widget.zOrderOnTop,
+    });
   }
 
   void setZOrderMediaOverlay() {
-    if (widget.zOrderMediaOverlay == null) return;
-    _channels[_id]?.invokeMethod(
-        'setZOrderMediaOverlay', {'isMediaOverlay': widget.zOrderMediaOverlay});
+    _channels[_id]?.invokeMethod('setZOrderMediaOverlay', {
+      'isMediaOverlay': widget.zOrderMediaOverlay,
+    });
   }
 
   Future<void> onPlatformViewCreated(int id) async {
@@ -218,7 +219,7 @@ class RtcTextureView extends StatefulWidget {
   /// **Note**
   /// - 该参数的默认值为空字符 ""。如果用户是通过 [RtcEngine] 类的 [RtcEngine.joinChannel] 方法加入频道的， 则将参数设为默认值，表示该用户在频道内的渲染视图。
   /// - 如果用户是通过 [RtcChannel] 类的 [RtcChannel.joinChannel] 方法加入频道的，则将该参数设为该 [RtcChannel] 类对应的 `channelId`，表示该用户在该 `channelId` 对应频道内的渲染视图。
-  final String channelId;
+  final String? channelId;
 
   /// 视频视图的渲染模式。
   final VideoRenderMode renderMode;
@@ -229,7 +230,7 @@ class RtcTextureView extends StatefulWidget {
   /// 创建平台视图回调。
   ///
   /// `id` 是平台视图的唯一标识。
-  final PlatformViewCreatedCallback onPlatformViewCreated;
+  final PlatformViewCreatedCallback? onPlatformViewCreated;
 
 
   /// 指定 Web 视图使用的手势。
@@ -238,12 +239,12 @@ class RtcTextureView extends StatefulWidget {
   /// [ListView] 会争取对垂直方向的拖动手势进行处理。Web 视图将声明已被其他手势识别器识别的手势。
   ///
   /// 如果该集合为空，Web 视图将仅处理没有被任何手势识别器声明的指针事件。
-  final Set<Factory<OneSequenceGestureRecognizer>> gestureRecognizers;
+  final Set<Factory<OneSequenceGestureRecognizer>>? gestureRecognizers;
 
   /// Constructs a [RtcTextureView]
   RtcTextureView({
-    Key key,
-    @required this.uid,
+    Key? key,
+    required this.uid,
     this.channelId,
     this.renderMode = VideoRenderMode.Hidden,
     this.mirrorMode = VideoMirrorMode.Auto,
@@ -258,9 +259,9 @@ class RtcTextureView extends StatefulWidget {
 }
 
 class _RtcTextureViewState extends State<RtcTextureView> {
-  int _id;
-  int _renderMode;
-  int _mirrorMode;
+  int? _id;
+  int? _renderMode;
+  int? _mirrorMode;
 
   @override
   Widget build(BuildContext context) {
@@ -313,22 +314,26 @@ class _RtcTextureViewState extends State<RtcTextureView> {
   }
 
   void setData() {
-    if (widget.uid == null) return;
     _channels[_id]?.invokeMethod('setData', {
-      'data': {'uid': widget.uid, 'channelId': widget.channelId}
+      'data': {
+        'uid': widget.uid,
+        'channelId': widget.channelId,
+      },
     });
   }
 
   void setRenderMode() {
-    if (widget.renderMode == null) return;
     _renderMode = VideoRenderModeConverter(widget.renderMode).value();
-    _channels[_id]?.invokeMethod('setRenderMode', {'renderMode': _renderMode});
+    _channels[_id]?.invokeMethod('setRenderMode', {
+      'renderMode': _renderMode,
+    });
   }
 
   void setMirrorMode() {
-    if (widget.mirrorMode == null) return;
     _mirrorMode = VideoMirrorModeConverter(widget.mirrorMode).value();
-    _channels[_id]?.invokeMethod('setMirrorMode', {'mirrorMode': _mirrorMode});
+    _channels[_id]?.invokeMethod('setMirrorMode', {
+      'mirrorMode': _mirrorMode,
+    });
   }
 
   Future<void> onPlatformViewCreated(int id) async {

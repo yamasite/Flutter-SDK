@@ -1,1124 +1,1129 @@
-Agora Flutter SDK 基于 Android 和 iOS 平台的 Agora RTC SDK 封装，可在基于 Flutter 开发的 Android 和 iOS 移动端应用中快速实现实时音视频功能。
+The Agora Flutter SDK wraps the Agora RTC SDKs for Android and iOS, with which you can quickly implement real-time communication functionality in Android and iOS apps developed using the Flutter framework.
 
-- The <a href="agora_rtc_engine/RtcEngine-class.html">RtcEngine</a> 类包含应用程序调用的主要方法。
-- The <a href ="agora_rtc_engine/RtcEngineEventHandler-class.html"> RtcEngineEventHandler</a> 类用于向应用程序发送回调通知。
-- The <a href ="rtc_channel/RtcChannel-class.html">RtcChannel</a> 类在指定频道中实现实时音视频功能。通过创建多个 RtcChannel 对象，用户可以同时加入多个频道。
-- The <a href ="rtc_channel/RtcChannelEventHandler-class.html">RtcChannelEventHandler</a> 类监听和报告指定频道的事件和数据。
 
-### 核心方法
+
+- The <a href="agora_rtc_engine/RtcEngine-class.html">RtcEngine</a> class provides the main methods that can be invoked by your application.
+- The <a href ="agora_rtc_engine/RtcEngineEventHandler-class.html"> RtcEngineEventHandler</a> class enables callbacks to your application.
+- The <a href ="rtc_channel/RtcChannel-class.html">RtcChannel</a> class provides methods that enable real-time communications
+in a specified channel. By creating multiple RtcChannel instances, users can join multiple channels.
+- The <a href ="rtc_channel/RtcChannelEventHandler-class.html">RtcChannelEventHandler</a> class provides callbacks that report events and statistics of a specified channel.
+
+### Core management
 
 <table border="1">
 <tr>
-<th>方法</th>
-<th>描述</th>
+<th>Method</th>
+<th>Description</th>
 </tr>
 <tr>
 <td><a href="agora_rtc_engine/RtcEngine/create.html">create</a></td>
-<td>创建 <code>RtcEngine</code> 实例</td>
+<td>Creates an <code>RtcEngine</code> instance.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/createWithConfig.html">createWithConfig</a></a></td>
-<td>创建 <code>RtcEngine</code> 实例（指定访问区域）</td>
+<td>Creates an <code>RtcEngine</code> instance and specifies the connection area.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/createWithContext.html">createWithContext</a></a></td>
-<td>创建 <code>RtcEngine</code> 实例（指定一个或多个访问区域）</td>
+<td>Creates an <code>RtcEngine</code> instance and specifies one or multiple connection areas.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/destroy.html">destroy</a></td>
-<td>销毁 <code>RtcEngine</code> 实例</td>
+<td>Destroys the <code>RtcEngine</code> instance.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/setChannelProfile.html">setChannelProfile</a></td>
-<td>设置频道场景</td>
+<td>Sets the channel profile of the Agora RtcEngine.</td>
 </tr>
 <tr>
 <td><a href ="rtc_channel/RtcChannel/setClientRole.html">setClientRole</a></td>
-<td>设置直播场景下的用户角色</td>
+<td>Sets the role of a user in a live interactive streaming.</td>
 </tr>
 <tr>
 <td><a href ="rtc_channel/RtcChannel/joinChannel.html">joinChannel</a></td>
-<td>加入频道</td>
+<td>Allows a user to join a channel.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/switchChannel.html">switchChannel</a></td>
-<td>快速切换直播频道</td>
+<td>Switches to a different channel (<code>LiveBroadcasting</code> profile only).</td>
 </tr>
 <tr>
 <td><a href ="rtc_channel/RtcChannel/leaveChannel.html">leaveChannel</a></td>
-<td>离开频道</td>
+<td>Allows a user to leave a channel.</td>
 </tr>
 <tr>
 <td><a href ="rtc_channel/RtcChannel/destroy.html">destroy</a></td>
-<td>销毁 <code>RtcChannel</code> 实例</td>
+<td>Destroys the <code>RtcChannel</code> instance.</td>
 </tr>
 <tr>
 <td><a href ="rtc_channel/RtcChannel/renewToken.html">renewToken</a></td>
-<td>更新 Token</td>
+<td>Renews the token.</td>
 </tr>
 <tr>
 <td><a href ="rtc_channel/RtcChannel/getConnectionState.html">getConnectionState</a></td>
-<td>获取网络连接状态</td>
+<td>Gets the connection state of the app.</td>
 </tr>
 </table>
 
-### 核心事件
+### Core events
 
 <table border="1">
 <tr>
-<th>事件</th>
-<th>描述</th>
+<th>Event</th>
+<th>Description</th>
 </tr>
 <tr>
 <td><a href ="rtc_channel/RtcChannelEventHandler/connectionStateChanged.html">connectionStateChanged</a></td>
-<td>网络连接状态已改变回调</td>
+<td>Occurs when the network connection state changes.</td>
 </tr>
 <tr>
 <td><a href ="rtc_channel/RtcChannelEventHandler/joinChannelSuccess.html">joinChannelSuccess</a></td>
-<td>加入频道回调</td>
+<td>Occurs when a user joins a channel.</td>
 </tr>
 <tr>
 <td><a href ="rtc_channel/RtcChannelEventHandler/rejoinChannelSuccess.html">rejoinChannelSuccess</a></td>
-<td>重新加入频道回调</td>
+<td>Occurs when a user rejoins a channel.</td>
 </tr>
 <tr>
 <td><a href ="rtc_channel/RtcChannel/leaveChannel.html">leaveChannel</a></td>
-<td>离开频道回调</td>
+<td>Occurs when a user leaves a channel.</td>
 </tr>
 <tr>
 <td><a href ="rtc_channel/RtcChannelEventHandler/clientRoleChanged.html">clientRoleChanged</a></td>
-<td>用户角色已切换回调</td>
+<td>Occurs when the user role in a live streaming changes.</td>
 </tr>
 <tr>
 <td><a href ="rtc_channel/RtcChannelEventHandler/userJoined.html">userJoined</a></td>
-<td>远端用户加入当前频道回调</td>
+<td>Occurs when a remote user joins a channel.</td>
 </tr>
 <tr>
 <td><a href ="rtc_channel/RtcChannelEventHandler/userOffline.html">userOffline</a></td>
-<td>远端用户离开当前频道回调</td>
+<td>Occurs when a remote user leaves a channel or goes offline.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngineEventHandler/networkTypeChanged.html">networkTypeChanged</a></td>
-<td>本地网络类型发生改变回调</td>
+<td>Occurs when the network type changes.</td>
 </tr>
 <tr>
 <td><a href ="rtc_channel/RtcChannelEventHandler/connectionLost.html">connectionLost</a></td>
-<td>网络连接丢失回调</td>
+<td>Occurs when the SDK loses connection to the server.</td>
 </tr>
 <tr>
 <td><a href ="rtc_channel/RtcChannelEventHandler/tokenPrivilegeWillExpire.html">tokenPrivilegeWillExpire</a></td>
-<td>Token 服务即将过期回调</td>
+<td>Occurs when the token expires in 30 seconds.</td>
 </tr>
 <tr>
 <td><a href ="rtc_channel/RtcChannelEventHandler/requestToken.html">requestToken</a></td>
-<td>Token 已过期回调</td>
+<td>Occurs when the token expires.</td>
 </tr>
 </table>
 
 
-### 音频管理
+### Audio management
 
 <table border="1">
 <tr>
-<th>方法</th>
-<th>描述</th>
+<th>Method</th>
+<th>Description</th>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/enableAudio.html">enableAudio</a></td>
-<td>启用音频模块</td>
+<td>Enables the audio module.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/disableAudio.html">disableAudio</a></td>
-<td>关闭音频模块</td>
+<td>Disables the audio module.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/setAudioProfile.html">setAudioProfile</a></td>
-<td>设置音频编码配置</td>
+<td>Sets the audio parameters and application scenarios.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/adjustRecordingSignalVolume.html">adjustRecordingSignalVolume</a></td>
-<td>调节录音音量</td>
+<td>Adjusts the recording volume.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/adjustUserPlaybackSignalVolume.html">adjustUserPlaybackSignalVolume</a></td>
-<td>调节本地播放的指定远端用户音量</td>
+<td>Adjusts the playback volume of a specified remote user.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/adjustPlaybackSignalVolume.html">adjustPlaybackSignalVolume</a></td>
-<td>调节本地播放的所有远端用户音量</td>
+<td>Adjusts the playback volume of all remote users.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/enableLocalAudio.html">enableLocalAudio</a></td>
-<td>开关本地音频采集</td>
+<td>Enables/disables the local audio capture.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/muteLocalAudioStream.html">muteLocalAudioStream</a></td>
-<td>停止/恢复发送本地音频流</td>
+<td>Stops/Resumes sending the local audio stream.</td>
 </tr>
 <tr>
 <td><a href ="rtc_channel/RtcChannel/muteRemoteAudioStream.html">muteRemoteAudioStream</a></td>
-<td>停止/恢复接收指定音频流</td>
+<td>Stops/Resumes receiving a specified remote audio stream.</td>
 </tr>
 <tr>
 <td><a href ="rtc_channel/RtcChannel/muteAllRemoteAudioStreams.html">muteAllRemoteAudioStreams</a></td>
-<td>停止/恢复接收所有音频流</td>
+<td>Stops/Resumes receiving all remote audio streams.</td>
 </tr>
 <tr>
 <td><a href ="rtc_channel/RtcChannel/setDefaultMuteAllRemoteAudioStreams.html">setDefaultMuteAllRemoteAudioStreams</a></td>
-<td>设置是否默认接收音频流</td>
+<td>Sets whether to receive all remote audio streams by default.</td>
 </tr>
 </table>
 
 
-### 视频管理
+### Video management
 
 <table border="1">
 <tr>
-<th>方法</th>
-<th>描述</th>
+<th>Method</th>
+<th>Description</th>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/enableVideo.html">enableVideo</a></td>
-<td>启用视频模块</td>
+<td>Enables the video module.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/disableVideo.html">disableVideo</a></td>
-<td>关闭视频模块</td>
+<td>Disables the video module.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/setVideoEncoderConfiguration.html">setVideoEncoderConfiguration</a></td>
-<td>设置视频编码配置</td>
+<td>Sets the video encoder configuration.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/startPreview.html">startPreview</a></td>
-<td>开启视频预览</td>
+<td>Starts the local video preview.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/stopPreview.html">stopPreview</a></td>
-<td>停止视频预览</td>
+<td>Stops the local video preview.</td>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/enableLocalVideo.html">enableLocalVideo</a></td>
-<td>开关本地视频采集</td>
+<td>Enables/Disables the local video capture.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/muteLocalVideoStream.html">muteLocalVideoStream</a></td>
-<td>停止/恢复发送本地视频流</td>
+<td>Stops/Resumes sending the local video stream.</td>
 </tr>
 <tr>
 <td><a href ="rtc_channel/RtcChannel/muteRemoteVideoStream.html">muteRemoteVideoStream</a></td>
-<td>停止/恢复接收指定视频流</td>
+<td>Stops/Resumes receiving a specified remote video stream.</td>
 </tr>
 <tr>
 <td><a href ="rtc_channel/RtcChannel/muteAllRemoteVideoStreams.html">muteAllRemoteVideoStreams</a></td>
-<td>停止/恢复接收所有视频流</td>
+<td>Stops/Resumes receiving all remote video streams.</td>
 </tr>
 <tr>
 <td><a href ="rtc_channel/RtcChannel/setDefaultMuteAllRemoteVideoStreams.html">setDefaultMuteAllRemoteVideoStreams</a></td>
-<td>设置是否默认接收视频流</td>
+<td>Sets whether to receive all remote video streams by default.</td>
 </tr>
 </table>
 
-### 本地媒体事件
+### Local media events
 
 <table border="1">
 <tr>
-<th>事件</th>
-<th>描述</th>
+<th>Event</th>
+<th>Description</th>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngineEventHandler/localAudioStateChanged.html">localAudioStateChanged</a></td>
-<td>本地音频状态改变回调</td>
+<td>Occurs when the local audio state changes.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngineEventHandler/localVideoStateChanged.html">localVideoStateChanged</a></td>
-<td>本地视频状态改变回调</td>
+<td>Occurs when the local video state changes.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngineEventHandler/firstLocalAudioFramePublished.html">firstLocalAudioFramePublished</a></td>
-<td>已发布本地音频首帧回调 </td>
+<td>Occurs when the first audio frame is published. </td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngineEventHandler/firstLocalVideoFramePublished.html">firstLocalVideoFramePublished</a></td>
-<td>已发布本地视频首帧回调</td>
+<td>Occurs when the first video frame is published.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngineEventHandler/firstLocalVideoFrame.html">firstLocalVideoFrame</a></td>
-<td>已显示本地视频首帧回调。</td>
+<td>Occurs when the first local video frame is rendered.</td>
 </tr>
 <tr>
 <td><a href ="rtc_channel/RtcChannelEventHandler/audioPublishStateChanged.html">audioPublishStateChanged</a></td>
-<td>音频发布状态改变回调 </td>
+<td>Occurs when the audio publishing state changes. </td>
 </tr>
 <tr>
 <td><a href ="rtc_channel/RtcChannelEventHandler/videoPublishStateChanged.html">videoPublishStateChanged</a></td>
-<td>视频发布状态改变回调 </td>
+<td>Occurs when the video publishing state changes.</td>
 </tr>
 </table>
 
-### 远端媒体事件
+### Remote media events
 
 <table border="1">
 <tr>
-<th>事件</th>
-<th>描述</th>
+<th>Event</th>
+<th>Description</th>
 </tr>
 <tr>
 <td><a href ="rtc_channel/RtcChannelEventHandler/remoteAudioStateChanged.html">remoteAudioStateChanged</a></td>
-<td>远端用户音频状态已改变回调</td>
+<td>Occurs when the remote audio state changes.</td>
 </tr>
 <tr>
 <td><a href ="rtc_channel/RtcChannelEventHandler/remoteVideoStateChanged.html">remoteVideoStateChanged</a></td>
-<td>远端用户视频状态已变化回调</td>
+<td>Occurs when the remote video state changes.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngineEventHandler/firstRemoteVideoFrame.html">firstRemoteVideoFrame</a></td>
-<td>已显示远端视频首帧回调</td>
+<td>Occurs when the first remote video frame is rendered.</td>
 </tr>
 <tr>
 <td><a href ="rtc_channel/RtcChannelEventHandler/audioSubscribeStateChanged.html">audioSubscribeStateChanged</a></td>
-<td>音频订阅状态改变回调 </td>
+<td>Occurs when the audio subscribing state changes. </td>
 </tr>
 <tr>
 <td><a href ="rtc_channel/RtcChannelEventHandler/videoSubscribeStateChanged.html">videoSubscribeStateChanged</a></td>
-<td>视频订阅状态改变回调 </td>
+<td>Occurs when the video subscribe state changes. </td>
 </tr>
 </table>
 
-### 数据统计事件
+### Statistics events
 
-加入频道后，SDK 每隔 2 秒自动触发本组回调。
+After joining a channel, SDK triggers this group of callbacks once every two seconds.
 
 <table border="1">
 <tr>
-<th>事件</th>
-<th>描述</th>
+<th>Event</th>
+<th>Description</th>
 </tr>
 <tr>
 <td><a href ="rtc_channel/RtcChannelEventHandler/rtcStats.html">RtcStats</a></td>
-<td>当前通话统计回调</td>
+<td>Reports the statistics of RtcEngine.</td>
 </tr>
 <tr>
 <td><a href ="rtc_channel/RtcChannelEventHandler/networkQuality.html">networkQuality</a></td>
-<td>网络上下行质量报告回调</td>
+<td>Reports the network quality of each user.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/LocalAudioStats/LocalAudioStats.html">localAudioStats</a></td>
-<td>通话中本地音频流统计信息回调</td>
+<td>Reports the statistics of the local audio stream.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/LocalVideoStats-class.html">localVideoStats</a></td>
-<td>通话中本地视频流统计信息回调</td>
+<td>Reports the statistics of the uploading local video stream.</td>
 </tr>
 <tr>
 <td><a href ="rtc_channel/RtcChannelEventHandler/remoteAudioStats.html">remoteAudioStats</a></td>
-<td>通话中远端音频流的统计信息回调</td>
+<td>Reports the statistics of the audio stream from each remote user/host.</td>
 </tr>
 <tr>
 <td><a href ="rtc_channel/RtcChannelEventHandler/remoteVideoStats.html">remoteVideoStats</a></td>
-<td>通话中远端视频流统计信息回调</td>
+<td>Reports the statistics of the video stream from each remote user/host.</td>
 </tr>
 </table>
 
-### 视频前处理及后处理
+### Video pre-process and post-process
 
 <table border="1">
 <tr>
-<th>方法</th>
-<th>描述</th>
+<th>Method</th>
+<th>Description</th>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/setBeautyEffectOptions.html">setBeautyEffectOptions</a></td>
-<td>设置美颜效果选项</td>
+<td>Sets the image enhancement options.</td>
 </tr>
 </table>
 
-### 多频道管理
+### Multi-channel management
 
 <table border="1">
 <tr>
-<th>方法</th>
-<th>描述</th>
+<th>Method</th>
+<th>Description</th>
 </tr>
 <tr>
 <td><a href ="rtc_channel/RtcChannel/create.html">create</a></td>
-<td>创建并获取一个 <code>RtcChannel</code> 对象。通过创建多个对象，用户可以同时加入多个频道。</td>
+<td>Initializes and gets an <code>RtcChannel</code> instance. To join multiple channels,
+create multiple <code>RtcChannel</code> objects.</td>
 </tr>
 <tr>
 <td><a href ="rtc_channel/RtcChannel-class.html">RtcChannel</a></td>
-<td>提供在指定频道内实现实时音视频功能的方法。</td>
+<td>Provides methods that enable real-time communications in a specified channel.</td>
 </tr>
 <tr>
 <td><a href ="rtc_channel/RtcChannelEventHandler-class.html">RtcChannelEventHandler</a></td>
-<td>提供监听指定频道事件和数据的回调。</td>
+<td>Provides callbacks that report events and statistics in a specified channel.</td>
 </tr>
 </table>
 
-### 音乐文件播放及混音
+
+### Audio file playback and mixing
 
 <table border="1">
 <tr>
-<th>方法</th>
-<th>描述</th>
+<th>Method</th>
+<th>Description</th>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/startAudioMixing.html">startAudioMixing</a></td>
-<td>开始播放音乐文件</td>
+<td>Starts playing and mixing the music file.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/stopAudioMixing.html">stopAudioMixing</a></td>
-<td>停止播放音乐文件</td>
+<td>Stops playing or mixing the music file.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/pauseAudioMixing.html">pauseAudioMixing</a></td>
-<td>暂停播放音乐文件</td>
+<td>Pauses playing and mixing the music file.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/resumeAudioMixing.html">resumeAudioMixing</a></td>
-<td>恢复播放音乐文件</td>
+<td>Resumes playing and mixing the music file.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/adjustAudioMixingVolume.html">adjustAudioMixingVolume</a></td>
-<td>调节音乐文件播放音量</td>
+<td>Adjusts the volume of audio mixing.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/adjustAudioMixingPlayoutVolume.html">adjustAudioMixingPlayoutVolume</a></td>
-<td>调节音乐文件的本地播放音量</td>
+<td>Adjusts the volume of audio mixing for local playback.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/adjustAudioMixingPublishVolume.html">adjustAudioMixingPublishVolume</a></td>
-<td>调节音乐文件的远端播放音量</td>
+<td>Adjusts the volume of audio mixing for remote playback.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/setAudioMixingPitch.html">setAudioMixingPitch</a></td>
-<td>调整本地播放的音乐文件的音调</td>
+<td>Sets the pitch of the local music file.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/getAudioMixingPlayoutVolume.html">getAudioMixingPlayoutVolume</a></td>
-<td>获取音乐文件的本地播放音量</td>
+<td>Gets the volume of audio mixing for local playback.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/getAudioMixingPublishVolume.html">getAudioMixingPublishVolume</a></td>
-<td>获取音乐文件的远端播放音量</td>
+<td>Gets the volume of audio mixing for remote playback.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/getAudioMixingDuration.html">getAudioMixingDuration</a></td>
-<td>获取音乐文件播放时长</td>
+<td>Gets the duration (ms) of the music file.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/getAudioMixingCurrentPosition.html">getAudioMixingCurrentPosition</a></td>
-<td>获取音乐文件的播放进度</td>
+<td>Gets the playback position (ms) of the music file.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/setAudioMixingPosition.html">setAudioMixingPosition</a></td>
-<td>设置音乐文件的播放位置</td>
+<td>Sets the playback starting position (ms) of the music file.</td>
 </tr>
 </table>
 
 <table border="1">
 <tr>
-<th>事件</th>
-<th>描述</th>
+<th>Event</th>
+<th>Description</th>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngineEventHandler/audioMixingStateChanged.html">audioMixingStateChanged</a></td>
-<td>本地用户的音乐文件播放状态已改变回调</td>
+<td>Occurs when the state of the local user's audio mixing file changes.</td>
 </tr>
 </table>
 
-### 音效文件播放管理
+### Audio effect playback
 
 <table border="1">
 <tr>
-<th>方法</th>
-<th>描述</th>
+<th>Method</th>
+<th>Description</th>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/getEffectsVolume.html">getEffectsVolume</a></td>
-<td>获取播放音效文件音量</td>
+<td>Gets the volume of the audio effects.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/setEffectsVolume.html">setEffectsVolume</a></td>
-<td>设置播放音效文件音量</td>
+<td>Sets the volume of the audio effects.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/setVolumeOfEffect.html">setVolumeOfEffect</a></td>
-<td>实时调整播放音效文件音量</td>
+<td>Sets the volume of a specified audio effect.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/playEffect.html">playEffect</a></td>
-<td>播放指定音效文件</td>
+<td>Plays a specified audio effect.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/setEffectPosition.html">setEffectPosition</a></td>
-<td>设置指定音效文件的播放位置</td>
+<td>Sets the playback position of an audio effect file.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/getEffectDuration.html">getEffectDuration</a></td>
-<td>获取指定音效文件总时长</td>
+<td>Gets the duration of the audio effect file.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/getEffectCurrentPosition.html">getEffectCurrentPosition</a></td>
-<td>获取指定音效文件的播放进度</td>
+<td>Gets the playback position of the audio effect file.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/stopEffect.html">stopEffect</a></td>
-<td>停止播放指定音效文件</td>
+<td>Stops playing a specified audio effect.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/stopAllEffects.html">stopAllEffects</a></td>
-<td>停止播放所有音效文件</td>
+<td>Stops playing all audio effects.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/preloadEffect.html">preloadEffect</a></td>
-<td>将音效文件加载至内存</td>
+<td>Preloads a specified audio effect file into the memory.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/unloadEffect.html">unloadEffect</a></td>
-<td>从内存释放某个预加载的音效文件</td>
+<td>Releases a specified preloaded audio effect from the memory.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/pauseEffect.html">pauseEffect</a></td>
-<td>暂停音效文件播放</td>
+<td>Pauses a specified audio effect.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/pauseAllEffects.html">pauseAllEffects</a></td>
-<td>暂停所有音效文件播放</td>
+<td>Pauses all audio effects.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/resumeEffect.html">resumeEffect</a></td>
-<td>恢复播放指定音效文件</td>
+<td>Resumes playing a specified audio effect.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/resumeAllEffects.html">resumeAllEffects</a></td>
-<td>恢复播放所有音效文件</td>
+<td>Resumes playing all audio effects.</td>
 </tr>
 </table>
 
 <table border="1">
 <tr>
-<th>事件</th>
-<th>描述</th>
+<th>Event</th>
+<th>Description</th>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngineEventHandler/audioEffectFinished.html">audioEffectFinished</a></td>
-<td>本地音效文件播放已结束回调</td>
+<td>Occurs when the audio effect file playback finishes.</td>
 </tr>
 </table>
 
-## 虚拟节拍器
+
+### Virtual metronome
 
 <table border="1">
 <tr>
-<th>方法</th>
-<th>描述</th>
+<th>Method</th>
+<th>Description</th>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/startRhythmPlayer.html">startRhythmPlayer</a></td>
-<td>开启虚拟节拍器</td>
+<td>Enables the virtual metronome.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/stopRhythmPlayer.html">stopRhythmPlayer</a></td>
-<td>关闭虚拟节拍器</td>
+<td>Disables the virtual metronome.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/configRhythmPlayer.html">configRhythmPlayer</a></td>
-<td>配置虚拟节拍器</td>
+<td>Configures the virtual metronome.</td>
 </tr>
 </table>
 
-
-### 变声与混响
+### Voice Effect
 
 <table border="1">
 <tr>
-<th>方法</th>
-<th>描述</th>
+<th>Method</th>
+<th>Description</th>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/setAudioEffectPreset.html">setAudioEffectPreset</a></td>
-<td>设置 SDK 预设的人声音效</td>
+<td>Sets an SDK preset audio effect.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/setVoiceBeautifierPreset.html">setVoiceBeautifierPreset</a></td>
-<td>设置 SDK 预设的美声效果</td>
+<td>Sets an SDK preset voice beautifier effect.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/setVoiceBeautifierParameters.html">setVoiceBeautifierParameters</a></td>
-<td>设置 SDK 预设美声效果的参数</td>
+<td>Sets parameters for SDK preset voice beautifier effects.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/setAudioEffectParameters.html">setAudioEffectParameters</a></td>
-<td>设置 SDK 预设人声音效的参数</td>
+<td>Sets parameters for SDK preset audio effects.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/setLocalVoicePitch.html">setLocalVoicePitch</a></td>
-<td>设置本地语音音调</td>
+<td>Sets the voice pitch of the local speaker.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/setLocalVoiceEqualization.html">setLocalVoiceEqualization</a></td>
-<td>设置本地语音音效均衡</td>
+<td>Sets the local voice equalization effect.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/setLocalVoiceReverbPreset.html">setLocalVoiceReverb</a></td>
-<td>设置本地音效混响</td>
+<td>Sets the local voice reverberation.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/setVoiceConversionPreset.html">setVoiceConversionPreset</a></td>
-<td>设置 SDK 预设的变声效果</td>
+<td>Sets an SDK preset voice conversion effect.</td>
 </tr>
 </table>
 
-### 听声辩位
+### Sound position indication
 
 <table border="1">
 <tr>
-<th>方法</th>
-<th>描述</th>
+<th>Method</th>
+<th>Description</th>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/enableSoundPositionIndication.html">enableSoundPositionIndication</a></td>
-<td>开启/关闭远端用户的语音立体声</td>
+<td>Enables/Disables stereo panning for remote users.</td>
 </tr>
 <tr>
 <td><a href ="rtc_channel/RtcChannel/setRemoteVoicePosition.html">setRemoteVoicePosition</a></td>
-<td>设置远端用户的语音位置</td>
+<td>Sets the sound position and gain of a remote user.</td>
 </tr>
 </table>
 
-### CDN 推流
+### CDN publisher
 
-该组方法仅适用于互动直播。
+This group of methods apply to <code>LiveBroadcasting</code> profile only.
 
 <table border="1">
 <tr>
-<th>方法</th>
-<th>描述</th>
+<th>Method</th>
+<th>Description</th>
 </tr>
 <tr>
 <td><a href ="rtc_channel/RtcChannel/setLiveTranscoding.html">setLiveTranscoding</a></td>
-<td>设置直播转码</td>
+<td>Sets the video layout and audio settings for CDN live.</td>
 </tr>
 <tr>
 <td><a href ="rtc_channel/RtcChannel/addPublishStreamUrl.html">addPublishStreamUrl</a></td>
-<td>增加旁路推流地址</td>
+<td>Publishes the local stream to the CDN.</td>
 </tr>
 <tr>
 <td><a href ="rtc_channel/RtcChannel/removePublishStreamUrl.html">removePublishStreamUrl</a></td>
-<td>删除旁路推流地址</td>
+<td>Removes an RTMP or RTMPS stream from the CDN.</td>
 </tr>
 </table>
 
 <table border="1">
 <tr>
-<th>事件</th>
-<th>描述</th>
+<th>Event</th>
+<th>Description</th>
 </tr>
 <tr>
 <td><a href ="rtc_channel/RtcChannelEventHandler/rtmpStreamingStateChanged.html">rtmpStreamingStateChanged</a></td>
-<td>旁路推流状态改变回调</td>
+<td>Occurs when the state of the RTMP or RTMPS streaming changes.</td>
 </tr>
 <tr>
 <td><a href ="rtc_channel/RtcChannelEventHandler/transcodingUpdated.html">transcodingUpdated</a></td>
-<td>旁路推流设置已被更新回调</td>
+<td>Occurs when the publisher's transcoding settings are updated.</td>
 </tr>
 <tr>
 <td><a href ="rtc_channel/RtcChannelEventHandler/rtmpStreamingEvent.html">rtmpStreamingEvent</a></td>
-<td>RTMP/RTMPS 推流事件回调 </td>
+<td>Reports events during the RTMP or RTMPS streaming.</td>
 </tr>
 </table>
 
-### 跨频道媒体流转发
+### Channel Media Relay
 
 <table border="1">
 <tr>
-<th>方法</th>
-<th>描述</th>
+<th>Method</th>
+<th>Description</th>
 </tr>
 <tr>
 <td><a href ="rtc_channel/RtcChannel/startChannelMediaRelay.html">startChannelMediaRelay</a></td>
-<td>开始跨频道媒体流转发</td>
+<td>Starts to relay media streams across channels.</td>
 </tr>
 <tr>
 <td><a href ="rtc_channel/RtcChannel/updateChannelMediaRelay.html">updateChannelMediaRelay</a></td>
-<td>更新媒体流转发的频道</td>
+<td>Updates the channels for media stream relay.</td>
 </tr>
 <tr>
 <td><a href ="rtc_channel/RtcChannel/stopChannelMediaRelay.html">stopChannelMediaRelay</a></td>
-<td>停止跨频道媒体流转发</td>
+<td>Stops the media stream relay.</td>
 </tr>
 </table>
 
 <table border="1">
 <tr>
-<th>事件</th>
-<th>描述</th>
+<th>Event</th>
+<th>Description</th>
 </tr>
 <tr>
 <td><a href ="rtc_channel/RtcChannelEventHandler/channelMediaRelayStateChanged.html">channelMediaRelayStateChanged</a></td>
-<td>跨频道媒体流转发状态发生改变回调</td>
+<td>Occurs when the state of the media stream relay changes.</td>
 </tr>
 <tr>
 <td><a href ="rtc_channel/RtcChannelEventHandler/channelMediaRelayEvent.html">channelMediaRelayEvent</a></td>
-<td>跨频道媒体流转发事件回调</td>
+<td>Reports events during the media stream relay.</td>
 </tr>
 </table>
 
 
-### 音量提示
+### Audio volume indication
 
 <table border="1">
 <tr>
-<th>方法</th>
-<th>描述</th>
+<th>Method</th>
+<th>Description</th>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/enableAudioVolumeIndication.html">enableAudioVolumeIndication</a></td>
-<td>启用说话者音量提示</td>
+<td>Enables the <a href ="agora_rtc_engine/RtcEngine/enableAudioVolumeIndication.html">audioVolumeIndication</a> callback at a set time interval to report on which users are speaking and the speakers' volume.</td>
 </tr>
 </table>
 
 <table border="1">
 <tr>
-<th>事件</th>
-<th>描述</th>
+<th>Event</th>
+<th>Description</th>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/enableAudioVolumeIndication.html">audioVolumeIndication</a></td>
-<td>提示频道内谁正在说话及说话者音量的回调</td>
+<td>Reports which users are speaking and the speakers' volume, and whether the local user is speaking.</td>
 </tr>
 <tr>
 <td><a href ="rtc_channel/RtcChannelEventHandler/activeSpeaker.html">activeSpeaker</a></td>
-<td>监测到活跃用户回调</td>
+<td>Reports which user is the loudest speaker.</td>
 </tr>
 </table>
 
-### 人脸检测
+### Face detection
 <table border="1">
 <tr>
-<th>方法</th>
-<th>描述</th>
+<th>Method</th>
+<th>Description</th>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/enableFaceDetection.html">enableFaceDetection</a></td>
-<td>开启/关闭本地人脸检测</td>
+<td>Enables/Disables face detection for the local user.</td>
 </tr>
 </table>
 
 <table border="1">
 <tr>
-<th>事件</th>
-<th>描述</th>
+<th>Event</th>
+<th>Description</th>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngineEventHandler/facePositionChanged.html">facePositionChanged</a></td>
-<td>报告本地人脸检测结果</td>
+<td>Reports the face detection result of the local user.</td>
 </tr>
 </table>
 
-### 语音播放路由
+### Audio routing control
 
 <table border="1">
 <tr>
-<th>方法</th>
-<th>描述</th>
+<th>Method</th>
+<th>Description</th>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/setDefaultAudioRoutetoSpeakerphone.html">setDefaultAudioRoutetoSpeakerphone</a></td>
-<td>设置默认的音频播放路由</td>
+<td>Sets the default audio playback route.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/setEnableSpeakerphone.html">setEnableSpeakerphone</a></td>
-<td>启用/关闭扬声器播放</td>
+<td>Enables/Disables the audio playback route to the speakerphone.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/isSpeakerphoneEnabled.html">isSpeakerphoneEnabled</a></td>
-<td>查询扬声器启用状态</td>
+<td>Checks whether the speakerphone is enabled.</td>
 </tr>
 </table>
 
 <table border="1">
 <tr>
-<th>事件</th>
-<th>描述</th>
+<th>Event</th>
+<th>Description</th>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngineEventHandler/audioRouteChanged.html">audioRouteChanged</a></td>
-<td>语音路由已改变回调</td>
+<td>Occurs when the local audio playback route changes.</td>
 </tr>
 </table>
 
-### 耳返控制
+### In-ear monitoring
 
 <table border="1">
 <tr>
-<th>方法</th>
-<th>描述</th>
+<th>Method</th>
+<th>Description</th>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/enableInEarMonitoring.html">enableInEarMonitoring</a></td>
-<td>开启耳返功能</td>
+<td>Enables in-ear monitoring.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/setInEarMonitoringVolume.html">setInEarMonitoringVolume</a></td>
-<td>设置耳返音量</td>
+<td>Sets the volume of the in-ear monitor.</td>
 </tr>
 </table>
 
-### 视频双流模式
+### Dual video stream mode
 
 <table border="1">
 <tr>
-<th>方法</th>
-<th>描述</th>
+<th>Method</th>
+<th>Description</th>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/enableDualStreamMode.html">enableDualStreamMode</a></td>
-<td>开关视频双流模式</td>
+<td>Enables/disables dual video stream mode.</td>
 </tr>
 <tr>
 <td><a href ="rtc_channel/RtcChannel/setRemoteVideoStreamType.html">setRemoteVideoStreamType</a></td>
-<td>设置订阅的视频流类型</td>
+<td>Sets the video stream type of the remotely subscribed video stream.</td>
 </tr>
 <tr>
 <td><a href ="rtc_channel/RtcChannel/setRemoteDefaultVideoStreamType.html">setRemoteDefaultVideoStreamType</a></td>
-<td>设置默认订阅的视频流类型</td>
+<td>Sets the default video stream type of the remotely subscribed video stream.</td>
 </tr>
 </table>
 
-### 音视频回退
+### Stream fallback
 
 <table border="1">
 <tr>
-<th>方法</th>
-<th>描述</th>
+<th>Method</th>
+<th>Description</th>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/setLocalPublishFallbackOption.html">setLocalPublishFallbackOption</a></td>
-<td>设置弱网条件下发布的音视频流回退选项</td>
+<td>Sets the fallback option for the locally published video stream under unreliable network conditions.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/setRemoteSubscribeFallbackOption.html">setRemoteSubscribeFallbackOption</a></td>
-<td>设置弱网条件下订阅的音视频流回退选项</td>
+<td>Sets the fallback option for the remotely subscribed video stream under unreliable network conditions.</td>
 </tr>
 <tr>
 <td><a href ="rtc_channel/RtcChannel/setRemoteUserPriority.html">setRemoteUserPriority</a></td>
-<td>设置用户媒体流优先级</td>
+<td>Sets the priority of a remote user's stream.</td>
 </tr>
 </table>
 
 <table border="1">
 <tr>
-<th>事件</th>
-<th>描述</th>
+<th>Event</th>
+<th>Description</th>
 </tr>
 <tr>
 <td><a href ="rtc_channel/RtcChannelEventHandler/localPublishFallbackToAudioOnly.html">localPublishFallbackToAudioOnly</a></td>
-<td>本地发布流已回退为音频流或恢复为音视频流回调</td>
+<td>Occurs when the locally published video stream falls back to audio only due to poor network conditions or switches back to the video stream after the network conditions improve.</td>
 </tr>
 <tr>
 <td><a href ="rtc_channel/RtcChannelEventHandler/remoteSubscribeFallbackToAudioOnly.html">remoteSubscribeFallbackToAudioOnly</a></td>
-<td>远端订阅流已回退为音频流或恢复为音视频流回调</td>
+<td>Occurs when the remotely subscribed video stream falls back to audio ly due to poor network conditions or switches back to the video stream after the network conditions improve.</td>
 </tr>
 </table>
 
-### 通话前网络测试
+### Pre-call network test
 
 <table border="1">
 <tr>
-<th>方法</th>
-<th>描述</th>
+<th>Method</th>
+<th>Description</th>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/startEchoTest.html">startEchoTest</a></td>
-<td>开始语音通话回路测试</td>
+<td>Starts an audio call test.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/stopEchoTest.html">stopEchoTest</a></td>
-<td>停止语音通话回路测试</td>
+<td>Stops the audio call test.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/enableLastmileTest.html">enableLastmileTest</a></td>
-<td>启用网络测试</td>
+<td>Enables the network connection quality test.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/disableLastmileTest.html">disableLastmileTest</a></td>
-<td>关闭网络测试</td>
+<td>Disables the network connection quality test.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/startLastmileProbeTest.html">startLastmileProbeTest</a></td>
-<td>开始通话前网络质量探测</td>
+<td>Starts the last-mile probe test.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/stopLastmileProbeTest.html">stopLastmileProbeTest</a></td>
-<td>停止通话前网络质量探测</td>
+<td>Stops the last-mile probe test.</td>
 </tr>
 </table>
 
 <table border="1">
 <tr>
-<th>事件</th>
-<th>描述</th>
+<th>Event</th>
+<th>Description</th>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngineEventHandler/lastmileQuality.html">lastmileQuality</a></td>
-<td>本地网络质量报告回调</td>
+<td>Reports the last-mile network quality of the local user before the user joins a channel.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/LastmileProbeResult/LastmileProbeResult.html">lastmileProbeResult</a></td>
-<td>本地网络上下行 Last mile 质量报告回调</td>
+<td>Reports the last-mile network probe result.</td>
 </tr>
 </table>
 
-### 媒体附属信息
+### Media metadata
 
-该组方法仅适用于互动直播。
+This group of methods apply to <code>LiveBroadcasting</code> profile only.
 
 <table border="1">
 <tr>
-<th>方法</th>
-<th>描述</th>
+<th>Method</th>
+<th>Description</th>
 </tr>
 <tr>
 <td><a href ="rtc_channel/RtcChannel/registerMediaMetadataObserver.html">registerMediaMetadataObserver</a></td>
-<td>注册媒体 Metadata 观测器</td>
+<td>Registers a media metadata observer object.</td>
 </tr>
 <tr>
 <td><a href ="rtc_channel/RtcChannel/setMaxMetadataSize.html">setMaxMetadataSize</a></td>
-<td>设置 Metadata 的最大数据大小</td>
+<td>Sets the maximum size of the metadata.</td>
 </tr>
 <tr>
 <td><a href ="rtc_channel/RtcChannel/sendMetadata.html">sendMetadata</a></td>
-<td>发送 Metadata</td>
+<td>Sends the metadata.</td>
 </tr>
 <tr>
 <td><a href ="rtc_channel/RtcChannel/unregisterMediaMetadataObserver.html">unregisterMediaMetadataObserver</a></td>
-<td>注销媒体 Metadata 观测器</td>
+<td>Unregisters the metadata observer.</td>
 </tr>
 </table>
 
-### 直播水印
+### Watermark
 
-该组方法仅适用于互动直播。
+This group of methods apply to <code>LiveBroadcasting</code> profile only.
 
 <table border="1">
 <tr>
-<th>方法</th>
-<th>描述</th>
+<th>Method</th>
+<th>Description</th>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/addVideoWatermark.html">addVideoWatermark</a></td>
-<td>添加本地视频水印</td>
+<td>Adds a watermark image to the local video.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/clearVideoWatermarks.html">clearVideoWatermarks</a></td>
-<td>删除已添加的视频水印</td>
+<td>Removes the added watermark image from the video stream.</td>
 </tr>
 </table>
 
-### 加密
+### Encryption
 
 <table border="1">
 <tr>
-<th>方法</th>
-<th>描述</th>
+<th>Method</th>
+<th>Description</th>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/enableEncryption.html">enableEncryption</a></td>
-<td>开启/关闭内置加密</td>
+<td>Enables/Disables the built-in encryption.</td>
 </tr>
 </table>
 
-### 音频录制
+### Audio recorder
 
 <table border="1">
 <tr>
-<th>方法</th>
-<th>描述</th>
+<th>Method</th>
+<th>Description</th>
 </tr>
 <tr>
-<td><a href ="agora_rtc_engine/RtcEngine/startAudioRecording.html">startAudioRecording</a></td>
-<td>开始客户端录音</td>
+<td><a href ="agora_rtc_engine/RtcEngine/startAudioRecordingWithConfig.html">startAudioRecordingWithConfig</a></td>
+<td>Starts an audio recording on the client.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/stopAudioRecording.html">stopAudioRecording</a></td>
-<td>停止客户端录音</td>
+<td>Stops the audio recording on the client.</td>
 </tr>
 </table>
 
 
-### 摄像头控制
+### Camera control
 
 <table border="1">
 <tr>
-<th>方法</th>
-<th>描述</th>
+<th>Method</th>
+<th>Description</th>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/switchCamera.html">switchCamera</a></td>
-<td>切换前置/后置摄像头</td>
+<td>Switches between front and rear cameras.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/isCameraZoomSupported.html">isCameraZoomSupported</a></td>
-<td>检测设备是否支持摄像头缩放功能</td>
+<td>Checks whether the camera zoom function is supported.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/isCameraTorchSupported.html">isCameraTorchSupported</a></td>
-<td>检测设备是否支持闪光灯常开</td>
+<td>Checks whether the camera flash function is supported.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/isCameraFocusSupported.html">isCameraFocusSupported</a></td>
-<td>检测设备是否支持手动对焦功能</td>
+<td>Checks whether the camera manual focus function is supported.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/isCameraExposurePositionSupported.html">isCameraExposurePositionSupported</a></td>
-<td>检测设备是否支持手动曝光功能</td>
+<td>Checks whether the camera exposure function is supported.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/isCameraAutoFocusFaceModeSupported.html">isCameraAutoFocusFaceModeSupported</a></td>
-<td>检测设备是否支持人脸对焦功能</td>
+<td>Checks whether the camera face auto-focus function is supported.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/setCameraZoomFactor.html">setCameraZoomFactor</a></td>
-<td>设置摄像头缩放比例</td>
+<td>Sets the camera zoom ratio.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/getCameraMaxZoomFactor.html">getCameraMaxZoomFactor</a></td>
-<td>获取摄像头支持最大缩放比例</td>
+<td>Gets the maximum zoom ratio of the camera.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/setCameraFocusPositionInPreview.html">setCameraFocusPositionInPreview</a></td>
-<td>设置手动对焦位置，并触发对焦</td>
+<td>Sets the camera manual focus position.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/setCameraExposurePosition.html">setCameraExposurePosition</a></td>
-<td>设置手动曝光位置</td>
+<td>Sets the camera exposure position.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/setCameraTorchOn.html">setCameraTorchOn</a></td>
-<td>设置是否打开闪光灯</td>
+<td>Enables the camera flash function.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/setCameraAutoFocusFaceModeEnabled.html">setCameraAutoFocusFaceModeEnabled</a></td>
-<td>设置是否开启人脸对焦功能</td>
+<td>Enables the camera auto-face focus function.</td>
 </tr>
 </table>
 
 <table border="1">
 <tr>
-<th>事件</th>
-<th>描述</th>
+<th>Event</th>
+<th>Description</th>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngineEventHandler/cameraFocusAreaChanged.html">cameraFocusAreaChanged</a></td>
-<td>摄像头对焦区域已改变回调</td>
+<td>Occurs when the camera focus area changes.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngineEventHandler/cameraExposureAreaChanged.html">cameraExposureAreaChanged</a></td>
-<td>摄像头曝光区域已改变回调</td>
+<td>Occurs when the camera exposure area changes.</td>
 </tr>
 </table>
 
 
-### 流消息
+### Stream message
 
 <table border="1">
 <tr>
-<th>方法</th>
-<th>描述</th>
+<th>Method</th>
+<th>Description</th>
 </tr>
 <tr>
 <td><a href ="rtc_channel/RtcChannel/createDataStreamWithConfig.html">createDataStreamWithConfig</a></td>
-<td>创建数据流</td>
+<td>Creates a data stream.</td>
 </tr>
 <tr>
 <td><a href ="rtc_channel/RtcChannel/sendStreamMessage.html">sendStreamMessage</a></td>
-<td>发送数据流</td>
+<td>Sends data stream messages.</td>
 </tr>
 </table>
 
 <table border="1">
 <tr>
-<th>事件</th>
-<th>描述</th>
+<th>Event</th>
+<th>Description</th>
 </tr>
 <tr>
 <td><a href ="rtc_channel/RtcChannelEventHandler/streamMessage.html">streamMessage</a></td>
-<td>接收到对方数据流消息的回调</td>
+<td>Occurs when the local user receives a remote data stream within five seconds.</td>
 </tr>
 <tr>
 <td><a href ="rtc_channel/RtcChannelEventHandler/streamMessageError.html">streamMessageError</a></td>
-<td>接收对方数据流消息发生错误的回调</td>
+<td>Occurs when the local user fails to receive the remote data stream.</td>
 </tr>
 </table>
 
-### 其他视频控制
+### Miscellaneous video control
 
 <table border="1">
 <tr>
-<th>方法</th>
-<th>描述</th>
+<th>Method</th>
+<th>Description</th>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/setCameraCapturerConfiguration.html">setCameraCapturerConfiguration</a></td>
-<td>设置摄像头的采集偏好</td>
+<td>Sets the camera capturer configuration.</td>
 </tr>
 </table>
 
 
-### 其他方法
+### Miscellaneous methods
 
 <table border="1">
 <tr>
-<th>方法</th>
-<th>描述</th>
+<th>Method</th>
+<th>Description</th>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/setCloudProxy.html">setCloudProxy</a></td>
-<td>设置 Agora 云代理服务</td>
+<td>Sets the Agora cloud proxy service.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/enableDeepLearningDenoise.html">enableDeepLearningDenoise</a></td>
-<td>开启或关闭 AI 降噪模式</td>
+<td>Enables/Disables deep-learning noise reduction.</td>
 </tr>
 <tr>
 <td><a href ="rtc_channel/RtcChannel/getCallId.html">getCallId</a></td>
-<td>获取通话 ID</td>
+<td>Gets the current call ID.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/rate.html">rate</a></td>
-<td>给通话评分</td>
+<td>Allows a user to rate a call after the call ends.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/complain.html">complain</a></td>
-<td>投诉通话质量</td>
+<td>Allows a user to complain about the call quality after a call ends.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/getSdkVersion.html">getSdkVersion</a></td>
-<td>查询 SDK 版本号</td>
+<td>Gets the Agora SDK version.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngine/getErrorDescription.html">getErrorDescription</a></td>
-<td>获取警告或错误描述</td>
+<td>Retrieves the description of a warning or error code.</td>
 </tr>
 </table>
 
-### 其他事件
+### Miscellaneous events
 
 <table border="1">
 <tr>
-<th>事件</th>
-<th>描述</th>
+<th>Event</th>
+<th>Description</th>
 </tr>
 <tr>
 <td><a href ="rtc_channel/RtcChannelEventHandler/warning.html">warning</a></td>
-<td>发生警告回调</td>
+<td>Occurs when a warning occurs.</td>
 </tr>
 <tr>
 <td><a href ="rtc_channel/RtcChannelEventHandler/error.html">error</a></td>
-<td>发生错误回调</td>
+<td>Occurs when an error occurs.</td>
 </tr>
 <tr>
 <td><a href ="agora_rtc_engine/RtcEngineEventHandler/apiCallExecuted.html">apiCallExecuted</a></td>
-<td>API 方法已执行回调</td>
+<td>Occurs when an API method is executed.</td>
 </tr>
 </table>

@@ -1,8 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
 
-import 'events.dart';
-import 'rtc_engine.dart';
-
 /// 访问区域。
 enum AreaCode {
   /// 中国大陆。
@@ -113,6 +110,10 @@ enum AudioLocalError {
   /// 本地音频编码失败。
   @JsonValue(5)
   EncodeFailure,
+
+  /// 本地音频采集被系统电话中断。
+  @JsonValue(8)
+  Interrupted,
 }
 
 /// 本地音频状态。
@@ -135,7 +136,7 @@ enum AudioLocalState {
 }
 
 /// 混音音乐文件错误码。
-enum AudioMixingErrorCode {
+enum AudioMixingReason {
   /// 音乐文件打开出错。
   @JsonValue(701)
   CanNotOpen,
@@ -144,10 +145,37 @@ enum AudioMixingErrorCode {
   @JsonValue(702)
   TooFrequentCall,
 
-  /// 音乐文件播放异常中断。
+  /// 自 v3.4.5 起废弃。请改用以 AUDIO_MIXING_REASON 为前缀的相关常量。
   @JsonValue(703)
   InterruptedEOF,
 
+  /// 成功调用 `startAudioMixing` 开始音频文件的播放。
+  @JsonValue(720)
+  StartedByUser,
+
+  /// 内部使用
+  @JsonValue(721)
+  OneLoopCompleted,
+
+  /// 内部使用
+  @JsonValue(722)
+  StartNewLoop,
+
+  /// 内部使用
+  @JsonValue(723)
+  AllLoopsCompleted,
+
+  /// 内部使用
+  @JsonValue(724)
+  StoppedByUser,
+
+  /// 内部使用
+  @JsonValue(725)
+  PausedByUser,
+
+  /// 内部使用
+  @JsonValue(726)
+  ResumedByUser,
   /// 无错误。
   @JsonValue(0)
   OK,
@@ -247,6 +275,19 @@ enum AudioRecordingQuality {
   High,
 }
 
+enum AudioRecordingPosition {
+  /// （默认）录制本地和所有远端用户混音后的音频。
+  @JsonValue(0)
+  PositionMixedRecordingAndPlayback,
+
+  /// 仅录制本地用户的音频。
+  @JsonValue(1)
+  PositionRecording,
+
+  /// 仅录制所有远端用户的音频。
+  @JsonValue(2)
+  PositionMixedPlayback,
+}
 /// 远端音频流状态。
 enum AudioRemoteState {
   /// 远端音频流默认初始状态。在以下情况下，会报告该状态：
@@ -786,6 +827,10 @@ enum ConnectionChangedReason {
   /// 详见 [ConnectionStateType.Reconnecting]。
   @JsonValue(14)
   KeepAliveTimeout,
+
+  /// 在云代理模式下，与云代理服务器的连接中断。
+  @JsonValue(15)
+  ProxyServerInterrupted,
 }
 
 /// 网络连接状态。
@@ -837,13 +882,14 @@ enum DegradationPreference {
 
   /// 预留参数，暂不支持。
   @JsonValue(2)
-  Balanced
+  MaintainBalanced
 }
 
 /// 加密模式。
 enum EncryptionMode {
   /// **Deprecated**
   /// 该模式已废弃。
+  @deprecated
   @JsonValue(0)
   None,
 
@@ -870,6 +916,14 @@ enum EncryptionMode {
   /// 256 位 AES 加密, GCM 模式。
   @JsonValue(6)
   AES256GCM,
+
+  /// （默认）128 位 AES 加密，GCM 模式。相比于 `AES128GCM` 加密模式，`AES128GCM2` 加密模式安全性更高且需要设置盐 （`encryptionKdfSalt`）。
+  @JsonValue(7)
+  AES128GCM2,
+
+  /// 256 位 AES 加密，GCM 模式。相比于 `AES256GCM` 加密模式，`AES256GCM2` 加密模式安全性更高且需要设置盐 （`encryptionKdfSalt`）。
+  @JsonValue(8)
+  AES256GCM2,
 }
 
 /// 错误代码。SDK 上报的错误意味着 SDK 无法自动恢复，需要 App 干预或提示用户。
@@ -986,7 +1040,7 @@ enum ErrorCode {
   ///
   /// **Deprecated** 已废弃。
   ///
-  /// 请改用 [`connectionStateChanged`] 回调中的 `TokenExpired`。
+  /// 请改用 [RtcEngineEventHandler.connectionStateChanged] 回调中的 `TokenExpired`。
   /// 详见 [RtcEngineEventHandler.connectionStateChanged] 和 [ConnectionChangedReason.TokenExpired]。
   ///
   /// 一般有以下原因：
@@ -1097,6 +1151,14 @@ enum ErrorCode {
   /// 推流地址格式有错误。请检查推流地址格式是否正确。
   @JsonValue(156)
   PublishStreamFormatNotSuppported,
+
+  /// 未集成 AI 降噪库。
+  @JsonValue(157)
+  ModuleNotFound,
+
+  /// 客户端正在录音。如需开始新的录音，请先调用 [RtcEngine.stopAudioRecording] 停止当前录音，再调用 [RtcEngine.startAudioRecording]。
+  @JsonValue(160)
+  AlreadyInRecording,
 
   /// 加载媒体引擎失败。
   @JsonValue(1001)
@@ -1333,7 +1395,11 @@ enum LocalVideoStreamError {
 
   /// (仅支持 iOS) 应用窗口处于侧拉、分屏、画中画模式。
   @JsonValue(7)
-  CaptureMultipleForegroundApps
+  CaptureMultipleForegroundApps,
+
+  /// SDK 找不到视频采集设备。
+  @JsonValue(8)
+  DeviceNotFound,
 }
 
 /// 本地视频状态。
@@ -1498,6 +1564,10 @@ enum RtmpStreamingErrorCode {
   /// 推流地址格式有错误。请检查推流地址格式是否正确。
   @JsonValue(10)
   FormatNotSupported,
+
+  /// 推流已正常结束。当你调用 [RtcEngine.removePublishStreamUrl] 结束推流后，SDK 会返回该值。
+  @JsonValue(100)
+  UnPublishOK,
 }
 
 /// RTMP 推流状态。
@@ -2204,6 +2274,10 @@ enum RtmpStreamingEvent {
   /// RTMP 推流时，添加背景图或水印出错。
   @JsonValue(1)
   FailedLoadImage,
+
+  /// 该推流 URL 已用于推流。如果你想开始新的推流，请使用新的推流 URL。
+  @JsonValue(2)
+  UrlAlreadyInUse,
 }
 
 /// 音频会话控制权限

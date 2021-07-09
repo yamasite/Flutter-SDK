@@ -50,7 +50,7 @@ typedef LocalAudioStatsCallback = void Function(LocalAudioStats stats);
 typedef RemoteVideoStatsCallback = void Function(RemoteVideoStats stats);
 typedef RemoteAudioStatsCallback = void Function(RemoteAudioStats stats);
 typedef AudioMixingStateCallback = void Function(
-    AudioMixingStateCode state, AudioMixingErrorCode errorCode);
+    AudioMixingStateCode state, AudioMixingReason reason);
 typedef SoundIdCallback = void Function(int soundId);
 typedef RtmpStreamingStateCallback = void Function(
     String url, RtmpStreamingState state, RtmpStreamingErrorCode errCode);
@@ -109,7 +109,7 @@ class RtcEngineEventHandler {
   ///
   /// `WarningCallback` 包含如下参数：
   /// - [WarningCode] `warn`：警告码。详见 [WarningCode]。
-  WarningCallback warning;
+  WarningCallback? warning;
 
   /// 发生错误回调。
   ///
@@ -119,7 +119,7 @@ class RtcEngineEventHandler {
   ///
   /// `ErrorCallback` 包含如下参数：
   /// - [ErrorCode] `err`：错误码。详见 [ErrorCode]。
-  ErrorCallback error;
+  ErrorCallback? error;
 
   /// API 方法已执行回调。
   ///
@@ -128,7 +128,7 @@ class RtcEngineEventHandler {
   /// - [String] `api`：SDK 所调用的 API。
   /// - [String] `result`：SDK 调用 API 的调用结果。
   ///
-  ApiCallCallback apiCallExecuted;
+  ApiCallCallback? apiCallExecuted;
 
   /// 加入频道回调。
   ///
@@ -140,7 +140,7 @@ class RtcEngineEventHandler {
   /// - [int] `uid`：用户 ID。
   /// - [int] `elapsed`：从 [RtcEngine.joinChannel] 开始到发生此事件过去的时间（毫秒)。
   ///
-  UidWithElapsedAndChannelCallback joinChannelSuccess;
+  UidWithElapsedAndChannelCallback? joinChannelSuccess;
 
   /// 重新加入频道回调。
   ///
@@ -150,7 +150,7 @@ class RtcEngineEventHandler {
   /// - [String] `channel`：频道名。
   /// - [int] `uid`：用户 ID。
   /// - [int] `elapsed`：从 [RtcEngine.joinChannel] 开始到发生此事件过去的时间（毫秒)。
-  UidWithElapsedAndChannelCallback rejoinChannelSuccess;
+  UidWithElapsedAndChannelCallback? rejoinChannelSuccess;
 
   /// 离开频道回调。
   ///
@@ -159,7 +159,7 @@ class RtcEngineEventHandler {
   ///
   /// `RtcStatsCallback` 包含如下参数：
   /// - [RtcStats] `stats`：通话相关的统计信息。
-  RtcStatsCallback leaveChannel;
+  RtcStatsCallback? leaveChannel;
 
   /// 本地用户成功注册 User Account 回调。
   ///
@@ -169,7 +169,7 @@ class RtcEngineEventHandler {
   /// `UserAccountCallback` 包含如下参数：
   /// - [int] `uid`：本地用户的 ID。
   /// - [String] `userAccount`；本地用户的 User Account。
-  UserAccountCallback localUserRegistered;
+  UserAccountCallback? localUserRegistered;
 
   /// 远端用户信息已更新回调。
   ///
@@ -179,7 +179,7 @@ class RtcEngineEventHandler {
   /// `UserAccountCallback` 包含如下参数：
   /// - [int] `uid`：远端用户 ID。
   /// - [UserInfo] `userInfo`；标识用户信息的 `UserInfo` 对象，包含用户 UID 和 User Account。
-  UserInfoCallback userInfoUpdated;
+  UserInfoCallback? userInfoUpdated;
 
   /// 直播场景下用户角色已切换回调。如从观众切换为主播，反之亦然。
   ///
@@ -188,7 +188,7 @@ class RtcEngineEventHandler {
   /// `ClientRoleCallback` 包含如下参数：
   /// - [ClientRole] `oldRole`：切换前的角色。
   /// - [ClientRole] `newRole`：切换后的角色。
-  ClientRoleCallback clientRoleChanged;
+  ClientRoleCallback? clientRoleChanged;
 
   /// 远端用户（通信场景）/主播（直播场景）加入当前频道回调。
   ///
@@ -214,7 +214,7 @@ class RtcEngineEventHandler {
   /// `UidWithElapsedCallback` 包含如下参数：
   /// - [int] `uid`：新加入频道的远端用户/主播 ID。
   /// - [int] `elapsed`：从本地用户调用 [RtcEngine.joinChannel] 或 [RtcEngine.setClientRole] 到触发该回调的延迟（毫秒）。
-  UidWithElapsedCallback userJoined;
+  UidWithElapsedCallback? userJoined;
 
   /// 远端用户（通信场景）/主播（直播场景）离开当前频道回调。
   ///
@@ -226,7 +226,7 @@ class RtcEngineEventHandler {
   /// `UserOfflineCallback` 包含如下参数：
   /// - [int] `uid`：主播 ID。
   /// - [UserOfflineReason] `reason`：离线原因。
-  UserOfflineCallback userOffline;
+   UserOfflineCallback? userOffline;
 
   /// 网络连接状态已改变回调。
   ///
@@ -235,7 +235,7 @@ class RtcEngineEventHandler {
   /// `ConnectionStateCallback` 包含如下参数：
   /// - [ConnectionStateType] `state`：当前的网络连接状态。
   /// - [ConnectionChangedReason] `reason`：引起当前网络连接状态发生改变的原因。
-  ConnectionStateCallback connectionStateChanged;
+  ConnectionStateCallback? connectionStateChanged;
 
   /// 本地网络类型发生改变回调。
   ///
@@ -244,14 +244,14 @@ class RtcEngineEventHandler {
   ///
   /// `NetworkTypeCallback` 包含如下参数：
   /// - [NetworkType] `type`：网络连接类型。
-  NetworkTypeCallback networkTypeChanged;
+  NetworkTypeCallback? networkTypeChanged;
 
   /// 网络连接中断，且 SDK 无法在 10 秒内连接服务器回调。
   ///
   /// SDK 在调用 [RtcEngine.joinChannel] 后，无论是否加入成功，只要 10 秒和服务器无法连接就会触发该回调。
   ///
   /// 如果 SDK 在断开连接后，20 分钟内还是没能重新加入频道，SDK 会停止尝试重连。
-  EmptyCallback connectionLost;
+  EmptyCallback? connectionLost;
 
   /// Token 服务即将过期回调。
   ///
@@ -261,14 +261,14 @@ class RtcEngineEventHandler {
   ///
   /// `TokenCallback` 包含如下参数：
   /// - [String] `token`：即将服务失效的 Token。
-  TokenCallback tokenPrivilegeWillExpire;
+  TokenCallback? tokenPrivilegeWillExpire;
 
   /// Token 过期回调。
   ///
   /// 在调用 [RtcEngine.joinChannel] 时如果指定了 Token，
   /// 由于 Token 具有一定的时效，在通话过程中 SDK 可能由于网络原因和服务器失去连接，重连时可能需要新的 Token。该回调通知 App 需要生成新的 Token，
   /// 并需调用 [RtcEngine.joinChannel] 重新加入频道。
-  EmptyCallback requestToken;
+  EmptyCallback? requestToken;
 
   /// 提示频道内谁正在说话、说话者音量及本地用户是否在说话的回调。
   ///
@@ -304,7 +304,7 @@ class RtcEngineEventHandler {
   /// - [int] `totalVolume`：（混音后的）总音量（0~255）。
   ///   - 在本地用户的回调中，`totalVolume` 为本地用户混音后的音量。
   ///   - 在远端用户的回调中，`totalVolume` 为所有说话者混音后的总音量。
-  AudioVolumeCallback audioVolumeIndication;
+  AudioVolumeCallback? audioVolumeIndication;
 
   /// 监测到活跃用户回调。
   ///
@@ -318,13 +318,14 @@ class RtcEngineEventHandler {
   ///
   /// `UidCallback` 包含如下参数：
   /// - [int] `uid`：当前时间段声音最大的用户的 `uid`。如果返回的 `uid` 为 0，则默认为本地用户。
-  UidCallback activeSpeaker;
+  UidCallback? activeSpeaker;
 
   /// 已发送本地音频首帧回调。
   ///
   /// `ElapsedCallback` 包含如下参数：
   /// - [int] `elapsed`：从本地用户调用 [RtcEngine.joinChannel] 方法直至该回调被触发的延迟（毫秒）。
-  ElapsedCallback firstLocalAudioFrame;
+  @deprecated
+  ElapsedCallback? firstLocalAudioFrame;
 
   /// 已显示本地视频首帧回调。
   ///
@@ -336,7 +337,7 @@ class RtcEngineEventHandler {
   /// - [int] `elapsed`：从本地用户调用 [RtcEngine.joinChannel] 方法直至该回调被触发的延迟（毫秒）。
   ///      如果在 [RtcEngine.joinChannel] 之前
   ///      调用了 [RtcEngine.startPreview]，则返回的是从调用 [RtcEngine.startPreview] 直至该回调被触发的延迟（毫秒）。
-  VideoFrameCallback firstLocalVideoFrame;
+  VideoFrameCallback? firstLocalVideoFrame;
 
   /// 远端用户停止/恢复发送视频流回调。
   ///
@@ -357,7 +358,7 @@ class RtcEngineEventHandler {
   ///   - `true`: 该用户已暂停发送视频流。
   ///   - `false`: 该用户已恢复发送视频流。
   @deprecated
-  UidWithMutedCallback userMuteVideo;
+  UidWithMutedCallback? userMuteVideo;
 
   /// 本地或远端视频大小或旋转信息发生改变回调。
   ///
@@ -366,7 +367,7 @@ class RtcEngineEventHandler {
   /// - [int] `width`：视频流的宽度（像素）。
   /// - [int] `height`：视频流的高度（像素）。
   /// - [int] `rotation`：旋转信息 [0,360)。
-  VideoSizeCallback videoSizeChanged;
+  VideoSizeCallback? videoSizeChanged;
 
   /// 远端用户视频状态发生已变化回调。
   ///
@@ -375,7 +376,7 @@ class RtcEngineEventHandler {
   /// - [VideoRemoteState] `state`：远端视频流状态。
   /// - [VideoRemoteStateReason] `reason`：远端视频流状态改变的具体原因。
   /// - [int] `elapsed`：从本地用户调用 [RtcEngine.joinChannel] 方法到发生本事件经历的时间，单位为 ms。
-  RemoteVideoStateCallback remoteVideoStateChanged;
+  RemoteVideoStateCallback? remoteVideoStateChanged;
 
   /// 本地视频状态发生改变回调。
   ///
@@ -390,7 +391,7 @@ class RtcEngineEventHandler {
   /// `LocalVideoStateCallback` 包含如下参数：
   /// - [LocalVideoStreamState] `localVideoState`：当前的本地视频状态。
   /// - [LocalVideoStreamError] `error`：本地视频出错原因。
-  LocalVideoStateCallback localVideoStateChanged;
+  LocalVideoStateCallback? localVideoStateChanged;
 
   /// 远端音频状态发生改变回调。
   ///
@@ -405,7 +406,7 @@ class RtcEngineEventHandler {
   /// - [AudioRemoteState] `state`：远端音频流状态。
   /// - [AudioRemoteStateReason] `reason`：远端音频流状态改变的具体原因。
   /// - [int] `elapsed`：从本地用户调用 [RtcEngine.joinChannel] 方法到发生本事件经历的时间，单位为 ms。
-  RemoteAudioStateCallback remoteAudioStateChanged;
+  RemoteAudioStateCallback? remoteAudioStateChanged;
 
   /// 本地音频状态发生改变回调。
   ///
@@ -419,7 +420,7 @@ class RtcEngineEventHandler {
   /// `LocalAudioStateCallback` 包含如下参数：
   /// - [AudioLocalState] `state`：当前的本地音频状态。
   /// - [AudioLocalError] `error`：本地音频出错原因。
-  LocalAudioStateCallback localAudioStateChanged;
+  LocalAudioStateCallback? localAudioStateChanged;
 
   /// 本地发布流已回退为音频流回调。
   ///
@@ -432,7 +433,7 @@ class RtcEngineEventHandler {
   /// - [bool] `isFallbackOrRecover`：本地推流已回退或恢复：
   ///  - `true`: 由于网络环境不理想，本地发布的媒体流已回退为音频流。
   ///  - `false`: 由于网络环境改善，发布的音频流已恢复为音视频流。
-  FallbackCallback localPublishFallbackToAudioOnly;
+  FallbackCallback? localPublishFallbackToAudioOnly;
 
   /// 远端订阅流已回退为音频流回调或因网络质量改善，恢复为音视频流。
   ///
@@ -449,7 +450,7 @@ class RtcEngineEventHandler {
   /// - [bool] `isFallbackOrRecover`：远端订阅流已回退或恢复：
   ///  - `true`: 由于网络环境不理想，远端订阅流已回退为音频流。
   ///  - `false`: 由于网络环境改善，订阅的音频流已恢复为音视频流。
-  FallbackWithUidCallback remoteSubscribeFallbackToAudioOnly;
+  FallbackWithUidCallback? remoteSubscribeFallbackToAudioOnly;
 
   /// 语音路由已变更回调。
   ///
@@ -458,7 +459,7 @@ class RtcEngineEventHandler {
   ///
   /// `AudioRouteCallback` 包含如下参数：
   /// - [AudioOutputRouting] `routing`：音频输出路由。
-  AudioRouteCallback audioRouteChanged;
+  AudioRouteCallback? audioRouteChanged;
 
   /// 摄像头对焦区域已改变回调。
   ///
@@ -466,7 +467,7 @@ class RtcEngineEventHandler {
   ///
   /// `RectCallback` 包含如下参数：
   /// - [Rect] `rect`：镜头内表示对焦的区域。
-  RectCallback cameraFocusAreaChanged;
+  RectCallback? cameraFocusAreaChanged;
 
   /// 摄像头曝光区域已改变回调。
   ///
@@ -474,7 +475,7 @@ class RtcEngineEventHandler {
   ///
   /// `RectCallback` 包含如下参数：
   /// - [Rect] `rect`：镜头内表示曝光的区域。
-  RectCallback cameraExposureAreaChanged;
+  RectCallback? cameraExposureAreaChanged;
 
   /// 报告本地人脸检测结果。
   ///
@@ -495,7 +496,7 @@ class RtcEngineEventHandler {
   /// - [int] `imageHeight`：摄像头采集画面的高度 (px)。
   /// - [List]<[FacePositionInfo]> `faces`：检测到的人脸信息，详见 [FacePositionInfo]。
   /// 检测到几张人脸，就会报告几个 `FacePositionInfo` 数组。数组长度可以为 0，表示没有检测到摄像头前出现人脸。
-  FacePositionCallback facePositionChanged;
+  FacePositionCallback? facePositionChanged;
 
   ///
   /// 当前通话统计回调。
@@ -503,7 +504,7 @@ class RtcEngineEventHandler {
   ///
   /// `RtcStatsCallback` 包含如下参数：
   /// - [RtcStats] `stats`：通话相关的统计信息。
-  RtcStatsCallback rtcStats;
+  RtcStatsCallback? rtcStats;
 
   /// 通话前网络上下行 last mile 质量报告回调。
   ///
@@ -512,7 +513,7 @@ class RtcEngineEventHandler {
   ///
   /// `NetworkQualityCallback` 包含如下参数：
   /// - [NetworkQuality] `quality`：网络上下行质量，基于上下行网络的丢包率和抖动计算，探测结果主要反映上行网络的状态。
-  NetworkQualityCallback lastmileQuality;
+  NetworkQualityCallback? lastmileQuality;
 
   /// 通话中每个用户的网络上下行 last mile 质量报告回调。
   ///
@@ -525,7 +526,7 @@ class RtcEngineEventHandler {
   /// 该值代表当前的上行网络质量，帮助判断是否可以支持当前设置的视频编码属性。假设上行码率是 1000 Kbps，
   /// 那么支持 640 &times; 480 的分辨率、30 fps 的帧率没有问题，但是支持 1280 x 720 的分辨率就会有困难。
   /// - [NetworkQuality] `rxQuality`：该用户的下行网络质量，基于下行网络的丢包率、平均往返延时和网络抖动计算。
-  NetworkQualityWithUidCallback networkQuality;
+  NetworkQualityWithUidCallback? networkQuality;
 
   /// 通话前网络上下行 Last mile 质量探测报告回调。
   ///
@@ -535,7 +536,7 @@ class RtcEngineEventHandler {
   /// - [LastmileProbeResult] `result`：上下行 Last mile 质量探测结果。
   ///
   /// (result: LastmileProbeResult)
-  LastmileProbeCallback lastmileProbeResult;
+  LastmileProbeCallback? lastmileProbeResult;
 
   /// 通话中本地视频流的统计信息回调。
   ///
@@ -543,14 +544,14 @@ class RtcEngineEventHandler {
   ///
   /// `LocalVideoStatsCallback` 包含如下参数：
   /// - [LocalVideoStats] `stats`：本地视频统计数据。
-  LocalVideoStatsCallback localVideoStats;
+  LocalVideoStatsCallback? localVideoStats;
 
   /// 通话中本地音频流的统计信息回调。
   ///
   /// 该回调描述本地设备发送音频流的统计信息。SDK 每 2 秒触发该回调一次。
   /// `LocalAudioStatsCallback` 包含如下参数：
   /// - [LocalAudioStats] `stats`：本地音频统计数据。
-  LocalAudioStatsCallback localAudioStats;
+  LocalAudioStatsCallback? localAudioStats;
 
   /// 通话中远端视频流的统计信息回调。
   ///
@@ -559,7 +560,7 @@ class RtcEngineEventHandler {
   ///
   /// `RemoteVideoStatsCallback` 包含如下参数：
   /// - [RemoteVideoStats] `stats`：远端视频统计数据。
-  RemoteVideoStatsCallback remoteVideoStats;
+  RemoteVideoStatsCallback? remoteVideoStats;
 
   /// 通话中远端音频流的统计信息回调。
   ///
@@ -570,7 +571,7 @@ class RtcEngineEventHandler {
   ///
   /// `RemoteAudioStatsCallback` 包含如下参数：
   /// - [RemoteAudioStats] `stats`：接收到的远端音频统计数据。
-  RemoteAudioStatsCallback remoteAudioStats;
+  RemoteAudioStatsCallback? remoteAudioStats;
 
   /// 本地音乐文件播放已结束回调。
   ///
@@ -581,7 +582,7 @@ class RtcEngineEventHandler {
   ///
   /// 如果该方法调用失败，会在 [warning] 回调里，返回警告码 [WarningCode.AudioMixingOpenError]。
   @deprecated
-  EmptyCallback audioMixingFinished;
+  EmptyCallback? audioMixingFinished;
 
   /// 本地用户的音乐文件播放状态改变。
   /// 调用 [RtcEngine.startAudioMixing] 播放混音音乐文件后，当音乐文件的播放状态发生改变时，会触发该回调。
@@ -593,7 +594,7 @@ class RtcEngineEventHandler {
   /// `AudioMixingStateCallback` 包含如下参数：
   /// - [AudioMixingStateCode] `state`：状态码。
   /// - [AudioMixingErrorCode] `errorCode`：错误码。
-  AudioMixingStateCallback audioMixingStateChanged;
+  AudioMixingStateCallback? audioMixingStateChanged;
 
   /// 本地音效文件播放已结束回调。
   ///
@@ -601,7 +602,7 @@ class RtcEngineEventHandler {
   ///
   /// `SoundIdCallback` 包含如下参数：
   /// - [int] `soundId`：指定音效的 ID。每个音效均有唯一的 ID。
-  SoundIdCallback audioEffectFinished;
+  SoundIdCallback? audioEffectFinished;
 
   /// RTMP 推流状态发生改变回调。该回调返回本地用户调用 [RtcEngine.addPublishStreamUrl]
   /// 或 [RtcEngine.removePublishStreamUrl] 方法的结果。
@@ -613,7 +614,7 @@ class RtcEngineEventHandler {
   /// - [String] `url`：推流状态发生改变的 URL 地址。
   /// - [RtmpStreamingState] `state`：当前的推流状态。
   /// - [RtmpStreamingErrorCode] `errCode`：详细的推流错误信息。
-  RtmpStreamingStateCallback rtmpStreamingStateChanged;
+  RtmpStreamingStateCallback? rtmpStreamingStateChanged;
 
   /// 旁路推流设置被更新回调。
   ///
@@ -622,7 +623,7 @@ class RtcEngineEventHandler {
   /// **Note**
   ///
   /// 首次调用 [RtcEngine.setLiveTranscoding] 方法设置转码参数时，不会触发该回调。
-  EmptyCallback transcodingUpdated;
+  EmptyCallback? transcodingUpdated;
 
   /// 输入在线媒体流状态回调。该回调表明向直播输入的外部视频流的状态。
   ///
@@ -630,7 +631,7 @@ class RtcEngineEventHandler {
   /// - [String] `url`：推流状态发生改变的 URL 地址。
   /// - [int] `uid`：用户 ID。
   /// - [InjectStreamStatus] `status`：输入的外部视频源状态。
-  StreamInjectedStatusCallback streamInjectedStatus;
+  StreamInjectedStatusCallback? streamInjectedStatus;
 
   /// 接收到对方数据流消息的回调。
   ///
@@ -640,7 +641,7 @@ class RtcEngineEventHandler {
   /// - [int] `uid`：用户 ID。
   /// - [int] `streamId`：数据流。
   /// - [String] `data`：接收到的数据。
-  StreamMessageCallback streamMessage;
+  StreamMessageCallback? streamMessage;
 
   /// 接收对方数据流消息发生错误的回调。
   ///
@@ -652,13 +653,13 @@ class RtcEngineEventHandler {
   /// - [ErrorCode] `error`：接收到的数据。
   /// - [int] `missed`：丢失的消息数量。
   /// - [int] `cached`：数据流中断时，后面缓存的消息数量。
-  StreamMessageErrorCallback streamMessageError;
+  StreamMessageErrorCallback? streamMessageError;
 
   /// 媒体引擎成功加载的回调。
-  EmptyCallback mediaEngineLoadSuccess;
+  EmptyCallback? mediaEngineLoadSuccess;
 
   /// 媒体引擎成功启动的回调。
-  EmptyCallback mediaEngineStartCallSuccess;
+  EmptyCallback? mediaEngineStartCallSuccess;
 
   /// 跨频道媒体流转发状态发生改变回调。
   ///
@@ -667,7 +668,7 @@ class RtcEngineEventHandler {
   /// `MediaRelayStateCallback` 包含如下参数：
   /// - [ChannelMediaRelayState] `state`：跨频道媒体流转发状态。
   /// - [ChannelMediaRelayError] `code`：跨频道媒体流转发出错的错误码。
-  MediaRelayStateCallback channelMediaRelayStateChanged;
+  MediaRelayStateCallback? channelMediaRelayStateChanged;
 
   /// 跨频道媒体流转发事件回调。
   ///
@@ -675,7 +676,7 @@ class RtcEngineEventHandler {
   ///
   /// `MediaRelayEventCallback` 包含如下参数：
   /// - [ChannelMediaRelayEvent] `code`：跨频道媒体流转发事件码。
-  MediaRelayEventCallback channelMediaRelayEvent;
+  MediaRelayEventCallback? channelMediaRelayEvent;
 
   /// 已显示远端视频首帧回调。
   ///
@@ -691,7 +692,7 @@ class RtcEngineEventHandler {
   /// - [int] `height`：视频流高（像素）。
   /// - [int] `elapsed`：从本地用户调用 [RtcEngine.joinChannel] 加入频道开始到发生此事件过去的时间（毫秒）。
   @deprecated
-  VideoFrameWithUidCallback firstRemoteVideoFrame;
+  VideoFrameWithUidCallback? firstRemoteVideoFrame;
 
   /// 已接收远端音频首帧回调。
   ///
@@ -703,7 +704,7 @@ class RtcEngineEventHandler {
   /// - [int] `uid`：新加入频道的远端用户/主播 ID。
   /// - [int] `elapsed`：从本地用户调用 [RtcEngine.joinChannel] 或 [RtcEngine.setClientRole] 到触发该回调的延迟（毫秒）。
   @deprecated
-  UidWithElapsedCallback firstRemoteAudioFrame;
+  UidWithElapsedCallback? firstRemoteAudioFrame;
 
   /// 已解码远端音频首帧回调。
   ///
@@ -723,7 +724,7 @@ class RtcEngineEventHandler {
   /// - [int] `uid`：新加入频道的远端用户/主播 ID。
   /// - [int] `elapsed`：从本地用户调用 [RtcEngine.joinChannel] 或 [RtcEngine.setClientRole] 到触发该回调的延迟（毫秒）。
   @deprecated
-  UidWithElapsedCallback firstRemoteAudioDecoded;
+  UidWithElapsedCallback? firstRemoteAudioDecoded;
 
   /// 远端用户停止/恢复发送音频流回调。
   ///
@@ -747,7 +748,7 @@ class RtcEngineEventHandler {
   ///   - `true`: 该用户已暂停发送视频流。
   ///   - `false`: 该用户已恢复发送视频流。
   @deprecated
-  UidWithMutedCallback userMuteAudio;
+  UidWithMutedCallback? userMuteAudio;
 
   /// 开启旁路推流的结果回调。
   ///
@@ -762,7 +763,7 @@ class RtcEngineEventHandler {
   /// - [String] `url`：新增的推流地址。
   /// - [ErrorCode] `error`：详细的错误信息。
   @deprecated
-  UrlWithErrorCallback streamPublished;
+  UrlWithErrorCallback? streamPublished;
 
   /// 停止旁路推流的结果回调。
   ///
@@ -776,7 +777,7 @@ class RtcEngineEventHandler {
   /// `UrlCallback` 包含如下参数：
   /// - [String] `url`：主播停止推流的 RTMP 地址。
   @deprecated
-  UrlCallback streamUnpublished;
+  UrlCallback? streamUnpublished;
 
   /// 通话中远端音频流传输的统计信息回调。
   ///
@@ -795,7 +796,7 @@ class RtcEngineEventHandler {
   /// - [int] `lost`：音频包从发送端到接收端的丢包率 (%)。
   /// - [int] `rxKBitRate`：远端音频包的接收码率（Kbps）。
   @deprecated
-  TransportStatsCallback remoteAudioTransportStats;
+  TransportStatsCallback? remoteAudioTransportStats;
 
   /// 通话中远端视频流传输的统计信息回调。
   ///
@@ -813,7 +814,7 @@ class RtcEngineEventHandler {
   /// - [int] `lost`：视频包从发送端到接收端的丢包率 (%)。
   /// - [int] `rxKBitRate`：远端视频包的接收码率（Kbps）。
   @deprecated
-  TransportStatsCallback remoteVideoTransportStats;
+  TransportStatsCallback? remoteVideoTransportStats;
 
   /// 其他用户开/关视频模块回调。
   ///
@@ -837,7 +838,7 @@ class RtcEngineEventHandler {
   ///  - `true`: 该用户已启用视频功能。启用后，该用户可以进行视频通话或直播。
   ///  - `false`: 该用户已关闭视频功能。关闭后，该用户只能进行语音通话或直播，不能显示、发送自己的视频，也不能接收、显示别人的视频。
   @deprecated
-  UidWithEnabledCallback userEnableVideo;
+  UidWithEnabledCallback? userEnableVideo;
 
   /// 远端用户开/关本地视频采集回调。
   ///
@@ -857,7 +858,7 @@ class RtcEngineEventHandler {
   ///  - `true`: 该用户已启用视频功能。启用后，该用户可以进行视频通话或直播。
   ///  - `false`: 该用户已关闭视频功能。关闭后，该用户只能进行语音通话或直播，不能显示、发送自己的视频，也不能接收、显示别人的视频。
   @deprecated
-  UidWithEnabledCallback userEnableLocalVideo;
+  UidWithEnabledCallback? userEnableLocalVideo;
 
   /// 已完成远端视频首帧解码回调。
   ///
@@ -883,7 +884,7 @@ class RtcEngineEventHandler {
   /// - [int] `height`：视频流高（像素）。
   /// - [int] `elapsed`：从本地用户调用 [RtcEngine.joinChannel] 加入频道开始到发生此事件过去的时间（毫秒）。
   @deprecated
-  VideoFrameWithUidCallback firstRemoteVideoDecoded;
+  VideoFrameWithUidCallback? firstRemoteVideoDecoded;
 
   /// 麦克风状态已改变回调。
   ///
@@ -898,7 +899,7 @@ class RtcEngineEventHandler {
   ///  - `true`：麦克风已启用。
   ///  - `false`：麦克风已禁用。
   @deprecated
-  EnabledCallback microphoneEnabled;
+  EnabledCallback? microphoneEnabled;
 
   /// 网络连接中断回调。
   ///
@@ -914,7 +915,7 @@ class RtcEngineEventHandler {
   ///
   /// 如果 SDK 在断开连接后，20 分钟内还是没能重新加入频道，SDK 会停止尝试重连。
   @deprecated
-  EmptyCallback connectionInterrupted;
+  EmptyCallback? connectionInterrupted;
 
   /// 网络连接已被服务器禁止回调。
   ///
@@ -924,7 +925,7 @@ class RtcEngineEventHandler {
   ///
   /// 当你被服务端禁掉连接的权限时，会触发该回调。
   @deprecated
-  EmptyCallback connectionBanned;
+  EmptyCallback? connectionBanned;
 
   /// 远端音频质量回调。
   ///
@@ -940,7 +941,7 @@ class RtcEngineEventHandler {
   /// - [int] `delay`：音频包从发送端到接收端的延迟（毫秒）。包括声音采样前处理、网络传输、网络抖动缓冲引起的延迟。
   /// - [int] `lost`：音频包从发送端到接收端的丢包率 (%)。
   @deprecated
-  AudioQualityCallback audioQuality;
+  AudioQualityCallback? audioQuality;
 
   /// 摄像头就绪回调。
   ///
@@ -949,7 +950,7 @@ class RtcEngineEventHandler {
   /// 该回调已废弃。请改用 [RtcEngineEventHandler.localVideoStateChanged] 回调中的 [LocalVideoStreamState.Capturing]。
   /// 提示已成功打开摄像头，可以开始捕获视频。如果摄像头打开失败，可在 [Error] 中处理相应错误。
   @deprecated
-  EmptyCallback cameraReady;
+  EmptyCallback? cameraReady;
 
   /// 视频功能停止回调。
   ///
@@ -958,7 +959,7 @@ class RtcEngineEventHandler {
   /// 该回调已废弃。请改用 [RtcEngineEventHandler.localVideoStateChanged] 回调中的 [LocalVideoStreamState.Stopped]。
   /// 提示视频功能已停止。 App 如需在停止视频后对 view 做其他处理（例如显示其他画面），可以在这个回调中进行。
   @deprecated
-  EmptyCallback videoStopped;
+  EmptyCallback? videoStopped;
 
   /// 接收端已接收 Metadata。
   ///
@@ -966,7 +967,7 @@ class RtcEngineEventHandler {
   /// - [String] `buffer`：接收到的 Metadata 数据 Buffer。
   /// - [int] `uid`：发送该 Metadata 的远端用户的 ID。
   /// - [int] `timeStampMs`：接收到的 Metadata 的时间戳，单位为毫秒 。
-  MetadataCallback metadataReceived;
+  MetadataCallback? metadataReceived;
 
   /// 已发布本地音频首帧回调。
   ///
@@ -979,7 +980,7 @@ class RtcEngineEventHandler {
   ///
   /// `ElapsedCallback` 包含如下参数：
   /// - [int] `elapsed`：从本地用户调用 [RtcEngine.joinChannel] 方法直至该回调被触发的延迟（毫秒）。
-  ElapsedCallback firstLocalAudioFramePublished;
+  ElapsedCallback? firstLocalAudioFramePublished;
 
   /// 已发布本地视频首帧回调。
   ///
@@ -989,7 +990,7 @@ class RtcEngineEventHandler {
   /// - 开启本地视频的情况下，调用 [RtcEngine.joinChannel] 成功加入频道后。
   /// - 调用 [RtcEngine.muteLocalVideoStream] (`true`)，再调用[RtcEngine.muteLocalVideoStream] (`false`) 后。
   /// - 调用 [RtcEngine.disableVideo]，再调用 [RtcEngine.enableVideo] 后。
-  ElapsedCallback firstLocalVideoFramePublished;
+  ElapsedCallback? firstLocalVideoFramePublished;
 
   /// 音频发布状态改变回调。
   ///
@@ -1000,7 +1001,7 @@ class RtcEngineEventHandler {
   /// - [StreamPublishState] `oldState` 之前的发布状态。
   /// - [StreamPublishState] `newState` 当前的发布状态。
   /// - [int] `elapseSinceLastState` 两次状态变化时间间隔（毫秒）。
-  StreamPublishStateCallback audioPublishStateChanged;
+  StreamPublishStateCallback? audioPublishStateChanged;
 
   /// 视频发布状态改变回调。
   ///
@@ -1011,7 +1012,7 @@ class RtcEngineEventHandler {
   /// - [StreamPublishState] `oldState` 之前的发布状态。
   /// - [StreamPublishState] `newState` 当前的发布状态。
   /// - [int] `elapseSinceLastState` 两次状态变化时间间隔（毫秒）。
-  StreamPublishStateCallback videoPublishStateChanged;
+  StreamPublishStateCallback? videoPublishStateChanged;
 
   /// 音频订阅状态发生改变回调。
   ///
@@ -1022,7 +1023,7 @@ class RtcEngineEventHandler {
   /// - [StreamSubscribeState] `oldState` 之前的订阅状态。
   /// - [StreamSubscribeState] `newState` 当前的订阅状态。
   /// - [int] `elapseSinceLastState` 两次状态变化时间间隔（毫秒）。
-  StreamSubscribeStateCallback audioSubscribeStateChanged;
+  StreamSubscribeStateCallback? audioSubscribeStateChanged;
 
   /// 视频订阅状态发生改变回调。
   ///
@@ -1033,7 +1034,7 @@ class RtcEngineEventHandler {
   /// - [StreamSubscribeState] `oldState` 之前的订阅状态。
   /// - [StreamSubscribeState] `newState` 当前的订阅状态。
   /// - [int] `elapseSinceLastState` 两次状态变化时间间隔（毫秒）。
-  StreamSubscribeStateCallback videoSubscribeStateChanged;
+  StreamSubscribeStateCallback? videoSubscribeStateChanged;
 
   /// RTMP 推流事件回调。
   ///
@@ -1042,11 +1043,16 @@ class RtcEngineEventHandler {
   /// `RtmpStreamingEventCallback` 包含如下参数：
   /// - [String] `url` RTMP 推流 URL。
   /// - [RtmpStreamingEvent] `eventCode` RTMP 推流事件码。
-  RtmpStreamingEventCallback rtmpStreamingEvent;
+  RtmpStreamingEventCallback? rtmpStreamingEvent;
 
+  ///  @nodoc
+  UserSuperResolutionEnabledCallback? userSuperResolutionEnabled;
+
+  ///  @nodoc
+  UploadLogResultCallback? uploadLogResult;
   /// Constructs a [RtcEngineEventHandler]
-  RtcEngineEventHandler(
-      {this.warning,
+  RtcEngineEventHandler({
+      this.warning,
       this.error,
       this.apiCallExecuted,
       this.joinChannelSuccess,
@@ -1124,7 +1130,8 @@ class RtcEngineEventHandler {
       this.videoSubscribeStateChanged,
       this.rtmpStreamingEvent,
       this.userSuperResolutionEnabled,
-      this.uploadLogResult});
+    this.uploadLogResult,
+      });
 
   // ignore: public_member_api_docs
   void process(String methodName, List<dynamic> data) {
@@ -1298,7 +1305,7 @@ class RtcEngineEventHandler {
       case 'AudioMixingStateChanged':
         audioMixingStateChanged?.call(
           AudioMixingStateCodeConverter.fromValue(data[0]).e,
-          AudioMixingErrorCodeConverter.fromValue(data[1]).e,
+          AudioMixingReasonConverter.fromValue(data[1]).e,
         );
         break;
       case 'AudioEffectFinished':
@@ -1452,13 +1459,13 @@ class RtcChannelEventHandler {
   ///
   /// `WarningCallback` 包含如下参数：
   /// - [WarningCode] `warn`：警告码。详见 [WarningCode]。
-  WarningCallback warning;
+  WarningCallback? warning;
 
   /// 报告 [RtcChannel] 对象发生的错误码。
   ///
   /// `ErrorCallback` 包含如下参数：
   /// - [ErrorCode] `err`：错误码。详见 [ErrorCode]。
-  ErrorCallback error;
+  ErrorCallback? error;
 
   /// 加入频道回调。
   ///
@@ -1468,7 +1475,7 @@ class RtcChannelEventHandler {
   /// `UidWithElapsedCallback` 包含如下参数：
   /// - [int] `uid`：用户 ID。
   /// - [int] `elapsed`：从本地用户调用 `joinChannel` 到触发该回调的时间（毫秒）。
-  UidWithElapsedAndChannelCallback joinChannelSuccess;
+  UidWithElapsedAndChannelCallback? joinChannelSuccess;
 
   /// 重新加入频道回调。
   ///
@@ -1477,7 +1484,7 @@ class RtcChannelEventHandler {
   /// `UidWithElapsedCallback` 包含如下参数：
   /// - [int] `uid`：用户 ID。
   /// - [int] `elapsed`：从本地用户开始重连到触发该回调的时间（毫秒）。
-  UidWithElapsedAndChannelCallback rejoinChannelSuccess;
+  UidWithElapsedAndChannelCallback? rejoinChannelSuccess;
 
   /// 离开频道回调。
   ///
@@ -1487,7 +1494,7 @@ class RtcChannelEventHandler {
   ///
   /// `RtcStatsCallback` 包含如下参数：
   /// - [RtcStats] `stats`：通话相关的统计信息。
-  RtcStatsCallback leaveChannel;
+  RtcStatsCallback? leaveChannel;
 
   /// 直播场景下用户角色已切换回调。如从观众切换为主播，反之亦然。
   ///
@@ -1496,7 +1503,7 @@ class RtcChannelEventHandler {
   /// `ClientRoleCallback` 包含如下参数：
   /// - [ClientRole] `oldRole`：切换前的角色。
   /// - [ClientRole] `newRole`：切换后的角色。
-  ClientRoleCallback clientRoleChanged;
+  ClientRoleCallback? clientRoleChanged;
 
   /// 远端用户（通信场景）/主播（直播场景）加入当前频道回调。
   ///
@@ -1519,7 +1526,7 @@ class RtcChannelEventHandler {
   /// `UidWithElapsedCallback` 包含如下参数：
   /// - [int] `uid`：新加入频道的远端用户/主播 ID。
   /// - [int] `elapsed`：从本地用户调用 [RtcEngine.joinChannel] 或 [RtcEngine.setClientRole] 到触发该回调的延迟（毫秒）。
-  UidWithElapsedCallback userJoined;
+  UidWithElapsedCallback? userJoined;
 
   /// 远端用户（通信场景）/主播（直播场景）离开当前频道回调。
   ///
@@ -1531,7 +1538,7 @@ class RtcChannelEventHandler {
   /// `UserOfflineCallback` 包含如下参数：
   /// - [int] `uid`：主播 ID。
   /// - [UserOfflineReason] `reason`：离线原因。
-  UserOfflineCallback userOffline;
+  UserOfflineCallback? userOffline;
 
   /// 网络连接状态已改变回调。
   ///
@@ -1540,14 +1547,14 @@ class RtcChannelEventHandler {
   /// `ConnectionStateCallback` 包含如下参数：
   /// - [ConnectionStateType] `state`：当前的网络连接状态。
   /// - [ConnectionChangedReason] `reason`：引起当前网络连接状态发生改变的原因。
-  ConnectionStateCallback connectionStateChanged;
+  ConnectionStateCallback? connectionStateChanged;
 
   /// 网络连接中断，且 SDK 无法在 10 秒内连接服务器回调。
   ///
   /// SDK 在调用 [RtcChannel.joinChannel] 后，无论是否加入成功，只要 10 秒和服务器无法连接就会触发该回调。
   ///
   /// 如果 SDK 在断开连接后，20 分钟内还是没能重新加入频道，SDK 会停止尝试重连。
-  EmptyCallback connectionLost;
+  EmptyCallback? connectionLost;
 
   /// Token 服务即将过期回调。
   ///
@@ -1557,14 +1564,14 @@ class RtcChannelEventHandler {
   ///
   /// `TokenCallback` 包含如下参数：
   /// - [String] `token`：即将服务失效的 Token。
-  TokenCallback tokenPrivilegeWillExpire;
+  TokenCallback? tokenPrivilegeWillExpire;
 
   /// Token 过期回调。
   ///
   /// 在调用 [RtcChannel.joinChannel] 时如果指定了 Token，
   /// 由于 Token 具有一定的时效，在通话过程中 SDK 可能由于网络原因和服务器失去连接，重连时可能需要新的 Token。该回调通知 App 需要生成新的 Token，
   /// 并需调用 [RtcChannel.joinChannel] 重新加入频道。
-  EmptyCallback requestToken;
+  EmptyCallback? requestToken;
 
   /// 监测到活跃用户回调。
   ///
@@ -1578,7 +1585,7 @@ class RtcChannelEventHandler {
   ///
   /// `UidCallback` 包含如下参数：
   /// - [int] `uid`：当前时间段声音最大的用户的 `uid`。如果返回的 `uid` 为 0，则默认为本地用户。
-  UidCallback activeSpeaker;
+  UidCallback? activeSpeaker;
 
   /// 本地或远端视频大小或旋转信息发生改变回调。
   ///
@@ -1587,7 +1594,7 @@ class RtcChannelEventHandler {
   /// - [int] `width`：视频流的宽度（像素）。
   /// - [int] `height`：视频流的高度（像素）。
   /// - [int] `rotation`：旋转信息 [0,360)。
-  VideoSizeCallback videoSizeChanged;
+  VideoSizeCallback? videoSizeChanged;
 
   /// 远端用户视频状态发生已变化回调。
   ///
@@ -1596,7 +1603,7 @@ class RtcChannelEventHandler {
   /// - [VideoRemoteState] `state`：远端视频流状态。
   /// - [VideoRemoteStateReason] `reason`：远端视频流状态改变的具体原因。
   /// - [int] `elapsed`：从本地用户调用 [RtcEngine.joinChannel] 方法到发生本事件经历的时间，单位为 ms。
-  RemoteVideoStateCallback remoteVideoStateChanged;
+  RemoteVideoStateCallback? remoteVideoStateChanged;
 
   /// 远端音频状态发生改变回调。
   ///
@@ -1611,7 +1618,7 @@ class RtcChannelEventHandler {
   /// - [AudioRemoteState] `state`：远端音频流状态。
   /// - [AudioRemoteStateReason] `reason`：远端音频流状态改变的具体原因。
   /// - [int] `elapsed`：从本地用户调用 [RtcEngine.joinChannel] 方法到发生本事件经历的时间，单位为 ms。
-  RemoteAudioStateCallback remoteAudioStateChanged;
+  RemoteAudioStateCallback? remoteAudioStateChanged;
 
   /// 本地发布流已回退为音频流回调。
   ///
@@ -1623,7 +1630,7 @@ class RtcChannelEventHandler {
   /// - [bool] `isFallbackOrRecover`：本地推流已回退或恢复：
   ///  - `true`: 由于网络环境不理想，本地发布的媒体流已回退为音频流。
   ///  - `false`: 由于网络环境改善，发布的音频流已恢复为音视频流。
-  FallbackCallback localPublishFallbackToAudioOnly;
+  FallbackCallback? localPublishFallbackToAudioOnly;
 
   /// 远端订阅流已回退为音频流回调或因网络质量改善，恢复为音视频流。
   ///
@@ -1640,14 +1647,14 @@ class RtcChannelEventHandler {
   /// - [bool] `isFallbackOrRecover`：远端订阅流已回退或恢复：
   ///  - `true`: 由于网络环境不理想，远端订阅流已回退为音频流。
   ///  - `false`: 由于网络环境改善，订阅的音频流已恢复为音视频流。
-  FallbackWithUidCallback remoteSubscribeFallbackToAudioOnly;
+  FallbackWithUidCallback? remoteSubscribeFallbackToAudioOnly;
 
   /// 当前通话统计回调。
   /// 该回调在通话中每两秒触发一次。
   ///
   /// `RtcStatsCallback` 包含如下参数：
   /// - [RtcStats] `stats`：通话相关的统计信息。
-  RtcStatsCallback rtcStats;
+  RtcStatsCallback? rtcStats;
 
   /// 通话中每个用户的网络上下行 last mile 质量报告回调。
   ///
@@ -1660,7 +1667,7 @@ class RtcChannelEventHandler {
   /// 该值代表当前的上行网络质量，帮助判断是否可以支持当前设置的视频编码属性。假设上行码率是 1000 Kbps，
   /// 那么支持 640 &times; 480 的分辨率、30 fps 的帧率没有问题，但是支持 1280 x 720 的分辨率就会有困难。
   /// - [NetworkQuality] `rxQuality`：该用户的下行网络质量，基于下行网络的丢包率、平均往返延时和网络抖动计算。
-  NetworkQualityWithUidCallback networkQuality;
+  NetworkQualityWithUidCallback? networkQuality;
 
   /// 通话中远端视频流的统计信息回调。
   ///
@@ -1669,7 +1676,7 @@ class RtcChannelEventHandler {
   ///
   /// `RemoteVideoStatsCallback` 包含如下参数：
   /// - [RemoteVideoStats] `stats`：远端视频统计数据。
-  RemoteVideoStatsCallback remoteVideoStats;
+  RemoteVideoStatsCallback? remoteVideoStats;
 
   /// 通话中远端音频流的统计信息回调。
   ///
@@ -1680,7 +1687,7 @@ class RtcChannelEventHandler {
   ///
   /// `RemoteAudioStatsCallback` 包含如下参数：
   /// - [RemoteAudioStats] `stats`：接收到的远端音频统计数据。
-  RemoteAudioStatsCallback remoteAudioStats;
+  RemoteAudioStatsCallback? remoteAudioStats;
 
   /// RTMP 推流状态发生改变回调。该回调返回本地用户调用 [RtcChannel.addPublishStreamUrl]
   /// 或 [RtcChannel.removePublishStreamUrl] 方法的结果。
@@ -1692,7 +1699,7 @@ class RtcChannelEventHandler {
   /// - [String] `url`：推流状态发生改变的 URL 地址。
   /// - [RtmpStreamingState] `state`：当前的推流状态。
   /// - [RtmpStreamingErrorCode] `errCode`：详细的推流错误信息。
-  RtmpStreamingStateCallback rtmpStreamingStateChanged;
+  RtmpStreamingStateCallback? rtmpStreamingStateChanged;
 
   /// 旁路推流设置被更新回调。
   ///
@@ -1701,7 +1708,7 @@ class RtcChannelEventHandler {
   /// **Note**
   ///
   /// 首次调用 [RtcChannel.setLiveTranscoding] 方法设置转码参数时，不会触发该回调。
-  EmptyCallback transcodingUpdated;
+  EmptyCallback? transcodingUpdated;
 
   /// 输入在线媒体流状态回调。该回调表明向直播输入的外部视频流的状态。
   ///
@@ -1709,7 +1716,7 @@ class RtcChannelEventHandler {
   /// - [String] `url`：推流状态发生改变的 URL 地址。
   /// - [int] `uid`：用户 ID。
   /// - [InjectStreamStatus] `status`：输入的外部视频源状态。
-  StreamInjectedStatusCallback streamInjectedStatus;
+  StreamInjectedStatusCallback? streamInjectedStatus;
 
   /// 接收到对方数据流消息的回调。
   ///
@@ -1719,7 +1726,7 @@ class RtcChannelEventHandler {
   /// - [int] `uid`：用户 ID。
   /// - [int] `streamId`：数据流。
   /// - [String] `data`：接收到的数据。
-  StreamMessageCallback streamMessage;
+  StreamMessageCallback? streamMessage;
 
   /// 接收对方数据流消息发生错误的回调。
   ///
@@ -1731,7 +1738,7 @@ class RtcChannelEventHandler {
   /// - [ErrorCode] `error`：接收到的数据。
   /// - [int] `missed`：丢失的消息数量。
   /// - [int] `cached`：数据流中断时，后面缓存的消息数量。
-  StreamMessageErrorCallback streamMessageError;
+  StreamMessageErrorCallback? streamMessageError;
 
   /// 跨频道媒体流转发状态发生改变回调。
   ///
@@ -1740,13 +1747,13 @@ class RtcChannelEventHandler {
   /// `MediaRelayStateCallback` 包含如下参数：
   /// - [ChannelMediaRelayState] `state`：跨频道媒体流转发状态。
   /// - [ChannelMediaRelayError] `code`：跨频道媒体流转发出错的错误码。
-  MediaRelayStateCallback channelMediaRelayStateChanged;
+  MediaRelayStateCallback? channelMediaRelayStateChanged;
 
   /// 跨频道媒体流转发事件回调。该回调报告跨频道媒体流转发过程中发生的事件。
   ///
   /// `MediaRelayEventCallback` 包含如下参数：
   /// - [ChannelMediaRelayEvent] `code`：跨频道媒体流转发事件码。
-  MediaRelayEventCallback channelMediaRelayEvent;
+  MediaRelayEventCallback? channelMediaRelayEvent;
 
   /// 接收端已接收 Metadata。
   ///
@@ -1754,7 +1761,7 @@ class RtcChannelEventHandler {
   /// - [String] `buffer`：接收到的 Metadata 数据 Buffer。
   /// - [int] `uid`：发送该 Metadata 的远端用户的 ID。
   /// - [int] `timeStampMs`：接收到的 Metadata 的时间戳，单位为毫秒 。
-  MetadataCallback metadataReceived;
+  MetadataCallback? metadataReceived;
 
   /// 音频发布状态改变回调。
   ///
@@ -1765,7 +1772,7 @@ class RtcChannelEventHandler {
   /// - [StreamPublishState] `oldState` 之前的发布状态。
   /// - [StreamPublishState] `newState` 当前的发布状态。
   /// - [int] `elapseSinceLastState` 两次状态变化时间间隔（毫秒）。
-  StreamPublishStateCallback audioPublishStateChanged;
+  StreamPublishStateCallback? audioPublishStateChanged;
 
   /// 视频发布状态发生改变回调。
   ///
@@ -1776,7 +1783,7 @@ class RtcChannelEventHandler {
   /// - [StreamPublishState] `oldState` 之前的发布状态。
   /// - [StreamPublishState] `newState` 当前的发布状态。
   /// - [int] `elapseSinceLastState` 两次状态变化时间间隔（毫秒）。
-  StreamPublishStateCallback videoPublishStateChanged;
+  StreamPublishStateCallback? videoPublishStateChanged;
 
   /// 音频订阅状态发生改变回调。
   ///
@@ -1787,7 +1794,7 @@ class RtcChannelEventHandler {
   /// - [StreamSubscribeState] `oldState` 之前的订阅状态。
   /// - [StreamSubscribeState] `newState` 当前的订阅状态。
   /// - [int] `elapseSinceLastState` 两次状态变化时间间隔（毫秒）。
-  StreamSubscribeStateCallback audioSubscribeStateChanged;
+  StreamSubscribeStateCallback? audioSubscribeStateChanged;
 
   /// 视频订阅状态发生改变回调。
   ///
@@ -1798,7 +1805,7 @@ class RtcChannelEventHandler {
   /// - [StreamSubscribeState] `oldState` 之前的订阅状态。
   /// - [StreamSubscribeState] `newState` 当前的订阅状态。
   /// - [int] `elapseSinceLastState` 两次状态变化时间间隔（毫秒）。
-  StreamSubscribeStateCallback videoSubscribeStateChanged;
+  StreamSubscribeStateCallback? videoSubscribeStateChanged;
 
   /// RTMP 推流事件回调。
   ///
@@ -1807,14 +1814,14 @@ class RtcChannelEventHandler {
   /// `RtmpStreamingEventCallback` 包含如下参数：
   /// - [String] `url` RTMP 推流 URL。
   /// - [RtmpStreamingEvent] `eventCode` RTMP 推流事件码。
-  RtmpStreamingEventCallback rtmpStreamingEvent;
+  RtmpStreamingEventCallback? rtmpStreamingEvent;
 
   ///  @nodoc
-  UserSuperResolutionEnabledCallback userSuperResolutionEnabled;
+  UserSuperResolutionEnabledCallback? userSuperResolutionEnabled;
 
   /// Constructs a [RtcChannelEventHandler]
-     RtcChannelEventHandler(
-      {this.warning,
+  RtcChannelEventHandler({
+    this.warning,
       this.error,
       this.joinChannelSuccess,
       this.rejoinChannelSuccess,
@@ -1849,7 +1856,8 @@ class RtcChannelEventHandler {
       this.audioSubscribeStateChanged,
       this.videoSubscribeStateChanged,
       this.rtmpStreamingEvent,
-      this.userSuperResolutionEnabled});
+    this.userSuperResolutionEnabled,
+  });
 
   // ignore: public_member_api_docs
   void process(String methodName, List<dynamic> data) {

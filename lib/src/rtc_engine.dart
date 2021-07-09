@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/services.dart';
 
-import '../rtc_local_view.dart';
 import 'classes.dart';
 import 'enum_converter.dart';
 import 'enums.dart';
@@ -14,56 +13,52 @@ class RtcEngine with RtcEngineInterface {
   static const MethodChannel _methodChannel = MethodChannel('agora_rtc_engine');
   static const EventChannel _eventChannel =
       EventChannel('agora_rtc_engine/events');
+  static final Stream _stream = _eventChannel.receiveBroadcastStream();
+  static StreamSubscription? _subscription;
 
  /// Exposing methodChannel to other files
   static MethodChannel get methodChannel => _methodChannel;
 
-  static RtcEngine _engine;
+  static RtcEngine? _instance;
 
-  RtcEngineEventHandler _handler;
+  /// Get the singleton of [RtcEngine].
+  static RtcEngine? get instance => _instance;
 
-  RtcEngine._() {
-    _eventChannel.receiveBroadcastStream().listen((event) {
-      final eventMap = Map<dynamic, dynamic>.from(event);
-      final methodName = eventMap['methodName'] as String;
-      final data = List<dynamic>.from(eventMap['data']);
-      _handler?.process(methodName, data);
-    });
-  }
+ RtcEngineEventHandler? _handler;
 
-  static Future<T> _invokeMethod<T>(String method,
-      [Map<String, dynamic> arguments]) {
+  RtcEngine._();
+
+  Future<T?> _invokeMethod<T>(String method,
+      [Map<String, dynamic>? arguments]) {
     return _methodChannel.invokeMethod(method, arguments);
   }
 
-  ///  Retrieves the SDK version.
+  /// 查询 SDK 版本号。
   ///
-  /// Since v3.3.1
   ///
-  /// This method returns the string of the version number.
-  ///
-  /// **Note**
-  ///
-  /// You can call this method either before or after joining a channel.
+  /// 该方法在加入频道前后都能调用。
+
+
   ///
   /// **Returns**
   ///
-  /// The version of the current SDK in the string format. For example, 2.3.0.
-  static Future<String> getSdkVersion() {
-    return _invokeMethod('getSdkVersion');
+  /// 当前的 SDK 版本号，格式为字符串，如 2.3.0。
+  static Future<String?> getSdkVersion() {
+    return RtcEngine.methodChannel.invokeMethod('getSdkVersion');
   }
 
-  /// Retrieves the description of a warning or error code.
+  /// 获取错误码或警告码描述。
   ///
-  /// Since v3.3.1
   ///
-  /// **Parameter** [code] The warning or error code that the `Warning` or `Error` callback returns.
+  /// **Parameter** [error] [WarningCode] 或 [ErrorCode] 返回的错误码或警告码。
   ///
   /// **Returns**
   ///
-  /// [WarningCode] or [ErrorCode].
-  static Future<String> getErrorDescription(int error) {
-    return _invokeMethod('getErrorDescription', {'error': error});
+  /// [WarningCode] 或 [ErrorCode]。
+  static Future<String?> getErrorDescription(int error) {
+    return RtcEngine.methodChannel.invokeMethod('getErrorDescription', {
+      'error': error,
+    });
   }
 
 
@@ -88,9 +83,8 @@ class RtcEngine with RtcEngineInterface {
   /// - 方法调用成功，则返回一个 [RtcEngine] 对象。
   /// - 方法调用失败，则返回错误码。
   ///   - [ErrorCode.InvalidAppId]
-  @deprecated
   static Future<RtcEngine> create(String appId) {
-    return createWithConfig(RtcEngineConfig(appId));
+    return createWithContext(RtcEngineContext(appId));
   }
 
   /// 创建 [RtcEngine] 实例。
@@ -123,8 +117,8 @@ class RtcEngine with RtcEngineInterface {
   ///   - [ErrorCode.InvalidAppId]
   @deprecated
   static Future<RtcEngine> createWithAreaCode(
-      String appId, AreaCode areaCode) async {
-    return createWithConfig(RtcEngineConfig(appId, areaCode: areaCode));
+      String appId, List<AreaCode> areaCode) {
+    return createWithContext(RtcEngineContext(appId, areaCode: areaCode));
   }
 
   /// 创建 [RtcEngine] 实例。
@@ -144,18 +138,43 @@ class RtcEngine with RtcEngineInterface {
   /// - 方法调用成功，则返回一个 [RtcEngine] 对象。
   /// - 方法调用失败，则返回错误码。
   ///   - [ErrorCode.InvalidAppId]
+  @deprecated
   static Future<RtcEngine> createWithConfig(RtcEngineConfig config) async {
-    if (_engine != null) return _engine;
-    await _invokeMethod('create', {'config': config.toJson(), 'appType': 4});
-    _engine = RtcEngine._();
-    return _engine;
+    return createWithContext(config);
+  }
+
+  /// 创建 [RtcEngine] 实例。
+  ///
+  /// 自从 v4.0.5
+  ///
+  /// [RtcEngine] 类的所有接口函数，如无特殊说明，都是异步调用，对接口的调用建议在同一个线程进行。
+  ///
+  /// **Note**
+  /// - 请确保在调用其他 API 前先调用该方法创建并初始化 [RtcEngine]。
+  /// - 调用该方法和 [create] 均能创建 [RtcEngine] 实例。
+  /// - 目前 Agora Flutter SDK 只支持每个 app 创建一个 [RtcEngine] 实例。
+  ///
+  /// **Parameter**[config] [RtcEngine] 实例配置。详见 [RtcEngineContext]。
+  ///
+  /// **Returns**
+  /// - 方法调用成功，则返回一个 [RtcEngine] 对象。
+  /// - 方法调用失败，则返回错误码。
+  ///   - [ErrorCode.InvalidAppId]
+  static Future<RtcEngine> createWithContext(RtcEngineContext context) async {
+    if (_instance != null) return _instance!;
+    _instance = RtcEngine._();
+    await _instance!._invokeMethod('create', {
+      'config': context.toJson(),
+      'appType': 4,
+    });
+    return _instance!;
   }
 
   @override
   Future<void> destroy() {
     RtcChannel.destroyAll();
-    _handler = null;
-    _engine = null;
+    _instance?._handler = null;
+    _instance = null;
     return _invokeMethod('destroy');
   }
 
@@ -166,42 +185,50 @@ class RtcEngine with RtcEngineInterface {
   /// **Parameter** [handler] [RtcEngineEventHandler] 回调句柄。
   void setEventHandler(RtcEngineEventHandler handler) {
     _handler = handler;
-  }
-
-  @override
-  Future<void> setChannelProfile(ChannelProfile profile) {
-    return _invokeMethod('setChannelProfile',
-        {'profile': ChannelProfileConverter(profile).value()});
-  }
-
-   @override
-  Future<void> setClientRole(ClientRole role, [ClientRoleOptions options]) {
-    return _invokeMethod('setClientRole', {
-      'role': ClientRoleConverter(role).value(),
-      'options': options?.toJson()
+    _subscription ??= _stream.listen((event) {
+      final eventMap = Map<dynamic, dynamic>.from(event);
+      final methodName = eventMap['methodName'] as String;
+      final data = eventMap['data'];
+      _instance?._handler?.process(methodName, data);
     });
   }
 
   @override
+  Future<void> setChannelProfile(ChannelProfile profile) {
+    return _invokeMethod('setChannelProfile', {
+      'profile': ChannelProfileConverter(profile).value(),
+    });
+  }
+
+  @override
+  Future<void> setClientRole(ClientRole role, [ClientRoleOptions? options]) {
+    return _invokeMethod('setClientRole', {
+      'role': ClientRoleConverter(role).value(),
+      'options': options?.toJson(),
+    });
+  }
+
+
+  @override
   Future<void> joinChannel(
-      String token, String channelName, String optionalInfo, int optionalUid,
-      [ChannelMediaOptions options]) {
+      String? token, String channelName, String? optionalInfo, int optionalUid,
+      [ChannelMediaOptions? options]) {
     return _invokeMethod('joinChannel', {
       'token': token,
       'channelName': channelName,
       'optionalInfo': optionalInfo,
       'optionalUid': optionalUid,
-      'options': options?.toJson()
+      'options': options?.toJson(),
     });
   }
 
   @override
-  Future<void> switchChannel(String token, String channelName,
-      [ChannelMediaOptions options]) {
+  Future<void> switchChannel(String? token, String channelName,
+      [ChannelMediaOptions? options]) {
     return _invokeMethod('switchChannel', {
       'token': token,
       'channelName': channelName,
-      'options': options?.toJson()
+      'options': options?.toJson(),
     });
   }
 
@@ -212,13 +239,17 @@ class RtcEngine with RtcEngineInterface {
 
   @override
   Future<void> renewToken(String token) {
-    return _invokeMethod('renewToken', {'token': token});
+    return _invokeMethod('renewToken', {
+      'token': token,
+    });
   }
 
   @override
   @deprecated
   Future<void> enableWebSdkInteroperability(bool enabled) {
-    return _invokeMethod('enableWebSdkInteroperability', {'enabled': enabled});
+    return _invokeMethod('enableWebSdkInteroperability', {
+      'enabled': enabled,
+    });
   }
 
   @override
@@ -229,94 +260,116 @@ class RtcEngine with RtcEngineInterface {
   }
 
   @override
-  Future<String> getCallId() {
+  Future<String?> getCallId() {
     return _invokeMethod('getCallId');
   }
 
   @override
-  Future<void> rate(String callId, int rating, {String description}) {
-    return _invokeMethod('rate',
-        {'callId': callId, 'rating': rating, 'description': description});
+  Future<void> rate(String callId, int rating, {String? description}) {
+    return _invokeMethod('rate', {
+      'callId': callId,
+      'rating': rating,
+      'description': description,
+    });
   }
 
   @override
   Future<void> complain(String callId, String description) {
-    return _invokeMethod(
-        'complain', {'callId': callId, 'description': description});
+    return _invokeMethod('complain', {
+      'callId': callId,
+      'description': description,
+    });
   }
 
   @override
   @deprecated
   Future<void> setLogFile(String filePath) {
-    return _invokeMethod('setLogFile', {'filePath': filePath});
+    return _invokeMethod('setLogFile', {
+      'filePath': filePath,
+    });
   }
 
   @override
   @deprecated
   Future<void> setLogFilter(LogFilter filter) {
-    return _invokeMethod(
-        'setLogFilter', {'filter': LogFilterConverter(filter).value()});
+    return _invokeMethod('setLogFilter', {
+      'filter': LogFilterConverter(filter).value(),
+    });
   }
 
   @override
   @deprecated
   Future<void> setLogFileSize(int fileSizeInKBytes) {
-    return _invokeMethod(
-        'setLogFileSize', {'fileSizeInKBytes': fileSizeInKBytes});
+    return _invokeMethod('setLogFileSize', {
+      'fileSizeInKBytes': fileSizeInKBytes,
+    });
   }
 
   @override
   Future<void> setParameters(String parameters) {
-    return _invokeMethod('setParameters', {'parameters': parameters});
+    return _invokeMethod('setParameters', {
+      'parameters': parameters,
+    });
   }
 
   @override
   Future<UserInfo> getUserInfoByUid(int uid) {
-    return _invokeMethod('getUserInfoByUid', {'uid': uid}).then((value) {
+    return _invokeMethod('getUserInfoByUid', {
+      'uid': uid,
+    }).then((value) {
       return UserInfo.fromJson(Map<String, dynamic>.from(value));
     });
   }
 
   @override
   Future<UserInfo> getUserInfoByUserAccount(String userAccount) {
-    return _invokeMethod(
-        'getUserInfoByUserAccount', {'userAccount': userAccount}).then((value) {
+    return _invokeMethod('getUserInfoByUserAccount', {
+      'userAccount': userAccount,
+    }).then((value) {
       return UserInfo.fromJson(Map<String, dynamic>.from(value));
     });
   }
 
   @override
   Future<void> joinChannelWithUserAccount(
-      String token, String channelName, String userAccount,
-      [ChannelMediaOptions options]) {
+      String? token, String channelName, String userAccount,
+      [ChannelMediaOptions? options]) {
     return _invokeMethod('joinChannelWithUserAccount', {
       'token': token,
       'channelName': channelName,
       'userAccount': userAccount,
-      'options': options?.toJson()
+      'options': options?.toJson(),
     });
   }
 
   @override
   Future<void> registerLocalUserAccount(String appId, String userAccount) {
-    return _invokeMethod('registerLocalUserAccount',
-        {'appId': appId, 'userAccount': userAccount});
+    return _invokeMethod('registerLocalUserAccount', {
+      'appId': appId,
+      'userAccount': userAccount,
+    });
   }
 
   @override
   Future<void> adjustPlaybackSignalVolume(int volume) {
-    return _invokeMethod('adjustPlaybackSignalVolume', {'volume': volume});
+    return _invokeMethod('adjustPlaybackSignalVolume', {
+      'volume': volume,
+    });
   }
 
   @override
   Future<void> adjustRecordingSignalVolume(int volume) {
-    return _invokeMethod('adjustRecordingSignalVolume', {'volume': volume});
+    return _invokeMethod('adjustRecordingSignalVolume', {
+      'volume': volume,
+    });
   }
 
   @override
   Future<void> adjustUserPlaybackSignalVolume(int uid, int volume) {
-    return _invokeMethod(
-        'adjustUserPlaybackSignalVolume', {'uid': uid, 'volume': volume});
+    return _invokeMethod('adjustUserPlaybackSignalVolume', {
+      'uid': uid,
+      'volume': volume,
+    });
   }
 
   @override
@@ -332,43 +385,56 @@ class RtcEngine with RtcEngineInterface {
   @override
   Future<void> enableAudioVolumeIndication(
       int interval, int smooth, bool report_vad) {
-    return _invokeMethod('enableAudioVolumeIndication',
-        {'interval': interval, 'smooth': smooth, 'report_vad': report_vad});
+    return _invokeMethod('enableAudioVolumeIndication', {
+      'interval': interval,
+      'smooth': smooth,
+      'report_vad': report_vad,
+    });
   }
 
   @override
   Future<void> enableLocalAudio(bool enabled) {
-    return _invokeMethod('enableLocalAudio', {'enabled': enabled});
+    return _invokeMethod('enableLocalAudio', {
+      'enabled': enabled,
+    });
   }
 
   @override
   Future<void> muteAllRemoteAudioStreams(bool muted) {
-    return _invokeMethod('muteAllRemoteAudioStreams', {'muted': muted});
+    return _invokeMethod('muteAllRemoteAudioStreams', {
+      'muted': muted,
+    });
   }
 
   @override
   Future<void> muteLocalAudioStream(bool muted) {
-    return _invokeMethod('muteLocalAudioStream', {'muted': muted});
+    return _invokeMethod('muteLocalAudioStream', {
+      'muted': muted,
+    });
   }
 
   @override
   Future<void> muteRemoteAudioStream(int uid, bool muted) {
-    return _invokeMethod('muteRemoteAudioStream', {'uid': uid, 'muted': muted});
+    return _invokeMethod('muteRemoteAudioStream', {
+      'uid': uid,
+      'muted': muted,
+    });
   }
 
   @override
   Future<void> setAudioProfile(AudioProfile profile, AudioScenario scenario) {
     return _invokeMethod('setAudioProfile', {
       'profile': AudioProfileConverter(profile).value(),
-      'scenario': AudioScenarioConverter(scenario).value()
+      'scenario': AudioScenarioConverter(scenario).value(),
     });
   }
 
   @override
   @deprecated
   Future<void> setDefaultMuteAllRemoteAudioStreams(bool muted) {
-    return _invokeMethod(
-        'setDefaultMuteAllRemoteAudioStreams', {'muted': muted});
+    return _invokeMethod('setDefaultMuteAllRemoteAudioStreams', {
+      'muted': muted,
+    });
   }
 
   @override
@@ -378,7 +444,9 @@ class RtcEngine with RtcEngineInterface {
 
   @override
   Future<void> enableLocalVideo(bool enabled) {
-    return _invokeMethod('enableLocalVideo', {'enabled': enabled});
+    return _invokeMethod('enableLocalVideo', {
+      'enabled': enabled,
+    });
   }
 
   @override
@@ -388,36 +456,47 @@ class RtcEngine with RtcEngineInterface {
 
   @override
   Future<void> muteAllRemoteVideoStreams(bool muted) {
-    return _invokeMethod('muteAllRemoteVideoStreams', {'muted': muted});
+    return _invokeMethod('muteAllRemoteVideoStreams', {
+      'muted': muted,
+    });
   }
 
   @override
   Future<void> muteLocalVideoStream(bool muted) {
-    return _invokeMethod('muteLocalVideoStream', {'muted': muted});
+    return _invokeMethod('muteLocalVideoStream', {
+      'muted': muted,
+    });
   }
 
   @override
   Future<void> muteRemoteVideoStream(int uid, bool muted) {
-    return _invokeMethod('muteRemoteVideoStream', {'uid': uid, 'muted': muted});
+    return _invokeMethod('muteRemoteVideoStream', {
+      'uid': uid,
+      'muted': muted,
+    });
   }
 
   @override
   Future<void> setBeautyEffectOptions(bool enabled, BeautyOptions options) {
-    return _invokeMethod('setBeautyEffectOptions',
-        {'enabled': enabled, 'options': options.toJson()});
+    return _invokeMethod('setBeautyEffectOptions', {
+      'enabled': enabled,
+      'options': options.toJson(),
+    });
   }
 
   @override
   @deprecated
   Future<void> setDefaultMuteAllRemoteVideoStreams(bool muted) {
-    return _invokeMethod(
-        'setDefaultMuteAllRemoteVideoStreams', {'muted': muted});
+    return _invokeMethod('setDefaultMuteAllRemoteVideoStreams', {
+      'muted': muted,
+    });
   }
 
   @override
   Future<void> setVideoEncoderConfiguration(VideoEncoderConfiguration config) {
-    return _invokeMethod(
-        'setVideoEncoderConfiguration', {'config': config.toJson()});
+    return _invokeMethod('setVideoEncoderConfiguration', {
+      'config': config.toJson(),
+    });
   }
 
   @override
@@ -432,36 +511,44 @@ class RtcEngine with RtcEngineInterface {
 
   @override
   Future<void> adjustAudioMixingPlayoutVolume(int volume) {
-    return _invokeMethod('adjustAudioMixingPlayoutVolume', {'volume': volume});
+    return _invokeMethod('adjustAudioMixingPlayoutVolume', {
+      'volume': volume,
+    });
   }
 
   @override
   Future<void> adjustAudioMixingPublishVolume(int volume) {
-    return _invokeMethod('adjustAudioMixingPublishVolume', {'volume': volume});
+    return _invokeMethod('adjustAudioMixingPublishVolume', {
+      'volume': volume,
+    });
   }
 
   @override
   Future<void> adjustAudioMixingVolume(int volume) {
-    return _invokeMethod('adjustAudioMixingVolume', {'volume': volume});
+    return _invokeMethod('adjustAudioMixingVolume', {
+      'volume': volume,
+    });
   }
 
   @override
-  Future<int> getAudioMixingCurrentPosition() {
+  Future<int?> getAudioMixingCurrentPosition() {
     return _invokeMethod('getAudioMixingCurrentPosition');
   }
 
   @override
-  Future<int> getAudioMixingDuration() {
-    return _invokeMethod('getAudioMixingDuration');
+  Future<int?> getAudioMixingDuration([String? filePath]) {
+    return _invokeMethod('getAudioMixingDuration', {
+      'filePath': filePath,
+    });
   }
 
   @override
-  Future<int> getAudioMixingPlayoutVolume() {
+  Future<int?> getAudioMixingPlayoutVolume() {
     return _invokeMethod('getAudioMixingPlayoutVolume');
   }
 
   @override
-  Future<int> getAudioMixingPublishVolume() {
+  Future<int?> getAudioMixingPublishVolume() {
     return _invokeMethod('getAudioMixingPublishVolume');
   }
 
@@ -477,17 +564,21 @@ class RtcEngine with RtcEngineInterface {
 
   @override
   Future<void> setAudioMixingPosition(int pos) {
-    return _invokeMethod('setAudioMixingPosition', {'pos': pos});
+    return _invokeMethod('setAudioMixingPosition', {
+      'pos': pos,
+    });
   }
 
   @override
   Future<void> startAudioMixing(
-      String filePath, bool loopback, bool replace, int cycle) {
+      String filePath, bool loopback, bool replace, int cycle,
+      [int? startPos]) {
     return _invokeMethod('startAudioMixing', {
       'filePath': filePath,
       'loopback': loopback,
       'replace': replace,
-      'cycle': cycle
+      'cycle': cycle,
+      'startPos': startPos,
     });
   }
 
@@ -498,21 +589,27 @@ class RtcEngine with RtcEngineInterface {
 
   @override
   Future<void> addInjectStreamUrl(String url, LiveInjectStreamConfig config) {
-    return _invokeMethod(
-        'addInjectStreamUrl', {'url': url, 'config': config.toJson()});
+    return _invokeMethod('addInjectStreamUrl', {
+      'url': url,
+      'config': config.toJson(),
+    });
   }
 
   @override
   Future<void> addPublishStreamUrl(String url, bool transcodingEnabled) {
-    return _invokeMethod('addPublishStreamUrl',
-        {'url': url, 'transcodingEnabled': transcodingEnabled});
+    return _invokeMethod('addPublishStreamUrl', {
+      'url': url,
+      'transcodingEnabled': transcodingEnabled,
+    });
   }
 
   @override
   Future<void> addVideoWatermark(
       String watermarkUrl, WatermarkOptions options) {
-    return _invokeMethod('addVideoWatermark',
-        {'watermarkUrl': watermarkUrl, 'options': options.toJson()});
+    return _invokeMethod('addVideoWatermark', {
+      'watermarkUrl': watermarkUrl,
+      'options': options.toJson(),
+    });
   }
 
   @override
@@ -521,9 +618,11 @@ class RtcEngine with RtcEngineInterface {
   }
 
   @override
-  Future<int> createDataStream(bool reliable, bool ordered) {
-    return _invokeMethod(
-        'createDataStream', {'reliable': reliable, 'ordered': ordered});
+  Future<int?> createDataStream(bool reliable, bool ordered) {
+    return _invokeMethod('createDataStream', {
+      'reliable': reliable,
+      'ordered': ordered,
+    });
   }
 
   @override
@@ -533,12 +632,16 @@ class RtcEngine with RtcEngineInterface {
 
   @override
   Future<void> enableDualStreamMode(bool enabled) {
-    return _invokeMethod('enableDualStreamMode', {'enabled': enabled});
+    return _invokeMethod('enableDualStreamMode', {
+      'enabled': enabled,
+    });
   }
 
   @override
   Future<void> enableInEarMonitoring(bool enabled) {
-    return _invokeMethod('enableInEarMonitoring', {'enabled': enabled});
+    return _invokeMethod('enableInEarMonitoring', {
+      'enabled': enabled,
+    });
   }
 
   @override
@@ -548,46 +651,48 @@ class RtcEngine with RtcEngineInterface {
 
   @override
   Future<void> enableSoundPositionIndication(bool enabled) {
-    return _invokeMethod('enableSoundPositionIndication', {'enabled': enabled});
+    return _invokeMethod('enableSoundPositionIndication', {
+      'enabled': enabled,
+    });
   }
 
   @override
-  Future<double> getCameraMaxZoomFactor() {
+  Future<double?> getCameraMaxZoomFactor() {
     return _invokeMethod('getCameraMaxZoomFactor');
   }
 
   @override
-  Future<double> getEffectsVolume() {
+  Future<double?> getEffectsVolume() {
     return _invokeMethod('getEffectsVolume');
   }
 
   @override
-  Future<bool> isCameraAutoFocusFaceModeSupported() {
+  Future<bool?> isCameraAutoFocusFaceModeSupported() {
     return _invokeMethod('isCameraAutoFocusFaceModeSupported');
   }
 
   @override
-  Future<bool> isCameraExposurePositionSupported() {
+  Future<bool?> isCameraExposurePositionSupported() {
     return _invokeMethod('isCameraExposurePositionSupported');
   }
 
   @override
-  Future<bool> isCameraFocusSupported() {
+  Future<bool?> isCameraFocusSupported() {
     return _invokeMethod('isCameraFocusSupported');
   }
 
   @override
-  Future<bool> isCameraTorchSupported() {
+  Future<bool?> isCameraTorchSupported() {
     return _invokeMethod('isCameraTorchSupported');
   }
 
   @override
-  Future<bool> isCameraZoomSupported() {
+  Future<bool?> isCameraZoomSupported() {
     return _invokeMethod('isCameraZoomSupported');
   }
 
   @override
-  Future<bool> isSpeakerphoneEnabled() {
+  Future<bool?> isSpeakerphoneEnabled() {
     return _invokeMethod('isSpeakerphoneEnabled');
   }
 
@@ -598,12 +703,15 @@ class RtcEngine with RtcEngineInterface {
 
   @override
   Future<void> pauseEffect(int soundId) {
-    return _invokeMethod('pauseEffect', {'soundId': soundId});
+    return _invokeMethod('pauseEffect', {
+      'soundId': soundId,
+    });
   }
 
   @override
   Future<void> playEffect(int soundId, String filePath, int loopCount,
-      double pitch, double pan, double gain, bool publish) {
+      double pitch, double pan, double gain, bool publish,
+      [int? startPos]) {
     return _invokeMethod('playEffect', {
       'soundId': soundId,
       'filePath': filePath,
@@ -611,14 +719,39 @@ class RtcEngine with RtcEngineInterface {
       'pitch': pitch,
       'pan': pan,
       'gain': gain,
-      'publish': publish
+      'publish': publish,
+      'startPos': startPos,
+    });
+  }
+
+  @override
+  Future<void> setEffectPosition(int soundId, int pos) {
+    return _invokeMethod('setEffectPosition', {
+      'soundId': soundId,
+      'pos': pos,
+    });
+  }
+
+  @override
+  Future<int?> getEffectDuration(String filePath) {
+    return _invokeMethod('getEffectDuration', {
+      'filePath': filePath,
+    });
+  }
+
+  @override
+  Future<int?> getEffectCurrentPosition(int soundId) {
+    return _invokeMethod('getEffectCurrentPosition', {
+      'soundId': soundId,
     });
   }
 
   @override
   Future<void> preloadEffect(int soundId, String filePath) {
-    return _invokeMethod(
-        'preloadEffect', {'soundId': soundId, 'filePath': filePath});
+    return _invokeMethod('preloadEffect', {
+      'soundId': soundId,
+      'filePath': filePath,
+    });
   }
 
   @override
@@ -628,12 +761,16 @@ class RtcEngine with RtcEngineInterface {
 
   @override
   Future<void> removeInjectStreamUrl(String url) {
-    return _invokeMethod('removeInjectStreamUrl', {'url': url});
+    return _invokeMethod('removeInjectStreamUrl', {
+      'url': url,
+    });
   }
 
   @override
   Future<void> removePublishStreamUrl(String url) {
-    return _invokeMethod('removePublishStreamUrl', {'url': url});
+    return _invokeMethod('removePublishStreamUrl', {
+      'url': url,
+    });
   }
 
   @override
@@ -643,31 +780,39 @@ class RtcEngine with RtcEngineInterface {
 
   @override
   Future<void> resumeEffect(int soundId) {
-    return _invokeMethod('resumeEffect', {'soundId': soundId});
+    return _invokeMethod('resumeEffect', {
+      'soundId': soundId,
+    });
   }
 
   @override
   Future<void> sendMetadata(String metadata) {
-    return _invokeMethod('sendMetadata', {'metadata': metadata});
+    return _invokeMethod('sendMetadata', {
+      'metadata': metadata,
+    });
   }
 
   @override
   Future<void> sendStreamMessage(int streamId, String message) {
-    return _invokeMethod(
-        'sendStreamMessage', {'streamId': streamId, 'message': message});
+    return _invokeMethod('sendStreamMessage', {
+      'streamId': streamId,
+      'message': message,
+    });
   }
 
   @override
   Future<void> setCameraAutoFocusFaceModeEnabled(bool enabled) {
-    return _invokeMethod(
-        'setCameraAutoFocusFaceModeEnabled', {'enabled': enabled});
+    return _invokeMethod('setCameraAutoFocusFaceModeEnabled', {
+      'enabled': enabled,
+    });
   }
 
   @override
   Future<void> setCameraCapturerConfiguration(
       CameraCapturerConfiguration config) {
-    return _invokeMethod(
-        'setCameraCapturerConfiguration', {'config': config.toJson()});
+    return _invokeMethod('setCameraCapturerConfiguration', {
+      'config': config.toJson(),
+    });
   }
 
   @override
@@ -675,78 +820,97 @@ class RtcEngine with RtcEngineInterface {
       double positionXinView, double positionYinView) {
     return _invokeMethod('setCameraExposurePosition', {
       'positionXinView': positionXinView,
-      'positionYinView': positionYinView
+      'positionYinView': positionYinView,
     });
   }
 
   @override
   Future<void> setCameraFocusPositionInPreview(
       double positionX, double positionY) {
-    return _invokeMethod('setCameraFocusPositionInPreview',
-        {'positionX': positionX, 'positionY': positionY});
+    return _invokeMethod('setCameraFocusPositionInPreview', {
+      'positionX': positionX,
+      'positionY': positionY,
+    });
   }
 
   @override
   Future<void> setCameraTorchOn(bool isOn) {
-    return _invokeMethod('setCameraTorchOn', {'isOn': isOn});
+    return _invokeMethod('setCameraTorchOn', {
+      'isOn': isOn,
+    });
   }
 
   @override
   Future<void> setCameraZoomFactor(double factor) {
-    return _invokeMethod('setCameraZoomFactor', {'factor': factor});
+    return _invokeMethod('setCameraZoomFactor', {
+      'factor': factor,
+    });
   }
 
   @override
   Future<void> setDefaultAudioRoutetoSpeakerphone(bool defaultToSpeaker) {
-    return _invokeMethod('setDefaultAudioRoutetoSpeakerphone',
-        {'defaultToSpeaker': defaultToSpeaker});
+    return _invokeMethod('setDefaultAudioRoutetoSpeakerphone', {
+      'defaultToSpeaker': defaultToSpeaker,
+    });
   }
 
   @override
   Future<void> setEffectsVolume(double volume) {
-    return _invokeMethod('setEffectsVolume', {'volume': volume});
+    return _invokeMethod('setEffectsVolume', {
+      'volume': volume,
+    });
   }
 
   @override
   Future<void> setEnableSpeakerphone(bool enabled) {
-    return _invokeMethod('setEnableSpeakerphone', {'enabled': enabled});
+    return _invokeMethod('setEnableSpeakerphone', {
+      'enabled': enabled,
+    });
   }
 
   @override
   @deprecated
   Future<void> setEncryptionMode(EncryptionMode encryptionMode) {
-    return _invokeMethod('setEncryptionMode',
-        {'encryptionMode': EncryptionModeConverter(encryptionMode).value()});
+    return _invokeMethod('setEncryptionMode', {
+      'encryptionMode': EncryptionModeConverter(encryptionMode).value(),
+    });
   }
 
   @override
   @deprecated
   Future<void> setEncryptionSecret(String secret) {
-    return _invokeMethod('setEncryptionSecret', {'secret': secret});
+    return _invokeMethod('setEncryptionSecret', {
+      'secret': secret,
+    });
   }
 
   @override
   Future<void> setInEarMonitoringVolume(int volume) {
-    return _invokeMethod('setInEarMonitoringVolume', {'volume': volume});
+    return _invokeMethod('setInEarMonitoringVolume', {
+      'volume': volume,
+    });
   }
 
   @override
   Future<void> setLiveTranscoding(LiveTranscoding transcoding) {
-    return _invokeMethod(
-        'setLiveTranscoding', {'transcoding': transcoding.toJson()});
+    return _invokeMethod('setLiveTranscoding', {
+      'transcoding': transcoding.toJson(),
+    });
   }
 
   @override
   Future<void> setLocalPublishFallbackOption(StreamFallbackOptions option) {
-    return _invokeMethod('setLocalPublishFallbackOption',
-        {'option': StreamFallbackOptionsConverter(option).value()});
+    return _invokeMethod('setLocalPublishFallbackOption', {
+      'option': StreamFallbackOptionsConverter(option).value(),
+    });
   }
 
   @override
-   @deprecated
+  @deprecated
   Future<void> setLocalVoiceChanger(AudioVoiceChanger voiceChanger) {
-    return _invokeMethod('setLocalVoiceChanger',
-        {'voiceChanger': AudioVoiceChangerConverter(voiceChanger).value()});
+    return _invokeMethod('setLocalVoiceChanger', {
+      'voiceChanger': AudioVoiceChangerConverter(voiceChanger).value(),
+    });
   }
 
   @override
@@ -754,53 +918,60 @@ class RtcEngine with RtcEngineInterface {
       AudioEqualizationBandFrequency bandFrequency, int bandGain) {
     return _invokeMethod('setLocalVoiceEqualization', {
       'bandFrequency':
-      AudioEqualizationBandFrequencyConverter(bandFrequency).value(),
-      'bandGain': bandGain
+          AudioEqualizationBandFrequencyConverter(bandFrequency).value(),
+      'bandGain': bandGain,
     });
   }
 
   @override
   Future<void> setLocalVoicePitch(double pitch) {
-    return _invokeMethod('setLocalVoicePitch', {'pitch': pitch});
+    return _invokeMethod('setLocalVoicePitch', {
+      'pitch': pitch,
+    });
   }
 
   @override
   Future<void> setLocalVoiceReverb(AudioReverbType reverbKey, int value) {
     return _invokeMethod('setLocalVoiceReverb', {
       'reverbKey': AudioReverbTypeConverter(reverbKey).value(),
-      'value': value
+      'value': value,
     });
   }
 
   @override
   @deprecated
   Future<void> setLocalVoiceReverbPreset(AudioReverbPreset preset) {
-    return _invokeMethod('setLocalVoiceReverbPreset',
-        {'preset': AudioReverbPresetConverter(preset).value()});
+    return _invokeMethod('setLocalVoiceReverbPreset', {
+      'preset': AudioReverbPresetConverter(preset).value(),
+    });
   }
 
   @override
   Future<void> setMaxMetadataSize(int size) {
-    return _invokeMethod('setMaxMetadataSize', {'size': size});
+    return _invokeMethod('setMaxMetadataSize', {
+      'size': size,
+    });
   }
 
   @override
   Future<void> setRemoteDefaultVideoStreamType(VideoStreamType streamType) {
-    return _invokeMethod('setRemoteDefaultVideoStreamType',
-        {'streamType': VideoStreamTypeConverter(streamType).value()});
+    return _invokeMethod('setRemoteDefaultVideoStreamType', {
+      'streamType': VideoStreamTypeConverter(streamType).value(),
+    });
   }
 
   @override
   Future<void> setRemoteSubscribeFallbackOption(StreamFallbackOptions option) {
-    return _invokeMethod('setRemoteSubscribeFallbackOption',
-        {'option': StreamFallbackOptionsConverter(option).value()});
+    return _invokeMethod('setRemoteSubscribeFallbackOption', {
+      'option': StreamFallbackOptionsConverter(option).value(),
+    });
   }
 
   @override
   Future<void> setRemoteUserPriority(int uid, UserPriority userPriority) {
     return _invokeMethod('setRemoteUserPriority', {
       'uid': uid,
-      'userPriority': UserPriorityConverter(userPriority).value()
+      'userPriority': UserPriorityConverter(userPriority).value(),
     });
   }
 
@@ -808,29 +979,43 @@ class RtcEngine with RtcEngineInterface {
   Future<void> setRemoteVideoStreamType(int uid, VideoStreamType streamType) {
     return _invokeMethod('setRemoteVideoStreamType', {
       'uid': uid,
-      'streamType': VideoStreamTypeConverter(streamType).value()
+      'streamType': VideoStreamTypeConverter(streamType).value(),
     });
   }
 
   @override
   Future<void> setRemoteVoicePosition(int uid, double pan, double gain) {
-    return _invokeMethod(
-        'setRemoteVoicePosition', {'uid': uid, 'pan': pan, 'gain': gain});
+    return _invokeMethod('setRemoteVoicePosition', {
+      'uid': uid,
+      'pan': pan,
+      'gain': gain,
+    });
   }
 
   @override
   Future<void> setVolumeOfEffect(int soundId, double volume) {
-    return _invokeMethod(
-        'setVolumeOfEffect', {'soundId': soundId, 'volume': volume});
+    return _invokeMethod('setVolumeOfEffect', {
+      'soundId': soundId,
+      'volume': volume,
+    });
   }
 
   @override
+  @deprecated
   Future<void> startAudioRecording(String filePath,
       AudioSampleRateType sampleRate, AudioRecordingQuality quality) {
     return _invokeMethod('startAudioRecording', {
       'filePath': filePath,
       'sampleRate': AudioSampleRateTypeConverter(sampleRate).value(),
-      'quality': AudioRecordingQualityConverter(quality).value()
+      'quality': AudioRecordingQualityConverter(quality).value(),
+    });
+  }
+
+  @override
+  Future<void> startAudioRecordingWithConfig(
+      AudioRecordingConfiguration config) {
+    return _invokeMethod('startAudioRecording', {
+      'config': config.toJson(),
     });
   }
 
@@ -838,19 +1023,44 @@ class RtcEngine with RtcEngineInterface {
   Future<void> startChannelMediaRelay(
       ChannelMediaRelayConfiguration channelMediaRelayConfiguration) {
     return _invokeMethod('startChannelMediaRelay', {
-      'channelMediaRelayConfiguration': channelMediaRelayConfiguration.toJson()
+      'channelMediaRelayConfiguration': channelMediaRelayConfiguration.toJson(),
+    });
+  }
+
+  @override
+  Future<void> startRhythmPlayer(
+      String sound1, String sound2, RhythmPlayerConfig config) {
+    return _invokeMethod('startRhythmPlayer', {
+      'sound1': sound1,
+      'sound2': sound2,
+      'config': config.toJson(),
+    });
+  }
+
+  @override
+  Future<void> stopRhythmPlayer() {
+    return _invokeMethod('stopRhythmPlayer');
+  }
+
+  @override
+  Future<void> configRhythmPlayer(RhythmPlayerConfig config) {
+    return _invokeMethod('configRhythmPlayer', {
+      'config': config.toJson(),
     });
   }
 
   @override
   Future<void> startEchoTest(int intervalInSeconds) {
-    return _invokeMethod(
-        'startEchoTest', {'intervalInSeconds': intervalInSeconds});
+    return _invokeMethod('startEchoTest', {
+      'intervalInSeconds': intervalInSeconds,
+    });
   }
 
   @override
   Future<void> startLastmileProbeTest(LastmileProbeConfig config) {
-    return _invokeMethod('startLastmileProbeTest', {'config': config.toJson()});
+    return _invokeMethod('startLastmileProbeTest', {
+      'config': config.toJson(),
+    });
   }
 
   @override
@@ -875,7 +1085,9 @@ class RtcEngine with RtcEngineInterface {
 
   @override
   Future<void> stopEffect(int soundId) {
-    return _invokeMethod('stopEffect', {'soundId': soundId});
+    return _invokeMethod('stopEffect', {
+      'soundId': soundId,
+    });
   }
 
   @override
@@ -890,7 +1102,9 @@ class RtcEngine with RtcEngineInterface {
 
   @override
   Future<void> unloadEffect(int soundId) {
-    return _invokeMethod('unloadEffect', {'soundId': soundId});
+    return _invokeMethod('unloadEffect', {
+      'soundId': soundId,
+    });
   }
 
   @override
@@ -902,24 +1116,30 @@ class RtcEngine with RtcEngineInterface {
   Future<void> updateChannelMediaRelay(
       ChannelMediaRelayConfiguration channelMediaRelayConfiguration) {
     return _invokeMethod('updateChannelMediaRelay', {
-      'channelMediaRelayConfiguration': channelMediaRelayConfiguration.toJson()
+      'channelMediaRelayConfiguration': channelMediaRelayConfiguration.toJson(),
     });
   }
 
   @override
   Future<void> enableFaceDetection(bool enable) {
-    return _invokeMethod('enableFaceDetection', {'enable': enable});
+    return _invokeMethod('enableFaceDetection', {
+      'enable': enable,
+    });
   }
 
   @override
   Future<void> setAudioMixingPitch(int pitch) {
-    return _invokeMethod('setAudioMixingPitch', {'pitch': pitch});
+    return _invokeMethod('setAudioMixingPitch', {
+      'pitch': pitch,
+    });
   }
 
   @override
   Future<void> enableEncryption(bool enabled, EncryptionConfig config) {
-    return _invokeMethod(
-        'enableEncryption', {'enabled': enabled, 'config': config.toJson()});
+    return _invokeMethod('enableEncryption', {
+      'enabled': enabled,
+      'config': config.toJson(),
+    });
   }
 
   @override
@@ -930,21 +1150,21 @@ class RtcEngine with RtcEngineInterface {
       'category': category,
       'event': event,
       'label': label,
-      'value': value
+      'value': value,
     });
-}
+  }
 
   @override
   Future<void> setAudioSessionOperationRestriction(
       AudioSessionOperationRestriction restriction) {
     return _invokeMethod('setAudioSessionOperationRestriction', {
       'restriction':
-          AudioSessionOperationRestrictionConverter(restriction).value()
+          AudioSessionOperationRestrictionConverter(restriction).value(),
     });
   }
 
   @override
-  Future<int> getNativeHandle() {
+  Future<int?> getNativeHandle() {
     return _invokeMethod('getNativeHandle');
   }
 
@@ -954,47 +1174,55 @@ class RtcEngine with RtcEngineInterface {
     return _invokeMethod('setAudioEffectParameters', {
       'preset': AudioEffectPresetConverter(preset).value(),
       'param1': param1,
-      'param2': param2
+      'param2': param2,
     });
   }
 
   @override
   Future<void> setAudioEffectPreset(AudioEffectPreset preset) {
-    return _invokeMethod('setAudioEffectPreset',
-        {'preset': AudioEffectPresetConverter(preset).value()});
+    return _invokeMethod('setAudioEffectPreset', {
+      'preset': AudioEffectPresetConverter(preset).value(),
+    });
   }
 
   @override
   Future<void> setVoiceBeautifierPreset(VoiceBeautifierPreset preset) {
-    return _invokeMethod('setVoiceBeautifierPreset',
-        {'preset': VoiceBeautifierPresetConverter(preset).value()});
+    return _invokeMethod('setVoiceBeautifierPreset', {
+      'preset': VoiceBeautifierPresetConverter(preset).value(),
+    });
   }
 
   @override
-  Future<int> createDataStreamWithConfig(DataStreamConfig config) {
-    return _invokeMethod(
-        'createDataStreamWithConfig', {'config': config.toJson()});
+  Future<int?> createDataStreamWithConfig(DataStreamConfig config) {
+    return _invokeMethod('createDataStream', {
+      'config': config.toJson(),
+    });
   }
 
   @override
   Future<void> enableDeepLearningDenoise(bool enabled) {
-    return _invokeMethod('enableDeepLearningDenoise', {'enabled': enabled});
+    return _invokeMethod('enableDeepLearningDenoise', {
+      'enabled': enabled,
+    });
   }
 
   @override
   Future<void> enableRemoteSuperResolution(int uid, bool enable) {
-    return _invokeMethod(
-        'enableRemoteSuperResolution', {'uid': uid, 'enable': enable});
+    return _invokeMethod('enableRemoteSuperResolution', {
+      'uid': uid,
+      'enable': enable,
+    });
   }
 
   @override
   Future<void> setCloudProxy(CloudProxyType proxyType) {
-    return _invokeMethod('enableRemoteSuperResolution',
-        {'proxyType': CloudProxyTypeConverter(proxyType).e});
+    return _invokeMethod('setCloudProxy', {
+      'proxyType': CloudProxyTypeConverter(proxyType).value(),
+    });
   }
 
   @override
-  Future<String> uploadLogFile() {
+  Future<String?> uploadLogFile() {
     return _invokeMethod('uploadLogFile');
   }
 
@@ -1002,19 +1230,19 @@ class RtcEngine with RtcEngineInterface {
   Future<void> setVoiceBeautifierParameters(
       VoiceBeautifierPreset preset, int param1, int param2) {
     return _invokeMethod('setVoiceBeautifierParameters', {
-      'preset': VoiceBeautifierPresetConverter(preset).e,
+      'preset': VoiceBeautifierPresetConverter(preset).value(),
       'param1': param1,
-      'param2': param2
+      'param2': param2,
     });
   }
 
   @override
   Future<void> setVoiceConversionPreset(VoiceConversionPreset preset) {
-    return _invokeMethod('setVoiceConversionPreset',
-        {'preset': VoiceConversionPresetConverter(preset).e});
+    return _invokeMethod('setVoiceConversionPreset', {
+      'preset': VoiceConversionPresetConverter(preset).value(),
+    });
   }
 }
-
 
 /// @nodoc
 mixin RtcEngineInterface
@@ -1072,7 +1300,7 @@ mixin RtcEngineInterface
   /// **Parameter** [role] 用户角色。详见 [ClientRole]。
   ///
   /// **Parameter** [options] 用户具体设置，包含用户级别，详见 [ClientRoleOptions]。
-  Future<void> setClientRole(ClientRole role, [ClientRoleOptions options]);
+  Future<void> setClientRole(ClientRole role, [ClientRoleOptions? options]);
 
   /// 加入频道。
   ///
@@ -1110,8 +1338,8 @@ mixin RtcEngineInterface
   ///
   /// **Parameter** [options] 频道媒体设置选项，详见 [ChannelMediaOptions]。
   Future<void> joinChannel(
-      String token, String channelName, String optionalInfo, int optionalUid,
-      [ChannelMediaOptions options]);
+      String? token, String channelName, String? optionalInfo, int optionalUid,
+      [ChannelMediaOptions? options]);
 
   /// 快速切换直播频道。
   ///
@@ -1135,8 +1363,8 @@ mixin RtcEngineInterface
   /// - "!", "#", "$", "%", "&", "(", ")", "+", "-", ":", ";", "<", "=", ".", ">", "?", "@", "\[", "\]", "^", "_", " {", "}", "|", "~", ","
   ///
   /// **Parameter** [options] 频道媒体设置选项，详见 [ChannelMediaOptions]。
-  Future<void> switchChannel(String token, String channelName,
-      [ChannelMediaOptions options]);
+  Future<void> switchChannel(String? token, String channelName,
+      [ChannelMediaOptions? options]);
 
   /// 离开频道。
   ///
@@ -1195,7 +1423,7 @@ mixin RtcEngineInterface
   ///
   /// **Returns**
   /// 通话 ID。
-  Future<String> getCallId();
+  Future<String?> getCallId();
 
   /// 给通话评分。
   ///
@@ -1204,7 +1432,7 @@ mixin RtcEngineInterface
   /// **Parameter** [rating] 给通话的评分，最低 1 分，最高 5 分，如超过这个范围，SDK 会返回 [ErrorCode.InvalidArgument] 错误。
   ///
   /// **Parameter** [description] （非必选项）给通话的描述，可选，长度应小于 800 字节。
-  Future<void> rate(String callId, int rating, {String description});
+  Future<void> rate(String callId, int rating, {String? description});
 
   /// 投诉通话质量。
   ///
@@ -1268,7 +1496,7 @@ mixin RtcEngineInterface
   /// @nodoc Gets the native handle of the SDK engine.
   ///
   /// This interface is used to retrieve the native C++ handle of the SDK engine used in special scenarios, such as registering the audio and video frame observer.
-  Future<int> getNativeHandle();
+  Future<int?> getNativeHandle();
 
   /// 开启或关闭 AI 降噪模式。
   ///
@@ -1315,7 +1543,7 @@ mixin RtcEngineInterface
   Future<void> setCloudProxy(CloudProxyType proxyType);
 
   ///  @nodoc
-  Future<String> uploadLogFile();
+  Future<String?> uploadLogFile();
 }
 
 /// @nodoc
@@ -1379,8 +1607,8 @@ mixin RtcUserInfoInterface {
   ///
   /// **Parameter** [options] 频道媒体设置选项，详见 [ChannelMediaOptions]。
   Future<void> joinChannelWithUserAccount(
-      String token, String channelName, String userAccount,
-      [ChannelMediaOptions options]);
+      String? token, String channelName, String userAccount,
+      [ChannelMediaOptions? options]);
 
   /// 通过 User Account 获取用户信息。
   ///
@@ -1744,11 +1972,11 @@ mixin RtcAudioMixingInterface {
   /// **Note**
   /// - 该方法在 Android 和 iOS 均可调用。如需在 Android 平台调用该方法，请确保使用 Android 4.2 或以上设备，且 API Level &ge; 16。
   /// - 请在频道内调用该方法，如果在频道外调用该方法可能会出现问题。
-  /// - 如果播放的是在线音乐文件，请确保重复调用该 API 的间隔超过 100 ms，否则 SDK 会返回 [AudioMixingErrorCode.TooFrequentCall] = 702 警告码，
+  /// - 如果播放的是在线音乐文件，请确保重复调用该 API 的间隔超过 100 ms，否则 SDK 会返回 `TooFrequentCall`(702) 警告码，
   /// 表示音乐文件打开过于频繁。
   /// - 如果播放的是在线音乐文件，Agora 建议不要使用重定向地址。重定向地址在某些机型上可能会出现无法打开的情况。
-  /// - 如果本地音乐文件不存在、文件格式不支持、无法访问在线音乐文件 URL 都会返回警告码 [AudioMixingErrorCode.CanNotOpen] = 701。
-  /// - 如果在模拟器上使用该 API，暂时只支持存放在 /sdcard/ 中的 mp3 文件。
+  /// - 如果本地音乐文件不存在、文件格式不支持、无法访问在线音乐文件 URL 都会返回警告码 `CanNotOpen`(701)。
+  /// - 如果在模拟器上使用该 API，暂时只支持存放在 `/sdcard/` 中的 mp3 文件。
   ///
   /// **Parameter** [filePath] 指定需要混音的本地或在线音频文件的绝对路径（包含文件名后缀），如 `/sdcard/emulated/0/audio.mp4`。支持的音频格式包括：mp3、mp4、m4a、aac、3gp、mkv 及 wav。
   /// - 如果用户提供的目录以 `/assets/` 开头，则去 assets 里面查找该文件。
@@ -1766,7 +1994,8 @@ mixin RtcAudioMixingInterface {
   /// - 正整数：循环的次数。
   /// - -1：无限循环。
   Future<void> startAudioMixing(
-      String filePath, bool loopback, bool replace, int cycle);
+      String filePath, bool loopback, bool replace, int cycle,
+      [int? startPos]);
 
   /// 停止播放音乐文件及混音。
   ///
@@ -1815,14 +2044,26 @@ mixin RtcAudioMixingInterface {
   /// 获取音乐文件的本地播放音量。
   ///
   /// 该方法获取音乐文件的本地播放音量。该接口可以方便开发者排查音量相关问题。
-  Future<int> getAudioMixingPlayoutVolume();
+  ///
+  /// **Note**
+  ///
+  /// 你需要在调用 [startAudioMixing] 并收到 `audioMixingStateChanged(Playing)` 回调后调用该方法。
+  ///
+  /// **Returns**
+  /// - 方法调用成功则返回音量值，范围为 [0, 100]。
+  /// - 方法调用失败。
+  Future<int?> getAudioMixingPlayoutVolume();
 
   /// 获取音乐文件的远端播放音量。
   ///
   /// 你需要在调用 [startAudioMixing] 并收到 `audioMixingStateChanged(Playing)` 回调后调用该方法。
   ///
   /// 该方法获取音乐文件的远端播放音量。该接口可以方便开发者排查音量相关问题。
-  Future<int> getAudioMixingPublishVolume();
+  ///
+  /// **Returns**
+  /// - 方法调用成功则返回音量值，范围为 [0, 100]。
+  /// - 方法调用失败。
+  Future<int?> getAudioMixingPublishVolume();
 
   /// 获取音乐文件的时长。
   ///
@@ -1833,7 +2074,7 @@ mixin RtcAudioMixingInterface {
   /// **Returns**
   /// - 方法调用成功并返回音乐文件的时长。
   /// - < 0：方法调用失败。
-  Future<int> getAudioMixingDuration();
+  Future<int?> getAudioMixingDuration([String? filePath]);
 
   /// 获取音乐文件的播放进度。
   ///
@@ -1844,7 +2085,7 @@ mixin RtcAudioMixingInterface {
   /// **Returns**
   /// - 方法调用成功并返回伴奏播放进度。
   /// - < 0：方法调用失败。
-  Future<int> getAudioMixingCurrentPosition();
+  Future<int?> getAudioMixingCurrentPosition();
 
   /// 设置音乐文件的播放位置。
   ///
@@ -1873,7 +2114,7 @@ mixin RtcAudioEffectInterface {
   /// **Returns**
   /// - 方法调用成功返回音效的音量值。
   /// - < 0: 方法调用失败。
-  Future<double> getEffectsVolume();
+  Future<double?> getEffectsVolume();
 
   /// 设置所有音效文件的播放音量。
   ///
@@ -1921,7 +2162,53 @@ mixin RtcAudioEffectInterface {
   /// - `false`：音效文件不会发布到 Agora 云上，因此只能在本地听到该音效。
   ///
   Future<void> playEffect(int soundId, String filePath, int loopCount,
-      double pitch, double pan, double gain, bool publish);
+      double pitch, double pan, double gain, bool publish,
+      [int? startPos]);
+
+  /// 设置指定音效文件的播放位置。
+  ///
+  /// 自从 v3.4.2
+  ///
+  /// 成功设置后，本地音效文件会在指定位置开始播放。
+  ///
+  /// **Note**
+  ///
+  /// 该方法需要在 [RtcEngine.playEffect] 后调用。
+  ///
+  /// **Parameter** [soundId] 音效 ID。请确保与 `playEffect`中设置的 `soundId` 一致。
+  ///
+  /// **Parameter** [pos] 音效文件的播放位置，单位为毫秒。
+  Future<void> setEffectPosition(int soundId, int pos);
+
+  /// 获取指定音效文件总时长。
+  ///
+  /// 自从 v3.4.2
+  ///
+  /// **Note**
+  /// 该方法需要在加入频道后调用。
+  ///
+  /// **Parameter** [filePath] 本地音效文件的路径，需精确到文件名及后缀。
+  /// - Android:  支持本地文件的 URI 地址、绝对路径或以 `/assets/` 开头的路径。 通过绝对路径访问本地文件可能会遇到权限问题，Agora 推荐使用 URI 地址访问本地文件。例如："content://com.android.providers.media.documents/document/audio%3A14441"。 支持的音频格式包括 MP3、AAC、M4A、MP4、WAV、3GP。
+  /// - iOS: 支持绝对路径，例如：`/var/mobile/Containers/Data/audio.mp4`。支持的音频格式包括 MP3、AAC、M4A、MP4、WAV、3GP。
+  ///
+  /// **Returns**
+  /// - 0：方法调用成功，返回指定音效文件时长（毫秒）。
+  /// - < 0：方法调用失败。
+  Future<int?> getEffectDuration(String filePath);
+
+  /// 获取指定音效文件的播放进度。
+  ///
+  /// 自从 v3.4.2
+  ///
+  /// **Note**
+  /// 该方法需要在 [RtcEngine.playEffect] 后调用。
+  ///
+  /// **Parameter** [soundId] 音效 ID。请确保与 `playEffect` 中设置的 `soundId` 一致。
+  ///
+  /// **Returns**
+  /// - > = 0：方法调用成功，返回指定音效文件的播放进度（毫秒）。
+  /// - < 0：方法调用失败。
+  Future<int?> getEffectCurrentPosition(int soundId);
 
   /// 停止播放指定音效文件。
   ///
@@ -1979,7 +2266,7 @@ mixin RtcAudioEffectInterface {
   /// **Note**
   /// - 一旦调用该方法限制了 Agora SDK 对 Audio Session 的控制权限， SDK 将无法对 Audio Session 进行相关设置，而需要用户自己或第三方组件进行维护。
   ///
-  /// **Parameter** [restriction] Agora SDK 对 Audio Session 的控制权限，详见 [AudioSessionOperationRestriction].
+  /// **Parameter** [restriction] Agora SDK 对 Audio Session 的控制权限，详见 [AudioSessionOperationRestriction]。
   Future<void> setAudioSessionOperationRestriction(
       AudioSessionOperationRestriction restriction);
 }
@@ -1990,7 +2277,7 @@ mixin RtcVoiceChangerInterface {
   ///
   /// **废弃**
   ///
-  /// 该方法自 v3.2.0 已废弃。请使用 [RtcEngine.setAudioEffectPreset] 或 [RtcEngine.setAudioEffectParameters]。
+  /// 该方法自 v3.2.1 已废弃。请使用 [RtcEngine.setAudioEffectPreset] 或 [RtcEngine.setAudioEffectParameters]。
   ///
   /// **Note**
   ///
@@ -2089,6 +2376,32 @@ mixin RtcVoiceChangerInterface {
   /// **Parameter** [preset] 预设的美声效果选项：[VoiceBeautifierPreset]。
   Future<void> setVoiceBeautifierPreset(VoiceBeautifierPreset preset);
 
+  /// 设置 SDK 预设的变声效果。
+  ///
+  /// 调用该方法可以为本地发流用户设置 SDK 预设的变声效果。设置变声效果后，频道内所有用户都能听到该效果。根据不同的场景，你可以为用户设置不同的变声效果。
+  ///
+  /// 为获取更好的人声效果，Agora 推荐你在调用该方法前将 [RtcEngine.setAudioProfile] 的 `profile` 设为 `MusicHighQuality(4)` 或 `MusicHighQualityStereo(5)`，并将 `scenario` 设为 `GameStreaming(3)`。
+  ///
+  /// **Parameter** [preset] 预设的变声效果选项： [VoiceConversionPreset]。
+  ///
+  /// **Note**
+  ///
+  /// - 该方法在加入频道前后都能调用。
+  /// - 请勿将 `setAudioProfile` 的 `profile` 参数设置为 `SpeechStandard(1)`，否则该方法会调用失败。
+  /// - 该方法对人声的处理效果最佳，Agora 不推荐调用该方法处理含音乐的音频数据。
+  /// - 调用该方法后，Agora 不推荐调用以下方法，否则该方法设置的效果会被覆盖：
+  ///   - [RtcEngine.setAudioEffectPreset]
+  ///   - [RtcEngine.setAudioEffectParameters]
+  ///   - [RtcEngine.setVoiceBeautifierPreset]
+  ///   - [RtcEngine.setVoiceBeautifierParameters]
+  ///   - [RtcEngine.setLocalVoiceReverbPreset]
+  ///   - [RtcEngine.setLocalVoiceChanger]
+  ///   - [RtcEngine.setLocalVoicePitch]
+  ///   - [RtcEngine.setLocalVoiceEqualization]
+  ///   - [RtcEngine.setLocalVoiceReverb]
+  Future<void> setVoiceConversionPreset(VoiceConversionPreset preset);
+
+
   /// 设置 SDK 预设人声音效的参数。
   ///
   /// 调用该方法可以对本地发流用户进行如下设置：
@@ -2152,7 +2465,7 @@ mixin RtcVoiceChangerInterface {
   ///
   /// 为获取更好的人声效果，Agora 推荐你在调用该方法前将 [RtcEngine.setAudioProfile] 的 `scenario` 设为 `GameStreaming(3)`，并将 `profile` 设为 `MusicHighQuality(4)` 或 `MusicHighQualityStereo(5)`。
   ///
-  /// **Parameter** [preset] SDK 预设的音效： [VoiceBeautifierPreset.SingingBeautifier].
+  /// **Parameter** [preset] SDK 预设的音效： [VoiceBeautifierPreset]。
   ///
   /// **Parameter** [param1] 歌声的性别特征：
   /// - `1`: 男声。
@@ -2181,8 +2494,6 @@ mixin RtcVoiceChangerInterface {
   Future<void> setVoiceBeautifierParameters(
       VoiceBeautifierPreset preset, int param1, int param2);
 }
-}
-
 
 /// @nodoc
 mixin RtcVoicePositionInterface {
@@ -2364,7 +2675,7 @@ mixin RtcAudioRouteInterface {
   /// **Returns**
   /// - `true`：扬声器已开启，语音会输出到扬声器。
   /// - `false`：扬声器未开启，语音会输出到非扬声器（听筒，耳机等）。
-  Future<bool> isSpeakerphoneEnabled();
+  Future<bool?> isSpeakerphoneEnabled();
 }
 
 mixin RtcEarMonitoringInterface {
@@ -2665,8 +2976,65 @@ mixin RtcAudioRecorderInterface {
   /// **Parameter** [sampleRate] 录音采样率 (Hz)。详见 [AudioSampleRateType]。
   ///
   /// **Parameter** [quality] 录音音质。详见 [AudioRecordingQuality]。
+  @deprecated
   Future<void> startAudioRecording(String filePath,
       AudioSampleRateType sampleRate, AudioRecordingQuality quality);
+
+  /// 开始客户端录音。
+  ///
+  /// 自从 v3.4.2
+  ///
+  /// Agora SDK 支持通话过程中在客户端进行录音。调用该方法后，你可以录制频道内用户的音频，并得到一个录音文件。录音文件格式可以为:
+  /// - WAV: 音质保真度较高，文件较大。例如，采样率为 32000 Hz，录音时长为 10 分钟的文件大小约为 73 M。
+  /// - AAC: 音质保真度较低，文件较小。例如，采样率为 32000 Hz，录音音质为 [AudioRecordingQuality.Medium]，录音时长为 10 分钟的文件大小约为 2 M。
+  ///
+  /// 一旦用户离开频道，录音会自动停止。
+  ///
+  /// **Note**
+  /// - 该方法需要在加入频道后调用。
+  ///
+  /// **Parameter** [config] 录音配置。详见 [AudioRecordingConfiguration]。
+  Future<void> startAudioRecordingWithConfig(
+      AudioRecordingConfiguration config);
+
+  /// 开启虚拟节拍器。
+  ///
+  /// 自从 v3.4.2
+  ///
+  /// 在音乐教学、体育教学等场景中，老师通常需要使用节拍器，让学生跟着正确的节拍练习。 节拍由强拍和弱拍组成，每小节的第一拍称为强拍，其余称为弱拍。 你需要在该方法中设置强拍和弱拍的文件路径、每小节的拍数、节拍速度以及是否将节拍器的声音发送至远端。
+  ///
+  /// **Note**
+  ///
+  /// 开启虚拟节拍器后，SDK 会从头开始播放指定的音频文件，并根据你设置的 `beatsPerMinute` 控制每个文件的播放时长。例如，将 `beatsPerMinute` 设为 `60`，则 SDK 会 1 秒播放 1 个节拍。如果文件时长超过了节拍时长，则 SDK 只播放节拍时长部分的音频。
+  ///
+  ///
+  /// **Parameter** [sound1] 强拍文件的绝对路径或 URL 地址，需精确到文件名及后缀。例如: `/sdcard/emulated/0/audio.mp4` (Android) 和 `/var/mobile/Containers/Data/audio.mp4` (iOS)。支持的音频格式包括 MP3、AAC、M4A、MP4、WAV、3GP。
+  ///
+  /// **Parameter** [sound2] 弱拍文件的绝对路径或 URL 地址，需精确到文件名及后缀。例如 `/sdcard/emulated/0/audio.mp4` (Android) 和 `/var/mobile/Containers/Data/audio.mp4` (iOS)。 支持的音频格式包括 MP3、AAC、M4A、MP4、WAV、3GP。
+  ///
+  /// **Parameter** [config] 节拍器配置，详见 [RhythmPlayerConfig]。
+  Future<void> startRhythmPlayer(
+      String sound1, String sound2, RhythmPlayerConfig config);
+
+  /// 关闭虚拟节拍器。
+  ///
+  /// 自从 v3.4.2
+  ///
+  /// 调用 [RtcEngine.startRhythmPlayer] 后，你可以调用该方法关闭虚拟节拍器。
+  Future<void> stopRhythmPlayer();
+
+  /// 配置虚拟节拍器。
+  ///
+  /// 自从 v3.4.2
+  ///
+  /// 调用 [RtcEngine.startRhythmPlayer] 后，你可以调用该方法重新配置虚拟节拍器。
+  ///
+  /// **Note**
+  ///
+  /// 重新配置虚拟节拍器后，SDK 会从头开始播放指定的音效文件，并根据你设置的 `beatsPerMinute` 控制每个文件的播放时长。例如，将 `beatsPerMinute` 设为 `60`，则 SDK 会 1 秒播放 1 个节拍。如果文件时长超过了节拍时长，则 SDK 只播放节拍时长部分的音频。
+  ///
+  /// **Parameter** [config] 节拍器配置，详见 [RhythmPlayerConfig]。
+  Future<void> configRhythmPlayer(RhythmPlayerConfig config);
 
   /// 停止客户端录音。
   ///
@@ -2719,35 +3087,35 @@ mixin RtcCameraInterface {
   /// **Returns**
   /// - `true`：设备支持相机缩放功能。
   /// - `false`：设备不支持相机缩放功能。
-  Future<bool> isCameraZoomSupported();
+  Future<bool?> isCameraZoomSupported();
 
   /// 检测设备是否支持闪光灯常开。
   ///
   /// **Returns**
   /// - `true`：设备支持闪光灯常开。
   /// - `false`：设备不支持闪光灯常开。
-  Future<bool> isCameraTorchSupported();
+  Future<bool?> isCameraTorchSupported();
 
   /// 检测设备是否支持手动对焦功能。
   ///
   /// **Returns**
   /// - `true`：设备支持手动对焦功能。
   /// - `false`：设备不支持手动对焦功能。
-  Future<bool> isCameraFocusSupported();
+  Future<bool?> isCameraFocusSupported();
 
   /// 检测设备是否支持手动曝光功能。
   ///
   /// **Returns**
   /// - `true`：设置支持手动曝光功能。
   /// - `false`：设置不支持手动曝光功能。
-  Future<bool> isCameraExposurePositionSupported();
+  Future<bool?> isCameraExposurePositionSupported();
 
   /// 检测设备是否支持人脸对焦功能。
   ///
   /// **Returns**
   /// - `true`：设备支持人脸对焦功能。
   /// - `false`：设备不支持人脸对焦功能。
-  Future<bool> isCameraAutoFocusFaceModeSupported();
+  Future<bool?> isCameraAutoFocusFaceModeSupported();
 
   /// 设置摄像头缩放比例。
   ///
@@ -2759,7 +3127,7 @@ mixin RtcCameraInterface {
   /// **Returns**
   ///
   /// 该相机支持的最大缩放比例。
-  Future<double> getCameraMaxZoomFactor();
+  Future<double?> getCameraMaxZoomFactor();
 
   /// 设置手动对焦位置，并触发对焦。
   ///
@@ -2848,7 +3216,7 @@ mixin RtcStreamMessageInterface {
   /// **Returns**
   /// - 创建数据流成功则返回数据流 ID。
   /// - < 0：创建数据流失败。如果返回的错误码是负数，对应错误代码和警告代码里的正整数。
-  Future<int> createDataStream(bool reliable, bool ordered);
+  Future<int?> createDataStream(bool reliable, bool ordered);
 
   /// 创建数据流。
   ///
@@ -2863,7 +3231,7 @@ mixin RtcStreamMessageInterface {
   /// **Returns**
   /// - 创建数据流成功则返回数据流 ID。
   /// - < 0: 创建数据流失败。
-  Future<int> createDataStreamWithConfig(DataStreamConfig config);
+  Future<int?> createDataStreamWithConfig(DataStreamConfig config);
 
   /// 发送数据流。
   ///

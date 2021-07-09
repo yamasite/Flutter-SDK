@@ -14,23 +14,25 @@ class RtcChannel with RtcChannelInterface {
       MethodChannel('agora_rtc_channel');
   static const EventChannel _eventChannel =
       EventChannel('agora_rtc_channel/events');
-
-  static StreamSubscription _subscription;
+  static final Stream _stream = _eventChannel.receiveBroadcastStream();
+  static StreamSubscription? _subscription;
 
   static final Map<String, RtcChannel> _channels = {};
 
   final String channelId;
 
-  RtcChannelEventHandler _handler;
+  RtcChannelEventHandler? _handler;
 
   RtcChannel._(this.channelId);
 
-  Future<T> _invokeMethod<T>(String method, [Map<String, dynamic> arguments]) {
+  Future<T?> _invokeMethod<T>(String method,
+      [Map<String, dynamic>? arguments]) {
     return _methodChannel.invokeMethod(
-        method,
-        arguments == null
-            ? {'channelId': channelId}
-            : {'channelId': channelId, ...arguments});
+      method,
+      arguments == null
+          ? {'channelId': channelId}
+          : {'channelId': channelId, ...arguments},
+    );
   }
 
   /// 创建并返回 [RtcChannel] 对象。
@@ -55,10 +57,12 @@ class RtcChannel with RtcChannelInterface {
   /// - 方法调用失败，返回 null。
   ///  - 如果将 `channelId` 设为空字符 ""，则返回错误码 [ErrorCode(5)]。
   static Future<RtcChannel> create(String channelId) async {
-    if (_channels.containsKey(channelId)) return _channels[channelId];
-    await _methodChannel.invokeMethod('create', {'channelId': channelId});
+    if (_channels.containsKey(channelId)) return _channels[channelId]!;
+    await _methodChannel.invokeMethod('create', {
+      'channelId': channelId,
+    });
     _channels[channelId] = RtcChannel._(channelId);
-    return _channels[channelId];
+    return _channels[channelId]!;
   }
 
   /// 销毁所有的 [RtcChannel] 对象。
@@ -84,7 +88,7 @@ class RtcChannel with RtcChannelInterface {
   /// **Parameter** [handler] 事件句柄。
   void setEventHandler(RtcChannelEventHandler handler) {
     _handler = handler;
-    _subscription ??= _eventChannel.receiveBroadcastStream().listen((event) {
+    _subscription ??= _stream.listen((event) {
       final eventMap = Map<dynamic, dynamic>.from(event);
       final channelId = eventMap['channelId'];
       final methodName = eventMap['methodName'] as String;
@@ -94,31 +98,31 @@ class RtcChannel with RtcChannelInterface {
   }
 
   @override
-  Future<void> setClientRole(ClientRole role, [ClientRoleOptions options]) {
+  Future<void> setClientRole(ClientRole role, [ClientRoleOptions? options]) {
     return _invokeMethod('setClientRole', {
       'role': ClientRoleConverter(role).value(),
-      'options': options?.toJson()
+      'options': options?.toJson(),
     });
   }
 
+
   @override
-  Future<void> joinChannel(String token, String optionalInfo, int optionalUid,
+  Future<void> joinChannel(String? token, String? optionalInfo, int optionalUid,
       ChannelMediaOptions options) {
     return _invokeMethod('joinChannel', {
       'token': token,
       'optionalInfo': optionalInfo,
       'optionalUid': optionalUid,
-      'options': options.toJson()
+      'options': options.toJson(),
     });
   }
-
   @override
   Future<void> joinChannelWithUserAccount(
-    String token, String userAccount, ChannelMediaOptions options) {
+      String? token, String userAccount, ChannelMediaOptions options) {
     return _invokeMethod('joinChannelWithUserAccount', {
       'token': token,
       'userAccount': userAccount,
-      'options': options.toJson()
+      'options': options.toJson(),
     });
   }
 
@@ -129,7 +133,9 @@ class RtcChannel with RtcChannelInterface {
 
   @override
   Future<void> renewToken(String token) {
-    return _invokeMethod('renewToken', {'token': token});
+    return _invokeMethod('renewToken', {
+      'token': token,
+    });
   }
 
   @override
@@ -140,77 +146,99 @@ class RtcChannel with RtcChannelInterface {
   }
 
   @override
+  @deprecated
   Future<void> publish() {
     return _invokeMethod('publish');
   }
 
   @override
+  @deprecated
   Future<void> unpublish() {
     return _invokeMethod('unpublish');
   }
 
   @override
-  Future<String> getCallId() {
+  Future<String?> getCallId() {
     return _invokeMethod('getCallId');
   }
 
   @override
   Future<void> adjustUserPlaybackSignalVolume(int uid, int volume) {
-    return _invokeMethod(
-        'adjustUserPlaybackSignalVolume', {'uid': uid, 'volume': volume});
+    return _invokeMethod('adjustUserPlaybackSignalVolume', {
+      'uid': uid,
+      'volume': volume,
+    });
   }
 
   @override
   Future<void> muteAllRemoteAudioStreams(bool muted) {
-    return _invokeMethod('muteAllRemoteAudioStreams', {'muted': muted});
+    return _invokeMethod('muteAllRemoteAudioStreams', {
+      'muted': muted,
+    });
   }
 
   @override
   Future<void> muteRemoteAudioStream(int uid, bool muted) {
-    return _invokeMethod('muteRemoteAudioStream', {'uid': uid, 'muted': muted});
+    return _invokeMethod('muteRemoteAudioStream', {
+      'uid': uid,
+      'muted': muted,
+    });
   }
 
   @override
   @deprecated
   Future<void> setDefaultMuteAllRemoteAudioStreams(bool muted) {
-    return _invokeMethod(
-        'setDefaultMuteAllRemoteAudioStreams', {'muted': muted});
+    return _invokeMethod('setDefaultMuteAllRemoteAudioStreams', {
+      'muted': muted,
+    });
   }
 
   @override
   Future<void> muteAllRemoteVideoStreams(bool muted) {
-    return _invokeMethod('muteAllRemoteVideoStreams', {'muted': muted});
+    return _invokeMethod('muteAllRemoteVideoStreams', {
+      'muted': muted,
+    });
   }
 
   @override
   Future<void> muteRemoteVideoStream(int uid, bool muted) {
-    return _invokeMethod('muteRemoteVideoStream', {'uid': uid, 'muted': muted});
+    return _invokeMethod('muteRemoteVideoStream', {
+      'uid': uid,
+      'muted': muted,
+    });
   }
 
   @override
   @deprecated
   Future<void> setDefaultMuteAllRemoteVideoStreams(bool muted) {
-    return _invokeMethod(
-        'setDefaultMuteAllRemoteVideoStreams', {'muted': muted});
+    return _invokeMethod('setDefaultMuteAllRemoteVideoStreams', {
+      'muted': muted,
+    });
   }
 
   @override
   Future<void> addInjectStreamUrl(String url, LiveInjectStreamConfig config) {
-    return _invokeMethod(
-        'addInjectStreamUrl', {'url': url, 'config': config.toJson()});
+    return _invokeMethod('addInjectStreamUrl', {
+      'url': url,
+      'config': config.toJson(),
+    });
   }
 
   @override
   Future<void> addPublishStreamUrl(String url, bool transcodingEnabled) {
-    return _invokeMethod('addPublishStreamUrl',
-        {'url': url, 'transcodingEnabled': transcodingEnabled});
+    return _invokeMethod('addPublishStreamUrl', {
+      'url': url,
+      'transcodingEnabled': transcodingEnabled,
+    });
   }
 
   @override
   @deprecated
-  Future<int> createDataStream(bool reliable, bool ordered) {
-    return _invokeMethod(
-        'createDataStream', {'reliable': reliable, 'ordered': ordered});
+  Future<int?> createDataStream(bool reliable, bool ordered) {
+    return _invokeMethod('createDataStream', {
+      'reliable': reliable,
+      'ordered': ordered,
+    });
   }
 
   @override
@@ -220,60 +248,75 @@ class RtcChannel with RtcChannelInterface {
 
   @override
   Future<void> removeInjectStreamUrl(String url) {
-    return _invokeMethod('removeInjectStreamUrl', {'url': url});
+    return _invokeMethod('removeInjectStreamUrl', {
+      'url': url,
+    });
   }
 
   @override
   Future<void> removePublishStreamUrl(String url) {
-    return _invokeMethod('removePublishStreamUrl', {'url': url});
+    return _invokeMethod('removePublishStreamUrl', {
+      'url': url,
+    });
   }
 
   @override
   Future<void> sendMetadata(String metadata) {
-    return _invokeMethod('sendMetadata', {'metadata': metadata});
+    return _invokeMethod('sendMetadata', {
+      'metadata': metadata,
+    });
   }
 
   @override
   Future<void> sendStreamMessage(int streamId, String message) {
-    return _invokeMethod(
-        'sendStreamMessage', {'streamId': streamId, 'message': message});
+    return _invokeMethod('sendStreamMessage', {
+      'streamId': streamId,
+      'message': message,
+    });
   }
 
   @override
   @deprecated
   Future<void> setEncryptionMode(EncryptionMode encryptionMode) {
-    return _invokeMethod('setEncryptionMode',
-        {'encryptionMode': EncryptionModeConverter(encryptionMode).value()});
+    return _invokeMethod('setEncryptionMode', {
+      'encryptionMode': EncryptionModeConverter(encryptionMode).value(),
+    });
   }
 
   @override
   @deprecated
   Future<void> setEncryptionSecret(String secret) {
-    return _invokeMethod('setEncryptionSecret', {'secret': secret});
+    return _invokeMethod('setEncryptionSecret', {
+      'secret': secret,
+    });
   }
 
   @override
   Future<void> setLiveTranscoding(LiveTranscoding transcoding) {
-    return _invokeMethod(
-        'setLiveTranscoding', {'transcoding': transcoding.toJson()});
+    return _invokeMethod('setLiveTranscoding', {
+      'transcoding': transcoding.toJson(),
+    });
   }
 
   @override
   Future<void> setMaxMetadataSize(int size) {
-    return _invokeMethod('setMaxMetadataSize', {'size': size});
+    return _invokeMethod('setMaxMetadataSize', {
+      'size': size,
+    });
   }
 
   @override
   Future<void> setRemoteDefaultVideoStreamType(VideoStreamType streamType) {
-    return _invokeMethod('setRemoteDefaultVideoStreamType',
-        {'streamType': VideoStreamTypeConverter(streamType).value()});
+    return _invokeMethod('setRemoteDefaultVideoStreamType', {
+      'streamType': VideoStreamTypeConverter(streamType).value(),
+    });
   }
 
   @override
   Future<void> setRemoteUserPriority(int uid, UserPriority userPriority) {
     return _invokeMethod('setRemoteUserPriority', {
       'uid': uid,
-      'userPriority': UserPriorityConverter(userPriority).value()
+      'userPriority': UserPriorityConverter(userPriority).value(),
     });
   }
 
@@ -281,21 +324,24 @@ class RtcChannel with RtcChannelInterface {
   Future<void> setRemoteVideoStreamType(int uid, VideoStreamType streamType) {
     return _invokeMethod('setRemoteVideoStreamType', {
       'uid': uid,
-      'streamType': VideoStreamTypeConverter(streamType).value()
+      'streamType': VideoStreamTypeConverter(streamType).value(),
     });
   }
 
   @override
   Future<void> setRemoteVoicePosition(int uid, double pan, double gain) {
-    return _invokeMethod(
-        'setRemoteVoicePosition', {'uid': uid, 'pan': pan, 'gain': gain});
+    return _invokeMethod('setRemoteVoicePosition', {
+      'uid': uid,
+      'pan': pan,
+      'gain': gain,
+    });
   }
 
   @override
   Future<void> startChannelMediaRelay(
       ChannelMediaRelayConfiguration channelMediaRelayConfiguration) {
     return _invokeMethod('startChannelMediaRelay', {
-      'channelMediaRelayConfiguration': channelMediaRelayConfiguration.toJson()
+      'channelMediaRelayConfiguration': channelMediaRelayConfiguration.toJson(),
     });
   }
 
@@ -313,26 +359,46 @@ class RtcChannel with RtcChannelInterface {
   Future<void> updateChannelMediaRelay(
       ChannelMediaRelayConfiguration channelMediaRelayConfiguration) {
     return _invokeMethod('updateChannelMediaRelay', {
-      'channelMediaRelayConfiguration': channelMediaRelayConfiguration.toJson()
+      'channelMediaRelayConfiguration': channelMediaRelayConfiguration.toJson(),
+    });
+  }
+
+
+  @override
+  Future<void> enableEncryption(bool enabled, EncryptionConfig config) {
+    return _invokeMethod('enableEncryption', {
+      'enabled': enabled,
+      'config': config.toJson(),
     });
   }
 
   @override
-  Future<void> enableEncryption(bool enabled, EncryptionConfig config) {
-    return _invokeMethod(
-        'enableEncryption', {'enabled': enabled, 'config': config.toJson()});
-  }
-
-  @override
-  Future<int> createDataStreamWithConfig(DataStreamConfig config) {
-    return _invokeMethod(
-        'createDataStreamWithConfig', {'config': config.toJson()});
+  Future<int?> createDataStreamWithConfig(DataStreamConfig config) {
+    return _invokeMethod('createDataStream', {
+      'config': config.toJson(),
+    });
   }
 
   @override
   Future<void> enableRemoteSuperResolution(int uid, bool enable) {
-    return _invokeMethod(
-        'enableRemoteSuperResolution', {'uid': uid, 'enable': enable});
+    return _invokeMethod('enableRemoteSuperResolution', {
+      'uid': uid,
+      'enable': enable,
+    });
+  }
+
+  @override
+  Future<void> muteLocalAudioStream(bool muted) {
+    return _invokeMethod('muteLocalAudioStream', {
+      'muted': muted,
+    });
+  }
+
+  @override
+  Future<void> muteLocalVideoStream(bool muted) {
+    return _invokeMethod('muteLocalVideoStream', {
+      'muted': muted,
+    });
   }
 }
 
@@ -371,7 +437,7 @@ mixin RtcChannelInterface
   /// **Parameter** [role] 直播场景中的用户角色，详见 [ClientRole]。
   ///
   /// **Parameter** [options] 用户具体设置，包含用户级别，详见 [ClientRoleOptions]。
- Future<void> setClientRole(ClientRole role, [ClientRoleOptions options]);
+  Future<void> setClientRole(ClientRole role, [ClientRoleOptions? options]);
 
   /// 使用 UID 加入频道。
   ///
@@ -402,10 +468,10 @@ mixin RtcChannelInterface
   ///
   /// **Parameter** [optionalUid] 用户 ID，32 位无符号整数。建议设置范围：1 到 (2<sup>32</sup>-1)，并保证唯一性。
   /// 如果不指定（即设为 0），SDK 会自动分配一个，
-  /// 并在 [RtcChannelEvents.JoinChannelSuccess] 回调方法中返回，App 层必须记住该返回值并维护，SDK 不对该返回值进行维护。
+  /// 并在 [joinChannelSuccess] 回调方法中返回，App 层必须记住该返回值并维护，SDK 不对该返回值进行维护。
   ///
   /// **Parameter** [options] 频道媒体设置选项。详见 [ChannelMediaOptions]。
-  Future<void> joinChannel(String token, String optionalInfo, int optionalUid,
+  Future<void> joinChannel(String? token, String? optionalInfo, int optionalUid,
       ChannelMediaOptions options);
 
 
@@ -429,7 +495,7 @@ mixin RtcChannelInterface
   ///
   /// **Parameter** [options] 频道媒体设置选项。详见 [ChannelMediaOptions]。
   Future<void> joinChannelWithUserAccount(
-      String token, String userAccount, ChannelMediaOptions options);
+      String? token, String userAccount, ChannelMediaOptions options);
 
   /// 离开当前频道。
   ///
@@ -459,12 +525,14 @@ mixin RtcChannelInterface
   /// - 直播场景下，该方法仅适用于角色为主播的用户。你可以调用该 [RtcChannel] 类
   /// 下的 [RtcChannel.setClientRole] 方法设置用户角色。
   /// - SDK 只支持用户同一时间在一个频道发布一路音视频流。详情请参考高阶指南《多频道管理》。
+  @deprecated
   Future<void> publish();
 
   // 停止将本地音视频流发布到本频道。
   ///
   /// 请确保你想要停止发布音视频流的频道 `channelId`，与当前正在 [RtcChannel.publish] 音视频流的频道 `channelId` 一致，
   /// 否则 SDK 会返回 [ErrorCode.Refused]。
+  @deprecated
   Future<void> unpublish();
 
   /// 获取当前的通话 ID。
@@ -472,7 +540,7 @@ mixin RtcChannelInterface
   /// **Returns**
   /// - 方法调用成功，则返回当前的通话 ID。
   /// - 方法调用失败，则返回空字符串 ""。
-  Future<String> getCallId();
+  Future<String?> getCallId();
 }
 
 mixin RtcAudioInterface {
@@ -491,6 +559,26 @@ mixin RtcAudioInterface {
   /// - 0：静音。
   /// - 100：原始音量。
   Future<void> adjustUserPlaybackSignalVolume(int uid, int volume);
+
+  /// 取消或恢复发布本地音频流。
+  ///
+  /// 自从 v3.4.5
+  ///
+  /// 该方法仅设置用户在 [RtcChannel] 频道中的音频发布状态。
+  ///
+  /// 成功调用该方法后，远端会触发 `remoteAudioStateChanged` 回调。
+  ///
+  /// 同一时间，本地的音视频流只能发布到一个频道。如果你创建了多个频道，请确保你只在一个频道中调用 [RtcEngine.muteLocalAudioStream](`false`)，否则方法会调用失败并返回 -5 (`refused`)。
+  ///
+  /// **Note**
+  ///
+  /// - 该方法不会改变视频采集设备的使用状态。
+  /// - 该方法的调用是否生效受 [RtcEngine.joinChannel] 和 [RtcEngine.setClientRole] 方法的影响，详见《设置发布状态》。
+  ///
+  /// **Parameter** [muted] 是否取消发布本地音频流：
+  /// - `true`：取消发布。
+  /// - `false`: 发布。
+  Future<void> muteLocalAudioStream(bool muted);
 
   /// 停止/恢复接收指定音频流。
   ///
@@ -522,6 +610,26 @@ mixin RtcAudioInterface {
 }
 
 mixin RtcVideoInterface {
+
+  /// 取消或恢复发布本地视频流。
+  ///
+  /// 自从 v3.4.5
+  ///
+  /// 该方法仅设置用户在 [RtcChannel] 频道中的音频发布状态。
+  ///
+  /// 成功调用该方法后，远端会触发 [remoteVideoStateChanged] 回调。
+  ///
+  /// 同一时间，本地的音视频流只能发布到一个频道。如果你创建了多个频道，请确保你只在一个频道中调用 [RtcEngine.muteLocalVideoStream](`false`)，否则方法会调用失败并返回 -5 (`refused`)。
+  ///
+  /// **Note**
+  /// - 该方法不会改变视频采集设备的使用状态。
+  /// - 该方法的调用是否生效受 [RtcEngine.joinChannel] 和 [RtcEngine.setClientRole] 方法的影响，详见《设置发布状态》。
+  ///
+  /// **Parameter** [muted] 是否取消发布本地视频流:
+  /// - `true`：取消发布。
+  /// - `false`: 发布。
+  Future<void> muteLocalVideoStream(bool muted);
+
   /// 停止/恢复接收指定视频流。
   ///
   /// **Parameter** [uid] 指定的用户 ID。
@@ -860,7 +968,7 @@ mixin RtcStreamMessageInterface {
   /// - 创建数据流成功则返回数据流 ID。
   /// - < 0：创建数据流失败。如果返回的错误码是负数，对应错误代码和警告代码里的正整数。
   @deprecated
-  Future<int> createDataStream(bool reliable, bool ordered);
+  Future<int?> createDataStream(bool reliable, bool ordered);
 
   /// 创建数据流。
   ///
@@ -875,7 +983,7 @@ mixin RtcStreamMessageInterface {
   /// **Returns**
   /// - 创建数据流成功则返回数据流 ID。
   /// - < 0: 创建数据流失败。
-  Future<int> createDataStreamWithConfig(DataStreamConfig config);
+  Future<int?> createDataStreamWithConfig(DataStreamConfig config);
 
   /// 发送数据流。
   ///
@@ -889,6 +997,6 @@ mixin RtcStreamMessageInterface {
   ///
   /// **Parameter** [streamId] [RtcChannel.createDataStream] 方法返回的数据流 ID。
   ///
-  /// **Parameter** [message] 待发送的数据，格式为 byte[]。
+  /// **Parameter** [message] 待发送的数据。
   Future<void> sendStreamMessage(int streamId, String message);
 }
