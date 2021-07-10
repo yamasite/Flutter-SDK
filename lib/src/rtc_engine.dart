@@ -16,7 +16,7 @@ class RtcEngine with RtcEngineInterface {
   static final Stream _stream = _eventChannel.receiveBroadcastStream();
   static StreamSubscription? _subscription;
 
- /// Exposing methodChannel to other files
+  /// Exposing methodChannel to other files
   static MethodChannel get methodChannel => _methodChannel;
 
   static RtcEngine? _instance;
@@ -24,7 +24,7 @@ class RtcEngine with RtcEngineInterface {
   /// Get the singleton of [RtcEngine].
   static RtcEngine? get instance => _instance;
 
- RtcEngineEventHandler? _handler;
+  RtcEngineEventHandler? _handler;
 
   RtcEngine._();
 
@@ -37,7 +37,6 @@ class RtcEngine with RtcEngineInterface {
   ///
   ///
   /// 该方法在加入频道前后都能调用。
-
 
   ///
   /// **Returns**
@@ -60,7 +59,6 @@ class RtcEngine with RtcEngineInterface {
       'error': error,
     });
   }
-
 
   /// 创建 [RtcEngine] 实例。
   ///
@@ -207,7 +205,6 @@ class RtcEngine with RtcEngineInterface {
       'options': options?.toJson(),
     });
   }
-
 
   @override
   Future<void> joinChannel(
@@ -1993,6 +1990,8 @@ mixin RtcAudioMixingInterface {
   /// **Parameter** [cycle] 音频文件循环播放的次数：
   /// - 正整数：循环的次数。
   /// - -1：无限循环。
+  ///
+  /// **Parameter** [startPos] 音乐文件的播放位置，单位为毫秒。
   Future<void> startAudioMixing(
       String filePath, bool loopback, bool replace, int cycle,
       [int? startPos]);
@@ -2161,13 +2160,15 @@ mixin RtcAudioEffectInterface {
   /// - `true`：音效文件在本地播放的同时，会发布到 Agora 云上，因此远端用户也能听到该音效。
   /// - `false`：音效文件不会发布到 Agora 云上，因此只能在本地听到该音效。
   ///
+  /// **Parameter** [startPos] 音效文件的播放位置，单位为毫秒。
+  ///
   Future<void> playEffect(int soundId, String filePath, int loopCount,
       double pitch, double pan, double gain, bool publish,
       [int? startPos]);
 
   /// 设置指定音效文件的播放位置。
   ///
-  /// 自从 v3.4.2
+  /// 自从 v4.0.1
   ///
   /// 成功设置后，本地音效文件会在指定位置开始播放。
   ///
@@ -2182,7 +2183,7 @@ mixin RtcAudioEffectInterface {
 
   /// 获取指定音效文件总时长。
   ///
-  /// 自从 v3.4.2
+  /// 自从 v4.0.1
   ///
   /// **Note**
   /// 该方法需要在加入频道后调用。
@@ -2198,7 +2199,7 @@ mixin RtcAudioEffectInterface {
 
   /// 获取指定音效文件的播放进度。
   ///
-  /// 自从 v3.4.2
+  /// 自从 v4.0.1
   ///
   /// **Note**
   /// 该方法需要在 [RtcEngine.playEffect] 后调用。
@@ -2400,7 +2401,6 @@ mixin RtcVoiceChangerInterface {
   ///   - [RtcEngine.setLocalVoiceEqualization]
   ///   - [RtcEngine.setLocalVoiceReverb]
   Future<void> setVoiceConversionPreset(VoiceConversionPreset preset);
-
 
   /// 设置 SDK 预设人声音效的参数。
   ///
@@ -2982,7 +2982,7 @@ mixin RtcAudioRecorderInterface {
 
   /// 开始客户端录音。
   ///
-  /// 自从 v3.4.2
+  /// 自从 v4.0.1
   ///
   /// Agora SDK 支持通话过程中在客户端进行录音。调用该方法后，你可以录制频道内用户的音频，并得到一个录音文件。录音文件格式可以为:
   /// - WAV: 音质保真度较高，文件较大。例如，采样率为 32000 Hz，录音时长为 10 分钟的文件大小约为 73 M。
@@ -2999,7 +2999,7 @@ mixin RtcAudioRecorderInterface {
 
   /// 开启虚拟节拍器。
   ///
-  /// 自从 v3.4.2
+  /// 自从 v4.0.1
   ///
   /// 在音乐教学、体育教学等场景中，老师通常需要使用节拍器，让学生跟着正确的节拍练习。 节拍由强拍和弱拍组成，每小节的第一拍称为强拍，其余称为弱拍。 你需要在该方法中设置强拍和弱拍的文件路径、每小节的拍数、节拍速度以及是否将节拍器的声音发送至远端。
   ///
@@ -3018,14 +3018,14 @@ mixin RtcAudioRecorderInterface {
 
   /// 关闭虚拟节拍器。
   ///
-  /// 自从 v3.4.2
+  /// 自从 v4.0.1
   ///
   /// 调用 [RtcEngine.startRhythmPlayer] 后，你可以调用该方法关闭虚拟节拍器。
   Future<void> stopRhythmPlayer();
 
   /// 配置虚拟节拍器。
   ///
-  /// 自从 v3.4.2
+  /// 自从 v4.0.1
   ///
   /// 调用 [RtcEngine.startRhythmPlayer] 后，你可以调用该方法重新配置虚拟节拍器。
   ///
