@@ -2951,6 +2951,7 @@ mixin RtcEncryptionInterface {
   /// **Parameter** [enabled] 是否开启内置加密：
   /// - `true`：开启内置加密。
   /// - `false`：关闭内置加密。
+  ///
   /// **Parameter** [config] 配置内置加密模式和密钥。详见 [EncryptionConfig]。
   Future<void> enableEncryption(bool enabled, EncryptionConfig config);
 }
