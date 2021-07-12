@@ -1,11 +1,11 @@
 import 'rtc_engine.dart';
 
-/// Extension for RtcEngine
+/// RtcEngine 扩展
 extension RtcEngineExtension on RtcEngine {
-  /// Get the actual absolute path of the asset through the relative path of the asset
+  /// 通过 asset 的相对路径获取绝对路径。
   ///
-  /// - [assetPath] The resource path configured in the `flutter` -> `assets` field of pubspec.yaml, for example: assets/Sound_Horizon.mp3
-  /// - Returns the actual absolute path of the asset
+  /// - [assetPath] 在 `pubspec.yaml` 的 `flutter` -> `assets` 字段中配置的 asset 路径, 例如: `assets/Sound_Horizon.mp3`。
+  /// - 返回绝对路径的地址。
   Future<String?> getAssetAbsolutePath(String assetPath) {
     return RtcEngine.methodChannel
         .invokeMethod('getAssetAbsolutePath', assetPath);
